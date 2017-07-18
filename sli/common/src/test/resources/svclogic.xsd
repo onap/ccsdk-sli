@@ -1,0 +1,323 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openecomp.org/sdnc/svclogic" xmlns="http://www.openecomp.org/sdnc/svclogic">
+
+	<xsd:simpleType name="modeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="sync" />
+			<xsd:enumeration value="async" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:group name="node">
+		<xsd:choice>
+			<xsd:element ref="block" />
+			<xsd:element ref="is-available" />
+			<xsd:element ref="exists" />
+			<xsd:element ref="reserve" />
+			<xsd:element ref="release" />
+			<xsd:element ref="allocate" />
+			<xsd:element ref="get-resource" />
+			<xsd:element ref="configure" />
+			<xsd:element ref="return" />
+			<xsd:element ref="switch" />
+			<xsd:element ref="record" />
+			<xsd:element ref="save" />
+			<xsd:element ref="for" />
+			<xsd:element ref="set" />
+			<xsd:element ref="execute" />
+			<xsd:element ref="delete" />
+			<xsd:element ref="update" />
+			<xsd:element ref="call" />
+			<xsd:element ref="notify" />
+			<xsd:element ref="break" />
+		</xsd:choice>
+	</xsd:group>
+
+	<xsd:element name="service-logic">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="method" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="module" use="required" type="xsd:string" />
+			<xsd:attribute name="version" use="required" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="method">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:group ref="node" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="rpc" use="required" type="xsd:string" />
+			<xsd:attribute name="mode" use="optional" type="modeType" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="block">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:group ref="node" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="atomic" use="optional" type="xsd:boolean" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="is-available">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="pfx" use="optional" type="xsd:string" />
+			<xsd:attribute name="plugin" use="required" type="xsd:string" />
+			<xsd:attribute name="resource" use="required" type="xsd:string" />
+			<xsd:attribute name="key" use="optional" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="exists">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="pfx" use="optional" type="xsd:string" />
+			<xsd:attribute name="plugin" use="required" type="xsd:string" />
+			<xsd:attribute name="resource" use="required" type="xsd:string" />
+			<xsd:attribute name="key" use="required" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="outcome">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:group ref="node" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="ref" use="optional" type="xsd:string" />
+			<xsd:attribute name="value" use="required" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="reserve">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- This node does not actually read from parameters -->
+				<xsd:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="plugin" use="required" type="xsd:string" />
+			<xsd:attribute name="resource" use="required" type="xsd:string" />
+			<xsd:attribute name="key" use="optional" type="xsd:string" />
+			<xsd:attribute name="select" use="optional" type="xsd:string" />
+			<xsd:attribute name="pfx" use="optional" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="release">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="plugin" use="required" type="xsd:string" />
+			<xsd:attribute name="resource" use="required" type="xsd:string" />
+			<xsd:attribute name="key" use="optional" type="xsd:string" />
+			<xsd:attribute name="pfx" use="optional" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="record">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="plugin" use="required" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="allocate">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- This node does not actually read from parameters -->
+				<xsd:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="plugin" use="required" type="xsd:string" />
+			<xsd:attribute name="resource" use="required" type="xsd:string" />
+			<xsd:attribute name="key" use="required" type="xsd:string" />
+			<xsd:attribute name="pfx" use="required" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="get-resource">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- This node does not actually read from parameters -->
+				<xsd:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="plugin" use="required" type="xsd:string" />
+			<xsd:attribute name="resource" use="required" type="xsd:string" />
+			<xsd:attribute name="key" use="optional" type="xsd:string" />
+			<xsd:attribute name="local-only" use="optional" type="xsd:boolean" />
+			<xsd:attribute name="order-by" use="optional" type="xsd:string" />
+			<xsd:attribute name="pfx" use="optional" type="xsd:string" />
+			<!-- force is retired and does not do anything -->
+			<xsd:attribute name="force" use="optional" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="configure">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="adaptor" use="required" type="xsd:string" />
+			<xsd:attribute name="key" use="required" type="xsd:string" />
+			<xsd:attribute name="activate" use="optional" type="xsd:boolean" />
+		</xsd:complexType>
+	</xsd:element>
+
+
+	<xsd:element name="parameter">
+		<xsd:complexType>
+			<xsd:attribute name="name" use="required" type="xsd:string" />
+			<xsd:attribute name="value" use="required" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+
+	<xsd:element name="return">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="status" use="optional" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="switch">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="test" use="required" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="save">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="plugin" use="required" type="xsd:string" />
+			<xsd:attribute name="resource" use="required" type="xsd:string" />
+			<xsd:attribute name="key" use="optional" type="xsd:string" />
+			<xsd:attribute name="force" use="optional" type="xsd:boolean" />
+			<xsd:attribute name="local-only" use="optional" type="xsd:boolean" />
+			<xsd:attribute name="pfx" use="optional" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="delete">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- This node does not actually read from parameters -->
+				<xsd:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="plugin" use="required" type="xsd:string" />
+			<xsd:attribute name="resource" use="required" type="xsd:string" />
+			<xsd:attribute name="key" use="optional" type="xsd:string" />
+			<!-- force is retired and does not do anything -->
+			<xsd:attribute name="force" use="optional" type="xsd:string" />
+			<!-- local-only is retired and does not do anything -->
+			<xsd:attribute name="local-only" use="optional" type="xsd:string" />
+			<!-- pfx is retired and does not do anything -->
+			<xsd:attribute name="pfx" use="optional" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="for">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:group ref="node" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="atomic" use="optional" type="xsd:boolean" />
+			<xsd:attribute name="index" use="required" type="xsd:string" />
+			<xsd:attribute name="start" use="required" type="xsd:string" />
+			<xsd:attribute name="end" use="required" type="xsd:string" />
+			<xsd:attribute name="silentFailure" use="optional" type="xsd:boolean" default="false" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="set">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="only-if-unset" use="optional"
+				type="xsd:boolean" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="execute">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="plugin" use="required" type="xsd:string" />
+			<xsd:attribute name="method" use="required" type="xsd:string" />
+			<xsd:attribute name="emitsOutcome" use="optional" type="xsd:boolean" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="update">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="plugin" use="required" type="xsd:string" />
+			<xsd:attribute name="resource" use="required" type="xsd:string" />
+			<xsd:attribute name="key" use="optional" type="xsd:string" />
+			<xsd:attribute name="force" use="optional" type="xsd:boolean" />
+			<xsd:attribute name="local-only" use="optional" type="xsd:boolean" />
+			<xsd:attribute name="pfx" use="optional" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="call">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- This node does not actually read from parameters -->
+				<xsd:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="module" use="optional" type="xsd:string" />
+			<xsd:attribute name="rpc" use="required" type="xsd:string" />
+			<xsd:attribute name="version" use="optional" type="xsd:string" />
+			<xsd:attribute name="mode" use="required" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="notify">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="outcome" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="plugin" use="optional" type="xsd:string" />
+			<xsd:attribute name="resource" use="optional" type="xsd:string" />
+			<xsd:attribute name="action" use="required" type="xsd:string" />
+			<xsd:attribute name="key" use="optional" type="xsd:string" />
+			<!-- force is retired and does not do anything -->
+			<xsd:attribute name="force" use="optional" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="break">
+		<xsd:complexType />
+	</xsd:element>
+
+</xsd:schema>

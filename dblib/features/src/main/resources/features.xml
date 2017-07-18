@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<features name="sdnc-dblib-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">
+
+    <repository>mvn:org.opendaylight.mdsal/features-mdsal/${odl.mdsal.features.version}/xml/features</repository>
+
+
+    <feature name='sdnc-dblib' description="sdnc-dblib" version='${project.version}'>
+        <!-- Most applications will have a dependency on the ODL MD-SAL Broker -->
+        <feature version="${odl.mdsal.version}">odl-mdsal-broker</feature>
+        <bundle>wrap:mvn:org.apache.tomcat/tomcat-jdbc/${tomcat-jdbc.version}/$DynamicImport-Package=com.mysql.*&amp;overwrite=merge</bundle>
+        <bundle>mvn:org.openecomp.sdnc.core/dblib-provider/${project.version}</bundle>
+        <bundle>mvn:mysql/mysql-connector-java/${mysql.connector.version}</bundle>
+    </feature>
+
+</features>

@@ -1,0 +1,14 @@
+
+/restconf filters are enabled by specifying filter chain in
+    /opt/opendaylight/current/etc/org.opendaylight.aaa.filterchain.cfg
+and enabling bundle class loading
+    >bundle:dynamic-import org.openecomp.sdnc.filters-provider
+
+loggers:
+    org.openecomp.sdnc.filters.audit
+    org.openecomp.sdnc.filters.metric
+    org.openecomp.sdnc.filters.request.response
+
+
+
+

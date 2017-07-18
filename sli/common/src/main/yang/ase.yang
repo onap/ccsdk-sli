@@ -1,0 +1,558 @@
+module ase {
+
+  namespace "att:ase";
+  prefix ase;
+
+  import ase-type {prefix ase-type; revision-date "2014-06-09";}
+
+  organization "AT&T ASE";
+
+  description
+    "This submodule contains a collection of YANG definitions for
+     defining the ASE service model(s) for UNI and EVC";
+
+  revision 2014-03-27 {
+    description 
+      "Additional detail for UNI and EVC API";
+  }
+  revision 2014-03-18 {
+    description
+      "Initial version";
+  }
+
+
+  /////////////////////////////////////////////////////
+  // ASE Query Actions
+  /////////////////////////////////////////////////////
+  
+  ////
+  // Port Reserve Request
+  ////
+  rpc ase-port-reserve {
+    input {
+      uses ase-type:uni-common-request-hdr;
+
+      leaf uni-circuit-id {
+	type string; 
+	mandatory true;
+      }
+      leaf edge-device-clli {
+	description "Edge device (e.g. EMT) on which port " 
+	  + " reservation is needed";
+	type string;
+	mandatory true;
+      }
+      leaf uni-cir-value {
+	description "Integer value for the CIR";
+	type ase-type:uni-cir-value-type;
+	mandatory true;
+      }
+      leaf uni-cir-units {
+	description "Units for the CIR";
+	type ase-type:cir-rate-type;
+	mandatory true;
+      }
+    }
+    output {
+      uses ase-type:uni-common-request-hdr;
+
+      leaf uni-circuit-id {
+	type string; 
+      }
+      leaf uni-port-id {
+	description "Allocated UNI port id";
+	type string;
+      }
+
+      uses ase-type:uni-common-error-format;
+    }
+  }
+
+  ////
+  // Release Port Request
+  ////
+  rpc ase-release-port-request {
+    input {
+      uses ase-type:uni-common-request-hdr;
+
+      leaf uni-circuit-id {
+	type string; 
+	mandatory true;
+      }
+    }
+    output {
+      uses ase-type:uni-common-return-hdr;
+      uses ase-type:uni-common-error-format;
+    }
+  }
+
+  ////
+  // Port Provisioning Request
+  ////
+  rpc ase-port-prov-request {
+    input {
+      uses ase-type:uni-common-request-hdr;
+
+      leaf uni-circuit-id {
+	type string;
+	mandatory true;
+      }
+      leaf subscriber-name {
+	type string;
+	mandatory true;
+      }
+      leaf uni-order-number {
+	type string;
+	mandatory true;
+      }
+      leaf edge-device-clli {
+	description "Edge device (e.g. EMT) on which port " 
+	  + " reservation is needed";
+	type string;
+	mandatory true;
+      }
+      leaf uni-location-city {
+	type string;
+	mandatory true;
+      }
+      leaf uni-location-state {
+	type string;
+	mandatory true;
+      }
+      leaf media-type {
+	type ase-type:media-type;
+	mandatory true;
+      }
+      leaf media-speed {
+	type ase-type:media-speed-type;
+	mandatory true;
+      }
+      leaf uni-cir-value {
+	description "Integer value for the CIR";
+	type ase-type:uni-cir-value-type;
+	mandatory true;
+      }
+      leaf uni-cir-units {
+	description "Units for the CIR";
+	type ase-type:cir-rate-type;
+	mandatory true;
+      }
+      leaf cos-category {
+	description "CoS Type";
+	type ase-type:cos-category-type;
+	mandatory true;   
+      }
+      leaf gos-profile {
+	description "GoS tpye";
+	type ase-type:uni-gos-type;
+	mandatory true;
+      } 
+      leaf aditional-mac-allowed {
+	type ase-type:uni-mac-limit-type;
+      }
+      leaf port-tagging {
+	type ase-type:port-tagging-type;
+	mandatory true;
+      }
+      leaf name-value-pair {
+	type string;
+      }  
+    }
+    output {
+      uses ase-type:uni-common-return-hdr;  
+      uses ase-type:uni-common-error-format;
+    }
+  }
+
+  ////
+  // Deprovisioning Port Request
+  ////
+  rpc ase-deprov-port-request {
+    input {
+      uses ase-type:uni-common-request-hdr;
+
+      leaf uni-circuit-id {
+	type string;
+	mandatory true;
+      }
+    }
+    output {
+      uses ase-type:uni-common-error-format;
+    }
+  }
+
+  ////
+  // Change Port Provisioning Request
+  ////
+  rpc ase-change-port-prov-request {
+    input {
+      uses ase-type:uni-common-request-hdr;
+
+      leaf uni-circuit-id {
+	type string;
+	mandatory true;
+      }
+      leaf subscriber-name {
+	type string;
+      } 
+      leaf media-speed {
+	type ase-type:media-speed-type;
+      }
+      leaf uni-cir-value {
+	description "Integer value for the CIR";
+	type ase-type:uni-cir-value-type;
+      }
+      leaf uni-cir-units {
+	description "Units for the CIR";
+	type ase-type:cir-rate-type;
+      }
+      leaf cos-catagory {
+	type ase-type:cos-category-type;
+      } 
+      leaf gos-profile {
+	type ase-type:uni-gos-type;
+      }
+      leaf additional-mac-allowed {
+	type ase-type:uni-mac-limit-type;
+      }
+      leaf port-tagging {
+	type ase-type:port-tagging-type;
+	mandatory true;
+      }
+      leaf name-value-pair {
+	type string;
+      }  
+    }
+    output {
+      uses ase-type:uni-common-error-format;
+    }
+  }
+
+  ////
+  // Port Activate Request
+  ////
+  rpc ase-port-activate-request {
+    input {
+      uses ase-type:uni-common-request-hdr;
+
+      leaf uni-circuit-id {
+	type string;
+	mandatory true;
+      }
+    }
+    output {
+      uses ase-type:uni-common-error-format;
+    }
+  }
+    
+  ////
+  // Port Change Activation Request
+  ////
+  rpc ase-change-port-activation-request {
+    input {
+      uses ase-type:uni-common-request-hdr;
+
+      leaf uni-circuit-id {
+	type string;
+	mandatory true;
+      }          
+    }
+    output {
+      uses ase-type:uni-common-error-format;
+    }
+  }    
+    
+  ////
+  // Port Disconnect Request
+  ////
+  rpc ase-port-disconnect-request {
+    input {
+      uses ase-type:uni-common-request-hdr;
+
+      leaf uni-circuit-id {
+	type string;
+	mandatory true;
+      }    
+    }
+    output {
+      uses ase-type:uni-common-error-format;
+    }
+  }
+
+  /////////////////////////////////////////////////////
+  // EVC API
+  /////////////////////////////////////////////////////
+
+  ////
+  // EVC Provision Request
+  ////
+  rpc ase-evc-activation {
+    input {
+      uses ase-type:evc-common-request-hdr;
+      leaf topology {
+	type enumeration {
+	  enum "MultiPoint"{
+	    value 0;
+	  }
+	  enum "PointToPoint"{
+	    value 1;
+	  }
+	}
+      }
+      list evc-leg {
+	key evc-access-name;
+	leaf evc-access-name {
+	  type string;    
+	}
+	leaf subscriber-name {
+	  type string;
+	}
+	leaf cvlan {
+	  type uint16 {
+	    range "2..4090";
+	  }
+	}
+	leaf connection-cir-value {
+	  type ase-type:uni-cir-value-type;
+	}
+	leaf connection-cir-units-string {
+	  type ase-type:cir-rate-type;
+	}
+	leaf connection-gos-profile {
+	  type ase-type:evc-gos-type;
+	}
+	leaf connection-additional-mac-allowed {
+	  type ase-type:uni-mac-limit-type;
+	}
+	leaf connection-emc-indicator {
+	  type enumeration {
+	    enum "Y"{
+	      value 0;
+	    }
+	    enum "N"{
+	      value 1;
+	    }
+	  } 
+	}
+	leaf connection-emc-speed-value {
+	  type ase-type:uni-cir-value-type;
+	}
+	leaf connection-emc-speed-units-string {
+	  type ase-type:cir-rate-type;
+	}
+      }
+      leaf name-value-pair {
+	type string;
+      }
+    }
+    output {
+      uses ase-type:evc-common-error-format;
+    }
+  }
+    
+  ////
+  // EVC Change Activation Request
+  ////
+  rpc ase-evc-change-activation {
+    input {
+      uses ase-type:evc-common-request-hdr;
+      leaf topology {
+	type enumeration {
+	  enum "MultiPoint"{
+	    value 0;
+	  }
+	  enum "PointToPoint"{
+	    value 1;
+	  }
+	}
+      }
+      list evc-leg {
+	key evc-access-name;
+	leaf evc-access-name {
+	  type string;    
+	}
+	leaf connection-cir-value {
+	  type ase-type:uni-cir-value-type;
+	}
+	leaf connection-cir-units-string {
+	  type ase-type:cir-rate-type;
+	}
+	leaf connection-gos-profile {
+	  type ase-type:evc-gos-type;
+	}
+	leaf connection-additional-mac-allowed {
+	  type ase-type:uni-mac-limit-type;
+	}
+          
+      }
+      leaf name-value-pair {
+	type string;
+      }
+        
+    }
+    output {
+      uses ase-type:evc-common-error-format;
+    }
+  }
+    
+  ////
+  // EVC Disconnet Connection Request
+  ////
+  rpc ase-evc-disconnect-request {
+    input {
+      uses ase-type:evc-common-request-hdr;
+      leaf topology {
+	type enumeration {
+	  enum "MultiPoint"{
+	    value 0;
+	  }
+	  enum "PointToPoint"{
+	    value 1;
+	  }
+	}
+      }
+      list evc-leg {
+	key evc-access-name;
+	leaf evc-access-name {
+	  type string;    
+	}          
+      }
+      leaf name-value-pair {
+	type string;
+      }
+        
+    }
+    output {
+      uses ase-type:evc-common-error-format;
+    }
+  }
+
+  /////////////////////////////////////////////////////
+  // ASE Query Actions
+  /////////////////////////////////////////////////////
+
+  rpc find-available-ports {
+    description "Return a count of available ports";
+    input {
+      uses ase-type:query-common-hdr;
+      leaf edge-device-clli {
+	type string;
+	mandatory true;
+      }
+          
+      leaf port-role {
+	type enumeration {
+	  enum "NETWORK"{
+	    value 0;
+	  }
+	  enum "ACCESS"{
+	    value 1;
+	  }
+	  enum "SDN-ACCESS"{
+	    value 2;
+	  }
+	}
+	mandatory true;
+      }
+      leaf port-assigned {
+	type string;
+      }
+    }
+    output {
+      uses ase-type:query-common-hdr;
+      container statuss {
+	leaf edge-device-clli {
+	  type string;
+	}
+	container max-cir {
+	  leaf cir-value {
+	    type uint16;
+	  }
+	  leaf cir-type {
+	    type ase-type:cir-rate-type;
+	  } 
+	}
+	leaf if-count {
+	  type uint16;
+	}
+      }
+      uses ase-type:query-error-format;
+    }
+  }
+
+  rpc find-evcs-in-uni {
+    description "Return EVC instances for a specified UNI";
+    input {
+      uses ase-type:query-common-hdr;
+
+      leaf uni-circuit-id {
+	type string;  //leafref
+      }
+      leaf edge-device-clli {
+	description "Edge device (e.g. EMT) on which port " 
+	  + " reservation is needed";
+	type string;
+      }
+    }
+    output {
+      uses ase-type:query-common-hdr;
+
+      leaf uni-leg-name {
+	description "NGO-proivded named";
+	type string;
+      }
+      uses ase-type:query-error-format;
+    }
+  }
+
+  rpc find-service-details {
+    description "Return EVC instances for a specified UNI";
+    input {
+      uses ase-type:query-common-hdr;
+      leaf uni-circuit-id {
+	type string;  //leafref
+      }
+      leaf source {
+	type string;
+	mandatory true;
+      }
+      leaf service-name {
+	type string;
+	mandatory true;
+      }
+      leaf service-type {
+	type string;
+	mandatory true;
+      }
+    }
+    output {
+      uses ase-type:query-common-hdr;
+          
+      leaf service-name {
+	type string;
+	mandatory true;
+      }
+      leaf service-type {
+	type string;
+	mandatory true;
+      } 
+      leaf service-state {
+	type enumeration {
+	  enum "Active"{
+	    value 0;
+	  }
+	  enum "NotActive"{
+	    value 1;
+	  }
+	}
+      }
+      leaf has-pending-change {
+	type ase-type:ase-yes-no-type;
+      } 
+      leaf allowed-connection-count {
+	type int16;
+      }
+      uses ase-type:query-error-format;
+    }
+  }
+} //module

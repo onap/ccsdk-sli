@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<groupId>org.openecomp.sdnc.core</groupId>
+	<artifactId>sliPluginUtils</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<modelVersion>4.0.0</modelVersion>
+
+
+	<parent>
+		<groupId>org.openecomp.sdnc.core</groupId>
+		<artifactId>sdnc-core</artifactId>
+        	<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<name>Service Logic Interface Plugin Utilities</name>
+	<description>A package of static utility functions to be used when developing SLI plugins</description>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.openecomp.sdnc.core</groupId>
+				<artifactId>SliPluginUtils-features</artifactId>
+				<classifier>features</classifier>
+				<type>xml</type>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openecomp.sdnc.core</groupId>
+				<artifactId>SliPluginUtils-provider</artifactId>
+				<version>${project.version}</version>
+				</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<modules>
+		<module>provider</module>
+		<module>features</module>
+		<module>installer</module>
+	</modules>
+</project>

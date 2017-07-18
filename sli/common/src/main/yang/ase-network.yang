@@ -1,0 +1,179 @@
+module ase {
+  namespace "att:ase";
+  prefix ase;
+  revision "2014-06-03" {
+    description "Example ASE Network Module";
+  }
+
+  container ase {
+      config true;
+      leaf ase-network-id{
+        type uint32;
+      }
+      leaf topology {
+        type string ; // check enum
+      }
+  }
+
+  container ase-port {
+      config true;
+      // is this really a list of cpe ports one for each  uni-ckt
+      leaf esm-name {
+		type string;
+      }
+      
+      leaf resource-emt-clli {
+      	type string;
+      }
+      
+      leaf resource-emt-ip-addr{
+		type string;
+      }
+      leaf port-action {
+		type string;
+      }
+      leaf profile  {
+		type string;
+      }
+      leaf port {
+		type string;
+      }
+      leaf state {
+		type string;
+      }
+      leaf resource-mode {
+		type string;
+      }
+      leaf speed {
+		type string;
+      }
+      leaf resource-lldp {
+		type string;
+      }
+      leaf  resource-mtu {
+		type string;
+      }
+      leaf resource-autoneg{
+		type string;
+      }
+      leaf  resource-twamp {
+		type string;
+      }
+      leaf resource-description {
+		type string;
+      }
+      leaf uni-circuit-id {
+      	type string;
+      }
+    } // ase-port container  
+
+    container ase-evc {
+//  Port contains a list of EVC
+//     EVCs are either point to point or multipoint (topology)
+//     EVCs are connected ? what ID is used to connected them ? (network-id) ?
+      config true;
+      leaf esm-name {	
+		type string;
+      }	
+	  leaf emt-ip-addr {
+		type string;
+      }	
+	  leaf evc-action {
+		type string;
+      }	
+	  leaf service-id {
+		type string;
+      }	
+
+	  leaf serv-type {
+		type string;
+      }	
+	  leaf evc-choice {
+		type string;
+      }	
+	  leaf uni-port {
+		type string;
+      }	
+	  leaf lag-port {
+		type string;
+      }	
+	  leaf mac-onoff {
+		type string;
+      }	
+
+	  leaf ppcos {
+		type string;
+      }	
+	  leaf cir {
+		type string;
+      }	
+	  leaf cbs {
+		type string;
+      }	
+	  leaf ebs {
+		type string;
+     }	
+	 leaf sgos {
+		type string;
+     }	
+// ipag Device Data
+	leaf pe {
+		type string;
+      }	
+	leaf unit {
+		type string;
+      }	
+	  leaf qinq {
+		type string;
+      }	
+	  leaf interface {
+		type string;
+      }	
+	  leaf evc-description {
+		type string;
+      }	
+	  leaf bandwidth {
+		type string;
+      }	
+	  leaf svlan {
+		type string;
+		description "Service VLAN is either outer tag or only tag depending on QinQ";
+      }	
+	  leaf cvlan  {
+		type string;
+		description "Customer VLAN is null if not QinQ";
+      }	
+	  leaf routing-instance {
+		type string;
+      }	
+	  leaf rd {
+		type string;
+      }	
+	  leaf rt {
+		type string;
+      }	
+	  leaf limit {
+		type string;
+      }	
+	  leaf label-block-size {
+		type string;
+      }	
+	  leaf site {
+		type string;
+      }	
+	  leaf int-mac-limit {
+		type string;
+      }	
+	  leaf sgos-grade {
+		type string;
+      }	
+	  leaf bum-rate {
+		type string;
+      }	
+      leaf uni-circuit-id {
+      	type string;
+      }
+    } // ase-evc container
+
+} // module ase-network 
+
