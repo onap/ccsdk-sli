@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.openecomp.sdnc.core</groupId>
+		<groupId>org.onap.ccsdk.sli.core</groupId>
 		<artifactId>filters</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
@@ -13,14 +13,14 @@
 	<properties>
 		<application.name>sdnc-filters</application.name>
 		<features.boot>sdnc-filters</features.boot>
-		<features.repositories>mvn:org.openecomp.sdnc.core/filters-features/${project.version}/xml/features</features.repositories>
+		<features.repositories>mvn:org.onap.ccsdk.sli.core/filters-features/${project.version}/xml/features</features.repositories>
 		<include.transitive.dependencies>false</include.transitive.dependencies>
 	</properties>
 
 	<dependencies>
 
 		<dependency>
-			<groupId>org.openecomp.sdnc.core</groupId>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>filters-features</artifactId>
 			<version>${project.version}</version>
 			<classifier>features</classifier>
@@ -34,7 +34,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.openecomp.sdnc.core</groupId>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>filters-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -98,7 +98,7 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-							<includeGroupIds>org.openecomp.sdnc</includeGroupIds>
+							<includeGroupIds>org.onap.ccsdk.sli</includeGroupIds>
 							<excludeArtifactIds>sli-common,sli-provider</excludeArtifactIds>
 							<scope>provided</scope>
 						</configuration>

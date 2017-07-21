@@ -26,7 +26,7 @@
     xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">
 
     <feature name='sdnc-filters' description="servlet filters" version='${project.version}'>
-	<bundle>mvn:org.openecomp.sdnc.core/filters-provider/${project.version}</bundle>
+	<bundle>mvn:org.onap.ccsdk.sli.core/filters-provider/${project.version}</bundle>
     </feature>
 
 </features>

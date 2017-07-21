@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>sliapi</artifactId>
-		<groupId>org.openecomp.sdnc.core</groupId>
+		<groupId>org.onap.ccsdk.sli.core</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>sliapi-features</artifactId>
@@ -12,17 +12,17 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.openecomp.sdnc.core</groupId>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>sliapi-model</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.openecomp.sdnc.core</groupId>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>sliapi-provider</artifactId>
 			<classifier>config</classifier>
 			<type>xml</type>
 		</dependency>
 		<dependency>
-			<groupId>org.openecomp.sdnc.core</groupId>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>sliapi-provider</artifactId>
 		</dependency>
 

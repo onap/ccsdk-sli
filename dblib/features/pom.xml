@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>dblib</artifactId>
-		<groupId>org.openecomp.sdnc.core</groupId>
+		<groupId>org.onap.ccsdk.sli.core</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>dblib-features</artifactId>
@@ -15,7 +15,7 @@
 
 
 		<dependency>
-			<groupId>org.openecomp.sdnc.core</groupId>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>dblib-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>

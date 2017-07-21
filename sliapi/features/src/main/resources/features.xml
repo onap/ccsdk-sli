@@ -31,9 +31,9 @@
         <!-- Most applications will have a dependency on the ODL MD-SAL Broker -->
         <feature version="${odl.mdsal.version}">odl-mdsal-broker</feature>
         <feature version="${sdnctl.sli.version}">sdnc-sli</feature>
-        <bundle>mvn:org.openecomp.sdnc.core/sliapi-model/${project.version}</bundle>
-        <bundle>mvn:org.openecomp.sdnc.core/sliapi-provider/${project.version}</bundle>
-        <configfile finalname="etc/opendaylight/karaf/200-sliapiprovider.xml">mvn:org.openecomp.sdnc.core/sliapi-provider/${project.version}/xml/config</configfile>
+        <bundle>mvn:org.onap.ccsdk.sli.core/sliapi-model/${project.version}</bundle>
+        <bundle>mvn:org.onap.ccsdk.sli.core/sliapi-provider/${project.version}</bundle>
+        <configfile finalname="etc/opendaylight/karaf/200-sliapiprovider.xml">mvn:org.onap.ccsdk.sli.core/sliapi-provider/${project.version}/xml/config</configfile>
     </feature>
 
 </features>

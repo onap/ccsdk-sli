@@ -29,9 +29,9 @@
     <feature name='sdnc-sli' description="sdnc-sli" version='${project.version}'>
 
         <feature version="${odl.mdsal.version}">odl-mdsal-broker</feature>
-        <bundle>mvn:org.openecomp.sdnc.core/sli-common/${project.version}</bundle>
-        <bundle>mvn:org.openecomp.sdnc.core/sli-provider/${project.version}</bundle>
-        <bundle>mvn:org.openecomp.sdnc.core/sli-recording/${project.version}</bundle>
+        <bundle>mvn:org.onap.ccsdk.sli.core/sli-common/${project.version}</bundle>
+        <bundle>mvn:org.onap.ccsdk.sli.core/sli-provider/${project.version}</bundle>
+        <bundle>mvn:org.onap.ccsdk.sli.core/sli-recording/${project.version}</bundle>
         <feature>sdnc-dblib</feature>
         <bundle>mvn:mysql/mysql-connector-java/${mysql.connector.version}</bundle>
     </feature>

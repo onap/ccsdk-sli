@@ -7,7 +7,7 @@
 
 	<parent>
 		<artifactId>sliPluginUtils</artifactId>
-		<groupId>org.openecomp.sdnc.core</groupId>
+		<groupId>org.onap.ccsdk.sli.core</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
@@ -15,7 +15,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.openecomp.sdnc.core</groupId>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>sliPluginUtils-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>sliapi</artifactId>
-		<groupId>org.openecomp.sdnc.core</groupId>
+		<groupId>org.onap.ccsdk.sli.core</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>sliapi-installer</artifactId>
@@ -12,14 +12,14 @@
 	<properties>
 		<application.name>sdnc-sliapi</application.name>
 		<features.boot>sdnc-sliapi</features.boot>
-		<features.repositories>mvn:org.openecomp.sdnc.core/sliapi-features/${project.version}/xml/features</features.repositories>
+		<features.repositories>mvn:org.onap.ccsdk.sli.core/sliapi-features/${project.version}/xml/features</features.repositories>
 		<include.transitive.dependencies>false</include.transitive.dependencies>
 	</properties>
 
 	<dependencies>
 
 		<dependency>
-			<groupId>org.openecomp.sdnc.core</groupId>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>sliapi-features</artifactId>
 			<version>${project.version}</version>
 			<classifier>features</classifier>
@@ -33,7 +33,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.openecomp.sdnc.core</groupId>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>sliapi-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -97,7 +97,7 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-							<includeGroupIds>org.openecomp.sdnc.core</includeGroupIds>
+							<includeGroupIds>org.onap.ccsdk.sli.core</includeGroupIds>
 							<excludeArtifactIds>sli-common,sli-provider,dblib-provider</excludeArtifactIds>
 							<scope>provided</scope>
 						</configuration>

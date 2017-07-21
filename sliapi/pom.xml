@@ -4,13 +4,13 @@
 
 
 	<parent>
-		<groupId>org.openecomp.sdnc.core</groupId>
+		<groupId>org.onap.ccsdk.sli.core</groupId>
 		<artifactId>sdnc-core</artifactId>
         	<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<packaging>pom</packaging>
-	<groupId>org.openecomp.sdnc.core</groupId>
+	<groupId>org.onap.ccsdk.sli.core</groupId>
 	<artifactId>sliapi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
@@ -23,7 +23,7 @@
 		<dependencies>
 
 			<dependency>
-				<groupId>org.openecomp.sdnc.core</groupId>
+				<groupId>org.onap.ccsdk.sli.core</groupId>
 				<artifactId>sliapi-features</artifactId>
 				<classifier>features</classifier>
 				<type>xml</type>
@@ -31,19 +31,19 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.openecomp.sdnc.core</groupId>
+				<groupId>org.onap.ccsdk.sli.core</groupId>
 				<artifactId>sliapi-model</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.openecomp.sdnc.core</groupId>
+				<groupId>org.onap.ccsdk.sli.core</groupId>
 				<artifactId>sliapi-provider</artifactId>
 				<version>${project.version}</version>
 				<classifier>config</classifier>
 				<type>xml</type>
 			</dependency>
 			<dependency>
-				<groupId>org.openecomp.sdnc.core</groupId>
+				<groupId>org.onap.ccsdk.sli.core</groupId>
 				<artifactId>sliapi-provider</artifactId>
 				<version>${project.version}</version>
 			</dependency>
