@@ -31,6 +31,16 @@
 		<tag>sli-1.1.0</tag>
 	</scm>
 	<distributionManagement>
+		<repository>
+			<id>ecomp-releases</id>
+			<name>onap-repository-releases</name>
+			<url>${onap.nexus.release-url}</url>
+		</repository>
+		<snapshotRepository>
+			<id>ecomp-snapshots</id>
+			<name>onap-repository-snapshots</name>
+			<url>${onap.nexus.snapshot-url}</url>
+		</snapshotRepository>
 		<site>
 			<id>ecomp-site</id>
 			<url>dav:${onap.nexus.url}/${sitePath}</url>
