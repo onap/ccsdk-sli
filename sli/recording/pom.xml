@@ -59,8 +59,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>org.openecomp.sdnc.sli.recording.RecordingActivator</Bundle-Activator>
-						<Export-Package>org.openecomp.sdnc.sli.recording;version=${project.version}</Export-Package>
+						<Bundle-Activator>org.onap.ccsdk.sli.core.sli.recording.RecordingActivator</Bundle-Activator>
+						<Export-Package>org.onap.ccsdk.sli.core.sli.recording;version=${project.version}</Export-Package>
 						<Import-Package>*</Import-Package>
 						<Embed-Transitive>true</Embed-Transitive>
 					</instructions>

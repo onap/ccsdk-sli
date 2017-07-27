@@ -63,12 +63,9 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>org.openecomp.sdnc.sli.resource.dblib</Bundle-SymbolicName>
-						<Bundle-Activator>org.openecomp.sdnc.sli.resource.dblib.DBLIBResourceActivator</Bundle-Activator>
-						<Export-Package>org.openecomp.sdnc.sli.resource.dblib;version=${project.version}</Export-Package>
-						<!--
-						<Import-Package>org.openecomp.sdnc.sli.*,org.osgi.framework.*,org.slf4j.*,com.mysql.jdbc.*,javax.sql.*,org.apache.tomcat.*</Import-Package>
-						-->
+						<Bundle-SymbolicName>org.onap.ccsdk.sli.core.dblib</Bundle-SymbolicName>
+						<Bundle-Activator>org.onap.ccsdk.sli.core.dblib.DBLIBResourceActivator</Bundle-Activator>
+						<Export-Package>org.onap.ccsdk.sli.core.dblib;version=${project.version}</Export-Package>
 						<Import-Package>*</Import-Package>
 						<Embed-Transitive>true</Embed-Transitive>
 					</instructions>

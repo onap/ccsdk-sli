@@ -57,7 +57,7 @@
 		<module>installer</module>
 	</modules>
 	<organization>
-		<name>openECOMP</name>
+		<name>ONAP</name>
 	</organization>
 	<version>0.0.1-SNAPSHOT</version>
 

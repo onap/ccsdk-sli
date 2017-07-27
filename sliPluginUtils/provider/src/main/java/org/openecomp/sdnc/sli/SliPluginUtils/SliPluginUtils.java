@@ -1,9 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * openECOMP : SDN-C
+ * ONAP : CCSDK
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 						reserved.
+ * Copyright (C) 2017 ONAP
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,9 +35,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openecomp.sdnc.sli.SvcLogicContext;
-import org.openecomp.sdnc.sli.SvcLogicException;
-import org.openecomp.sdnc.sli.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * A utility class used to streamline the interface between Java plugins,
  * the Service Logic Context, and Directed Graphs.
  * @version 7.0.1
- * @see org.openecomp.sdnc.sli.SvcLogicContext
+ * @see org.onap.ccsdk.sli.core.sli.SvcLogicContext
  */
 public class SliPluginUtils implements SvcLogicJavaPlugin {
 	public enum LogLevel {

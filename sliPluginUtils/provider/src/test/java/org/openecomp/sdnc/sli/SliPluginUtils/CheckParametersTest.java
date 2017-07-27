@@ -1,9 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * openECOMP : SDN-C
+ * ONAP : CCSDK
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 						reserved.
+ * Copyright (C) 2017 ONAP
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.openecomp.sdnc.sli.SvcLogicContext;
-import org.openecomp.sdnc.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,9 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * openECOMP : SDN-C
+ * ONAP : CCSDK
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 						reserved.
+ * Copyright (C) 2017 ONAP
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +27,11 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openecomp.sdnc.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 
 /**
  * A utility class used to manage list manipulation in the context memory.
- * @see org.openecomp.sdnc.sli.SvcLogicContext
+ * @see org.onap.ccsdk.sli.core.sli.SvcLogicContext
  */
 public class SvcLogicContextList {
     /**

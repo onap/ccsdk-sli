@@ -108,8 +108,8 @@
 					<includes>**/*.xsd</includes>
 					<archive>
 						<manifest>
-							<mainClass>org.openecomp.sdnc.sli.SvcLogicParser</mainClass>
-							<packageName>org.openecomp.sdnc.sli</packageName>
+							<mainClass>org.onap.ccsdk.sli.core.sli.SvcLogicParser</mainClass>
+							<packageName>org.onap.ccsdk.sli.core.sli</packageName>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 						</manifest>
 					</archive>
@@ -121,7 +121,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>org.openecomp.sdnc.sli;version=${project.version}</Export-Package>
+						<Export-Package>org.onap.ccsdk.sli.core.sli;version=${project.version}</Export-Package>
 						<Import-Package>*</Import-Package>
 						<Embed-Dependency>*;scope=compile;artifactId=commons-lang|commons-lang3</Embed-Dependency>
 						<Embed-Transitive>true</Embed-Transitive>

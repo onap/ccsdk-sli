@@ -72,16 +72,11 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>org.openecomp.sdnc.filters</Bundle-SymbolicName>
-						<Bundle-Activator>org.openecomp.sdnc.filters.Activator</Bundle-Activator>
-						<Export-Package>org.openecomp.sdnc.filters</Export-Package>
-						<DynamicImport-Package>org.openecomp.sdnc.filters</DynamicImport-Package>
+						<Bundle-SymbolicName>org.onap.ccsdk.sli.core.filters</Bundle-SymbolicName>
+						<Bundle-Activator>org.onap.ccsdk.sli.core.filters.Activator</Bundle-Activator>
+						<Export-Package>org.onap.ccsdk.sli.core.filters</Export-Package>
+						<DynamicImport-Package>org.onap.ccsdk.sli.core.filters</DynamicImport-Package>
 						<Import-Package>javax.servlet.*,java.io.*,org.osgi.framework.*,org.slf4j.*,org.apache.commons.codec.binary.*</Import-Package>
-						<!--
-						<Import-Package>org.openecomp.sdnc.filters.filters.*,javax.servlet.*,java.io.*,org.osgi.framework.*,org.slf4j.*</Import-Package>
-						<Embed-Dependency>*;scope=compile|runtime;artifactId=!sli-common|org.eclipse.osgi|slf4j-api|jcl-over-slf4j|mysql-connector-java|xml-apis</Embed-Dependency>
-						<Import-Package>*</Import-Package>
-						-->
 						<Embed-Transitive>true</Embed-Transitive>
 					</instructions>
 				</configuration>
