@@ -2,7 +2,7 @@ module SLI-API {
 
     yang-version 1;
 
-    namespace "org:openecomp:sdnc:sliapi";
+    namespace "org:onap:ccsdk:sli:core:sliapi";
 
     prefix sample;
 

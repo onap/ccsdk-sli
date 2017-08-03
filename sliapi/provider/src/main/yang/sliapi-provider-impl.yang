@@ -1,7 +1,7 @@
 module sliapi-provider-impl {
 
     yang-version 1;
-    namespace "org:openecomp:sdnc:sliapi:provider:impl";
+    namespace "org:onap:ccsdk:sli:core:sliapi:provider:impl";
     prefix "sliapi-provider-impl";
 
     import config { prefix config; revision-date 2013-04-05; }

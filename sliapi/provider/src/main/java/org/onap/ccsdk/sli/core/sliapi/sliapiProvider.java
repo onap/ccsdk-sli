@@ -18,7 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.openecomp.sdnc.sliapi;
+package org.onap.ccsdk.sli.core.sliapi;
 
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -37,18 +37,18 @@ import org.opendaylight.controller.md.sal.dom.api.DOMDataWriteTransaction;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
 import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
-import org.opendaylight.yang.gen.v1.org.openecomp.sdnc.sliapi.rev161110.ExecuteGraphInput;
-import org.opendaylight.yang.gen.v1.org.openecomp.sdnc.sliapi.rev161110.ExecuteGraphInput.Mode;
-import org.opendaylight.yang.gen.v1.org.openecomp.sdnc.sliapi.rev161110.ExecuteGraphInputBuilder;
-import org.opendaylight.yang.gen.v1.org.openecomp.sdnc.sliapi.rev161110.ExecuteGraphOutput;
-import org.opendaylight.yang.gen.v1.org.openecomp.sdnc.sliapi.rev161110.ExecuteGraphOutputBuilder;
-import org.opendaylight.yang.gen.v1.org.openecomp.sdnc.sliapi.rev161110.HealthcheckOutput;
-import org.opendaylight.yang.gen.v1.org.openecomp.sdnc.sliapi.rev161110.HealthcheckOutputBuilder;
-import org.opendaylight.yang.gen.v1.org.openecomp.sdnc.sliapi.rev161110.SLIAPIService;
-import org.opendaylight.yang.gen.v1.org.openecomp.sdnc.sliapi.rev161110.TestResults;
-import org.opendaylight.yang.gen.v1.org.openecomp.sdnc.sliapi.rev161110.execute.graph.input.SliParameter;
-import org.opendaylight.yang.gen.v1.org.openecomp.sdnc.sliapi.rev161110.test.results.TestResult;
-import org.opendaylight.yang.gen.v1.org.openecomp.sdnc.sliapi.rev161110.test.results.TestResultBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput.Mode;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphOutput;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphOutputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.HealthcheckOutput;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.HealthcheckOutputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.SLIAPIService;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.TestResults;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.test.results.TestResult;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.test.results.TestResultBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
