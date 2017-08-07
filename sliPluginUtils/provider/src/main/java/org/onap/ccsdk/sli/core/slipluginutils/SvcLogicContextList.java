@@ -18,7 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.openecomp.sdnc.sli.SliPluginUtils;
+package org.onap.ccsdk.sli.core.slipluginutils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

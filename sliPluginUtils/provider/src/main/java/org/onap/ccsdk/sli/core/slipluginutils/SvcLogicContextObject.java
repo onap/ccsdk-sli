@@ -18,33 +18,10 @@
  * ============LICENSE_END=========================================================
  */
 
-/**
- *
- */
-package org.openecomp.sdnc.sli.SliPluginUtils.commondatastructures;
+package org.onap.ccsdk.sli.core.slipluginutils;
 
-/**
- * An enum found in many Yang models. It is commonly used as a
- * substitute for boolean.
- */
-public enum YesNo {
-    N, Y;
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 
-    /**
-     * Method overload for {@link #valueOf(String)} for the char primative
-     */
-    public static YesNo valueOf( final char name ) {
-        return YesNo.valueOf( Character.toString(name) );
-    }
-
-    /**
-     * Method overload for {@link #valueOf(String)} for the Character object
-     */
-    public static YesNo valueOf( final Character name ) {
-        if( name == null ) {
-            return null;
-        }
-
-        return YesNo.valueOf( name.toString() );
-    }
+public interface SvcLogicContextObject {
+	public void writeToContext( SvcLogicContext ctx, String root );
 }

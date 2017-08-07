@@ -24,4 +24,4 @@
 /**
  *
  */
-package org.openecomp.sdnc.sli.SliPluginUtils.commondatastructures;
+package org.onap.ccsdk.sli.core.slipluginutils.commondatastructures;

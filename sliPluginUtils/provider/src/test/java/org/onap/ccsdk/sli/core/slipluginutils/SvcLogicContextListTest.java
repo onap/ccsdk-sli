@@ -18,7 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.openecomp.sdnc.sli.SliPluginUtils;
+package org.onap.ccsdk.sli.core.slipluginutils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -28,6 +28,7 @@ import java.util.HashMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.slipluginutils.SvcLogicContextList;
 
 public class SvcLogicContextListTest {
 	//private static final Logger LOG = LoggerFactory.getLogger(SvcLogicContextTest.class);

@@ -18,7 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.openecomp.sdnc.sli.SliPluginUtils;
+package org.onap.ccsdk.sli.core.slipluginutils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,8 +28,6 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openecomp.sdnc.sli.SliPluginUtils.DME2;
-import org.openecomp.sdnc.sli.SliPluginUtils.SliPluginUtilsActivator;
 
 public class Dme2Test {
 

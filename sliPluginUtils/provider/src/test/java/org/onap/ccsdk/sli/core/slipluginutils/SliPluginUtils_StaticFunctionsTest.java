@@ -18,7 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.openecomp.sdnc.sli.SliPluginUtils;
+package org.onap.ccsdk.sli.core.slipluginutils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,6 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.slipluginutils.SliPluginUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
