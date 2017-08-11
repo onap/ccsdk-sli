@@ -7,9 +7,9 @@
 ~~ Licensed under the Apache License, Version 2.0 (the "License");
 ~~ you may not use this file except in compliance with the License.
 ~~ You may obtain a copy of the License at
-~~ 
+~~
 ~~      http://www.apache.org/licenses/LICENSE-2.0
-~~ 
+~~
 ~~ Unless required by applicable law or agreed to in writing, software
 ~~ distributed under the License is distributed on an "AS IS" BASIS,
 ~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -103,7 +103,7 @@ Supported node types
 
 +-----------------+
 <block>
-  <record plugin="org.openecomp.sdnc.sli.recording.FileRecorder">
+  <record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
     <parameter name="file" value="/tmp/sample_r1.log" />
     <parameter name="field1" value="__TIMESTAMP__"/>
     <parameter name="field2" value="RESERVED"/>
@@ -187,7 +187,7 @@ Supported node types
 
 +-------------------+
 <for index="i" start="0" end="`$service-data.universal-cpe-ft.l2-switch-interfaces_length`">
-   <record plugin="org.openecomp.sdnc.sli.recording.Slf4jRecorder">
+   <record plugin="org.onap.ccsdk.sli.core.sli.recording.Slf4jRecorder">
       <parameter name="logger" value="message-log"/>
       <parameter name="level" value="info"/>
       <parameter name="field1" value="`'current l2-switch-interface name is ' + $service-data.universal-cpe-ft.l2-switch-interfaces[$i].name`"/>
@@ -287,7 +287,7 @@ Supported node types
 +-------------------+
 <switch test="$uni-cir-units">
   <outcome value="Mbps">
-    <reserve plugin="org.openecomp.sdnc.sli.resource.samplesvc.SampleServiceResource"
+    <reserve plugin="org.onap.ccsdk.sli.adaptors.samplesvc.SampleServiceResource"
              resource="ase-port"
              key="resource-emt-clli == $edge-device-clli and speed >= $uni-cir-value"
              pfx="asePort">
@@ -306,7 +306,7 @@ Supported node types
     </reserve>
   </outcome>
   <outcome value="Gbps">
-    <reserve plugin="org.openecomp.sdnc.sli.resource.samplesvc.SampleServiceResource"
+    <reserve plugin="org.onap.ccsdk.sli.adaptors.samplesvc.SampleServiceResource"
              resource="ase-port"
              key="resource-emt-clli == $edge-device-clli and speed >= $uni-cir-value*1000"
              pfx="asePort">
@@ -366,7 +366,7 @@ Supported node types
 *** Example
 
 +-------------------+
-<configure adaptor="org.openecomp.sdnc.sli.adaptor.emt.EmtAdaptor"
+<configure adaptor="org.onap.ccsdk.sli.adaptors.emt.EmtAdaptor"
            key="$uni-circuit-id" activate="true">
   <parameter name="circuit.id" value="$uni-circuit-id" />
   <parameter name="subscriber.name" value="$subscriber-name" />
@@ -381,7 +381,7 @@ Supported node types
   <parameter name="mtu" value="$asePort.resource-mtu" />
   <outcome value="success">
     <block>
-      <record plugin="org.openecomp.sdnc.sli.recording.FileRecorder">
+      <record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
         <parameter name="file" value="/tmp/sample_r1.log" />
         <parameter name="field1" value="__TIMESTAMP__"/>
         <parameter name="field2" value="ACTIVE"/>
@@ -442,7 +442,7 @@ Supported node types
 *** Example
 
 +-------------------+
-<execute plugin="org.openecomp.sdnc.sli.plugin.HelloWorld"
+<execute plugin="org.onap.ccsdk.sli.plugins.HelloWorld"
            method="log">
   <parameter name="message" value="Hello, world!" />
   <outcome value="success">
@@ -502,7 +502,7 @@ Supported node types
 *** Example
 
 +-------------------+
-<record plugin="org.openecomp.sdnc.sli.recording.FileRecorder">
+<record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
   <parameter name="file" value="/tmp/sample_r1.log" />
   <parameter name="field1" value="__TIMESTAMP__"/>
   <parameter name="field2" value="ACTIVE"/>
@@ -543,7 +543,7 @@ Supported node types
 *** Example
 
 +-------------------+
-<delete plugin="org.openecomp.sdnc.sli.resource.samplesvc.SampleServiceResource"
+<delete plugin="org.onap.ccsdk.sli.adaptors.samplesvc.SampleServiceResource"
         resource="ase-port"
         key="uni_circuit_id == $uni-circuit-id">
   <outcome value="true">
@@ -589,7 +589,7 @@ Supported node types
 *** Example
 
 +-------------------+
-<exists plugin="org.openecomp.sdnc.sli.resource.samplesvc.SampleServiceResource"
+<exists plugin="org.onap.ccsdk.sli.adaptors.samplesvc.SampleServiceResource"
         resource="ase-port"
         key="uni_circuit_id == $uni-circuit-id">
   <outcome value="true">
@@ -644,7 +644,7 @@ Supported node types
 *** Example
 
 +-------------------+
-<get-resource plugin="org.openecomp.sdnc.sli.resource.samplesvc.SampleServiceResource"
+<get-resource plugin="org.onap.ccsdk.sli.adaptors.samplesvc.SampleServiceResource"
               resource="ase-port"
               key="uni_circuit_id == $uni-circuit-id"
               pfx="current-port">
@@ -695,7 +695,7 @@ Supported node types
 *** Example
 
 +-------------------+
-<is-available plugin="org.openecomp.sdnc.sli.resource.samplesvc.SampleServiceResource"
+<is-available plugin="org.onap.ccsdk.sli.adaptors.samplesvc.SampleServiceResource"
               resource="ase-port"
               key="resource-emt-clli == $edge-device-clli and speed >= $uni-cir-value">
   <outcome value="true">
@@ -739,7 +739,7 @@ Supported node types
 *** Example
 
 +-------------------+
-<notify plugin="org.openecomp.sdnc.sli.resource.samplesvc.SampleServiceResource"
+<notify plugin="org.onap.ccsdk.sli.adaptors.samplesvc.SampleServiceResource"
               resource="ase-port"
               action="ADD">
   <outcome value="success">
@@ -785,7 +785,7 @@ Supported node types
 *** Example
 
 +-------------------+
-<release plugin="org.openecomp.sdnc.sli.resource.samplesvc.SampleServiceResource"
+<release plugin="org.onap.ccsdk.sli.adaptors.SampleServiceResource"
          resource="ase-port"
          key="uni_circuit_id == $uni-circuit-id">
   <outcome value="success">
@@ -836,7 +836,7 @@ Supported node types
 *** Example
 
 +-------------------+
-<reserve plugin="org.openecomp.sdnc.sli.resource.samplesvc.SampleServiceResource"
+<reserve plugin="org.onap.ccsdk.sli.adaptors.samplesvc.SampleServiceResource"
          resource="ase-port"
          key="resource-emt-clli == $edge-device-clli and speed >= $uni-cir-value"
          select="min(speed)">
