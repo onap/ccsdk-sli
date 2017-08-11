@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,7 +49,7 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 	private String dbUser = null;
 	private String dbPasswd = null;
 	private String dbDriver = null;
-        
+
 	private Connection dbConn;
 	private PreparedStatement hasActiveGraphStmt = null;
 	private PreparedStatement hasVersionGraphStmt = null;
@@ -57,22 +57,22 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 	private PreparedStatement fetchVersionGraphStmt = null;
 	private PreparedStatement storeGraphStmt = null;
 	private PreparedStatement deleteGraphStmt = null;
-	
+
 	private PreparedStatement deactivateStmt = null;
 	private PreparedStatement activateStmt = null;
-	
+
 	private PreparedStatement registerNodeStmt = null;
 	private PreparedStatement unregisterNodeStmt = null;
 	private PreparedStatement validateNodeStmt = null;
-        	
+
 	private void getConnection() throws ConfigurationException
 	{
 
 		Properties jdbcProps = new Properties();
-		
+
 		jdbcProps.setProperty("user", dbUser);
 		jdbcProps.setProperty("password", dbPasswd);
-		
+
 		try {
 			Driver dvr = new com.mysql.jdbc.Driver();
 			if (dvr.acceptsURL(dbUrl))
@@ -88,8 +88,8 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 
 
 		}
-		
-		
+
+
 		try
 		{
 			this.dbConn = DriverManager.getConnection(dbUrl, jdbcProps);
@@ -97,17 +97,17 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		catch (Exception e)
 		{
 			throw new ConfigurationException("failed to get database connection ["+dbUrl+"]", e);
-		}	
-		
+		}
+
 	}
-	
+
 	private void createTable() throws ConfigurationException
 	{
 
 
 		DatabaseMetaData dbm = null;
-		
-		
+
+
 		try {
 			dbm = dbConn.getMetaData();
 		} catch (SQLException e) {
@@ -164,9 +164,9 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		{
 			throw new ConfigurationException("could not create SVC_LOGIC table", e);
 		}
-		
+
 		// See if NODE_TYPES table exists and, if not, create it
-		
+
 		try
 		{
 
@@ -211,14 +211,14 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 			throw new ConfigurationException("could not create SVC_LOGIC table", e);
 		}
 	}
-	
+
 	private void prepStatements() throws ConfigurationException
 	{
 
 		// Prepare statements
 		String hasVersionGraphSql = "SELECT count(*) FROM "+dbName+".SVC_LOGIC"
 				+ " WHERE module = ? AND rpc = ? AND mode = ? AND version = ?";
-		
+
 		try
 		{
 			hasVersionGraphStmt = dbConn.prepareStatement(hasVersionGraphSql);
@@ -226,12 +226,12 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		catch (Exception e)
 		{
 			throw new ConfigurationException("could not prepare statement "+hasVersionGraphSql, e);
-			
+
 		}
-		
+
 		String hasActiveGraphSql = "SELECT count(*) FROM "+dbName+".SVC_LOGIC"
 				+ " WHERE module = ? AND rpc = ? AND mode = ? AND active = 'Y'";
-		
+
 		try
 		{
 			hasActiveGraphStmt = dbConn.prepareStatement(hasActiveGraphSql);
@@ -239,12 +239,12 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		catch (Exception e)
 		{
 			throw new ConfigurationException("could not prepare statement "+hasVersionGraphSql, e);
-			
+
 		}
-		
+
 		String fetchVersionGraphSql = "SELECT graph FROM "+dbName+".SVC_LOGIC"
 				+ " WHERE module = ? AND rpc = ? AND mode = ? AND version = ?";
-		
+
 		try
 		{
 			fetchVersionGraphStmt = dbConn.prepareStatement(fetchVersionGraphSql);
@@ -252,12 +252,12 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		catch (Exception e)
 		{
 			throw new ConfigurationException("could not prepare statement "+fetchVersionGraphSql, e);
-			
+
 		}
-		
+
 		String fetchActiveGraphSql = "SELECT graph FROM "+dbName+".SVC_LOGIC"
 				+ " WHERE module = ? AND rpc = ? AND mode = ? AND active = 'Y'";
-		
+
 		try
 		{
 			fetchActiveGraphStmt = dbConn.prepareStatement(fetchActiveGraphSql);
@@ -265,12 +265,12 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		catch (Exception e)
 		{
 			throw new ConfigurationException("could not prepare statement "+fetchVersionGraphSql, e);
-			
+
 		}
-		
+
 		String storeGraphSql = "INSERT INTO "+dbName+".SVC_LOGIC (module, rpc, version, mode, active, graph)"
 				+ " VALUES(?, ?, ?, ?, ?, ?)";
-		
+
 		try
 		{
 			storeGraphStmt = dbConn.prepareStatement(storeGraphSql);
@@ -279,9 +279,9 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		{
 			throw new ConfigurationException("could not prepare statement "+storeGraphSql, e);
 		}
-		
+
 		String deleteGraphSql = "DELETE FROM "+dbName+".SVC_LOGIC WHERE module = ? AND rpc = ? AND version = ? AND mode = ?";
-		
+
 		try
 		{
 			deleteGraphStmt = dbConn.prepareStatement(deleteGraphSql);
@@ -290,9 +290,9 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		{
 			throw new ConfigurationException("could not prepare statement "+deleteGraphSql, e);
 		}
-		
+
 		String deactivateSql = "UPDATE "+dbName+".SVC_LOGIC SET active = 'N' WHERE module = ? AND rpc = ? AND mode = ?";
-		
+
 		try
 		{
 			deactivateStmt = dbConn.prepareStatement(deactivateSql);
@@ -301,9 +301,9 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		{
 			throw new ConfigurationException("could not prepare statement "+deactivateSql, e);
 		}
-		
+
 		String activateSql = "UPDATE "+dbName+".SVC_LOGIC SET active = 'Y' WHERE module = ? AND rpc = ? AND version = ? AND mode = ?";
-		
+
 		try
 		{
 			activateStmt = dbConn.prepareStatement(activateSql);
@@ -312,7 +312,7 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		{
 			throw new ConfigurationException("could not prepare statement "+activateSql, e);
 		}
-		
+
 		String registerNodeSql = "INSERT INTO "+dbName+".NODE_TYPES (nodetype) VALUES(?)";
 		try
 		{
@@ -322,7 +322,7 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		{
 			throw new ConfigurationException("could not prepare statement "+registerNodeSql, e);
 		}
-		
+
 		String unregisterNodeSql = "DELETE FROM "+dbName+".NODE_TYPES WHERE nodetype = ?";
 		try
 		{
@@ -332,7 +332,7 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		{
 			throw new ConfigurationException("could not prepare statement "+unregisterNodeSql, e);
 		}
-		
+
 		String validateNodeSql = "SELECT count(*) FROM "+dbName+".NODE_TYPES WHERE nodetype = ?";
 		try
 		{
@@ -343,12 +343,12 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 			throw new ConfigurationException("could not prepare statement "+validateNodeSql, e);
 		}
 	}
-	
+
 	private void initDbResources() throws ConfigurationException
 	{
 		if ((dbDriver != null) && (dbDriver.length() > 0))
 		{
-		
+
 		    try
 		    {
 			    Class.forName(dbDriver);
@@ -362,48 +362,48 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		createTable();
 		prepStatements();
 	}
-	
+
 
 	public void init(Properties props) throws ConfigurationException {
-		
-		
-		dbUrl = props.getProperty("org.openecomp.sdnc.sli.jdbc.url");
+
+
+		dbUrl = props.getProperty("org.onap.ccsdk.sli.jdbc.url");
 		if ((dbUrl == null) || (dbUrl.length() == 0))
 		{
-			throw new ConfigurationException("property org.openecomp.sdnc.sli.jdbc.url unset");
+			throw new ConfigurationException("property org.onap.ccsdk.sli.jdbc.url unset");
 		}
-		
-		dbName = props.getProperty("org.openecomp.sdnc.sli.jdbc.database");
+
+		dbName = props.getProperty("org.onap.ccsdk.sli.jdbc.database");
 		if ((dbName == null) || (dbName.length() == 0))
 		{
-			throw new ConfigurationException("property org.openecomp.sdnc.sli.jdbc.database unset");
+			throw new ConfigurationException("property org.onap.ccsdk.sli.jdbc.database unset");
 		}
-		
-		dbUser = props.getProperty("org.openecomp.sdnc.sli.jdbc.user");
+
+		dbUser = props.getProperty("org.onap.ccsdk.sli.jdbc.user");
 		if ((dbUser == null) || (dbUser.length() == 0))
 		{
-			throw new ConfigurationException("property org.openecomp.sdnc.sli.jdbc.user unset");
+			throw new ConfigurationException("property org.onap.ccsdk.sli.jdbc.user unset");
 		}
 
-		
-		dbPasswd = props.getProperty("org.openecomp.sdnc.sli.jdbc.password");
+
+		dbPasswd = props.getProperty("org.onap.ccsdk.sli.jdbc.password");
 		if ((dbPasswd == null) || (dbPasswd.length() == 0))
 		{
-			throw new ConfigurationException("property org.openecomp.sdnc.sli.jdbc.password unset");
+			throw new ConfigurationException("property org.onap.ccsdk.sli.jdbc.password unset");
 		}
-		
-		dbDriver = props.getProperty("org.openecomp.sdnc.sli.jdbc.driver");
 
-			
+		dbDriver = props.getProperty("org.onap.ccsdk.sli.jdbc.driver");
+
+
 		initDbResources();
-		
+
 	}
-	
+
 	private boolean isDbConnValid()
 	{
 
 		boolean isValid = false;
-		
+
 		try
 		{
 			if (dbConn != null)
@@ -413,31 +413,31 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		}
 		catch (SQLException e)
 		{}
-		
+
 		return(isValid);
 	}
 public boolean hasGraph(String module, String rpc, String version, String mode) throws SvcLogicException {
 
 
-		
-		
+
+
 		if (!isDbConnValid())
 		{
-			
+
 			// Try reinitializing
 			initDbResources();
-			
+
 			if (!isDbConnValid())
 			{
 				throw new ConfigurationException("no jdbc connection");
 			}
 		}
 
-		
-		
+
+
 		boolean retval = false;
 		ResultSet results = null;
-		
+
 		PreparedStatement hasGraphStmt = null;
 		if (version == null)
 		{
@@ -447,16 +447,16 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 		{
 			hasGraphStmt = hasVersionGraphStmt;
 		}
-		
 
-		
+
+
 		try
 		{
 			hasGraphStmt.setString(1, module);
 			hasGraphStmt.setString(2,  rpc);
 			hasGraphStmt.setString(3,  mode);
 
-			
+
 			if (version != null)
 			{
 				hasGraphStmt.setString(4, version);
@@ -466,11 +466,11 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 			results = hasGraphStmt.executeQuery();
 			dbConn.commit();
 			dbConn.setAutoCommit(oldAutoCommit);
-			
+
 			if (results.next())
 			{
 				int cnt = results.getInt(1);
-				
+
 				if (cnt > 0)
 				{
 					retval = true;
@@ -488,43 +488,43 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 			{
 				try
 				{
-					
+
 					results.close();
 				}
 				catch (SQLException x)
 				{}
 			}
-			
+
 		}
-		
-		
+
+
 		return(retval);
-		
-		
+
+
 	}
 
 	public SvcLogicGraph fetch(String module, String rpc, String version, String mode) throws SvcLogicException {
 
 
-		
-		
+
+
 		if (!isDbConnValid())
 		{
-			
+
 			// Try reinitializing
 			initDbResources();
-			
+
 			if (!isDbConnValid())
 			{
 				throw new ConfigurationException("no jdbc connection");
 			}
 		}
 
-		
-		
+
+
 		SvcLogicGraph retval = null;
 		ResultSet results = null;
-		
+
 		PreparedStatement fetchGraphStmt = null;
 		if (version == null)
 		{
@@ -540,7 +540,7 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 			fetchGraphStmt.setString(2,  rpc);
 			fetchGraphStmt.setString(3,  mode);
 
-			
+
 			if (version != null)
 			{
 				fetchGraphStmt.setString(4, version);
@@ -550,16 +550,16 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 			results = fetchGraphStmt.executeQuery();
 			dbConn.commit();
 			dbConn.setAutoCommit(oldAutoCommit);
-			
+
 			if (results.next())
 			{
 				Blob graphBlob = results.getBlob("graph");
-				
+
 				ObjectInputStream gStream = new ObjectInputStream(graphBlob.getBinaryStream());
-				
+
 				Object graphObj = gStream.readObject();
 				gStream.close();
-				
+
 				if (graphObj instanceof SvcLogicGraph)
 				{
 					retval = (SvcLogicGraph) graphObj;
@@ -567,9 +567,9 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 				else
 				{
 					throw new ConfigurationException("invalid type for graph ("+graphObj.getClass().getName());
-					
+
 				}
-				
+
 			}
 			else
 			{
@@ -591,24 +591,24 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 				catch (SQLException x)
 				{}
 			}
-			
+
 		}
-		
-		
+
+
 		return(retval);
-		
-		
+
+
 	}
 
 	public void store(SvcLogicGraph graph) throws SvcLogicException {
-		
-		
+
+
 		if (!isDbConnValid())
 		{
-			
+
 			// Try reinitializing
 			initDbResources();
-			
+
 			if (!isDbConnValid())
 			{
 				throw new ConfigurationException("no jdbc connection");
@@ -619,20 +619,20 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 		{
 			throw new SvcLogicException("graph cannot be null");
 		}
-		
+
 		byte[] graphBytes = null;
-		
+
 		ByteArrayOutputStream byteStr = null;
 		ObjectOutputStream goutStr = null;
-		
+
 		try
 		{
 			byteStr = new ByteArrayOutputStream();
 			goutStr = new ObjectOutputStream(byteStr);
 			goutStr.writeObject(graph);
-			
+
 			graphBytes = byteStr.toByteArray();
-			
+
 		}
 		catch (Exception e)
 		{
@@ -640,33 +640,33 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 		}
 		finally
 		{
-			
+
 			if (goutStr != null)
 			{
 				try {
 					goutStr.close();
 				} catch (IOException e) {
-	
+
 				}
 			}
-			
+
 			if (byteStr != null)
 			{
 				try {
 					byteStr.close();
 				} catch (IOException e) {
-	
+
 				}
 			}
 		}
-		
-		
+
+
 		// If object already stored in database, delete it
 		if (hasGraph(graph.getModule(), graph.getRpc(), graph.getVersion(), graph.getMode()))
 		{
 			delete(graph.getModule(), graph.getRpc(), graph.getVersion(), graph.getMode());
 		}
-		
+
 		try
 		{
 			boolean oldAutoCommit = dbConn.getAutoCommit();
@@ -677,26 +677,26 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 			storeGraphStmt.setString(4, graph.getMode());
 			storeGraphStmt.setString(5, "N");
 			storeGraphStmt.setBlob(6,  new ByteArrayInputStream(graphBytes));
-			
+
 			storeGraphStmt.executeUpdate();
 			dbConn.commit();
-			
+
 			dbConn.setAutoCommit(oldAutoCommit);
 		}
 		catch (Exception e)
 		{
 			throw new SvcLogicException("Could not write object to database", e);
-		}	
+		}
 	}
-	
+
 	public void delete(String module, String rpc, String version, String mode) throws SvcLogicException
-	{		
+	{
 		if (!isDbConnValid())
 		{
-			
+
 			// Try reinitializing
 			initDbResources();
-			
+
 			if (!isDbConnValid())
 			{
 				throw new ConfigurationException("no jdbc connection");
@@ -712,7 +712,7 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 			deleteGraphStmt.setString(3, version);
 			deleteGraphStmt.setString(4,  mode);
 
-			
+
 			deleteGraphStmt.executeUpdate();
 			dbConn.commit();
 			dbConn.setAutoCommit(oldAutoCommit);
@@ -720,7 +720,7 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 		catch (Exception e)
 		{
 			throw new SvcLogicException("Could not delete object from database", e);
-		}	
+		}
 	}
 
 	public void activate(SvcLogicGraph graph) throws SvcLogicException
@@ -728,26 +728,26 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 		try
 		{
 			boolean oldAutoCommit = dbConn.getAutoCommit();
-			
+
 			dbConn.setAutoCommit(false);
-			
+
 			// Deactivate any current active version
 			deactivateStmt.setString(1,  graph.getModule());
 			deactivateStmt.setString(2, graph.getRpc());
 			deactivateStmt.setString(3, graph.getMode());
 			deactivateStmt.executeUpdate();
-			
+
 			// Activate this version
 			activateStmt.setString(1,  graph.getModule());
 			activateStmt.setString(2, graph.getRpc());
 			activateStmt.setString(3, graph.getVersion());
 			activateStmt.setString(4, graph.getMode());
 			activateStmt.executeUpdate();
-			
+
 			dbConn.commit();
-			
+
 			dbConn.setAutoCommit(oldAutoCommit);
-			
+
 		}
 		catch (Exception e)
 		{
@@ -757,24 +757,24 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 
 	@Override
 	public void registerNodeType(String nodeType) throws SvcLogicException {
-		
+
 		if (isValidNodeType(nodeType))
 		{
 			return;
 		}
-		
+
 		if (!isDbConnValid())
 		{
-			
+
 			// Try reinitializing
 			initDbResources();
-			
+
 			if (!isDbConnValid())
 			{
 				throw new ConfigurationException("no jdbc connection");
 			}
 		}
-		
+
 		try
 		{
 			boolean oldAutoCommit = dbConn.getAutoCommit();
@@ -788,29 +788,29 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 		{
 			throw new SvcLogicException("Could not add node type to database", e);
 		}
-		
+
 	}
 
 	@Override
 	public void unregisterNodeType(String nodeType) throws SvcLogicException {
-		
+
 		if (!isValidNodeType(nodeType))
 		{
 			return;
 		}
-		
+
 		if (!isDbConnValid())
 		{
-			
+
 			// Try reinitializing
 			initDbResources();
-			
+
 			if (!isDbConnValid())
 			{
 				throw new ConfigurationException("no jdbc connection");
 			}
 		}
-		
+
 		try
 		{
 			boolean oldAutoCommit = dbConn.getAutoCommit();
@@ -824,50 +824,50 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 		{
 			throw new SvcLogicException("Could not delete node type from database", e);
 		}
-		
+
 	}
 
 	@Override
 	public boolean isValidNodeType(String nodeType) throws SvcLogicException {
-		
+
 		boolean isValid = false;
-		
+
 		if (!isDbConnValid())
 		{
-			
+
 			// Try reinitializing
 			initDbResources();
-			
+
 			if (!isDbConnValid())
 			{
 				throw new ConfigurationException("no jdbc connection");
 			}
 		}
-		
+
 		ResultSet results = null;
 		try
 		{
 			validateNodeStmt.setString(1, nodeType);
-			
+
 			boolean oldAutoCommit = dbConn.getAutoCommit();
 			dbConn.setAutoCommit(false);
 			results = validateNodeStmt.executeQuery();
 			dbConn.commit();
 			dbConn.setAutoCommit(oldAutoCommit);
-			
+
 			if (results != null)
 			{
 				if (results.next())
 				{
 					int cnt = results.getInt(1);
-					
+
 					if (cnt > 0)
 					{
 						isValid = true;
 					}
 				}
 			}
-			
+
 		}
 		catch (Exception e)
 		{
@@ -884,11 +884,11 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 				catch (SQLException x)
 				{}
 			}
-			
+
 		}
-		
+
 		return(isValid);
 	}
-	
-	
+
+
 }

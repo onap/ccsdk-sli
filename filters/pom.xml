@@ -71,7 +71,7 @@
         </pluginManagement>
     </build>
     <organization>
-        <name>OpenECOMP</name>
+        <name>ONAP</name>
     </organization>
   <modules>
     <module>provider</module>

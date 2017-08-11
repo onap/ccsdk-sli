@@ -18,16 +18,16 @@
   -->
 
 
-<service-logic xmlns="http://www.openecomp.org/sdnc/svclogic"
+<service-logic xmlns="http://www.onap.org/sdnc/svclogic"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.openecomp.org/sdnc/svclogic ./svclogic.xsd"
+    xsi:schemaLocation="http://www.onap.org/sdnc/svclogic ./svclogic.xsd"
     module="ase" version="1.0.0">
 
     <!-- Reserve a port. Returns uni-circuit-id of reserved ase-port -->
     <method rpc="ase-port-reserve" mode="sync">
         <switch test="$uni-cir-units">
             <outcome value="Mbps">
-                <reserve plugin="org.openecomp.sdnc.sli.resource.sample.SampleResource"
+                <reserve plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
                     resource="ase-port"
                     key="resource-emt-clli == $edge-device-clli and speed >= $uni-cir-value"
                     pfx="asePort">
@@ -35,7 +35,7 @@
 
                     <outcome value="success">
                         <block>
-                            <record plugin="org.openecomp.sdnc.sli.recording.FileRecorder">
+                            <record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
                                 <parameter name="file" value="/tmp/sample_r1.log" />
                                 <parameter name="field1" value="__TIMESTAMP__"/>
                                 <parameter name="field2" value="RESERVED"/>
@@ -66,7 +66,7 @@
                 </reserve>
             </outcome>
             <outcome value="Gbps">
-                <reserve plugin="org.openecomp.sdnc.sli.resource.sample.SampleResource"
+                <reserve plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
                     resource="ase-port"
                     key="resource-emt-clli == $edge-device-clli and speed >= 1000 * $uni-cir-value"
                     pfx="asePort">
@@ -74,7 +74,7 @@
 
                     <outcome value="success">
                         <block>
-                            <record plugin="org.openecomp.sdnc.sli.recording.FileRecorder">
+                            <record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
                                 <parameter name="file" value="/tmp/sample_r1.log" />
                                 <parameter name="field1" value="__TIMESTAMP__"/>
                                 <parameter name="field2" value="RESERVED"/>
@@ -115,11 +115,11 @@
         then configures it on device -->
     <method rpc="ase-port-activate-request" mode="sync">
 
-        <allocate plugin="org.openecomp.sdnc.sli.resource.sample.SampleResource"
+        <allocate plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
             resource="ase-port" key="uni-circuit-id == $uni-circuit-id" pfx="asePort">
 
             <outcome value="success">
-                <configure adaptor="org.openecomp.sdnc.sli.adaptor.emt.EmtAdaptor"
+                <configure adaptor="org.onap.ccsdk.sli.adaptors.emt.EmtAdaptor"
                     key="$uni-circuit-id" activate="true">
                     <parameter name="circuit.id" value="$uni-circuit-id" />
                     <parameter name="subscriber.name" value="$subscriber-name" />
@@ -134,7 +134,7 @@
                     <parameter name="mtu" value="$asePort.resource-mtu" />
                     <outcome value="success">
                         <block>
-                            <record plugin="org.openecomp.sdnc.sli.recording.FileRecorder">
+                            <record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
                                 <parameter name="file" value="/tmp/sample_r1.log" />
                                 <parameter name="field1" value="__TIMESTAMP__"/>
                                 <parameter name="field2" value="ACTIVE"/>
@@ -183,7 +183,7 @@
 
     <!-- Change provisioning w/o activation -->
     <method rpc="ase-change-port-prov-request" mode="sync">
-        <allocate plugin="org.openecomp.sdnc.sli.resource.sample.SampleResource"
+        <allocate plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
             resource="ase-port" key="uni-circuit-id == $uni-circuit-id" pfx="asePort">
 
             <outcome value="success">
@@ -214,7 +214,7 @@
     <!-- Release port -->
 
     <method rpc="ase-release-port-request" mode="sync">
-        <exists plugin="org.openecomp.sdnc.sli.resource.sample.SampleResource"
+        <exists plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
             resource="ase-evc" key="uni-circuit-id  == $uni-circuit-id">
 
             <outcome value="true">
@@ -225,11 +225,11 @@
                 </return>
             </outcome>
             <outcome value="false">
-                <release plugin="org.openecomp.sdnc.sli.resource.sample.SampleResource"
+                <release plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
                     resource="ase-port" key="uni-circuit-id == $uni-circuit-id">
                     <outcome value="success">
                         <block>
-                            <record plugin="org.openecomp.sdnc.sli.recording.FileRecorder">
+                            <record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
                                 <parameter name="file" value="/tmp/sample_r1.log" />
                                 <parameter name="field1" value="__TIMESTAMP__"/>
                                 <parameter name="field2" value="RELEASED"/>

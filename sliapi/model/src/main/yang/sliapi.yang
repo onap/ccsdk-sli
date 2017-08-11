@@ -8,7 +8,7 @@ module SLI-API {
 
     import ietf-inet-types { prefix "inet"; revision-date 2010-09-24; }
 
-    organization "openECOMP";
+    organization "ONAP";
 
     contact
         "Dan Timoney";

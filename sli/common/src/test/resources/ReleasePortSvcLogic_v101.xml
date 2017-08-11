@@ -18,14 +18,14 @@
   -->
 
 
-<service-logic xmlns="http://www.openecomp.org/sdnc/svclogic"
+<service-logic xmlns="http://www.onap.org/sdnc/svclogic"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.openecomp.org/sdnc/svclogic ./svclogic.xsd"
+    xsi:schemaLocation="http://www.onap.org/sdnc/svclogic ./svclogic.xsd"
     module="ase" version="1.0.1">
 
     <!-- Updated release port logic : deactivate the released port on the EMT -->
     <method rpc="ase-release-port-request" mode="sync">
-        <exists plugin="org.openecomp.sdnc.sli.resource.sample.SampleResource"
+        <exists plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
             resource="ase-evc" key="uni-circuit-id  == $uni-circuit-id">
 
             <outcome value="true">
@@ -36,15 +36,15 @@
                 </return>
             </outcome>
             <outcome value="false">
-                <release plugin="org.openecomp.sdnc.sli.resource.sample.SampleResource"
+                <release plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
                     resource="ase-port" key="uni-circuit-id == $uni-circuit-id">
                     <outcome value="success">
-                        <configure adaptor="org.openecomp.sdnc.sli.adaptor.emt.EmtAdaptor"
+                        <configure adaptor="org.onap.ccsdk.sli.adaptors.emt.EmtAdaptor"
                             key="$uni-circuit-id" activate="false">
 
                             <outcome value="success">
                                 <block>
-                                    <record plugin="org.openecomp.sdnc.sli.recording.FileRecorder">
+                                    <record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
                                         <parameter name="file" value="/tmp/sample_r1.log" />
                                         <parameter name="field1" value="__TIMESTAMP__" />
                                         <parameter name="field2" value="RELEASED" />

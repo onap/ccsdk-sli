@@ -26,7 +26,7 @@
 
                     <!-- This xmlns:prefix should match the namespace in the *-provider-impl.yang file
                          The prefix: inside type should match the prefix of the yang file. -->
-                    <type xmlns:prefix="org:openecomp:sdnc:sliapi:provider:impl">
+                    <type xmlns:prefix="org:onap:ccsdk:sli:core:sliapi:provider:impl">
                         prefix:sliapi-provider-impl
                     </type>
                     <name>sliapi-provider-impl</name>

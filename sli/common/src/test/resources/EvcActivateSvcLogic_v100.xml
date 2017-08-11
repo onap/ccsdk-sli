@@ -18,14 +18,14 @@
   -->
 
 
-<service-logic xmlns="http://www.openecomp.org/sdnc/svclogic"
+<service-logic xmlns="http://www.onap.org/sdnc/svclogic"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.openecomp.org/sdnc/svclogic ./svclogic.xsd"
+    xsi:schemaLocation="http://www.onap.org/sdnc/svclogic ./svclogic.xsd"
     module="ase" version="1.0.0">
 
 
     <method rpc="ase-evc-activation" mode="sync">
-        <configure adaptor="org.openecomp.sdnc.sli.adaptor.emt.EmtAdaptor"
+        <configure adaptor="org.onap.ccsdl.sli.adaptors.emt.EmtAdaptor"
             key="$evc-name" activate="true">
             <parameter name="circuit.name" value="$evc-name" />
             <parameter name="topology" value="$topology" />
@@ -50,7 +50,7 @@
     </method>
 
     <method rpc="ase-evc-disconnect-request" mode="sync">
-        <configure adaptor="org.openecomp.sdnc.sli.adaptor.emt.EmtAdaptor"
+        <configure adaptor="org.onap.ccsdk.sli.adaptors.emt.EmtAdaptor"
             key="$evc-name" activate="false">
             <outcome value="success">
                 <return status="success" />

@@ -9,9 +9,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,4 +28,4 @@ SLI_COMMON_JAR=${SLI_COMMON_JAR:=${SLI_COMMON_TARGETDIR}/sli-common-${SLI_VERSIO
 
 echo SLI_COMMON_JAR is $SLI_COMMON_JAR
 
-java -cp ${CLASSPATH}:${MYSQL_JDBC_DRIVER}:${SLI_COMMON_JAR} org.openecomp.sdnc.sli.SvcLogicParser $*
+java -cp ${CLASSPATH}:${MYSQL_JDBC_DRIVER}:${SLI_COMMON_JAR} org.onap.ccsdk.sli.core.sli.SvcLogicParser $*

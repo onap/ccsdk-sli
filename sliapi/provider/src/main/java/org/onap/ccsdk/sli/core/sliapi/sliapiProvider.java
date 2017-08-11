@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -117,7 +117,7 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 
 	protected BindingAwareBroker.RpcRegistration<SLIAPIService> rpcRegistration;
 
-	private static String SLIAPI_NAMESPACE = "org:openecomp:sdnc:sliapi";
+	private static String SLIAPI_NAMESPACE = "org:onap:ccsdk:sli:core:sliapi";
 	private static String SLIAPI_REVISION = "2016-11-10";
 
 	private static QName TEST_RESULTS_QNAME = null;

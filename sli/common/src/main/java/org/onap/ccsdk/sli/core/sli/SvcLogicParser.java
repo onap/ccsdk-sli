@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,7 +60,7 @@ public class SvcLogicParser {
     private static final String SVC_LOGIC_STORE_ERROR = "Could not get service logic store";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SvcLogicParser.class);
-    private static final String SLI_VALIDATING_PARSER = "org.openecomp.sdnc.sli.parser.validate";
+    private static final String SLI_VALIDATING_PARSER = "org.onap.ccsdk.sli.parser.validate";
     private static final String SVCLOGIC_XSD = "/svclogic.xsd";
 
     private class SvcLogicHandler extends DefaultHandler {

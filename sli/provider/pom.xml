@@ -73,14 +73,10 @@
 						<Export-Package>org.onap.ccsdk.sli.core.sli.provider;version=${project.version}</Export-Package>
 
 						<DynamicImport-Package>*</DynamicImport-Package>
-					    <!--
-						<Import-Package>org.openecomp.sdnc.sli.*,org.osgi.framework.*,org.slf4j.*,com.vmware.vim25.*,org.apache.xerces.*,com.mysql.jdbc.*,javax.net.ssl.*,org.xml.sax.*,javax.xml.bind.*</Import-Package>
-                        -->
+
 
                         <Import-Package>org.onap.ccsdk.sli.core.sli;version="${project.version}",*</Import-Package>
-                        <!--
-						<Embed-Dependency>*;scope=compile|runtime;artifactId=!sli-common|org.eclipse.osgi|jcl-over-slf4j|xml-apis|mysql-connector-java</Embed-Dependency>
-						-->
+
 						<Embed-Dependency>*;scope=compile;artifactId=commons-lang|commons-lang3</Embed-Dependency>
 
 						<Embed-Transitive>true</Embed-Transitive>

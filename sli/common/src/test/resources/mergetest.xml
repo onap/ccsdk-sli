@@ -16,7 +16,7 @@
   ============LICENSE_END=========================================================
   -->
 
-<multicast-parameters xmlns="org.openecomp.sdnc:test">
+<multicast-parameters xmlns="org.onap.sdnc:test">
        <vpn-v4-multicast-enabled>Y</vpn-v4-multicast-enabled>
        <v4-multicast>
               <v4-pim-ssm-default-range>Y</v4-pim-ssm-default-range>
