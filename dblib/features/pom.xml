@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>dblib</artifactId>
 		<groupId>org.onap.ccsdk.sli.core</groupId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>dblib-features</artifactId>
 	<name>DBLIB Adaptor - Features</name>

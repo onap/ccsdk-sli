@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>sliapi</artifactId>
 		<groupId>org.onap.ccsdk.sli.core</groupId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>sliapi-model</artifactId>
 	<packaging>bundle</packaging>
@@ -43,7 +43,10 @@
 							<yangFilesRootDir>${yang.file.directory}</yangFilesRootDir>
 							<codeGenerators>
 								<generator>
+									<!--
 									<codeGeneratorClass>org.opendaylight.yangtools.maven.sal.api.gen.plugin.CodeGeneratorImpl</codeGeneratorClass>
+									-->
+									<codeGeneratorClass>org.opendaylight.mdsal.binding.maven.api.gen.plugin.CodeGeneratorImpl</codeGeneratorClass>
 									<outputBaseDir>${salGeneratorPath}</outputBaseDir>
 								</generator>
 							</codeGenerators>

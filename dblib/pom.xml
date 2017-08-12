@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.onap.ccsdk.sli.core</groupId>
         <artifactId>sdnc-core</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.1.0-SNAPSHOT</version>
     </parent>
 
 
@@ -16,7 +16,7 @@
     <name>DBLIB Adaptor</name>
     <description>The DBLIB adaptor allows service logic to access persistent data in a local sql database</description>
 
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
 
     <build>
     <plugins>
