@@ -52,6 +52,17 @@
 		    <artifactId>tomcat-jdbc</artifactId>
 		    <version>${tomcat-jdbc.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+        <!-- Testing related dependencies -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -64,9 +75,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>org.onap.ccsdk.sli.core.dblib</Bundle-SymbolicName>
-						<Bundle-Activator>org.onap.ccsdk.sli.core.dblib.DBLIBResourceActivator</Bundle-Activator>
 						<Export-Package>org.onap.ccsdk.sli.core.dblib;version=${project.version}</Export-Package>
-						<Import-Package>*</Import-Package>
 						<Embed-Transitive>true</Embed-Transitive>
 					</instructions>
 				</configuration>

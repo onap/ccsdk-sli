@@ -105,67 +105,72 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 	protected final long expectedCompletionTime;
 	protected final long unprocessedFailoverThreshold;
 
-	public DBResourceManager(Properties props){
-		this.configProps = props;
+	public DBResourceManager(final DBLIBResourceProvider configuration) {
+		this(configuration.getProperties());
+	}
+
+	public DBResourceManager(final Properties properties) {
+		this.configProps = properties;
 
 		// get retry interval value
-		retryInterval = getLongFromProperties(props, "org.onap.dblib.connection.retry", 10000L);
+		retryInterval = getLongFromProperties(properties, "org.onap.dblib.connection.retry", 10000L);
 
 		// get recovery mode flag
-		recoveryMode = getBooleanFromProperties(props, "org.onap.dblib.connection.recovery", true);
+		recoveryMode = getBooleanFromProperties(properties, "org.onap.dblib.connection.recovery", true);
 		if(!recoveryMode)
 		{
 			recoveryMode = false;
 			LOGGER.info("Recovery Mode disabled");
 		}
 		// get time out value for thread cleanup
-		terminationTimeOut = getLongFromProperties(props, "org.onap.dblib.termination.timeout", 300000L);
+		terminationTimeOut = getLongFromProperties(properties, "org.onap.dblib.termination.timeout", 300000L);
 		// get properties for monitoring
-		monitorDbResponse = getBooleanFromProperties(props, "org.onap.dblib.connection.monitor", false);
-		monitoringInterval = getLongFromProperties(props, "org.onap.dblib.connection.monitor.interval", 1000L);
-		monitoringInitialDelay = getLongFromProperties(props, "org.onap.dblib.connection.monitor.startdelay", 5000L);
-		expectedCompletionTime = getLongFromProperties(props, "org.onap.dblib.connection.monitor.expectedcompletiontime", 5000L);
-		unprocessedFailoverThreshold = getLongFromProperties(props, "org.onap.dblib.connection.monitor.unprocessedfailoverthreshold", 3L);
+		monitorDbResponse = getBooleanFromProperties(properties, "org.onap.dblib.connection.monitor", false);
+		monitoringInterval = getLongFromProperties(properties, "org.onap.dblib.connection.monitor.interval", 1000L);
+		monitoringInitialDelay = getLongFromProperties(properties, "org.onap.dblib.connection.monitor.startdelay", 5000L);
+		expectedCompletionTime = getLongFromProperties(properties, "org.onap.dblib.connection.monitor.expectedcompletiontime", 5000L);
+		unprocessedFailoverThreshold = getLongFromProperties(properties, "org.onap.dblib.connection.monitor.unprocessedfailoverthreshold", 3L);
 
 		// initialize performance monitor
-		PollingWorker.createInistance(props);
+		PollingWorker.createInistance(properties);
 
 		// initialize recovery thread
 		worker = new RecoveryMgr();
 		worker.setName("DBResourcemanagerWatchThread");
 		worker.setDaemon(true);
 		worker.start();
-	}
-
-	private void config(Properties ctx) throws Exception {
-
-		DbConfigPool dbConfig = DBConfigFactory.createConfig(this.configProps);
 
 		try {
-			AbstractResourceManagerFactory factory =  AbstractDBResourceManagerFactory.getFactory(dbConfig.getType());
-			if(LOGGER.isInfoEnabled()){
-				LOGGER.info("Default DB config is : " + dbConfig.getType());
-				LOGGER.info("Using factory : " + factory.getClass().getName());
-			}
-			CachedDataSource[] cachedDS = factory.initDBResourceManager(dbConfig, this);
-			if(cachedDS == null || cachedDS.length == 0) {
-				LOGGER.error("Initialization of CachedDataSources failed. No instance was created.");
-				throw new Exception("Failed to initialize DB Library. No data source was created.");
-			}
+			this.config(properties);
+		} catch (final Exception e) {
+			// TODO: config throws <code>Exception</code> which is poor practice.  Eliminate this in a separate patch.
+			LOGGER.error("Fatal Exception encountered while configuring DBResourceManager", e);
+		}
+	}
 
-			for(int i=0; i<cachedDS.length; i++){
-				if(cachedDS[i] != null && cachedDS[i].isInitialized()){
-					setDataSource(cachedDS[i]);
-					cachedDS[i].setInterval(monitoringInterval);
-					cachedDS[i].setInitialDelay(monitoringInitialDelay);
-					cachedDS[i].setExpectedCompletionTime(expectedCompletionTime);
-					cachedDS[i].setUnprocessedFailoverThreshold(unprocessedFailoverThreshold);
-					cachedDS[i].addObserver(this);
-				}
-			}
+	private void config(Properties configProps) throws Exception {
 
-		} catch(Exception exc){
-			throw exc;
+		final DbConfigPool dbConfig = DBConfigFactory.createConfig(configProps);
+		final AbstractResourceManagerFactory factory =
+				AbstractDBResourceManagerFactory.getFactory(dbConfig.getType());
+		LOGGER.info("Default DB config is : {}", dbConfig.getType());
+		LOGGER.info("Using factory : {}", factory.getClass().getName());
+
+		final CachedDataSource[] cachedDS = factory.initDBResourceManager(dbConfig, this);
+		if (cachedDS == null || cachedDS.length == 0) {
+			LOGGER.error("Initialization of CachedDataSources failed. No instance was created.");
+			throw new Exception("Failed to initialize DB Library. No data source was created.");
+		}
+
+		for (final CachedDataSource ds : cachedDS) {
+			if(ds != null && ds.isInitialized()){
+				setDataSource(ds);
+				ds.setInterval(monitoringInterval);
+				ds.setInitialDelay(monitoringInitialDelay);
+				ds.setExpectedCompletionTime(expectedCompletionTime);
+				ds.setUnprocessedFailoverThreshold(unprocessedFailoverThreshold);
+				ds.addObserver(this);
+			}
 		}
 	}
 
@@ -662,12 +667,6 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 		} catch(Exception exc){
 			LOGGER.error("Waiting for Worker thread to terminate ", exc);
 		}
-	}
-
-	public static DBResourceManager create(Properties props) throws Exception {
-		DBResourceManager dbmanager = new DBResourceManager(props);
-		dbmanager.config(props);
-		return dbmanager;
 	}
 
 	public PrintWriter getLogWriter() throws SQLException {

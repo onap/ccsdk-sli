@@ -498,7 +498,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 				}
 
 				try {
-					dblibSvc = DBResourceManager.create(dblibProps);
+					dblibSvc = new DBResourceManager(dblibProps);
 					JavaSingleton.setInstance(dblibSvc);
 				} catch (Exception e) {
 					LOG.warn("Caught exception trying to create DBResourceManager", e);
