@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
-public class SvcLogicGraphExecutorTest extends TestCase {
+public class ITCaseSvcLogicGraphExecutor extends TestCase {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(SvcLogicGraph.class);
 	

@@ -41,7 +41,7 @@ import junit.framework.TestCase;
  * @author dt5972
  *
  */
-public class SvcLogicParserTest extends TestCase {
+public class ITCaseSvcLogicParser extends TestCase {
 
 	/**
 	 * Test method for {@link org.onap.ccsdk.sli.core.sli.SvcLogicParser#parse(java.lang.String)}.
