@@ -3,7 +3,7 @@
 
 	<groupId>org.onap.ccsdk.sli.core</groupId>
 	<artifactId>sliPluginUtils</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.onap.ccsdk.sli.core</groupId>
 		<artifactId>ccsdk-sli-core</artifactId>
-        	<version>0.1.0-SNAPSHOT</version>
+        	<version>0.1.1-SNAPSHOT</version>
 	</parent>
 	<name>Service Logic Interface Plugin Utilities</name>
 	<description>A package of static utility functions to be used when developing SLI plugins</description>
