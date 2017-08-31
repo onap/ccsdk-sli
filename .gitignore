@@ -43,5 +43,3 @@ sdnc-core_bdio.jsonld
 blackDuckHubProjectName.txt
 blackDuckHubProjectVersionName.txt
 
-# Yang-generated Java
-**/src/main/java/org/opendaylight/
