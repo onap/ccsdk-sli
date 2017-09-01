@@ -34,7 +34,7 @@ public class Dme2Test {
 
     @Test
     public void createInstarUrl() {
-        String instarUrl = "http://localhost:25055/service=sample.com/services/eim/v1/rest/version=1702.0/envContext=TEST/routeOffer=DEFAULT/subContext=/enterpriseConnection/getEnterpriseConnectionDetails/v1?dme2.password=fake&dme2.username=user@sample.com";
+        String instarUrl = "http://localhost:25055/service=sample.com/services/eim/v1/rest/version=1702.0/envContext=TEST/routeOffer=DEFAULT/subContext=/enterpriseConnection/getEnterpriseConnectionDetails/v1?dme2.password=fake&dme2.username=user@sample.com&dme2.allowhttpcode=true";
         DME2 dme = new DME2("user@sample.com", "fake", "TEST", "DEFAULT", new String[] { "http://localhost:25055" }, "common");
         String constructedUrl = dme.constructUrl("sample.com/services/eim/v1/rest", "1702.0", "/enterpriseConnection/getEnterpriseConnectionDetails/v1");
         assertEquals(instarUrl, constructedUrl);
@@ -42,7 +42,7 @@ public class Dme2Test {
 
     @Test
     public void createInstarUrlNoSubContext() {
-        String instarUrl = "http://localhost:25055/service=sample.com/services/eim/v1/rest/version=1702.0/envContext=TEST/routeOffer=DEFAULT?dme2.password=fake&dme2.username=user@sample.com";
+        String instarUrl = "http://localhost:25055/service=sample.com/services/eim/v1/rest/version=1702.0/envContext=TEST/routeOffer=DEFAULT?dme2.password=fake&dme2.username=user@sample.com&dme2.allowhttpcode=true";
         DME2 dme = new DME2("user@sample.com", "fake", "TEST", "DEFAULT", new String[] { "http://localhost:25055" }, "common");
         Map<String, String> parameters = new HashMap<String, String>();
         String constructedUrl = dme.constructUrl("sample.com/services/eim/v1/rest", "1702.0", parameters.get(null));
@@ -52,7 +52,7 @@ public class Dme2Test {
     @Test
     public void testRoundRobin() {
         String[] proxyHostNames = new String[] { "http://one:25055", "http://two:25055", "http://three:25055" };
-        String urlSuffix = "/service=sample.com/services/eim/v1/rest/version=1702.0/envContext=TEST/routeOffer=DEFAULT/subContext=/enterpriseConnection/getEnterpriseConnectionDetails/v1?dme2.password=fake&dme2.username=user@sample.com";
+        String urlSuffix = "/service=sample.com/services/eim/v1/rest/version=1702.0/envContext=TEST/routeOffer=DEFAULT/subContext=/enterpriseConnection/getEnterpriseConnectionDetails/v1?dme2.password=fake&dme2.username=user@sample.com&dme2.allowhttpcode=true";
         DME2 dme = new DME2("user@sample.com", "fake", "TEST", "DEFAULT", proxyHostNames, "common");
         String constructedUrl = dme.constructUrl("sample.com/services/eim/v1/rest", "1702.0", "/enterpriseConnection/getEnterpriseConnectionDetails/v1");
         assertEquals(proxyHostNames[0] + urlSuffix, constructedUrl);
