@@ -21,43 +21,13 @@
 
 package org.onap.ccsdk.sli.core.filters;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+public class FiltersServiceImpl implements FiltersService {
+	private static final Logger LOG = LoggerFactory.getLogger(FiltersServiceImpl.class);
 
-public class Activator implements BundleActivator {
-
-	private ServiceRegistration registration = null;
-
-	private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
-
-	@Override
-	public void start(BundleContext ctx) throws Exception {
-
-
-		
-		Object impl = new String();
-		String regName = impl.getClass().getName();
-		
-		if (registration == null)
-		{
-			LOG.debug("Registering Filters service "+regName);
-			registration = ctx.registerService(regName, impl, null);
-		}
-
+	public FiltersServiceImpl() {
+		LOG.debug("Registering {}", FiltersServiceImpl.class.getName());
 	}
-
-	@Override
-	public void stop(BundleContext ctx) throws Exception {
-		
-		if (registration != null)
-		{
-			registration.unregister();
-			registration = null;
-		}
-	}
-
 }

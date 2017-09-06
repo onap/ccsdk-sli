@@ -73,7 +73,6 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>org.onap.ccsdk.sli.core.filters</Bundle-SymbolicName>
-						<Bundle-Activator>org.onap.ccsdk.sli.core.filters.Activator</Bundle-Activator>
 						<Export-Package>org.onap.ccsdk.sli.core.filters</Export-Package>
 						<DynamicImport-Package>org.onap.ccsdk.sli.core.filters</DynamicImport-Package>
 						<Import-Package>javax.servlet.*,java.io.*,org.osgi.framework.*,org.slf4j.*,org.apache.commons.codec.binary.*</Import-Package>
