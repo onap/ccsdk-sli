@@ -72,8 +72,9 @@ public class Dme2Test {
 
     @Test
     public void createDme2EndtoEnd() {
-        SliPluginUtilsActivator activator = new SliPluginUtilsActivator();
-        DME2 dme2 = activator.initDme2("src/test/resources/dme2.e2e.properties");
+        Dme2PropertiesProvider provider =
+                new Dme2PropertiesProvider("src/test/resources/dme2.e2e.properties");
+        DME2 dme2 = new DME2(provider);
         assertEquals("user@sample.com", dme2.aafUserName);
         assertEquals("fake", dme2.aafPassword);
         assertEquals("UAT", dme2.envContext);
@@ -89,8 +90,9 @@ public class Dme2Test {
 
     @Test
     public void createDme2Prod() {
-        SliPluginUtilsActivator activator = new SliPluginUtilsActivator();
-        DME2 dme2 = activator.initDme2("src/test/resources/dme2.prod.properties");
+        Dme2PropertiesProvider provider =
+                new Dme2PropertiesProvider("src/test/resources/dme2.prod.properties");
+        DME2 dme2 = new DME2(provider);
         assertEquals("user@sample.com", dme2.aafUserName);
         assertEquals("fake", dme2.aafPassword);
         assertEquals("PROD", dme2.envContext);

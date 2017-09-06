@@ -60,8 +60,6 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 
 	public SliPluginUtils() {}
 
-	public SliPluginUtils( Properties props ) {}
-
 
 
 	// ========== CONTEXT MEMORY FUNCTIONS ==========
