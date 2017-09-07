@@ -20,6 +20,18 @@
 
 package org.onap.ccsdk.sli.core.dblib;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
+import org.apache.tomcat.jdbc.pool.PoolExhaustedException;
+import org.onap.ccsdk.sli.core.dblib.config.BaseDBConfiguration;
+import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitor;
+import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitor.TestObject;
+import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitorObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.RowSetProvider;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,20 +47,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Observer;
-
-import javax.sql.DataSource;
-import javax.sql.rowset.CachedRowSet;
-import javax.sql.rowset.RowSetProvider;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.tomcat.jdbc.pool.PoolExhaustedException;
-import org.onap.ccsdk.sli.core.dblib.config.BaseDBConfiguration;
-import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitor;
-import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitorObserver;
-import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitor.TestObject;
-
-import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 
 
 /**
@@ -565,7 +563,9 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
 			retValue =  false;
 		} finally {
 			try {
-				 lock.close();
+                            if (lock != null) {
+                                lock.close();
+                            }
 			} catch(Exception exc) {
 
 			}
