@@ -132,7 +132,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 			String mode) throws SvcLogicException {
 
 		DbLibService dbSvc = getDbLibService();
-
+		PreparedStatement fetchGraphStmt = null;
 		Connection dbConn = null;
 		SvcLogicGraph retval = null;
 		ResultSet results = null;
@@ -146,7 +146,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 		try {
 			dbConn = ((DBResourceManager) dbSvc).getConnection();
-			PreparedStatement fetchGraphStmt;
+
 
 			ArrayList<String> args = new ArrayList<String>();
 			args.add(module);
@@ -193,6 +193,13 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		} catch (Exception e) {
 			throw new ConfigurationException("Graph processing failed", e);
 		} finally {
+			try {
+				if (fetchGraphStmt != null) {
+					fetchGraphStmt.close();
+				}
+			} catch (SQLException e) {
+				LOG.info(e.getMessage());
+			}
 			if (results != null) {
 				try {
 					results.close();
@@ -267,12 +274,12 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		}
 
 		Connection dbConn = null;
-
+		PreparedStatement storeGraphStmt = null;
 		try {
 			dbConn = ((DBResourceManager) dbSvc).getConnection();
 			boolean oldAutoCommit = dbConn.getAutoCommit();
 			dbConn.setAutoCommit(false);
-			PreparedStatement storeGraphStmt = dbConn
+			storeGraphStmt = dbConn
 					.prepareStatement(storeGraphSql);
 			storeGraphStmt.setString(1, graph.getModule());
 			storeGraphStmt.setString(2, graph.getRpc());
@@ -288,6 +295,13 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		} catch (Exception e) {
 			throw new SvcLogicException("Could not write object to database", e);
 		} finally {
+			try {
+				if (storeGraphStmt != null) {
+					storeGraphStmt.close();
+				}
+			} catch (SQLException e) {
+				LOG.info(e.getMessage());
+			}
 			try {
 				if (dbConn != null && !dbConn.isClosed()) {
 					dbConn.close();

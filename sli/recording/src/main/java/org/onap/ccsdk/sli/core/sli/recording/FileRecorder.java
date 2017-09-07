@@ -24,6 +24,7 @@ package org.onap.ccsdk.sli.core.sli.recording;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -82,6 +83,7 @@ public class FileRecorder implements SvcLogicRecorder {
 		
 		File recordFile = new File(fileName);
 		PrintWriter recPrinter = null;
+		FileWriter fileWriter = null;
 		Date now = new Date();
 
 		TimeZone tz = TimeZone.getTimeZone("UTC");
@@ -95,7 +97,7 @@ public class FileRecorder implements SvcLogicRecorder {
 		try
 		{
 		
-			recPrinter = new PrintWriter(new FileWriter(recordFile, true));
+			recPrinter = new PrintWriter(fileWriter = new FileWriter(recordFile, true));
 			recPrinter.println(record);
 		}
 		catch (Exception e)
@@ -107,6 +109,14 @@ public class FileRecorder implements SvcLogicRecorder {
 			if (recPrinter != null)
 			{
 				recPrinter.close();
+			}
+			if (fileWriter != null)
+			{
+				try {
+					fileWriter.close();
+				} catch (IOException e) {
+
+				}
 			}
 		}
 		
