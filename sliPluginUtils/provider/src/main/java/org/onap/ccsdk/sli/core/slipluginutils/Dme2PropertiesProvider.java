@@ -65,9 +65,9 @@ public final class Dme2PropertiesProvider {
     private static final String PROXY_URLS_VALUE_SEPARATOR = ",";
 
     /**
-     * the key for <code>aafUsername</code>
+     * the key for <code>aafUserName</code>
      */
-    static final String AAF_USERNAME_KEY = "aafUsername";
+    static final String AAF_USERNAME_KEY = "aafUserName";
 
     /**
      * the key for <code>aafPassword</code>
