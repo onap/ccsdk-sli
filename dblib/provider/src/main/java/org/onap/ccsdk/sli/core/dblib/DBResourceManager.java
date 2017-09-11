@@ -20,6 +20,19 @@
 
 package org.onap.ccsdk.sli.core.dblib;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
+import org.apache.tomcat.jdbc.pool.PoolExhaustedException;
+import org.onap.ccsdk.sli.core.dblib.config.DbConfigPool;
+import org.onap.ccsdk.sli.core.dblib.factory.AbstractDBResourceManagerFactory;
+import org.onap.ccsdk.sli.core.dblib.factory.AbstractResourceManagerFactory;
+import org.onap.ccsdk.sli.core.dblib.factory.DBConfigFactory;
+import org.onap.ccsdk.sli.core.dblib.pm.PollingWorker;
+import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import javax.sql.rowset.CachedRowSet;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLDataException;
@@ -40,21 +53,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.sql.DataSource;
-import javax.sql.rowset.CachedRowSet;
-
-import org.apache.tomcat.jdbc.pool.PoolExhaustedException;
-import org.onap.ccsdk.sli.core.dblib.config.DbConfigPool;
-import org.onap.ccsdk.sli.core.dblib.factory.AbstractDBResourceManagerFactory;
-import org.onap.ccsdk.sli.core.dblib.factory.AbstractResourceManagerFactory;
-import org.onap.ccsdk.sli.core.dblib.factory.DBConfigFactory;
-import org.onap.ccsdk.sli.core.dblib.pm.PollingWorker;
-import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitor;
-
-import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -334,11 +332,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 				}
 				sources.remove(active);
 				return active.getData(statement, arguments);
-			} catch(SQLDataException exc){
-				throw exc;
-			} catch(SQLSyntaxErrorException exc){
-				throw exc;
-			} catch(SQLIntegrityConstraintViolationException exc){
+			} catch(SQLDataException | SQLSyntaxErrorException | SQLIntegrityConstraintViolationException exc){
 				throw exc;
 			} catch(Throwable exc){
 				lastException = exc;
@@ -430,7 +424,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 	}
 
 	CachedDataSource findMaster() throws PoolExhaustedException, MySQLNonTransientConnectionException {
-		CachedDataSource master = null;
+		CachedDataSource master;
 		CachedDataSource[] dss = this.dsQueue.toArray(new CachedDataSource[0]);
 		for(int i=0; i<dss.length; i++) {
 			if(!dss[i].isSlave()) {
@@ -442,10 +436,8 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 				return master;
 			}
 		}
-		if(master == null) {
-			LOGGER.warn("MASTER not found.");
-		}
-		return master;
+		LOGGER.warn("MASTER not found.");
+		return null;
 	}
 
 
