@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>sliPluginUtils</artifactId>
 		<groupId>org.onap.ccsdk.sli.core</groupId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.1.2-SNAPSHOT</version>
 	</parent>
 
 	<name>SliPluginUtils Plugin - Features</name>

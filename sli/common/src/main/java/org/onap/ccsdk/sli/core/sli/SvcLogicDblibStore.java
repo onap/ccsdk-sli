@@ -145,7 +145,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 
 		try {
-			dbConn = ((DBResourceManager) dbSvc).getConnection();
+			dbConn = dbSvc.getConnection();
 
 
 			ArrayList<String> args = new ArrayList<String>();
@@ -276,7 +276,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		Connection dbConn = null;
 		PreparedStatement storeGraphStmt = null;
 		try {
-			dbConn = ((DBResourceManager) dbSvc).getConnection();
+			dbConn = dbSvc.getConnection();
 			boolean oldAutoCommit = dbConn.getAutoCommit();
 			dbConn.setAutoCommit(false);
 			storeGraphStmt = dbConn
