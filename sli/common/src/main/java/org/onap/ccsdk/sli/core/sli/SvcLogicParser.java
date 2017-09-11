@@ -21,17 +21,6 @@
 
 package org.onap.ccsdk.sli.core.sli;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.LinkedList;
-
-import javax.xml.XMLConstants;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -40,6 +29,16 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.LinkedList;
 
 /**
  * @author dt5972
@@ -336,7 +335,7 @@ public class SvcLogicParser {
     Schema schema = null;
     String validateSchema = System.getProperty(SLI_VALIDATING_PARSER, "true");
 
-    if (validateSchema != null || validateSchema.equalsIgnoreCase("true")) {
+    if ("true".equalsIgnoreCase(validateSchema)) {
         xsdUrl = getClass().getResource(SVCLOGIC_XSD);
 
     }
@@ -362,7 +361,7 @@ public class SvcLogicParser {
         SAXParser saxParser = factory.newSAXParser();
 
         if (saxParser.isValidating()) {
-        LOGGER.info("Validating against schema " + xsdUrl.getPath());
+            LOGGER.info("Parser not configured to validate XML {}", (xsdUrl != null ? xsdUrl.getPath() : null));
         }
         graphs = new LinkedList<>();
 
