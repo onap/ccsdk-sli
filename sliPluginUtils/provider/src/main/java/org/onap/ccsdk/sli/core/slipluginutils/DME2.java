@@ -124,7 +124,7 @@ public class DME2 implements SvcLogicJavaPlugin {
             sb.append("&dme2.partner=" + this.partner);
         }
         sb.append("&dme2.allowhttpcode=true");
-        return (sb.toString());
+        return sb.toString();
     }
 
     public synchronized String acquireHostName() {

@@ -60,7 +60,7 @@ public class SvcLogicContextList {
 
         // Initialize list
         int capacity = getCtxListLength(ctx, prefix);
-        this.list = new ArrayList<HashMap<String, String>>(capacity);
+        this.list = new ArrayList<>(capacity);
         for( int i = 0; i < capacity; i++ ) {
             this.list.add(i, new HashMap<String,String>());
         }
@@ -158,7 +158,7 @@ public class SvcLogicContextList {
 
         for( int i = 0; i < this.list.size(); i++ ) {
             for( Map.Entry<String,String> entry : this.list.get(i).entrySet() ) {
-                if( entry.getKey().equals("") ) {
+                if("".equals(entry.getKey())) {
                     ctx.setAttribute(prefix + '[' + i + ']', entry.getValue());
                 } else {
                     ctx.setAttribute(prefix + '[' + i + "]." + entry.getKey(), entry.getValue());
