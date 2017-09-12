@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 public class RecordingActivator implements BundleActivator {
 
-	private LinkedList<ServiceRegistration> registrations = new LinkedList<ServiceRegistration>();
+	private LinkedList<ServiceRegistration> registrations = new LinkedList<>();
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RecordingActivator.class);
@@ -43,7 +43,7 @@ public class RecordingActivator implements BundleActivator {
 		
 		if (registrations == null)
 		{
-			registrations = new LinkedList<ServiceRegistration>();
+			registrations = new LinkedList<>();
 		}
 		
 

@@ -138,7 +138,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 
 				// Obtain key-value pairs to check from parameters
 				LOG.trace("reading keys parameter list");
-				HashMap<String,String> keys_values = new HashMap<String,String>();
+				HashMap<String,String> keys_values = new HashMap<>();
 				for( int i = 0; i < keys_length; i++ ) {
 					keys_values.put(parameters.get("keys[" + i + "].key"), parameters.get("keys[" + i + "].value"));
 				}
@@ -174,7 +174,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
      */
 	public void ctxSortList( Map<String, String> parameters, SvcLogicContext ctx ) throws SvcLogicException {
 		checkParameters(parameters, new String[]{"list","delimiter"}, LOG);
-		ArrayList<SortableCtxListElement> list = new ArrayList<SortableCtxListElement>();
+		ArrayList<SortableCtxListElement> list = new ArrayList<>();
 
 		String[] sort_fields = null;
 		if( parameters.containsKey("sort-fields") ) {
@@ -205,7 +205,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 			i++;
 		}
 		// Reset list length (removed by ctxBulkErase above)
-		ctx.setAttribute(ctx_list_str+"_length",  ""+listSz);
+		ctx.setAttribute(ctx_list_str+"_length", Integer.toString(listSz));
 	}
 
     /**
@@ -284,7 +284,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
             log.debug("required parameters was empty, exiting early.");
             return;
         }
-        if (parametersMap == null || parametersMap.keySet().size() < 1){
+        if (parametersMap == null || parametersMap.keySet().isEmpty()){
             String errorMessage = "This method requires the parameters [" +   StringUtils.join(requiredParams,",") + "], but no parameters were passed in.";
             log.error(errorMessage);
             throw new SvcLogicException(errorMessage);
@@ -307,7 +307,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 	 * @since 1.0
 	 */
 	public static final void ctxBulkErase( SvcLogicContext ctx, String pfx ) {
-		ArrayList<String> Keys = new ArrayList<String>( ctx.getAttributeKeySet() );
+		ArrayList<String> Keys = new ArrayList<>(ctx.getAttributeKeySet());
 		for( String key : Keys ) {
 			if( key.startsWith( pfx ) ) {
 				ctx.setAttribute( pfx + key.substring(pfx.length()) , null);
@@ -337,7 +337,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 
 		// For each context key that begins with src_pfx, set the value of the
 		// key dest_pfx + the suffix of the key to the key's value
-		ArrayList<String> Keys = new ArrayList<String>(ctx.getAttributeKeySet());
+		ArrayList<String> Keys = new ArrayList<>(ctx.getAttributeKeySet());
 		for( String key : Keys ) {
 			if( key.startsWith(src_pfx) ) {
 				// Get suffix (no leading period)
@@ -361,7 +361,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 	 * in ctx whose key begins with prefix.
 	 */
 	public static final Map<String, String> ctxGetBeginsWith( SvcLogicContext ctx, String prefix ) {
-		Map<String, String> prefixMap = new HashMap<String, String>();
+		Map<String, String> prefixMap = new HashMap<>();
 
 		for( String key : ctx.getAttributeKeySet() ) {
 			if( key.startsWith(prefix) ) {
@@ -481,7 +481,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 	 * @since 1.0
 	 */
 	public static final int getArrayLength( SvcLogicContext ctx, String key, Logger log, LogLevel logLevel, String log_message ) {
-		String ctxKey = ( key.endsWith("_length") ) ? key : key + "_length";
+		String ctxKey = key.endsWith("_length") ? key : key + "_length";
 		try {
 			return Integer.parseInt(ctx.getAttribute(ctxKey));
 		}
@@ -525,7 +525,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 		logLevelIsEnabled( log, logLevel );
 
 		// Print sorted context memory key-value pairs to the log
-		ArrayList<String> keys = new ArrayList<String>(ctx.getAttributeKeySet());
+		ArrayList<String> keys = new ArrayList<>(ctx.getAttributeKeySet());
 		Collections.sort(keys);
 		for( String key : keys ) {
 			logMessageAtLevel( log, logLevel, key + " = " + ctx.getAttribute(key) );
@@ -616,7 +616,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 	// ========== LOCAL CLASSES ==========
 
 	private class SortableCtxListElement implements Comparable<SortableCtxListElement> {
-		HashMap<String,String> child_elements = new HashMap<String,String>();
+		HashMap<String,String> child_elements = new HashMap<>();
 		String[] sort_fields;
 
 		public SortableCtxListElement( SvcLogicContext ctx, String root, String[] sort_fields ) {
@@ -729,7 +729,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
      * @since 11.0.2
      */
 	public static void requiredParameters(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
-		if (parameters == null || parameters.keySet().size() < 1) {
+		if (parameters == null || parameters.keySet().isEmpty()) {
             String errorMessage = "requiredParameters should not be called if the parameters hashmap is null or empty!";
             LOG.error(errorMessage);
             throw new SvcLogicException(errorMessage);
