@@ -30,7 +30,6 @@ import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.onap.ccsdk.sli.core.dblib.CachedDataSource;
 import org.onap.ccsdk.sli.core.dblib.DBConfigException;
 import org.onap.ccsdk.sli.core.dblib.config.BaseDBConfiguration;
-import org.onap.ccsdk.sli.core.dblib.config.JDBCConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

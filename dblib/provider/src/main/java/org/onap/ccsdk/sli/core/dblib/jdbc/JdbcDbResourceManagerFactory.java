@@ -22,9 +22,7 @@ package org.onap.ccsdk.sli.core.dblib.jdbc;
 
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -35,7 +33,6 @@ import java.util.concurrent.FutureTask;
 import org.onap.ccsdk.sli.core.dblib.CachedDataSource;
 import org.onap.ccsdk.sli.core.dblib.CachedDataSourceFactory;
 import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
-import org.onap.ccsdk.sli.core.dblib.DataSourceComparator;
 import org.onap.ccsdk.sli.core.dblib.config.DbConfigPool;
 import org.onap.ccsdk.sli.core.dblib.config.JDBCConfiguration;
 import org.onap.ccsdk.sli.core.dblib.factory.AbstractResourceManagerFactory;

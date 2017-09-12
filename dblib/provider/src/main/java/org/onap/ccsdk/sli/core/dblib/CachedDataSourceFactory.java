@@ -24,7 +24,6 @@ package org.onap.ccsdk.sli.core.dblib;
 import org.onap.ccsdk.sli.core.dblib.config.BaseDBConfiguration;
 import org.onap.ccsdk.sli.core.dblib.config.JDBCConfiguration;
 import org.onap.ccsdk.sli.core.dblib.jdbc.JdbcDBCachedDataSource;
-import org.onap.ccsdk.sli.core.dblib.jdbc.MySQLCachedDataSource;
 
 /**
  * @version $Revision: 1.1 $

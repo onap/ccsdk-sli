@@ -27,7 +27,6 @@ import java.util.concurrent.Callable;
 
 import org.onap.ccsdk.sli.core.dblib.CachedDataSource;
 import org.onap.ccsdk.sli.core.dblib.CachedDataSourceFactory;
-import org.onap.ccsdk.sli.core.dblib.DBConfigException;
 import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.onap.ccsdk.sli.core.dblib.config.BaseDBConfiguration;
 import org.onap.ccsdk.sli.core.dblib.config.DbConfigPool;

@@ -29,7 +29,6 @@ import java.util.HashMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.slipluginutils.SvcLogicContextList;
 
 public class SvcLogicContextListTest {
 	//private static final Logger LOG = LoggerFactory.getLogger(SvcLogicContextTest.class);

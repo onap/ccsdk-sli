@@ -32,7 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.slipluginutils.SliPluginUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

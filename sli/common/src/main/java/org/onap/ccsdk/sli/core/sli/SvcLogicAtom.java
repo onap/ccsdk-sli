@@ -21,10 +21,6 @@
 
 package org.onap.ccsdk.sli.core.sli;
 
-import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
-
 public class SvcLogicAtom extends SvcLogicExpression {
 	
 	public enum AtomType {

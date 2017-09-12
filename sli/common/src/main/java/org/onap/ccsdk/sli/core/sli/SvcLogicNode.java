@@ -36,8 +36,6 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.Locator;
-
 
 public class SvcLogicNode implements Serializable {
 	

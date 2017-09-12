@@ -28,12 +28,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.LinkedList;
-
-import org.onap.ccsdk.sli.core.sli.SvcLogicParser;
-import org.onap.ccsdk.sli.core.sli.SvcLogicParserException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
-import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
 
 import junit.framework.TestCase;
 

@@ -21,14 +21,10 @@
 
 package org.onap.ccsdk.sli.core.sli;
 
-import java.util.Map;
-
+/**
+ * A marker interface, used to indicate that a class exposes methods that can be
+ * called from an <execute> node.  Such methods must have the signature:
+ *   void methodName(Map, SvcLogicContext)
+ */
 public interface SvcLogicJavaPlugin {
-	
-	/**
-	 * A marker interface, used to indicate that a class exposes methods that can be
-	 * called from an <execute> node.  Such methods must have the signature:
-	 *   void methodName(Map, SvcLogicContext)
-	 */
-
 }

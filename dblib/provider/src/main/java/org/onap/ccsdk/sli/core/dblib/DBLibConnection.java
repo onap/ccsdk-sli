@@ -43,7 +43,6 @@ import java.util.concurrent.Executor;
 import javax.sql.rowset.CachedRowSet;
 
 import org.apache.tomcat.jdbc.pool.PooledConnection;
-import org.apache.tomcat.jdbc.pool.ProxyConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
