@@ -74,23 +74,22 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 	protected final AtomicBoolean dsSelector = new  AtomicBoolean();
 
 //	Queue<CachedDataSource> dsQueue = new ConcurrentLinkedQueue<CachedDataSource>();
-	Queue<CachedDataSource> dsQueue = new PriorityQueue<CachedDataSource>(4, new Comparator<CachedDataSource>(){
-
+	Queue<CachedDataSource> dsQueue = new PriorityQueue<>(4, new Comparator<CachedDataSource>() {
 		@Override
 		public int compare(CachedDataSource left, CachedDataSource right) {
 			try {
-				if(!left.isSlave())
+				if (!left.isSlave()) {
 					return -1;
-				if(!right.isSlave())
+				}
+				if (!right.isSlave()) {
 					return 1;
-
+				}
 			} catch (Throwable e) {
 				LOGGER.warn("", e);
 			}
 			return 0;
 		}
-
-	});
+		});
 	protected final Set<CachedDataSource> broken = Collections.synchronizedSet(new HashSet<CachedDataSource>());
 	protected final Object monitor = new Object();
 	protected final Properties configProps;
@@ -238,6 +237,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
 	class RecoveryMgr extends Thread {
 
+		@Override
 		public void run() {
 			while(!terminating)
 			{
@@ -293,7 +293,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 	 */
 	@Override
 	public CachedRowSet getData(String statement, ArrayList<String> arguments, String preferredDS) throws SQLException {
-		ArrayList<Object> newList=new ArrayList<Object>();
+		ArrayList<Object> newList= new ArrayList<>();
 		if(arguments != null && !arguments.isEmpty()) {
 			newList.addAll(arguments);
 		}
@@ -308,7 +308,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 		CachedDataSource active = null;
 
 		// test if there are any connection pools available
-		LinkedList<CachedDataSource> sources = new LinkedList<CachedDataSource>(this.dsQueue);
+		LinkedList<CachedDataSource> sources = new LinkedList<>(this.dsQueue);
 		if(sources.isEmpty()){
 			LOGGER.error("Generated alarm: DBResourceManager.getData - No active DB connection pools are available.");
 			throw new DBLibException("No active DB connection pools are available in RequestDataWithRecovery call.");
@@ -354,7 +354,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 				handleGetConnectionException(active, exc);
 			} finally {
 				if(LOGGER.isDebugEnabled()){
-					time = (System.currentTimeMillis() - time);
+					time = System.currentTimeMillis() - time;
 					LOGGER.debug("getData processing time : "+ active.getDbConnectionName()+"  "+time+" miliseconds.");
 				}
 			}
@@ -408,7 +408,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 			}
 		} finally {
 			if(LOGGER.isDebugEnabled()){
-				time = (System.currentTimeMillis() - time);
+				time = System.currentTimeMillis() - time;
 				LOGGER.debug(">> getData : "+ active.getDbConnectionName()+"  "+time+" miliseconds.");
 			}
 		}
@@ -421,7 +421,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 	@Override
 	public boolean writeData(String statement, ArrayList<String> arguments, String preferredDS) throws SQLException
         {
-		ArrayList<Object> newList=new ArrayList<Object>();
+		ArrayList<Object> newList= new ArrayList<>();
 		if(arguments != null && !arguments.isEmpty()) {
 			newList.addAll(arguments);
 		}
@@ -496,7 +496,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 				}
 			} finally {
 				if(LOGGER.isDebugEnabled()){
-					time = (System.currentTimeMillis() - time);
+					time = System.currentTimeMillis() - time;
 					LOGGER.debug("writeData processing time : "+ active.getDbConnectionName()+"  "+time+" miliseconds.");
 				}
 			}
@@ -708,7 +708,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 	public String getDBStatus(boolean htmlFormat) {
 		StringBuilder buffer = new StringBuilder();
 
-		ArrayList<CachedDataSource> list = new ArrayList<CachedDataSource>();
+		ArrayList<CachedDataSource> list = new ArrayList<>();
 		list.addAll(dsQueue);
 		list.addAll(broken);
 		if (htmlFormat)
@@ -793,7 +793,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
 	public String getPreferredDataSourceName(AtomicBoolean flipper) {
 
-		LinkedList<CachedDataSource> snapshot = new LinkedList<CachedDataSource>(dsQueue);
+		LinkedList<CachedDataSource> snapshot = new LinkedList<>(dsQueue);
 		if(snapshot.size() > 1){
 			CachedDataSource first = snapshot.getFirst();
 			CachedDataSource last = snapshot.getLast();
