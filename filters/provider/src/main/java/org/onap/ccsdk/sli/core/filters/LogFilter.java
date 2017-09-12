@@ -144,7 +144,7 @@ public class LogFilter implements Filter {
             String authzHeader = request.getHeader("Authorization");
             String usernameAndPassword = new String(Base64.decodeBase64(authzHeader.substring(6).getBytes()));
 
-            int userNameIndex = usernameAndPassword.indexOf(":");
+            int userNameIndex = usernameAndPassword.indexOf(':');
             String username = usernameAndPassword.substring(0, userNameIndex);
             userName = username;
 
@@ -171,7 +171,7 @@ public class LogFilter implements Filter {
         MDC.put(END_TIMESTAMP,asIso8601(System.currentTimeMillis()));
         //MDC.put(REQUEST_ID,"already done above");
         MDC.put(SERVICE_NAME,request.getRequestURL().toString());
-        int idx = request.getPathInfo().toString().lastIndexOf(":");
+        int idx = request.getPathInfo().lastIndexOf(':');
         String instance = "";
         if ( idx != -1 ) {
 			instance = request.getPathInfo().substring(idx+1);
@@ -186,13 +186,13 @@ public class LogFilter implements Filter {
 			MDC.put(STATUS_CODE,"COMPLETE");
 		}
 
-        MDC.put(RESP_CODE,"" + response.getStatus());
+        MDC.put(RESP_CODE, Integer.toString(response.getStatus()));
         MDC.put(RESP_DESC,"");
         MDC.put(INSTANCE_UUID,"");
         MDC.put(CATEGORY,"");
         MDC.put(SEVERITY,"");
         //MDC.put(SERVER_IP,""); //by chef
-        MDC.put(ELAPSED_TIME,"" + (System.currentTimeMillis() - startTime));
+        MDC.put(ELAPSED_TIME,Long.toString(System.currentTimeMillis() - startTime));
         //MDC.put(SERVER_HOST,""); //by chef
         MDC.put(CLIENT_IP,request.getRemoteHost());
         MDC.put(CLASS,"");
