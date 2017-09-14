@@ -23,5 +23,5 @@ package org.onap.ccsdk.sli.core.dblib;
 import java.util.Observer;
 
 public interface DBResourceObserver extends Observer {
-	public boolean isMonitorDbResponse();
+    boolean isMonitorDbResponse();
 }

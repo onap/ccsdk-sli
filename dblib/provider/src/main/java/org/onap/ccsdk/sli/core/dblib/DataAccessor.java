@@ -27,7 +27,7 @@ import javax.sql.rowset.CachedRowSet;
 
 public interface DataAccessor {
 
-	public abstract CachedRowSet getData(String statement, ArrayList<String> arguments, String preferredDS)
-			throws SQLException;
+    CachedRowSet getData(String statement, ArrayList<String> arguments, String preferredDS)
+            throws SQLException;
 
 }

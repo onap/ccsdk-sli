@@ -24,5 +24,5 @@ package org.onap.ccsdk.sli.core.slipluginutils;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 
 public interface SvcLogicContextObject {
-	public void writeToContext( SvcLogicContext ctx, String root );
+    void writeToContext(SvcLogicContext ctx, String root );
 }

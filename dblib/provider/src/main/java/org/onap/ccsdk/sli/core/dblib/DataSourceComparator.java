@@ -24,10 +24,10 @@ import java.util.Comparator;
 
 public interface DataSourceComparator extends Comparator <CachedDataSource>{
 
-	public abstract CachedDataSource getLastUsed();
+    CachedDataSource getLastUsed();
 
-	public abstract void setLastUsed(CachedDataSource lastUsed);
+    void setLastUsed(CachedDataSource lastUsed);
 
-	public abstract int compare(CachedDataSource ds1, CachedDataSource ds2);
+    int compare(CachedDataSource ds1, CachedDataSource ds2);
 
 }

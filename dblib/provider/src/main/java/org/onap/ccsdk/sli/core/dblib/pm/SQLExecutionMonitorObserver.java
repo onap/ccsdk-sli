@@ -21,17 +21,17 @@
 package org.onap.ccsdk.sli.core.dblib.pm;
 
 public interface SQLExecutionMonitorObserver {
-	public String getDbConnectionName();
+    String getDbConnectionName();
 
-	public long getInterval();
-	public void setInterval(long value);
+    long getInterval();
+    void setInterval(long value);
 
-	public long getInitialDelay();
-	public void setInitialDelay(long value);
+    long getInitialDelay();
+    void setInitialDelay(long value);
 
-	public long getExpectedCompletionTime();
-	public void setExpectedCompletionTime(long value);
+    long getExpectedCompletionTime();
+    void setExpectedCompletionTime(long value);
 
-	public long getUnprocessedFailoverThreshold();
-	public void setUnprocessedFailoverThreshold(long value);
+    long getUnprocessedFailoverThreshold();
+    void setUnprocessedFailoverThreshold(long value);
 }
