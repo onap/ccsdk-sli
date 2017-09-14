@@ -65,23 +65,13 @@ public class MdsalHelper {
     public static void loadProperties(String propertiesFile) {
 	File file = new File(propertiesFile);
 	Properties properties = new Properties();
-	InputStream input = null;
 	if (file.isFile() && file.canRead()) {
-	    try {
-		input = new FileInputStream(file);
-		properties.load(input);
-		MdsalHelper.setYangMappingProperties(properties);
-		LOG.info("Loaded properties from " + propertiesFile);
+	    try (InputStream input = new FileInputStream(file)) {
+			properties.load(input);
+			MdsalHelper.setYangMappingProperties(properties);
+			LOG.info("Loaded properties from " + propertiesFile);
 	    } catch (Exception e) {
-		LOG.error("Failed to load properties " + propertiesFile + "\n", e);
-	    } finally {
-		if (input != null) {
-		    try {
-			input.close();
-		    } catch (IOException e) {
-			LOG.error("Failed to close properties file " + propertiesFile + "\n", e);
-		    }
-		}
+			LOG.error("Failed to load properties " + propertiesFile + "\n", e);
 	    }
 	}else{
 	    LOG.error("Failed to load the properties file " + propertiesFile + "\n");
@@ -127,7 +117,7 @@ public class MdsalHelper {
 	    for (int i = 0; i < fromList.size(); i++) {
 		toProperties(props, pfx + "[" + i + "]", fromList.get(i), fromClass);
 	    }
-	    props.setProperty(pfx + "_length", "" + fromList.size());
+	    props.setProperty(pfx + "_length", Integer.toString(fromList.size()));
 
 	} else if (isYangGenerated(fromClass)) {
 	    // Class is yang generated.
