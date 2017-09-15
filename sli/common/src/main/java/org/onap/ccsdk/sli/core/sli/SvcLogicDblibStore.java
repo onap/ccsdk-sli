@@ -25,7 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Blob;
@@ -51,14 +50,11 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 	private static final String SDNC_CONFIG_DIR = "SDNC_CONFIG_DIR";
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(SvcLogicDblibStore.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SvcLogicDblibStore.class);
 
-	private static final String DBLIB_SERVICE =
-	"org.onap.ccsdk.sli.core.dblib.DbLibService";
+	private static final String DBLIB_SERVICE = "org.onap.ccsdk.sli.core.dblib.DbLibService";
 
-	Properties props = null;
-
+	@Override
 	public void init(Properties props) throws ConfigurationException {
 
 		DbLibService dbSvc = getDbLibService();
@@ -74,6 +70,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		}
 	}
 
+	@Override
 	public boolean hasGraph(String module, String rpc, String version,
 			String mode) throws SvcLogicException {
 
@@ -87,9 +84,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		String hasActiveGraphSql = "SELECT count(*) FROM SVC_LOGIC"
 				+ " WHERE module = ? AND rpc = ? AND mode = ? AND active = 'Y'";
 
-		PreparedStatement hasGraphStmt = null;
-
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 		args.add(module);
 		args.add(rpc);
 		args.add(mode);
@@ -109,23 +104,21 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 				if (cnt > 0) {
 					retval = true;
 				}
-
 			}
 		} catch (Exception e) {
 			throw new ConfigurationException("SQL query failed", e);
 		} finally {
 			if (results != null) {
 				try {
-
 					results.close();
 				} catch (SQLException x) {
+					LOG.error("Failed to close CachedRowSet", x);
 				}
 			}
 
 		}
 
-		return (retval);
-
+		return retval;
 	}
 
 	public SvcLogicGraph fetch(String module, String rpc, String version,
@@ -147,12 +140,6 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		try {
 			dbConn = dbSvc.getConnection();
 
-
-			ArrayList<String> args = new ArrayList<String>();
-			args.add(module);
-			args.add(rpc);
-			args.add(mode);
-
 			if (version == null) {
 				fetchGraphStmt = dbConn.prepareStatement(fetchActiveGraphSql);
 			} else {
@@ -171,8 +158,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 			if (results.next()) {
 				Blob graphBlob = results.getBlob("graph");
 
-				ObjectInputStream gStream = new ObjectInputStream(
-						graphBlob.getBinaryStream());
+				ObjectInputStream gStream = new ObjectInputStream(graphBlob.getBinaryStream());
 
 				Object graphObj = gStream.readObject();
 				gStream.close();
@@ -186,7 +172,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 				}
 
 			} else {
-				return (null);
+				return null;
 			}
 		} catch (SQLException e) {
 			throw new ConfigurationException("SQL query failed", e);
@@ -198,28 +184,28 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 					fetchGraphStmt.close();
 				}
 			} catch (SQLException e) {
-				LOG.info(e.getMessage());
+				LOG.error("PreparedStatement close error", e);
 			}
 			if (results != null) {
 				try {
 					results.close();
 				} catch (SQLException x) {
+					LOG.error("ResultSet close error", x);
 				}
 			}
 			try {
 				if (dbConn != null && !dbConn.isClosed()) {
 					dbConn.close();
 				}
-			} catch (Throwable exc) {
-				// the exception not monitored
+			} catch (Exception exc) {
+				LOG.error("dbConn close error", exc);
 			} finally {
 				dbConn = null;
 			}
 
 		}
 
-		return (retval);
-
+		return retval;
 	}
 
 	public void store(SvcLogicGraph graph) throws SvcLogicException {
@@ -235,35 +221,15 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 		byte[] graphBytes = null;
 
-		ByteArrayOutputStream byteStr = null;
-		ObjectOutputStream goutStr = null;
+		try (ByteArrayOutputStream byteStr = new ByteArrayOutputStream();
+			ObjectOutputStream goutStr = new ObjectOutputStream(byteStr)) {
 
-		try {
-			byteStr = new ByteArrayOutputStream();
-			goutStr = new ObjectOutputStream(byteStr);
 			goutStr.writeObject(graph);
 
 			graphBytes = byteStr.toByteArray();
 
 		} catch (Exception e) {
 			throw new SvcLogicException("could not serialize graph", e);
-		} finally {
-
-			if (goutStr != null) {
-				try {
-					goutStr.close();
-				} catch (IOException e) {
-
-				}
-			}
-
-			if (byteStr != null) {
-				try {
-					byteStr.close();
-				} catch (IOException e) {
-
-				}
-			}
 		}
 
 		// If object already stored in database, delete it
@@ -279,8 +245,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 			dbConn = dbSvc.getConnection();
 			boolean oldAutoCommit = dbConn.getAutoCommit();
 			dbConn.setAutoCommit(false);
-			storeGraphStmt = dbConn
-					.prepareStatement(storeGraphSql);
+			storeGraphStmt = dbConn.prepareStatement(storeGraphSql);
 			storeGraphStmt.setString(1, graph.getModule());
 			storeGraphStmt.setString(2, graph.getRpc());
 			storeGraphStmt.setString(3, graph.getVersion());
@@ -300,14 +265,14 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 					storeGraphStmt.close();
 				}
 			} catch (SQLException e) {
-				LOG.info(e.getMessage());
+				LOG.error("PreparedStatement close error", e);
 			}
 			try {
 				if (dbConn != null && !dbConn.isClosed()) {
 					dbConn.close();
 				}
-			} catch (Throwable exc) {
-				// the exception not monitored
+			} catch (Exception exc) {
+				LOG.error("dbConn close error", exc);
 			} finally {
 				dbConn = null;
 			}
@@ -322,7 +287,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 		String deleteGraphSql = "DELETE FROM SVC_LOGIC WHERE module = ? AND rpc = ? AND version = ? AND mode = ?";
 
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 
 		args.add(module);
 		args.add(rpc);
@@ -332,8 +297,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		try {
 			dbSvc.writeData(deleteGraphSql, args, null);
 		} catch (Exception e) {
-			throw new SvcLogicException(
-					"Could not delete object from database", e);
+			throw new SvcLogicException("Could not delete object from database", e);
 		}
 	}
 
@@ -344,7 +308,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 		String activateSql = "UPDATE SVC_LOGIC SET active = 'Y' WHERE module = ? AND rpc = ? AND mode = ? AND version = ?";
 
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 
 		args.add(graph.getModule());
 		args.add(graph.getRpc());
@@ -372,15 +336,14 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		}
 
 		DbLibService dbSvc = getDbLibService();
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 
 		args.add(nodeType);
 
 		try {
 			dbSvc.writeData(registerNodeSql, args, null);
 		} catch (Exception e) {
-			throw new SvcLogicException("Could not add node type to database",
-					e);
+			throw new SvcLogicException("Could not add node type to database", e);
 		}
 
 	}
@@ -395,7 +358,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		String unregisterNodeSql = "DELETE FROM NODE_TYPES WHERE nodetype = ?";
 
 		DbLibService dbSvc = getDbLibService();
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 
 		args.add(nodeType);
 
@@ -415,38 +378,26 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 		DbLibService dbSvc = getDbLibService();
 
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 
 		args.add(nodeType);
 
 		boolean isValid = false;
 
-		CachedRowSet results = null;
-		try {
-			results = dbSvc.getData(validateNodeSql, args, null);
-			if (results != null) {
-				if (results.next()) {
-					int cnt = results.getInt(1);
+		try (CachedRowSet results = dbSvc.getData(validateNodeSql, args, null)) {
 
-					if (cnt > 0) {
-						isValid = true;
-					}
+			if (results != null && results.next()) {
+				int cnt = results.getInt(1);
+
+				if (cnt > 0) {
+					isValid = true;
 				}
 			}
 		} catch (Exception e) {
-			throw new SvcLogicException(
-					"Cannot select node type from database", e);
-		} finally {
-			if (results != null) {
-				try {
-					results.close();
-				} catch (SQLException x) {
-				}
-			}
-
+			throw new SvcLogicException("Cannot select node type from database", e);
 		}
 
-		return (isValid);
+		return isValid;
 	}
 
 	private DbLibService getDbLibService() {
@@ -466,14 +417,12 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 			}
 
 			if (sref == null) {
-				LOG.warn("Could not find service reference for DBLIB service ("
-						+ DBLIB_SERVICE + ")");
+				LOG.warn("Could not find service reference for DBLIB service ({})", DBLIB_SERVICE);
 			} else {
 				dblibSvc = (DbLibService) bctx.getService(sref);
 				if (dblibSvc == null) {
 
-					LOG.warn("Could not find service reference for DBLIB service ("
-							+ DBLIB_SERVICE + ")");
+					LOG.warn("Could not find service reference for DBLIB service ({})", DBLIB_SERVICE);
 				}
 			}
 		}
@@ -495,10 +444,8 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 				if (!propFile.exists()) {
 
-					LOG.warn(
-							"Missing configuration properties file : "
-									+ propFile);
-					return(null);
+					LOG.warn("Missing configuration properties file : {}", propFile);
+					return null;
 				}
 
 				try {
@@ -507,7 +454,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 				} catch (Exception e) {
 					LOG.warn(
 							"Could not load properties file " + propPath, e);
-					return(null);
+					return null;
 
 				}
 
@@ -521,7 +468,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 				dblibSvc = JavaSingleton.getInstance();
 			}
 		}
-		return (dblibSvc);
+		return dblibSvc;
 	}
 
 
