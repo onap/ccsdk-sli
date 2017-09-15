@@ -20,7 +20,6 @@
 
 package org.onap.ccsdk.sli.core.dblib;
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 import org.apache.tomcat.jdbc.pool.PoolExhaustedException;
 import org.onap.ccsdk.sli.core.dblib.config.BaseDBConfiguration;
 import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitor;
@@ -535,7 +534,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
 		return monitor;
 	}
 
-	protected boolean isSlave() throws PoolExhaustedException, MySQLNonTransientConnectionException {
+	protected boolean isSlave() throws PoolExhaustedException {
 		CachedRowSet rs = null;
 		boolean isSlave = true;
 		String hostname = "UNDETERMINED";
@@ -547,7 +546,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
 				hostname = rs.getString(2);
 			}
 			isSlave = localSlave;
-		} catch(PoolExhaustedException | MySQLNonTransientConnectionException peexc){
+		} catch(PoolExhaustedException peexc){
 			throw peexc;
 		} catch (SQLException e) {
 			LOGGER.error("", e);

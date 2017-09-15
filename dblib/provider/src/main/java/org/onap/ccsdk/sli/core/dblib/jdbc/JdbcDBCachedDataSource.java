@@ -33,19 +33,10 @@ import org.onap.ccsdk.sli.core.dblib.config.BaseDBConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mysql.jdbc.Driver;
-
-
-/**
- * @version $Revision: 1.7 $
- * Change Log
- * Author         Date     Comments
- * ============== ======== ====================================================
- * Rich Tabedzki
- */
 
 public class JdbcDBCachedDataSource extends CachedDataSource
 {
+	private String dbDriver;
 	private String dbUserId;
 	private String dbPasswd;
 	private String dbUrl;
@@ -96,15 +87,14 @@ public class JdbcDBCachedDataSource extends CachedDataSource
         	LOGGER.error(AS_CONF_ERROR + errorMsg);
             throw new DBConfigException(errorMsg);
         }
-        /*
-        dbDriver = jdbcConfig.getDbDriver();
+
+        dbDriver = jdbcConfig.getDriverName();
         if (dbDriver == null)
         {
         	String errorMsg =  "Invalid XML contents: JDBCConnection missing dbDriver attribute";
         	LOGGER.error(AS_CONF_ERROR + errorMsg);
-        	throw new ScpTblUpdateError(errorMsg);
+        	throw new DBConfigException(errorMsg);
         }
-        */
 
         minLimit = jdbcConfig.getDbMinLimit();
 //        if (minLimit == null)
@@ -136,11 +126,10 @@ public class JdbcDBCachedDataSource extends CachedDataSource
         }
 
 		try {
-			Driver dr = new com.mysql.jdbc.Driver();
-			Class clazz = Class.forName("com.mysql.jdbc.Driver") ;
+			Class clazz = Class.forName(dbDriver) ;
 
 			PoolProperties p = new PoolProperties();
-			p.setDriverClassName("com.mysql.jdbc.Driver");
+			p.setDriverClassName(dbDriver);
 			p.setUrl(dbUrl);
 			p.setUsername(dbUserId);
 			p.setPassword(dbPasswd);
@@ -172,30 +161,9 @@ public class JdbcDBCachedDataSource extends CachedDataSource
 				PreparedStatement st = null;
 				ResultSet rs = null;
 
-				try {
-					con = dataSource.getConnection();
-					st = con.prepareStatement("Select 1 FROM DUAL");
-					rs = st.executeQuery();
-				} catch(Exception exc) {
-					LOGGER.error(exc.getMessage());
-				} finally {
-					if(rs != null) rs.close();
-					if(st != null) st.close();
-					if(con != null) con.close();
-				}
-
 				initialized = true;
-				LOGGER.info("MySQLDataSource <"+dbConnectionName+"> configured successfully. Using URL: "+dbUrl);
+				LOGGER.info("JdbcDBCachedDataSource <"+dbConnectionName+"> configured successfully. Using URL: "+dbUrl);
 			}
-
-//		} catch (SQLException exc) {
-//			initialized = false;
-//			StringBuffer sb = new StringBuffer();
-//			sb.append("Failed to initialize MySQLDataSource<");
-//			sb.append(dbConnectionName).append(">. Reason: ");
-//			sb.append(exc.getMessage());
-//			LOGGER.error("AS_CONF_ERROR: " + sb.toString());
-////			throw new DBConfigException(e.getMessage());
 		} catch (Exception exc) {
     		initialized = false;
 			StringBuffer sb = new StringBuffer();
