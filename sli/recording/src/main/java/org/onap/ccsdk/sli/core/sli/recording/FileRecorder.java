@@ -82,7 +82,6 @@ public class FileRecorder implements SvcLogicRecorder {
 		}
 		
 		File recordFile = new File(fileName);
-		PrintWriter recPrinter = null;
 		FileWriter fileWriter = null;
 		Date now = new Date();
 
@@ -94,10 +93,9 @@ public class FileRecorder implements SvcLogicRecorder {
 			record = record.replaceFirst("__TIMESTAMP__", dateFmt.format(now));
 		}
 		
-		try
+		try ( PrintWriter recPrinter = new PrintWriter(fileWriter = new
+				FileWriter(recordFile, true)))
 		{
-		
-			recPrinter = new PrintWriter(fileWriter = new FileWriter(recordFile, true));
 			recPrinter.println(record);
 		}
 		catch (Exception e)
@@ -106,10 +104,6 @@ public class FileRecorder implements SvcLogicRecorder {
 		}
 		finally
 		{
-			if (recPrinter != null)
-			{
-				recPrinter.close();
-			}
 			if (fileWriter != null)
 			{
 				try {
