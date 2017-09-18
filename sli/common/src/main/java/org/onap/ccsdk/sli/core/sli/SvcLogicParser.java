@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,10 +53,10 @@ public class SvcLogicParser {
     static final String JAXP_DYNAMIC_VALIDATION = "http://apache.org/xml/features/validation/dynamic";
     static final String JAXP_SCHEMA_VALIDATION = "http://apache.org/xml/features/validation/schema";
 
-    private static final String LOAD_MESSAGE = "Getting SvcLogicGraph from database - ";
-    private static final String LOAD_ERROR_MESSAGE = "SvcLogicGraph not found - ";
-    private static final String ACTIVATION_ERROR_MESSAGE = "Could not activate SvcLogicGraph - ";
-    private static final String PRINT_ERROR_MESSAGE = "Could not print SvcLogicGraph - ";
+    private static final String LOAD_MESSAGE = "Getting SvcLogicGraph from database - {}";
+    private static final String LOAD_ERROR_MESSAGE = "SvcLogicGraph not found - {}";
+    private static final String ACTIVATION_ERROR_MESSAGE = "Could not activate SvcLogicGraph - {}";
+    private static final String PRINT_ERROR_MESSAGE = "Could not print SvcLogicGraph - {}";
     private static final String SVC_LOGIC_STORE_ERROR = "Could not get service logic store";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SvcLogicParser.class);
@@ -98,86 +98,96 @@ public class SvcLogicParser {
         // Handle service-logic (graph) tag
         if ("service-logic".equalsIgnoreCase(qName)) {
 
-        module = attributes.getValue("module");
-        if (module == null || module.length() == 0) {
-            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + "Missing 'module' attribute from service-logic tag");
-        }
+            module = attributes.getValue("module");
+            if (module == null || module.length() == 0) {
+                throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                    + "Missing 'module' attribute from service-logic tag");
+            }
 
-        version = attributes.getValue("version");
-        if (version == null || version.length() == 0) {
-            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + "Missing 'version' attribute from service-logic tag");
-        }
+            version = attributes.getValue("version");
+            if (version == null || version.length() == 0) {
+                throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                    + "Missing 'version' attribute from service-logic tag");
+            }
 
-        return;
+            return;
         }
 
         if ("method".equalsIgnoreCase(qName)) {
-        if (curGraph != null) {
-            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + "Cannot nest module tags");
-        }
-        curGraph = new SvcLogicGraph();
-        curGraph.setModule(module);
-        curGraph.setVersion(version);
-        this.curNodeId = 1;
 
-        String attrValue = attributes.getValue("rpc");
-        if (attrValue == null || attrValue.length() == 0) {
-            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + "Missing 'rpc' attribute for method tag");
-        }
-        curGraph.setRpc(attrValue);
+            if (curGraph != null) {
+                throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                    + "Cannot nest module tags");
+            }
 
-        attrValue = attributes.getValue("mode");
-        if (attrValue == null || attrValue.length() == 0) {
-            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + "Missing 'mode' attribute for method tag");
-        }
-        curGraph.setMode(attrValue);
+            curGraph = new SvcLogicGraph();
+            curGraph.setModule(module);
+            curGraph.setVersion(version);
+            this.curNodeId = 1;
 
-        return;
+            String attrValue = attributes.getValue("rpc");
+            if (attrValue == null || attrValue.length() == 0) {
+                throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                    + "Missing 'rpc' attribute for method tag");
+            }
+            curGraph.setRpc(attrValue);
+
+            attrValue = attributes.getValue("mode");
+            if (attrValue == null || attrValue.length() == 0) {
+                throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                    + "Missing 'mode' attribute for method tag");
+            }
+            curGraph.setMode(attrValue);
+
+            return;
 
         }
 
         // Handle outcome (edge) tag
         if ("outcome".equalsIgnoreCase(qName)) {
-        String refValue = attributes.getValue("ref");
+            String refValue = attributes.getValue("ref");
 
-        if (refValue != null) {
-            SvcLogicNode refNode = curGraph.getNamedNode(refValue);
+            if (refValue != null) {
+                SvcLogicNode refNode = curGraph.getNamedNode(refValue);
 
-            if (refNode != null) {
-            try {
-                curNode.addOutcome(attributes.getValue("value"), refNode);
-            } catch (SvcLogicException e) {
-                throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + "Cannot add outcome", e);
+                if (refNode != null) {
+                    try {
+                        curNode.addOutcome(attributes.getValue("value"), refNode);
+                    } catch (SvcLogicException e) {
+                        throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                            + "Cannot add outcome", e);
+                    }
+                } else {
+                    throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                        + "ref to unknown node " + refValue);
+                }
+                return;
             }
-            } else {
-            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + "ref to unknown node " + refValue);
+
+            if (outcomeValue != null) {
+                outcomeStack.push(outcomeValue);
             }
+            outcomeValue = attributes.getValue("value");
+
             return;
-        }
-
-        if (outcomeValue != null) {
-            outcomeStack.push(outcomeValue);
-        }
-        outcomeValue = attributes.getValue("value");
-
-        return;
         }
 
         // Handle parameter tag
         if ("parameter".equalsIgnoreCase(qName)) {
-        String parmName = attributes.getValue("name");
-        String parmValue = attributes.getValue("value");
+            String parmName = attributes.getValue("name");
+            String parmValue = attributes.getValue("value");
 
-        if (parmName != null && parmName.length() > 0 && parmValue != null) {
-            try {
+            if (parmName != null && parmName.length() > 0 && parmValue != null) {
+                try {
 
-            curNode.mapParameter(parmName, parmValue);
-            } catch (Exception e) {
-            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + " cannot set parameter " + parmName + " to " + parmValue + " [" + e.getMessage() + "]");
+                    curNode.mapParameter(parmName, parmValue);
+                } catch (Exception e) {
+                    throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                        + " cannot set parameter " + parmName + " to " + parmValue + " [" + e.getMessage() + "]");
+                }
             }
-        }
 
-        return;
+            return;
         }
 
         // Handle node tags
@@ -187,10 +197,12 @@ public class SvcLogicParser {
 
         try {
         if (!svcLogicStore.isValidNodeType(qName)) {
-            throw new SAXNotRecognizedException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + "Unknown tag " + qName);
+            throw new SAXNotRecognizedException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber()
+                + " " + "Unknown tag " + qName);
         }
         } catch (Exception e) {
-        throw new SAXNotRecognizedException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + "Cannot validate node type " + qName);
+        throw new SAXNotRecognizedException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+            + "Cannot validate node type " + qName);
         }
 
         try {
@@ -204,7 +216,8 @@ public class SvcLogicParser {
             curGraph.setRootNode(thisNode);
         }
         } catch (SvcLogicException e) {
-        throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + e.getMessage());
+        throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+            + e.getMessage());
 
         }
 
@@ -218,7 +231,7 @@ public class SvcLogicParser {
             String attrValueStr = attributes.getValue(i);
             SvcLogicExpression attrValue = null;
             if (attrValueStr.trim().startsWith("`")) {
-                int lastParen = attrValueStr.lastIndexOf("`");
+                int lastParen = attrValueStr.lastIndexOf('`');
                 String evalExpr = attrValueStr.trim().substring(1, lastParen);
                 attrValue = SvcLogicExpressionFactory.parse(evalExpr);
 
@@ -231,23 +244,27 @@ public class SvcLogicParser {
             }
             thisNode.setAttribute(attrName, attrValue);
             } catch (Exception e) {
-            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + "Cannot set attribute " + attrName, e);
+            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                + "Cannot set attribute " + attrName, e);
             }
         }
         }
 
         if (curNode != null) {
         try {
-            if ("block".equalsIgnoreCase(curNode.getNodeType()) || "for".equalsIgnoreCase(curNode.getNodeType()) || "while".equalsIgnoreCase(curNode.getNodeType())) {
-            curNode.addOutcome("" + (curNode.getNumOutcomes() + 1), thisNode);
+            if ("block".equalsIgnoreCase(curNode.getNodeType()) || "for".equalsIgnoreCase(curNode.getNodeType())
+                || "while".equalsIgnoreCase(curNode.getNodeType())) {
+                curNode.addOutcome(Integer.toString(curNode.getNumOutcomes() + 1), thisNode);
             } else {
-            if (outcomeValue == null) {
-                throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + curNode.getNodeType() + " node expects outcome, instead found " + thisNode.getNodeType());
-            }
-            curNode.addOutcome(outcomeValue, thisNode);
+                if (outcomeValue == null) {
+                    throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                        + curNode.getNodeType() + " node expects outcome, instead found " + thisNode.getNodeType());
+                }
+                curNode.addOutcome(outcomeValue, thisNode);
             }
         } catch (SvcLogicException e) {
-            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + e.getMessage());
+            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                + e.getMessage());
         }
         nodeStack.push(curNode);
         }
@@ -260,338 +277,338 @@ public class SvcLogicParser {
 
         // Handle close of service-logic tag
         if ("service-logic".equalsIgnoreCase(qName)) {
-        // Nothing more to do
-        return;
+            // Nothing more to do
+            return;
         }
 
         // Handle close of method tag
         if ("method".equalsIgnoreCase(qName)) {
-        graphs.add(curGraph);
-        curGraph = null;
-        return;
+            graphs.add(curGraph);
+            curGraph = null;
+            return;
         }
 
         // Handle close of outcome tag
         if ("outcome".equalsIgnoreCase(qName)) {
-        // Finished this outcome - pop the outcome stack
-        if (outcomeStack.isEmpty()) {
-            outcomeValue = null;
-        } else {
-            outcomeValue = outcomeStack.pop();
-        }
-        return;
+            // Finished this outcome - pop the outcome stack
+            if (outcomeStack.isEmpty()) {
+                outcomeValue = null;
+            } else {
+                outcomeValue = outcomeStack.pop();
+            }
+            return;
         }
 
         // Handle close of parameter tag - do nothing
         if ("parameter".equalsIgnoreCase(qName)) {
-        return;
+            return;
         }
 
         // Handle close of a node tag
         if (nodeStack.isEmpty()) {
-        curNode = null;
+            curNode = null;
         } else {
-        curNode = nodeStack.pop();
+            curNode = nodeStack.pop();
         }
     }
 
     @Override
     public void error(SAXParseException arg0) throws SAXException {
-        throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " " + arg0.getMessage());
+        throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+            + arg0.getMessage());
     }
 
     }
 
     public SvcLogicParser(SvcLogicStore store) {
-    this.store = store;
+        this.store = store;
     }
 
     public SvcLogicParser(String propFile) {
 
-    try {
-        this.store = SvcLogicStoreFactory.getSvcLogicStore(propFile);
-    } catch (Exception e) {
-        LOGGER.error(SVC_LOGIC_STORE_ERROR, e);
+        try {
+            this.store = SvcLogicStoreFactory.getSvcLogicStore(propFile);
+        } catch (Exception e) {
+            LOGGER.error(SVC_LOGIC_STORE_ERROR, e);
 
-    }
+        }
 
     }
 
     public SvcLogicParser(InputStream propStr) {
 
-    try {
-        this.store = SvcLogicStoreFactory.getSvcLogicStore(propStr);
-    } catch (Exception e) {
-        LOGGER.error(SVC_LOGIC_STORE_ERROR, e);
+        try {
+            this.store = SvcLogicStoreFactory.getSvcLogicStore(propStr);
+        } catch (Exception e) {
+            LOGGER.error(SVC_LOGIC_STORE_ERROR, e);
 
-    }
+        }
 
     }
 
     public LinkedList<SvcLogicGraph> parse(String fileName) throws SvcLogicException {
-    LinkedList<SvcLogicGraph> graphs = null;
+        LinkedList<SvcLogicGraph> graphs = null;
 
-    URL xsdUrl = null;
-    Schema schema = null;
-    String validateSchema = System.getProperty(SLI_VALIDATING_PARSER, "true");
+        URL xsdUrl = null;
+        Schema schema = null;
+        String validateSchema = System.getProperty(SLI_VALIDATING_PARSER, "true");
 
-    if ("true".equalsIgnoreCase(validateSchema)) {
-        xsdUrl = getClass().getResource(SVCLOGIC_XSD);
+        if ("true".equalsIgnoreCase(validateSchema)) {
+            xsdUrl = getClass().getResource(SVCLOGIC_XSD);
 
-    }
-
-    if (xsdUrl != null) {
-        try {
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        schema = schemaFactory.newSchema(xsdUrl);
-        } catch (Exception e) {
-        LOGGER.warn("Could not validate using schema " + xsdUrl.getPath(), e);
         }
-    } else {
-        LOGGER.warn("Could not find resource " + SVCLOGIC_XSD);
-    }
 
-    try {
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-
-        if (schema != null) {
-        factory.setNamespaceAware(true);
-        factory.setSchema(schema);
-        }
-        SAXParser saxParser = factory.newSAXParser();
-
-        if (saxParser.isValidating()) {
-            LOGGER.info("Parser not configured to validate XML {}", (xsdUrl != null ? xsdUrl.getPath() : null));
-        }
-        graphs = new LinkedList<>();
-
-        saxParser.parse(fileName, new SvcLogicHandler(graphs, store));
-
-    } catch (Exception e) {
-        String msg = e.getMessage();
-        if (msg != null) {
-        LOGGER.error(msg);
-        throw new SvcLogicException("Compiler error: " + fileName + " @ " + msg);
+        if (xsdUrl != null) {
+            try {
+                SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                schema = schemaFactory.newSchema(xsdUrl);
+            } catch (Exception e) {
+                LOGGER.warn("Could not validate using schema " + xsdUrl.getPath(), e);
+            }
         } else {
-        LOGGER.info("Caught exception parsing " + fileName, e);
-        throw new SvcLogicException("Compiler error: " + fileName, e);
+            LOGGER.warn("Could not find resource {}", SVCLOGIC_XSD);
         }
-    }
 
-    return graphs;
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+
+            if (schema != null) {
+                factory.setNamespaceAware(true);
+                factory.setSchema(schema);
+            }
+            SAXParser saxParser = factory.newSAXParser();
+
+            if (saxParser.isValidating()) {
+                LOGGER.info("Parser not configured to validate XML {}", (xsdUrl != null ? xsdUrl.getPath() : null));
+            }
+            graphs = new LinkedList<>();
+
+            saxParser.parse(fileName, new SvcLogicHandler(graphs, store));
+
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            if (msg != null) {
+                LOGGER.error(msg);
+                throw new SvcLogicException("Compiler error: " + fileName + " @ " + msg);
+            } else {
+                LOGGER.info("Caught exception parsing " + fileName, e);
+                throw new SvcLogicException("Compiler error: " + fileName, e);
+            }
+        }
+
+        return graphs;
     }
 
     public static void main(String argv[]) {
 
-    if (argv.length == 0) {
-        SvcLogicParser.usage();
-    }
+        if (argv.length == 0) {
+            SvcLogicParser.usage();
+        }
 
-    if ("load".equalsIgnoreCase(argv[0])) {
-        if (argv.length == 3) {
-        String xmlfile = argv[1];
-        String propfile = argv[2];
+        if ("load".equalsIgnoreCase(argv[0])) {
+            if (argv.length == 3) {
+                String xmlfile = argv[1];
+                String propfile = argv[2];
 
-        SvcLogicStore store = SvcLogicParser.getStore(propfile);
-        try {
-            SvcLogicParser.load(xmlfile, store);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-        } else {
-        SvcLogicParser.usage();
-        }
-    } else if ("print".equalsIgnoreCase(argv[0])) {
-        String version = null;
-        String propfile = null;
+                SvcLogicStore store = SvcLogicParser.getStore(propfile);
+                try {
+                    SvcLogicParser.load(xmlfile, store);
+                } catch (Exception e) {
+                    LOGGER.error(e.getMessage(), e);
+                }
+            } else {
+                SvcLogicParser.usage();
+            }
+        } else if ("print".equalsIgnoreCase(argv[0])) {
+            String version = null;
+            String propfile = null;
 
-        switch (argv.length) {
-        case 6:
-        version = argv[4];
-        propfile = argv[5];
-        case 5:
-        if (propfile == null) {
-            propfile = argv[4];
-        }
-        SvcLogicStore store = SvcLogicParser.getStore(propfile);
-        SvcLogicParser.print(argv[1], argv[2], argv[3], version, store);
-        break;
-        default:
-        SvcLogicParser.usage();
-        }
-    } else if ("get-source".equalsIgnoreCase(argv[0])) {
+            switch (argv.length) {
+            case 6:
+                version = argv[4];
+                propfile = argv[5];
+            case 5:
+                if (propfile == null) {
+                    propfile = argv[4];
+                }
+                SvcLogicStore store = SvcLogicParser.getStore(propfile);
+                SvcLogicParser.print(argv[1], argv[2], argv[3], version, store);
+                break;
+            default:
+                SvcLogicParser.usage();
+            }
+        } else if ("get-source".equalsIgnoreCase(argv[0])) {
 
-        switch (argv.length) {
-        case 6:
-        SvcLogicStore store = SvcLogicParser.getStore(argv[5]);
-        SvcLogicParser.getSource(argv[1], argv[2], argv[3], argv[4], store);
-        break;
-        default:
-        SvcLogicParser.usage();
-        }
-    } else if ("activate".equalsIgnoreCase(argv[0])) {
-        if (argv.length == 6) {
-        SvcLogicStore store = SvcLogicParser.getStore(argv[5]);
-        SvcLogicParser.activate(argv[1], argv[2], argv[3], argv[4], store);
-        } else {
-        SvcLogicParser.usage();
-        }
-    } else if ("validate".equalsIgnoreCase(argv[0])) {
-        if (argv.length == 3) {
-        String xmlfile = argv[1];
-        String propfile = argv[2];
+            if (argv.length == 6) {
+                SvcLogicStore store = SvcLogicParser.getStore(argv[5]);
+                SvcLogicParser.getSource(argv[1], argv[2], argv[3], argv[4], store);
+            } else {
+                SvcLogicParser.usage();
+            }
+        } else if ("activate".equalsIgnoreCase(argv[0])) {
+            if (argv.length == 6) {
+            SvcLogicStore store = SvcLogicParser.getStore(argv[5]);
+            SvcLogicParser.activate(argv[1], argv[2], argv[3], argv[4], store);
+            } else {
+            SvcLogicParser.usage();
+            }
+        } else if ("validate".equalsIgnoreCase(argv[0])) {
+            if (argv.length == 3) {
+            String xmlfile = argv[1];
+            String propfile = argv[2];
 
-        System.setProperty(SLI_VALIDATING_PARSER, "true");
-        SvcLogicStore store = SvcLogicParser.getStore(propfile);
-        try {
-            SvcLogicParser.validate(xmlfile, store);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            System.setProperty(SLI_VALIDATING_PARSER, "true");
+            SvcLogicStore store = SvcLogicParser.getStore(propfile);
+            try {
+                SvcLogicParser.validate(xmlfile, store);
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+            } else {
+            SvcLogicParser.usage();
+            }
         }
-        } else {
-        SvcLogicParser.usage();
-        }
-    }
 
-    System.exit(0);
+        System.exit(0);
     }
 
     private static SvcLogicStore getStore(String propfile) {
 
-    SvcLogicStore store = null;
+        SvcLogicStore store = null;
 
-    try {
-        store = SvcLogicStoreFactory.getSvcLogicStore(propfile);
-    } catch (Exception e) {
-        LOGGER.error(SVC_LOGIC_STORE_ERROR, e);
-        System.exit(1);
-    }
+        try {
+            store = SvcLogicStoreFactory.getSvcLogicStore(propfile);
+        } catch (Exception e) {
+            LOGGER.error(SVC_LOGIC_STORE_ERROR, e);
+            System.exit(1);
+        }
 
-    return store;
+        return store;
 
     }
 
     public static void load(String xmlfile, SvcLogicStore store) throws SvcLogicException {
-    File xmlFile = new File(xmlfile);
-    if (!xmlFile.canRead()) {
-        throw new ConfigurationException("Cannot read xml file (" + xmlfile + ")");
-    }
-
-    SvcLogicParser parser = new SvcLogicParser(store);
-    LinkedList<SvcLogicGraph> graphs = null;
-    try {
-        graphs = parser.parse(xmlfile);
-    } catch (Exception e) {
-        throw new SvcLogicException(e.getMessage(), e);
-    }
-
-    if (graphs == null) {
-        throw new SvcLogicException("Could not parse " + xmlfile);
-    }
-
-    for (SvcLogicGraph graph : graphs) {
-
-        String module = graph.getModule();
-        String rpc = graph.getRpc();
-        String version = graph.getVersion();
-        String mode = graph.getMode();
-        try {
-        LOGGER.info("Saving SvcLogicGraph to database (module:" + module + ",rpc:" + rpc + ",version:" + version + ",mode:" + mode + ")");
-        store.store(graph);
-        } catch (Exception e) {
-        throw new SvcLogicException(e.getMessage(), e);
+        File xmlFile = new File(xmlfile);
+        if (!xmlFile.canRead()) {
+            throw new ConfigurationException("Cannot read xml file (" + xmlfile + ")");
         }
 
-    }
+        SvcLogicParser parser = new SvcLogicParser(store);
+        LinkedList<SvcLogicGraph> graphs = null;
+        try {
+            graphs = parser.parse(xmlfile);
+        } catch (Exception e) {
+            throw new SvcLogicException(e.getMessage(), e);
+        }
+
+        if (graphs == null) {
+            throw new SvcLogicException("Could not parse " + xmlfile);
+        }
+
+        for (SvcLogicGraph graph : graphs) {
+
+            String module = graph.getModule();
+            String rpc = graph.getRpc();
+            String version = graph.getVersion();
+            String mode = graph.getMode();
+            try {
+                LOGGER.info("Saving SvcLogicGraph to database (module:{},rpc:{},mode:{},version:{})", module, rpc,
+                    mode, version);
+                store.store(graph);
+            } catch (Exception e) {
+                throw new SvcLogicException(e.getMessage(), e);
+            }
+
+        }
 
     }
 
     public static void validate(String xmlfile, SvcLogicStore store) throws SvcLogicException {
-    File xmlFile = new File(xmlfile);
-    if (!xmlFile.canRead()) {
-        throw new ConfigurationException("Cannot read xml file (" + xmlfile + ")");
-    }
+        File xmlFile = new File(xmlfile);
+        if (!xmlFile.canRead()) {
+            throw new ConfigurationException("Cannot read xml file (" + xmlfile + ")");
+        }
 
-    SvcLogicParser parser = new SvcLogicParser(store);
-    LinkedList<SvcLogicGraph> graphs = null;
-    try {
-        LOGGER.info("Validating " + xmlfile);
-        graphs = parser.parse(xmlfile);
-    } catch (Exception e) {
-        throw new SvcLogicException(e.getMessage(), e);
-    }
+        SvcLogicParser parser = new SvcLogicParser(store);
+        LinkedList<SvcLogicGraph> graphs = null;
+        try {
+            LOGGER.info("Validating {}", xmlfile);
+            graphs = parser.parse(xmlfile);
+        } catch (Exception e) {
+            throw new SvcLogicException(e.getMessage(), e);
+        }
 
-    if (graphs == null) {
-        throw new SvcLogicException("Could not parse " + xmlfile);
-    } else {
-        LOGGER.info("Compilation successful for " + xmlfile);
-    }
+        if (graphs == null) {
+            throw new SvcLogicException("Could not parse " + xmlfile);
+        } else {
+            LOGGER.info("Compilation successful for {}", xmlfile);
+        }
 
     }
 
     private static void print(String module, String rpc, String mode, String version, SvcLogicStore store) {
-    String details = "(module:" + module + ", rpc:" + rpc + ", version:" + version + ", mode:" + mode + ")";
+        String details = "(module:" + module + ", rpc:" + rpc + ", version:" + version + ", mode:" + mode + ")";
 
-    try {
-        LOGGER.info(LOAD_MESSAGE + details);
+        try {
+            LOGGER.info(LOAD_MESSAGE, details);
 
-        SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
-        if (graph == null) {
-        LOGGER.error(LOAD_ERROR_MESSAGE + details);
-        System.exit(1);
+            SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
+            if (graph == null) {
+                LOGGER.error(LOAD_ERROR_MESSAGE, details);
+                System.exit(1);
+            }
+            graph.printAsGv(System.out);
+        } catch (Exception e) {
+            LOGGER.error(PRINT_ERROR_MESSAGE, details, e);
+            System.exit(1);
         }
-        graph.printAsGv(System.out);
-    } catch (Exception e) {
-        LOGGER.error(PRINT_ERROR_MESSAGE + details, e);
-        System.exit(1);
-    }
 
     }
 
     private static void getSource(String module, String rpc, String mode, String version, SvcLogicStore store) {
-    String details = "(module:" + module + ", rpc:" + rpc + ", version:" + version + ", mode:" + mode + ")";
+        String details = "(module:" + module + ", rpc:" + rpc + ", version:" + version + ", mode:" + mode + ")";
 
-    try {
-        LOGGER.info(LOAD_MESSAGE + details);
+        try {
+            LOGGER.info(LOAD_MESSAGE, details);
 
-        SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
-        if (graph == null) {
-        LOGGER.error(LOAD_ERROR_MESSAGE + details);
-        System.exit(1);
+            SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
+            if (graph == null) {
+                LOGGER.error(LOAD_ERROR_MESSAGE, details);
+                System.exit(1);
+            }
+            graph.printAsXml(System.out);
+        } catch (Exception e) {
+            LOGGER.error(PRINT_ERROR_MESSAGE, details, e);
+            System.exit(1);
         }
-        graph.printAsXml(System.out);
-    } catch (Exception e) {
-        LOGGER.error(PRINT_ERROR_MESSAGE + details, e);
-        System.exit(1);
-    }
 
     }
 
     private static void activate(String module, String rpc, String version, String mode, SvcLogicStore store) {
-    String details = "(module:" + module + ", rpc:" + rpc + ", version:" + version + ", mode:" + mode + ")";
+        String details = "(module:" + module + ", rpc:" + rpc + ", version:" + version + ", mode:" + mode + ")";
 
-    try {
-        LOGGER.info(LOAD_MESSAGE + details);
+        try {
+            LOGGER.info(LOAD_MESSAGE, details);
 
-        SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
-        if (graph == null) {
-        LOGGER.error(LOAD_ERROR_MESSAGE + details);
-        System.exit(1);
+            SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
+            if (graph == null) {
+                LOGGER.error(LOAD_ERROR_MESSAGE, details);
+                System.exit(1);
+            }
+            store.activate(graph);
+        } catch (Exception e) {
+            LOGGER.error(ACTIVATION_ERROR_MESSAGE, details, e);
+            System.exit(1);
         }
-        store.activate(graph);
-    } catch (Exception e) {
-        LOGGER.error(ACTIVATION_ERROR_MESSAGE + details, e);
-        System.exit(1);
-    }
 
     }
 
     private static void usage() {
-    System.err.println("Usage: SvcLogicParser load <xml-file> <prop-file>");
-    System.err.println(" OR    SvcLogicParser print <module> <rpc> <mode> [<version>] <prop-file>");
-    System.err.println(" OR    SvcLogicParser get-source <module> <rpc> <mode> <version> <prop-file>");
-    System.err.println(" OR    SvcLogicParser activate <module> <rpc> <version> <mode>");
-    System.exit(1);
+        System.err.println("Usage: SvcLogicParser load <xml-file> <prop-file>");
+        System.err.println(" OR    SvcLogicParser print <module> <rpc> <mode> [<version>] <prop-file>");
+        System.err.println(" OR    SvcLogicParser get-source <module> <rpc> <mode> <version> <prop-file>");
+        System.err.println(" OR    SvcLogicParser activate <module> <rpc> <version> <mode>");
+        System.exit(1);
     }
 
 }
