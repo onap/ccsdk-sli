@@ -76,6 +76,7 @@
 					<instructions>
 						<Bundle-SymbolicName>org.onap.ccsdk.sli.core.dblib</Bundle-SymbolicName>
 						<Export-Package>org.onap.ccsdk.sli.core.dblib;version=${project.version}</Export-Package>
+                        <Import-Package>*,com.mysql.jdbc</Import-Package>
 						<Embed-Transitive>true</Embed-Transitive>
 					</instructions>
 				</configuration>
