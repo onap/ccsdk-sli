@@ -212,7 +212,7 @@ public class SvcLogicContext {
 
 		if (ctxVarName.indexOf('[') == -1) {
 			// Ctx variable contains no arrays
-			return (this.getAttribute(ctxVarName));
+			return getAttribute(ctxVarName);
 		}
 
 		// Resolve any array references
@@ -225,7 +225,7 @@ public class SvcLogicContext {
 				if (endBracketLoc == -1) {
 					// Missing end bracket ... give up parsing
 					LOG.warn("Variable reference {} seems to be missing a ']'", ctxVarName);
-					return (this.getAttribute(ctxVarName));
+					return getAttribute(ctxVarName);
 				}
 
 				String idxVarName = ctxVarParts[i].substring(1, endBracketLoc);
@@ -242,7 +242,7 @@ public class SvcLogicContext {
 			}
 		}
 
-		return (this.getAttribute(sbuff.toString()));
+		return getAttribute(sbuff.toString());
 	}
 
 }

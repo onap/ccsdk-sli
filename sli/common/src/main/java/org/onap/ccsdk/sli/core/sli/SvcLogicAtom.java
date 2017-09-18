@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@
 package org.onap.ccsdk.sli.core.sli;
 
 public class SvcLogicAtom extends SvcLogicExpression {
-	
+
 	public enum AtomType {
 		NUMBER,
 		STRING,
@@ -30,7 +30,7 @@ public class SvcLogicAtom extends SvcLogicExpression {
 		CONTEXT_VAR
 
 	}
-	
+
 	private AtomType atomType;
 	private String atom;
 
@@ -39,9 +39,9 @@ public class SvcLogicAtom extends SvcLogicExpression {
 	{
 		this.atomType = AtomType.valueOf(atomType);
 		this.atom = atom;
-		
+
 	}
-	
+
 	public SvcLogicAtom(String atom)
 	{
 
@@ -73,9 +73,9 @@ public class SvcLogicAtom extends SvcLogicExpression {
 				{
 					this.atomType = AtomType.IDENTIFIER;
 					this.atom = atom;
-					
+
 				}
-					
+
 			}
 		}
 	}
@@ -83,7 +83,7 @@ public class SvcLogicAtom extends SvcLogicExpression {
 	public AtomType getAtomType() {
 		return atomType;
 	}
-	
+
 	public void setAtomType(String newType)
 	{
 		atomType = AtomType.valueOf(newType);
@@ -92,9 +92,9 @@ public class SvcLogicAtom extends SvcLogicExpression {
 	public String getAtom() {
 		return atom;
 	}
-	
-	
-	
+
+
+
 	public void setAtomType(AtomType atomType) {
 		this.atomType = atomType;
 	}
@@ -110,27 +110,27 @@ public class SvcLogicAtom extends SvcLogicExpression {
 		StringBuffer sbuff = new StringBuffer();
 		switch(getAtomType())
 		{
-		case CONTEXT_VAR:
-			sbuff.append("$");
-		case IDENTIFIER:
-			boolean needDot = false;
-			for (SvcLogicExpression term: this.getOperands())
-			{
-				if (needDot)
+			case CONTEXT_VAR:
+				sbuff.append("$");
+			case IDENTIFIER:
+				boolean needDot = false;
+				for (SvcLogicExpression term: this.getOperands())
 				{
-					sbuff.append(".");
+					if (needDot)
+					{
+						sbuff.append(".");
+					}
+					sbuff.append(term.toString());
+					needDot = true;
 				}
-				sbuff.append(term.toString());
-				needDot = true;
-			}
-			return(sbuff.toString());
-		case STRING:
-		case NUMBER:
-		default:
-			return(atom);
+				return sbuff.toString();
+			case STRING:
+			case NUMBER:
+			default:
+				return atom;
 		}
 	}
-	
+
 	public String asParsedExpr()
 	{
 		// simplify debugging output for NUMBER type
@@ -139,32 +139,32 @@ public class SvcLogicAtom extends SvcLogicExpression {
 		}
 
 		StringBuffer sbuff = new StringBuffer();
-		
+
 		sbuff.append("(atom");
 		sbuff.append("<");
 		sbuff.append(atomType.toString());
 		sbuff.append(">");
-		
+
 		switch(atomType)
 		{
-		case IDENTIFIER:
-		case CONTEXT_VAR:
-			for (SvcLogicExpression term : getOperands())
-			{
+			case IDENTIFIER:
+			case CONTEXT_VAR:
+				for (SvcLogicExpression term : getOperands())
+				{
+					sbuff.append(" ");
+					sbuff.append(term.asParsedExpr());
+
+				}
+				break;
+			default:
 				sbuff.append(" ");
-				sbuff.append(term.asParsedExpr());
-				
-			}
-			break;
-		default:
-			sbuff.append(" ");
-			sbuff.append(atom);
+				sbuff.append(atom);
 		}
-		
+
 		sbuff.append(")");
-		return(sbuff.toString());
+		return sbuff.toString();
 	}
 
-	
-	
+
+
 }

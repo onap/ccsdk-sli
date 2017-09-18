@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,7 +43,7 @@ public class SvcLogicStoreFactory {
 		}
 
 		try {
-			return (getSvcLogicStore(new FileInputStream(propFile)));
+			return getSvcLogicStore(new FileInputStream(propFile));
 		} catch (Exception e) {
 			throw new ConfigurationException(
 					"Could load service store from properties file " + propfile,
@@ -62,7 +62,7 @@ public class SvcLogicStoreFactory {
 			throw new ConfigurationException("Could not get load properties from input stream", e);
 		}
 
-		return(getSvcLogicStore(props));
+		return getSvcLogicStore(props);
 	}
 
 	public static SvcLogicStore getSvcLogicStore(Properties props)
@@ -74,8 +74,8 @@ public class SvcLogicStoreFactory {
 
 		}
 
-		SvcLogicStore retval = null;
-		LOG.debug(String.format("Using org.onap.ccsdk.sli.dbtype=%s", storeType));
+		SvcLogicStore retval;
+		LOG.debug("Using org.onap.ccsdk.sli.dbtype={}", storeType);
 
 		if ("jdbc".equalsIgnoreCase(storeType)) {
 			retval = new SvcLogicJdbcStore();
@@ -90,7 +90,7 @@ public class SvcLogicStoreFactory {
 
 
 		retval.init(props);
-		return (retval);
+		return retval;
 	}
 
 }
