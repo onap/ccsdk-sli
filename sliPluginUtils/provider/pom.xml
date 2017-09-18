@@ -72,7 +72,7 @@
 						<Bundle-SymbolicName>org.onap.ccsdk.sli.core.slipluginutils</Bundle-SymbolicName>
 						<Export-Package>org.onap.ccsdk.sli.core.slipluginutils</Export-Package>
 						<Import-Package>org.onap.ccsdk.sli.core.*,org.osgi.framework.*,org.slf4j.*,java.net.*</Import-Package>
-						<Embed-Dependency>*;scope=compile|runtime;artifactId=!sli-common|org.eclipse.osgi|mariadb-connector-java|slf4j-api|jcl-over-slf4j</Embed-Dependency>
+						<Embed-Dependency>*;scope=compile|runtime;artifactId=!sli-common|org.eclipse.osgi|mariadb-java-client|slf4j-api|jcl-over-slf4j</Embed-Dependency>
 						<Embed-Transitive>true</Embed-Transitive>
 					</instructions>
 				</configuration>
