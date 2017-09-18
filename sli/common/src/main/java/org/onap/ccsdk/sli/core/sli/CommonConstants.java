@@ -23,5 +23,16 @@ package org.onap.ccsdk.sli.core.sli;
 
 public interface CommonConstants {
 
-    public static final String SERVICE_LOGIC_STATUS = "SvcLogic.status";
+    String SERVICE_LOGIC_STATUS = "SvcLogic.status";
+    String JDBC_CONN_ERR = "no jdbc connection";
+    String JDBC_STATEMENT_ERR = "could not prepare statement ";
+    String SVCLOGIC_TABLE = ".SVC_LOGIC";
+    String JDBC_SELECT_COUNT = "SELECT count(*) FROM ";
+    String RESULTSET_CLOSE_ERR = "ResultSet close error: ";
+    String JDBC_SELECT_GRAPGH = "SELECT graph FROM ";
+    String JDBC_INSERT = "INSERT INTO ";
+    String JDBC_DELETE = "DELETE FROM ";
+    String JDBC_UPDATE = "UPDATE ";
+    String JDBC_GRAPH_QUERY = " WHERE module = ? AND rpc = ? AND mode = ? AND version = ?";
+    String JDBC_ACTIVE_GRAPH_QUERY = " WHERE module = ? AND rpc = ? AND mode = ? AND active = 'Y'";
 }

@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,6 @@ package org.onap.ccsdk.sli.core.sli;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Blob;
@@ -42,8 +41,7 @@ import org.slf4j.LoggerFactory;
 
 
 public class SvcLogicJdbcStore implements SvcLogicStore {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(SvcLogicJdbcStore.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SvcLogicJdbcStore.class);
 
 	private String dbUrl = null;
 	private String dbName = null;
@@ -78,18 +76,15 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 			Driver dvr = new com.mysql.jdbc.Driver();
 			if (dvr.acceptsURL(dbUrl))
 			{
-				LOG.debug("Driver com.mysql.jdbc.Driver accepts "+dbUrl);
+				LOG.debug("Driver com.mysql.jdbc.Driver accepts {}", dbUrl);
 			}
 			else
 			{
-				LOG.warn("Driver com.mysql.jdbc.Driver does not accept "+dbUrl);
+				LOG.warn("Driver com.mysql.jdbc.Driver does not accept {}", dbUrl);
 			}
 		} catch (SQLException e1) {
 			LOG.error("Caught exception trying to load com.mysql.jdbc.Driver", e1);
-
-
 		}
-
 
 		try
 		{
@@ -105,9 +100,7 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 	private void createTable() throws ConfigurationException
 	{
 
-
-		DatabaseMetaData dbm = null;
-
+		DatabaseMetaData dbm;
 
 		try {
 			dbm = dbConn.getMetaData();
@@ -117,108 +110,84 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		}
 
 		// See if table SVC_LOGIC exists.  If not, create it.
+        Statement stmt = null;
 		try
 		{
-
 
 			ResultSet tables = dbm.getTables(null, null, "SVC_LOGIC", null);
 			if (tables.next()) {
-				// Table exists
+                LOG.debug("SVC_LOGIC table already exists");
 			}
 			else {
+                String crTableCmd = "CREATE TABLE "+dbName+".SVC_LOGIC ("
+                    + "module varchar(80) NOT NULL,"
+                    + "rpc varchar(80) NOT NULL,"
+                    + "version varchar(40) NOT NULL,"
+                    + "mode varchar(5) NOT NULL,"
+                    + "active varchar(1) NOT NULL,"
+                    + "graph BLOB,"
+                    + "CONSTRAINT P_SVC_LOGIC PRIMARY KEY(module, rpc, version, mode))";
 
-				String crTableCmd = "CREATE TABLE "+dbName+".SVC_LOGIC ("
-						+ "module varchar(80) NOT NULL,"
-						+ "rpc varchar(80) NOT NULL,"
-						+ "version varchar(40) NOT NULL,"
-						+ "mode varchar(5) NOT NULL,"
-						+ "active varchar(1) NOT NULL,"
-						+ "graph BLOB,"
-						+ "CONSTRAINT P_SVC_LOGIC PRIMARY KEY(module, rpc, version, mode))";
-
-				Statement stmt = null;
-				ConfigurationException myExc = null;
-				try
-				{
-					stmt = dbConn.createStatement();
-					stmt.executeUpdate(crTableCmd);
-				}
-				catch (SQLException e1)
-				{
-					myExc = new ConfigurationException("cannot create SVC_LOGIC table", e1);
-				}
-				finally
-				{
-					if (stmt != null)
-					{
-						stmt.close();
-					}
-				}
-
-				if (myExc != null)
-				{
-					throw myExc;
-				}
+                stmt = dbConn.createStatement();
+                stmt.executeUpdate(crTableCmd);
 			}
 		}
 		catch (Exception e)
 		{
 			throw new ConfigurationException("could not create SVC_LOGIC table", e);
 		}
+        finally
+        {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOG.error("Statement close error ", e);
+                }
+            }
+        }
 
 		// See if NODE_TYPES table exists and, if not, create it
-
+        stmt = null;
 		try
 		{
 
-
 			ResultSet tables = dbm.getTables(null, null, "NODE_TYPES", null);
 			if (tables.next()) {
-				// Table exists
+                LOG.debug("NODE_TYPES table already exists");
 			}
 			else {
+                String crTableCmd = "CREATE TABLE "+dbName+".NODE_TYPES ("
+                    + "nodetype varchar(80) NOT NULL,"
+                    + "CONSTRAINT P_NODE_TYPES PRIMARY KEY(nodetype))";
 
-				String crTableCmd = "CREATE TABLE "+dbName+".NODE_TYPES ("
-						+ "nodetype varchar(80) NOT NULL,"
-						+ "CONSTRAINT P_NODE_TYPES PRIMARY KEY(nodetype))";
+                stmt = dbConn.createStatement();
 
-				Statement stmt = null;
-				ConfigurationException myExc = null;
-				try
-				{
-					stmt = dbConn.createStatement();
-					stmt.executeUpdate(crTableCmd);
-				}
-				catch (SQLException e1)
-				{
-					myExc = new ConfigurationException("cannot create SVC_LOGIC table", e1);
-				}
-				finally
-				{
-					if (stmt != null)
-					{
-						stmt.close();
-					}
-				}
-
-				if (myExc != null)
-				{
-					throw myExc;
-				}
+                stmt.executeUpdate(crTableCmd);
 			}
 		}
 		catch (Exception e)
 		{
 			throw new ConfigurationException("could not create SVC_LOGIC table", e);
 		}
+		finally
+        {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOG.error("Statement close error ", e);
+                }
+            }
+        }
 	}
 
 	private void prepStatements() throws ConfigurationException
 	{
 
 		// Prepare statements
-		String hasVersionGraphSql = "SELECT count(*) FROM "+dbName+".SVC_LOGIC"
-				+ " WHERE module = ? AND rpc = ? AND mode = ? AND version = ?";
+		String hasVersionGraphSql = CommonConstants.JDBC_SELECT_COUNT + dbName + CommonConstants.SVCLOGIC_TABLE
+				+ CommonConstants.JDBC_GRAPH_QUERY;
 
 		try
 		{
@@ -226,12 +195,12 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		}
 		catch (Exception e)
 		{
-			throw new ConfigurationException("could not prepare statement "+hasVersionGraphSql, e);
+			throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + hasVersionGraphSql, e);
 
 		}
 
-		String hasActiveGraphSql = "SELECT count(*) FROM "+dbName+".SVC_LOGIC"
-				+ " WHERE module = ? AND rpc = ? AND mode = ? AND active = 'Y'";
+		String hasActiveGraphSql = CommonConstants.JDBC_SELECT_COUNT + dbName + CommonConstants.SVCLOGIC_TABLE
+				+ CommonConstants.JDBC_ACTIVE_GRAPH_QUERY;
 
 		try
 		{
@@ -239,12 +208,12 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		}
 		catch (Exception e)
 		{
-			throw new ConfigurationException("could not prepare statement "+hasVersionGraphSql, e);
+			throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + hasVersionGraphSql, e);
 
 		}
 
-		String fetchVersionGraphSql = "SELECT graph FROM "+dbName+".SVC_LOGIC"
-				+ " WHERE module = ? AND rpc = ? AND mode = ? AND version = ?";
+		String fetchVersionGraphSql = CommonConstants.JDBC_SELECT_GRAPGH + dbName+CommonConstants.SVCLOGIC_TABLE
+				+ CommonConstants.JDBC_GRAPH_QUERY;
 
 		try
 		{
@@ -252,12 +221,12 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		}
 		catch (Exception e)
 		{
-			throw new ConfigurationException("could not prepare statement "+fetchVersionGraphSql, e);
+			throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + fetchVersionGraphSql, e);
 
 		}
 
-		String fetchActiveGraphSql = "SELECT graph FROM "+dbName+".SVC_LOGIC"
-				+ " WHERE module = ? AND rpc = ? AND mode = ? AND active = 'Y'";
+		String fetchActiveGraphSql = CommonConstants.JDBC_SELECT_GRAPGH + dbName + CommonConstants.SVCLOGIC_TABLE
+				+ CommonConstants.JDBC_ACTIVE_GRAPH_QUERY;
 
 		try
 		{
@@ -265,12 +234,12 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		}
 		catch (Exception e)
 		{
-			throw new ConfigurationException("could not prepare statement "+fetchVersionGraphSql, e);
+			throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + fetchVersionGraphSql, e);
 
 		}
 
-		String storeGraphSql = "INSERT INTO "+dbName+".SVC_LOGIC (module, rpc, version, mode, active, graph)"
-				+ " VALUES(?, ?, ?, ?, ?, ?)";
+		String storeGraphSql = CommonConstants.JDBC_INSERT+dbName
+            + ".SVC_LOGIC (module, rpc, version, mode, active, graph) VALUES(?, ?, ?, ?, ?, ?)";
 
 		try
 		{
@@ -278,10 +247,11 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		}
 		catch (Exception e)
 		{
-			throw new ConfigurationException("could not prepare statement "+storeGraphSql, e);
+			throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + storeGraphSql, e);
 		}
 
-		String deleteGraphSql = "DELETE FROM "+dbName+".SVC_LOGIC WHERE module = ? AND rpc = ? AND version = ? AND mode = ?";
+		String deleteGraphSql = CommonConstants.JDBC_DELETE+dbName
+            + ".SVC_LOGIC WHERE module = ? AND rpc = ? AND version = ? AND mode = ?";
 
 		try
 		{
@@ -289,10 +259,11 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		}
 		catch (Exception e)
 		{
-			throw new ConfigurationException("could not prepare statement "+deleteGraphSql, e);
+			throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + deleteGraphSql, e);
 		}
 
-		String deactivateSql = "UPDATE "+dbName+".SVC_LOGIC SET active = 'N' WHERE module = ? AND rpc = ? AND mode = ?";
+		String deactivateSql = CommonConstants.JDBC_UPDATE + dbName
+            +".SVC_LOGIC SET active = 'N' WHERE module = ? AND rpc = ? AND mode = ?";
 
 		try
 		{
@@ -300,10 +271,11 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		}
 		catch (Exception e)
 		{
-			throw new ConfigurationException("could not prepare statement "+deactivateSql, e);
+			throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + deactivateSql, e);
 		}
 
-		String activateSql = "UPDATE "+dbName+".SVC_LOGIC SET active = 'Y' WHERE module = ? AND rpc = ? AND version = ? AND mode = ?";
+		String activateSql = CommonConstants.JDBC_UPDATE + dbName
+            +".SVC_LOGIC SET active = 'Y' WHERE module = ? AND rpc = ? AND version = ? AND mode = ?";
 
 		try
 		{
@@ -311,37 +283,37 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		}
 		catch (Exception e)
 		{
-			throw new ConfigurationException("could not prepare statement "+activateSql, e);
+			throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + activateSql, e);
 		}
 
-		String registerNodeSql = "INSERT INTO "+dbName+".NODE_TYPES (nodetype) VALUES(?)";
+		String registerNodeSql = CommonConstants.JDBC_INSERT + dbName + ".NODE_TYPES (nodetype) VALUES(?)";
 		try
 		{
 			registerNodeStmt = dbConn.prepareStatement(registerNodeSql);
 		}
 		catch (Exception e)
 		{
-			throw new ConfigurationException("could not prepare statement "+registerNodeSql, e);
+			throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + registerNodeSql, e);
 		}
 
-		String unregisterNodeSql = "DELETE FROM "+dbName+".NODE_TYPES WHERE nodetype = ?";
+		String unregisterNodeSql = CommonConstants.JDBC_DELETE + dbName + ".NODE_TYPES WHERE nodetype = ?";
 		try
 		{
 			unregisterNodeStmt = dbConn.prepareStatement(unregisterNodeSql);
 		}
 		catch (Exception e)
 		{
-			throw new ConfigurationException("could not prepare statement "+unregisterNodeSql, e);
+			throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + unregisterNodeSql, e);
 		}
 
-		String validateNodeSql = "SELECT count(*) FROM "+dbName+".NODE_TYPES WHERE nodetype = ?";
+		String validateNodeSql = CommonConstants.JDBC_SELECT_COUNT + dbName + ".NODE_TYPES WHERE nodetype = ?";
 		try
 		{
 			validateNodeStmt = dbConn.prepareStatement(validateNodeSql);
 		}
 		catch (Exception e)
 		{
-			throw new ConfigurationException("could not prepare statement "+validateNodeSql, e);
+			throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + validateNodeSql, e);
 		}
 	}
 
@@ -365,6 +337,7 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 	}
 
 
+	@Override
 	public void init(Properties props) throws ConfigurationException {
 
 
@@ -413,14 +386,15 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 			}
 		}
 		catch (SQLException e)
-		{}
+		{
+			LOG.error("Not a valid db connection: ", e);
+		}
 
-		return(isValid);
+		return isValid;
 	}
-public boolean hasGraph(String module, String rpc, String version, String mode) throws SvcLogicException {
 
-
-
+	@Override
+	public boolean hasGraph(String module, String rpc, String version, String mode) throws SvcLogicException {
 
 		if (!isDbConnValid())
 		{
@@ -430,16 +404,14 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 
 			if (!isDbConnValid())
 			{
-				throw new ConfigurationException("no jdbc connection");
+				throw new ConfigurationException(CommonConstants.JDBC_CONN_ERR);
 			}
 		}
-
-
 
 		boolean retval = false;
 		ResultSet results = null;
 
-		PreparedStatement hasGraphStmt = null;
+		PreparedStatement hasGraphStmt;
 		if (version == null)
 		{
 			hasGraphStmt = hasActiveGraphStmt;
@@ -448,8 +420,6 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 		{
 			hasGraphStmt = hasVersionGraphStmt;
 		}
-
-
 
 		try
 		{
@@ -489,24 +459,22 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 			{
 				try
 				{
-
 					results.close();
 				}
 				catch (SQLException x)
-				{}
+				{
+					LOG.error(CommonConstants.RESULTSET_CLOSE_ERR, x);
+				}
 			}
 
 		}
 
-
-		return(retval);
-
+		return retval;
 
 	}
 
+	@Override
 	public SvcLogicGraph fetch(String module, String rpc, String version, String mode) throws SvcLogicException {
-
-
 
 
 		if (!isDbConnValid())
@@ -517,16 +485,14 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 
 			if (!isDbConnValid())
 			{
-				throw new ConfigurationException("no jdbc connection");
+				throw new ConfigurationException(CommonConstants.JDBC_CONN_ERR);
 			}
 		}
-
-
 
 		SvcLogicGraph retval = null;
 		ResultSet results = null;
 
-		PreparedStatement fetchGraphStmt = null;
+		PreparedStatement fetchGraphStmt;
 		if (version == null)
 		{
 			fetchGraphStmt = fetchActiveGraphStmt;
@@ -570,12 +536,8 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 					throw new ConfigurationException("invalid type for graph ("+graphObj.getClass().getName());
 
 				}
+			}
 
-			}
-			else
-			{
-				return(null);
-			}
 		}
 		catch (Exception e)
 		{
@@ -590,15 +552,14 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 					results.close();
 				}
 				catch (SQLException x)
-				{}
+				{
+					LOG.error(CommonConstants.RESULTSET_CLOSE_ERR, x);
+				}
 			}
 
 		}
 
-
-		return(retval);
-
-
+		return retval;
 	}
 
 	public void store(SvcLogicGraph graph) throws SvcLogicException {
@@ -612,7 +573,7 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 
 			if (!isDbConnValid())
 			{
-				throw new ConfigurationException("no jdbc connection");
+				throw new ConfigurationException(CommonConstants.JDBC_CONN_ERR);
 			}
 		}
 
@@ -621,15 +582,12 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 			throw new SvcLogicException("graph cannot be null");
 		}
 
-		byte[] graphBytes = null;
+		byte[] graphBytes;
 
-		ByteArrayOutputStream byteStr = null;
-		ObjectOutputStream goutStr = null;
-
-		try
+		try (ByteArrayOutputStream byteStr = new ByteArrayOutputStream();
+			ObjectOutputStream goutStr = new ObjectOutputStream(byteStr))
 		{
-			byteStr = new ByteArrayOutputStream();
-			goutStr = new ObjectOutputStream(byteStr);
+
 			goutStr.writeObject(graph);
 
 			graphBytes = byteStr.toByteArray();
@@ -639,28 +597,6 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 		{
 			throw new SvcLogicException("could not serialize graph", e);
 		}
-		finally
-		{
-
-			if (goutStr != null)
-			{
-				try {
-					goutStr.close();
-				} catch (IOException e) {
-
-				}
-			}
-
-			if (byteStr != null)
-			{
-				try {
-					byteStr.close();
-				} catch (IOException e) {
-
-				}
-			}
-		}
-
 
 		// If object already stored in database, delete it
 		if (hasGraph(graph.getModule(), graph.getRpc(), graph.getVersion(), graph.getMode()))
@@ -690,6 +626,7 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 		}
 	}
 
+	@Override
 	public void delete(String module, String rpc, String version, String mode) throws SvcLogicException
 	{
 		if (!isDbConnValid())
@@ -700,7 +637,7 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 
 			if (!isDbConnValid())
 			{
-				throw new ConfigurationException("no jdbc connection");
+				throw new ConfigurationException(CommonConstants.JDBC_CONN_ERR);
 			}
 		}
 
@@ -724,6 +661,7 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 		}
 	}
 
+	@Override
 	public void activate(SvcLogicGraph graph) throws SvcLogicException
 	{
 		try
@@ -772,7 +710,7 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 
 			if (!isDbConnValid())
 			{
-				throw new ConfigurationException("no jdbc connection");
+				throw new ConfigurationException(CommonConstants.JDBC_CONN_ERR);
 			}
 		}
 
@@ -808,7 +746,7 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 
 			if (!isDbConnValid())
 			{
-				throw new ConfigurationException("no jdbc connection");
+				throw new ConfigurationException(CommonConstants.JDBC_CONN_ERR);
 			}
 		}
 
@@ -841,7 +779,7 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 
 			if (!isDbConnValid())
 			{
-				throw new ConfigurationException("no jdbc connection");
+				throw new ConfigurationException(CommonConstants.JDBC_CONN_ERR);
 			}
 		}
 
@@ -856,16 +794,13 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 			dbConn.commit();
 			dbConn.setAutoCommit(oldAutoCommit);
 
-			if (results != null)
+			if (results.next())
 			{
-				if (results.next())
-				{
-					int cnt = results.getInt(1);
+				int cnt = results.getInt(1);
 
-					if (cnt > 0)
-					{
-						isValid = true;
-					}
+				if (cnt > 0)
+				{
+					isValid = true;
 				}
 			}
 
@@ -883,13 +818,14 @@ public boolean hasGraph(String module, String rpc, String version, String mode) 
 					results.close();
 				}
 				catch (SQLException x)
-				{}
+				{
+					LOG.error(CommonConstants.RESULTSET_CLOSE_ERR, x);
+				}
 			}
 
 		}
 
 		return(isValid);
 	}
-
 
 }
