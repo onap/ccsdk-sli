@@ -47,6 +47,11 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql.connector.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>${mariadb.connector.version}</version>
+        </dependency>
 		<dependency>
 		    <groupId>org.apache.tomcat</groupId>
 		    <artifactId>tomcat-jdbc</artifactId>
@@ -76,7 +81,7 @@
 					<instructions>
 						<Bundle-SymbolicName>org.onap.ccsdk.sli.core.dblib</Bundle-SymbolicName>
 						<Export-Package>org.onap.ccsdk.sli.core.dblib;version=${project.version}</Export-Package>
-                        <Import-Package>*,com.mysql.jdbc</Import-Package>
+                        <Import-Package>*,org.mariadb.jdbc</Import-Package>
 						<Embed-Transitive>true</Embed-Transitive>
 					</instructions>
 				</configuration>
