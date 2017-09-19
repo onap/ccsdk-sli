@@ -18,41 +18,38 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.sli.core.dblib.propertiesfileresolver;
+package org.onap.ccsdk.sli.core.utils;
 
 import java.io.File;
-import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
-import org.onap.ccsdk.sli.core.dblib.DBLIBResourceProvider;
 
 /**
- * Resolves dblib properties files relative to the karaf root directory.
+ * Resolves dblib properties files relative to the default file path.  In Unix, this is represented by:
+ * <code>/opt/sdnc/data/properties</code>
  */
-public class DblibKarafRootFileResolver implements DblibPropertiesFileResolver {
-
-    final DBLIBResourceProvider dblibResourceProvider;
+public abstract class DefaultFileResolver implements PropertiesFileResolver {
 
     private final String successMessage;
 
-    public DblibKarafRootFileResolver(final String successMessage, final DBLIBResourceProvider dblibResourceProvider) {
+    private final Path propertyPath;
+
+    public DefaultFileResolver(final String successMessage, final Path propertyPath) {
         this.successMessage = successMessage;
-        this.dblibResourceProvider = dblibResourceProvider;
+        this.propertyPath = propertyPath;
     }
 
     /**
-     * Parse a properties file location relative to the karaf root
+     * Parse a properties file location based on the default properties location
      *
      * @return an Optional File containing the location if it exists, or an empty Optional
      */
     @Override
-    public Optional<File> resolveFile(final String dblibFileName) {
-        final URL fromKarafRoot = dblibResourceProvider.getClass().getResource(dblibFileName);
-        if (fromKarafRoot != null) {
-            final File propertiesFile = new File(fromKarafRoot.getFile());
-            if (propertiesFile.exists()) {
-                return Optional.of(propertiesFile);
-            }
-            return Optional.empty();
+    public Optional<File> resolveFile(final String filename) {
+        final File fileFromDefaultDblibDir = propertyPath.resolve(filename).toFile();
+        if (fileFromDefaultDblibDir.exists()) {
+            return Optional.of(fileFromDefaultDblibDir);
         }
         return Optional.empty();
     }

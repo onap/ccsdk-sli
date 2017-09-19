@@ -1,13 +1,13 @@
-package org.onap.ccsdk.sli.core.dblib.propertiesfileresolver;
+package org.onap.ccsdk.sli.core.utils;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class DblibKarafRootFileResolverTest {
+public class KarafRootFileResolverTest {
     @Test
     public void getSuccessfulResolutionMessage() throws Exception {
-        final DblibPropertiesFileResolver resolver = new DblibKarafRootFileResolver("success", null);
+        final PropertiesFileResolver resolver = new KarafRootFileResolver("success", null);
         assertEquals("success", resolver.getSuccessfulResolutionMessage());
     }
 

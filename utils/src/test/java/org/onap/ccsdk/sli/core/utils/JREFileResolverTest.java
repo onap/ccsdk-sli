@@ -1,14 +1,14 @@
-package org.onap.ccsdk.sli.core.dblib.propertiesfileresolver;
+package org.onap.ccsdk.sli.core.utils;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class DblibJREFileResolverTest {
+public class JREFileResolverTest {
 
     @Test
     public void getSuccessfulResolutionMessage() throws Exception {
-        final DblibPropertiesFileResolver resolver = new DblibJREFileResolver("success");
+        final PropertiesFileResolver resolver = new JREFileResolver("success", JREFileResolverTest.class);
         assertEquals("success", resolver.getSuccessfulResolutionMessage());
     }
 

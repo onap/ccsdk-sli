@@ -18,46 +18,40 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.sli.core.dblib.propertiesfileresolver;
-
-import com.google.common.base.Strings;
+package org.onap.ccsdk.sli.core.utils;
 
 import java.io.File;
-import java.nio.file.Paths;
+import java.net.URL;
 import java.util.Optional;
 
 /**
- * Resolves dblib properties files relative to the directory identified by the <code>SDNC_CONFIG_DIR</code>
- * environment variable.
+ * Resolves dblib properties files relative to the karaf root directory.
  */
-public class DblibEnvVarFileResolver implements DblibPropertiesFileResolver {
+public class KarafRootFileResolver implements PropertiesFileResolver {
 
-    /**
-     * Key for environment variable representing the configuration directory
-     */
-    private static final String SDNC_CONFIG_DIR_PROP_KEY = "SDNC_CONFIG_DIR";
+    final Object provider;
 
     private final String successMessage;
 
-    public DblibEnvVarFileResolver(final String successMessage) {
+    public KarafRootFileResolver(final String successMessage, final Object provider) {
         this.successMessage = successMessage;
+        this.provider = provider;
     }
 
     /**
-     * Parse a properties file location based on System environment variable
+     * Parse a properties file location relative to the karaf root
      *
      * @return an Optional File containing the location if it exists, or an empty Optional
      */
     @Override
-    public Optional<File> resolveFile(final String dblibFileName) {
-        // attempt to resolve the property directory from the corresponding environment variable
-        final String propDirectoryFromEnvVariable = System.getenv(SDNC_CONFIG_DIR_PROP_KEY);
-        final File fileFromEnvVariable;
-        if (!Strings.isNullOrEmpty(propDirectoryFromEnvVariable)) {
-            fileFromEnvVariable = Paths.get(propDirectoryFromEnvVariable).resolve(dblibFileName).toFile();
-            if(fileFromEnvVariable.exists()) {
-                return Optional.of(fileFromEnvVariable);
+    public Optional<File> resolveFile(final String filename) {
+        final URL fromKarafRoot = provider.getClass().getResource(filename);
+        if (fromKarafRoot != null) {
+            final File propertiesFile = new File(fromKarafRoot.getFile());
+            if (propertiesFile.exists()) {
+                return Optional.of(propertiesFile);
             }
+            return Optional.empty();
         }
         return Optional.empty();
     }

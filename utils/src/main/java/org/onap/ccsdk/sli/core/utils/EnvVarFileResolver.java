@@ -18,52 +18,49 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.sli.core.dblib.propertiesfileresolver;
+package org.onap.ccsdk.sli.core.utils;
+
+import com.google.common.base.Strings;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-import org.onap.ccsdk.sli.core.dblib.DBLIBResourceProvider;
-import org.osgi.framework.FrameworkUtil;
 
 /**
- * Resolves dblib properties files relative to the directory identified by the JRE property
- * <code>dblib.properties</code>.
+ * Resolves dblib properties files relative to the directory identified by the <code>SDNC_CONFIG_DIR</code>
+ * environment variable.
  */
-public class DblibJREFileResolver implements DblibPropertiesFileResolver {
+public abstract class EnvVarFileResolver implements PropertiesFileResolver {
 
     /**
-     * Key for JRE argument representing the configuration directory
+     * Key for environment variable representing the configuration directory
      */
-    private static final String DBLIB_JRE_PROPERTY_KEY = "dblib.properties";
+    private final String propertyKey;
 
     private final String successMessage;
 
-    public DblibJREFileResolver(final String successMessage) {
+    public EnvVarFileResolver(final String successMessage, final String propertyKey) {
         this.successMessage = successMessage;
+        this.propertyKey = propertyKey;
     }
 
     /**
-     * Parse a properties file location based on JRE argument
+     * Parse a properties file location based on System environment variable
      *
      * @return an Optional File containing the location if it exists, or an empty Optional
      */
     @Override
-    public Optional<File> resolveFile(final String dblibFileName) {
-        final URL jreArgumentUrl = FrameworkUtil.getBundle(DBLIBResourceProvider.class)
-                .getResource(DBLIB_JRE_PROPERTY_KEY);
-        try {
-            if (jreArgumentUrl == null) {
-                return Optional.empty();
+    public Optional<File> resolveFile(final String filename) {
+        // attempt to resolve the property directory from the corresponding environment variable
+        final String propDirectoryFromEnvVariable = System.getenv(propertyKey);
+        final File fileFromEnvVariable;
+        if (!Strings.isNullOrEmpty(propDirectoryFromEnvVariable)) {
+            fileFromEnvVariable = Paths.get(propDirectoryFromEnvVariable).resolve(filename).toFile();
+            if(fileFromEnvVariable.exists()) {
+                return Optional.of(fileFromEnvVariable);
             }
-            final Path dblibPath = Paths.get(jreArgumentUrl.toURI());
-            return Optional.of(dblibPath.resolve(dblibFileName).toFile());
-        } catch(final URISyntaxException e) {
-            return Optional.empty();
         }
+        return Optional.empty();
     }
 
     @Override

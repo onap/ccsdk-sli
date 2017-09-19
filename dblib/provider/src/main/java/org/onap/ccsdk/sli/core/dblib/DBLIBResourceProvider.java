@@ -27,11 +27,11 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Vector;
 
-import org.onap.ccsdk.sli.core.dblib.propertiesfileresolver.DblibDefaultFileResolver;
-import org.onap.ccsdk.sli.core.dblib.propertiesfileresolver.DblibEnvVarFileResolver;
-import org.onap.ccsdk.sli.core.dblib.propertiesfileresolver.DblibJREFileResolver;
-import org.onap.ccsdk.sli.core.dblib.propertiesfileresolver.DblibKarafRootFileResolver;
-import org.onap.ccsdk.sli.core.dblib.propertiesfileresolver.DblibPropertiesFileResolver;
+import org.onap.ccsdk.sli.core.utils.dblib.DblibDefaultFileResolver;
+import org.onap.ccsdk.sli.core.utils.dblib.DblibEnvVarFileResolver;
+import org.onap.ccsdk.sli.core.utils.JREFileResolver;
+import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
+import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +58,7 @@ public class DBLIBResourceProvider {
     /**
      * A prioritized list of strategies for resolving dblib properties files.
      */
-    private Vector<DblibPropertiesFileResolver> dblibPropertiesFileResolvers = new Vector();
+    private Vector<PropertiesFileResolver> dblibPropertiesFileResolvers = new Vector();
 
     /**
      * The configuration properties for the db connection.
@@ -75,10 +75,10 @@ public class DBLIBResourceProvider {
         dblibPropertiesFileResolvers.add(new DblibDefaultFileResolver(
                 "Using property file (1) from default directory"
         ));
-        dblibPropertiesFileResolvers.add(new DblibJREFileResolver(
-                "Using property file (2) from JRE argument"
+        dblibPropertiesFileResolvers.add(new JREFileResolver(
+                "Using property file (2) from JRE argument", DBLIBResourceProvider.class
         ));
-        dblibPropertiesFileResolvers.add(new DblibKarafRootFileResolver(
+        dblibPropertiesFileResolvers.add(new KarafRootFileResolver(
                 "Using property file (4) from karaf root", this));
 
         // determines properties file as according to the priority described in the class header comment
@@ -141,7 +141,7 @@ public class DBLIBResourceProvider {
      */
     File determinePropertiesFile(final DBLIBResourceProvider dblibResourceProvider) {
 
-        for (final DblibPropertiesFileResolver dblibPropertiesFileResolver : dblibPropertiesFileResolvers) {
+        for (final PropertiesFileResolver dblibPropertiesFileResolver : dblibPropertiesFileResolvers) {
             final Optional<File> fileOptional = dblibPropertiesFileResolver.resolveFile(DBLIB_PROP_FILE_NAME);
             if (fileOptional.isPresent()) {
                 return reportSuccess(dblibPropertiesFileResolver.getSuccessfulResolutionMessage(), fileOptional);

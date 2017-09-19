@@ -56,6 +56,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+		<dependency>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
+			<artifactId>utils</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
         <!-- Testing related dependencies -->
         <dependency>

@@ -18,7 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.sli.core.dblib.propertiesfileresolver;
+package org.onap.ccsdk.sli.core.utils;
 
 import java.io.File;
 import java.util.Optional;
@@ -26,15 +26,15 @@ import java.util.Optional;
 /**
  * Strategy for resolving dblib properties.
  */
-public interface DblibPropertiesFileResolver {
+public interface PropertiesFileResolver {
 
     /**
      * Resolve dblib properties file.
      *
-     * @param dblibFileName the name of the file to look for at the specific location.
+     * @param filename the name of the file to look for at the specific location.
      * @return An optional File or empty.
      */
-    Optional<File> resolveFile(final String dblibFileName);
+    Optional<File> resolveFile(final String filename);
 
     /**
      * A success message, used only for logging now.
