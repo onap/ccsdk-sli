@@ -33,7 +33,7 @@
         <bundle>mvn:org.onap.ccsdk.sli.core/sli-provider/${project.version}</bundle>
         <bundle>mvn:org.onap.ccsdk.sli.core/sli-recording/${project.version}</bundle>
         <feature>sdnc-dblib</feature>
-        <bundle>mvn:org/mariadb/jdbc/mariadb-java-client/${mariadb.connector.version}</bundle>
+        <bundle>mvn:org.mariadb.jdbc/mariadb-java-client/${mariadb.connector.version}</bundle>
     </feature>
 
 </features>

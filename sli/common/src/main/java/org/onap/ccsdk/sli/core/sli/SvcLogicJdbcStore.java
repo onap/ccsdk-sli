@@ -73,7 +73,7 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
 		jdbcProps.setProperty("password", dbPasswd);
 
 		try {
-			Driver dvr = new com.mysql.jdbc.Driver();
+			Driver dvr = new org.mariadb.jdbc.Driver();
 			if (dvr.acceptsURL(dbUrl))
 			{
 				LOG.debug("Driver com.mysql.jdbc.Driver accepts {}", dbUrl);

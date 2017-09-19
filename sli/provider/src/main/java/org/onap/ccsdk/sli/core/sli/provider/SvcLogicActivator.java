@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,7 +41,6 @@ import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mysql.jdbc.Driver;
 
 public class SvcLogicActivator implements BundleActivator {
 
@@ -76,47 +75,47 @@ public class SvcLogicActivator implements BundleActivator {
 	private static LinkedList<ServiceRegistration> registrations = new LinkedList<ServiceRegistration>();
 
 	private static HashMap<String, SvcLogicAdaptor> adaptorMap = null;
-	
+
 	private static final Logger LOG = LoggerFactory
 			.getLogger(SvcLogicActivator.class);
-	
+
 	private static Properties props = null;
 
 	private static BundleContext bundleCtx = null;
-	
+
 	private static SvcLogicService svcLogicServiceImpl = null;
-	
+
 	@Override
 	public void start(BundleContext ctx) throws Exception {
 
 		LOG.info("Activating SLI");
-		
+
 		bundleCtx = ctx;
 
 		// Read properties
 		props = new Properties();
 		String propPath = System.getenv(SVCLOGIC_PROP_VAR);
-		
+
 		if (propPath == null) {
 			String propDir = System.getenv(SDNC_CONFIG_DIR);
 			if (propDir == null) {
-				
+
 				propDir = "/opt/sdnc/data/properties";
 			}
 			propPath = propDir + "/svclogic.properties";
 			LOG.warn("Environment variable "+SVCLOGIC_PROP_VAR+" unset - defaulting to "+propPath);
 		}
-		
+
 		File propFile = new File(propPath);
-		
+
 		if (!propFile.exists()) {
-			
+
 			throw new ConfigurationException(
 					"Missing configuration properties file : "
 							+ propFile);
 		}
 		try {
-			
+
 			props.load(new FileInputStream(propFile));
 		} catch (Exception e) {
 			throw new ConfigurationException(
@@ -168,15 +167,14 @@ public class SvcLogicActivator implements BundleActivator {
 			registrations = null;
 		}
 	}
-	
+
 	public static SvcLogicStore getStore() throws SvcLogicException {
 		// Create and initialize SvcLogicStore object - used to access
 		// saved service logic.
-		
+
 		SvcLogicStore store = null;
-		
+
 		try {
-			Driver dvr = new Driver();
 			store = SvcLogicStoreFactory.getSvcLogicStore(props);
 		} catch (Exception e) {
 			throw new ConfigurationException(
@@ -190,12 +188,12 @@ public class SvcLogicActivator implements BundleActivator {
 			throw new ConfigurationException(
 					"Could not get service logic store", e);
 		}
-		
+
 		return(store);
 	}
-	
+
 	private static void registerNodeTypes(SvcLogicStore store) throws SvcLogicException {
-		
+
 		if (store == null) {
 			return;
 		}
@@ -213,13 +211,13 @@ public class SvcLogicActivator implements BundleActivator {
 			registrations.add(reg);
 
 			store.registerNodeType(nodeType);
-			
+
 			LOG.info("SLI - registering node executor");
-			
+
 			((SvcLogicServiceImpl)svcLogicServiceImpl).registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
 
 		}
-		
+
 	}
 
 }

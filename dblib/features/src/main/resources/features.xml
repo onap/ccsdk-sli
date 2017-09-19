@@ -12,7 +12,7 @@
         <feature version="${odl.mdsal.version}">odl-mdsal-broker</feature>
         <bundle>wrap:mvn:org.apache.tomcat/tomcat-jdbc/${tomcat-jdbc.version}/$DynamicImport-Package=org.mariadb.*&amp;overwrite=merge</bundle>
         <bundle>mvn:org.onap.ccsdk.sli.core/dblib-provider/${project.version}</bundle>
-        <bundle>mvn:org/mariadb/jdbc/mariadb-java-client/${mariadb.connector.version}</bundle>
+        <bundle>mvn:org.mariadb.jdbc/mariadb-java-client/${mariadb.connector.version}</bundle>
     </feature>
 
 </features>
