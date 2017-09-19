@@ -24,6 +24,9 @@
  */
 package org.onap.ccsdk.sli.core.sli;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,69 +35,92 @@ import java.util.Properties;
 
 import ch.vorburger.mariadb4j.DB;
 import ch.vorburger.mariadb4j.DBConfigurationBuilder;
-import junit.framework.TestCase;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author dt5972
  *
  */
-public class ITCaseSvcLogicParser extends TestCase {
+public class ITCaseSvcLogicParser {
+
+	private static SvcLogicStore store;
+	private static final Logger LOG = LoggerFactory.getLogger(SvcLogicJdbcStore.class);
+
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+
+		LOG.info("before class");
+
+		URL propUrl = ITCaseSvcLogicParser.class.getResource("/svclogic.properties");
+
+		InputStream propStr = ITCaseSvcLogicParser.class.getResourceAsStream("/svclogic.properties");
+
+		Properties props = new Properties();
+
+		props.load(propStr);
+
+
+		// Start MariaDB4j database
+		DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
+		config.setPort(0); // 0 => autom. detect free port
+		DB db = DB.newEmbeddedDB(config.build());
+		db.start();
+
+
+		// Override jdbc URL and database name
+		props.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
+		props.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
+
+
+		store = SvcLogicStoreFactory.getSvcLogicStore(props);
+
+		assertNotNull(store);
+
+		store.registerNodeType("switch");
+		store.registerNodeType("block");
+		store.registerNodeType("get-resource");
+		store.registerNodeType("reserve");
+		store.registerNodeType("is-available");
+		store.registerNodeType("exists");
+		store.registerNodeType("configure");
+		store.registerNodeType("return");
+		store.registerNodeType("record");
+		store.registerNodeType("allocate");
+		store.registerNodeType("release");
+		store.registerNodeType("for");
+		store.registerNodeType("set");
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		LOG.info("before");
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		LOG.info("after");
+	}
+
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		LOG.info("after class");
+	}
 
 	/**
 	 * Test method for {@link org.onap.ccsdk.sli.core.sli.SvcLogicParser#parse(java.lang.String)}.
 	 */
-
-
-	public void testParse() {
-
+	@Test
+	public void testParseValidXml() {
 
 		try
 		{
-
-
-
-			URL propUrl = getClass().getResource("/svclogic.properties");
-
-			InputStream propStr = getClass().getResourceAsStream("/svclogic.properties");
-
-			Properties props = new Properties();
-
-			props.load(propStr);
-
-
-			// Start MariaDB4j database
-	        DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
-	        config.setPort(0); // 0 => autom. detect free port
-	        DB db = DB.newEmbeddedDB(config.build());
-	        db.start();
-
-
-
-			// Override jdbc URL and database name
-	        props.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
-			props.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
-
-
-
-			SvcLogicStore store = SvcLogicStoreFactory.getSvcLogicStore(props);
-
-			assertNotNull(store);
-
-			store.registerNodeType("switch");
-			store.registerNodeType("block");
-			store.registerNodeType("get-resource");
-			store.registerNodeType("reserve");
-			store.registerNodeType("is-available");
-			store.registerNodeType("exists");
-			store.registerNodeType("configure");
-			store.registerNodeType("return");
-			store.registerNodeType("record");
-			store.registerNodeType("allocate");
-			store.registerNodeType("release");
-			store.registerNodeType("for");
-			store.registerNodeType("set");
-
-
 			InputStream testStr = getClass().getResourceAsStream("/parser-good.tests");
 			BufferedReader testsReader = new BufferedReader(new InputStreamReader(testStr));
 			String testCaseFile = null;
@@ -118,19 +144,29 @@ public class ITCaseSvcLogicParser extends TestCase {
 						SvcLogicParser.validate(testCaseUrl.getPath(), store);
 					} catch (Exception e) {
 						fail("Validation failure ["+e.getMessage()+"]");
-
 					}
-
-
-
-
-
 				}
 			}
+		}
+		catch (SvcLogicParserException e)
+		{
+			fail("Parser error : "+e.getMessage());
+		}
+		catch (Exception e)
+		{
+			LOG.error("", e);
+			fail("Caught exception processing test cases");
+		}
+	}
 
-			testStr = getClass().getResourceAsStream("/parser-bad.tests");
-			testsReader = new BufferedReader(new InputStreamReader(testStr));
-			testCaseFile = null;
+	@Test
+	public void testParseInvalidXml() {
+
+		try
+		{
+			InputStream testStr = getClass().getResourceAsStream("/parser-bad.tests");
+			BufferedReader testsReader = new BufferedReader(new InputStreamReader(testStr));
+			String testCaseFile = null;
 			while ((testCaseFile = testsReader.readLine()) != null) {
 
 				testCaseFile = testCaseFile.trim();
@@ -158,8 +194,6 @@ public class ITCaseSvcLogicParser extends TestCase {
 					if (valid) {
 						fail("Expected compiler error on "+testCaseFile+", but got success");
 					}
-
-
 				}
 			}
 		}
@@ -169,13 +203,10 @@ public class ITCaseSvcLogicParser extends TestCase {
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			LOG.error("", e);
 			fail("Caught exception processing test cases");
 		}
 
-
 	}
-
-
 
 }
