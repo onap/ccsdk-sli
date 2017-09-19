@@ -603,22 +603,14 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
 
 	protected boolean unlockTable(Connection conn) {
 		boolean retValue = false;
-		Statement lock = null;
-		try {
+		try (Statement lock = conn.createStatement()){
 			if(LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Executing 'UNLOCK TABLES' on connection " + conn.toString());
 			}
-			lock = conn.createStatement();
 			retValue = lock.execute("UNLOCK TABLES");
 		} catch(Exception exc){
 			LOGGER.error("", exc);
 			retValue =  false;
-		} finally {
-			try {
-				 lock.close();
-			} catch(Exception exc) {
-
-			}
 		}
 		return retValue;
 	}
