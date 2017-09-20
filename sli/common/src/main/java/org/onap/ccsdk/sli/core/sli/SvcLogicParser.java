@@ -46,7 +46,7 @@ import java.util.LinkedList;
  */
 public class SvcLogicParser {
 
-    SvcLogicStore store = null;
+    private SvcLogicStore store = null;
     static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
     static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
     static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
@@ -140,7 +140,6 @@ public class SvcLogicParser {
             curGraph.setMode(attrValue);
 
             return;
-
         }
 
         // Handle outcome (edge) tag
@@ -191,33 +190,32 @@ public class SvcLogicParser {
         }
 
         // Handle node tags
-
         String nodeName = attributes.getValue("name");
-        SvcLogicNode thisNode = null;
+        SvcLogicNode thisNode;
 
         try {
-        if (!svcLogicStore.isValidNodeType(qName)) {
-            throw new SAXNotRecognizedException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber()
-                + " " + "Unknown tag " + qName);
-        }
+            if (!svcLogicStore.isValidNodeType(qName)) {
+                throw new SAXNotRecognizedException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber()
+                    + " " + "Unknown tag " + qName);
+            }
         } catch (Exception e) {
-        throw new SAXNotRecognizedException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
-            + "Cannot validate node type " + qName);
+            throw new SAXNotRecognizedException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber()
+                + " " + "Cannot validate node type " + qName);
         }
 
         try {
-        if (nodeName != null && nodeName.length() > 0) {
-            thisNode = new SvcLogicNode(curNodeId++, qName, nodeName, curGraph);
-        } else {
-            thisNode = new SvcLogicNode(curNodeId++, qName, curGraph);
-        }
+            if (nodeName != null && nodeName.length() > 0) {
+                thisNode = new SvcLogicNode(curNodeId++, qName, nodeName, curGraph);
+            } else {
+                thisNode = new SvcLogicNode(curNodeId++, qName, curGraph);
+            }
 
-        if (curGraph.getRootNode() == null) {
-            curGraph.setRootNode(thisNode);
-        }
+            if (curGraph.getRootNode() == null) {
+                curGraph.setRootNode(thisNode);
+            }
         } catch (SvcLogicException e) {
-        throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
-            + e.getMessage());
+            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                + e.getMessage());
 
         }
 
@@ -229,7 +227,7 @@ public class SvcLogicParser {
             try {
 
             String attrValueStr = attributes.getValue(i);
-            SvcLogicExpression attrValue = null;
+            SvcLogicExpression attrValue;
             if (attrValueStr.trim().startsWith("`")) {
                 int lastParen = attrValueStr.lastIndexOf('`');
                 String evalExpr = attrValueStr.trim().substring(1, lastParen);
@@ -251,22 +249,22 @@ public class SvcLogicParser {
         }
 
         if (curNode != null) {
-        try {
-            if ("block".equalsIgnoreCase(curNode.getNodeType()) || "for".equalsIgnoreCase(curNode.getNodeType())
-                || "while".equalsIgnoreCase(curNode.getNodeType())) {
-                curNode.addOutcome(Integer.toString(curNode.getNumOutcomes() + 1), thisNode);
-            } else {
-                if (outcomeValue == null) {
-                    throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
-                        + curNode.getNodeType() + " node expects outcome, instead found " + thisNode.getNodeType());
+            try {
+                if ("block".equalsIgnoreCase(curNode.getNodeType()) || "for".equalsIgnoreCase(curNode.getNodeType())
+                    || "while".equalsIgnoreCase(curNode.getNodeType())) {
+                    curNode.addOutcome(Integer.toString(curNode.getNumOutcomes() + 1), thisNode);
+                } else {
+                    if (outcomeValue == null) {
+                        throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                            + curNode.getNodeType() + " node expects outcome, instead found " + thisNode.getNodeType());
+                    }
+                    curNode.addOutcome(outcomeValue, thisNode);
                 }
-                curNode.addOutcome(outcomeValue, thisNode);
+            } catch (SvcLogicException e) {
+                throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
+                    + e.getMessage());
             }
-        } catch (SvcLogicException e) {
-            throw new SAXException("line " + locator.getLineNumber() + ":" + locator.getColumnNumber() + " "
-                + e.getMessage());
-        }
-        nodeStack.push(curNode);
+            nodeStack.push(curNode);
         }
         curNode = thisNode;
 
@@ -347,7 +345,7 @@ public class SvcLogicParser {
     }
 
     public LinkedList<SvcLogicGraph> parse(String fileName) throws SvcLogicException {
-        LinkedList<SvcLogicGraph> graphs = null;
+        LinkedList<SvcLogicGraph> graphs;
 
         URL xsdUrl = null;
         Schema schema = null;
@@ -355,15 +353,15 @@ public class SvcLogicParser {
 
         if ("true".equalsIgnoreCase(validateSchema)) {
             xsdUrl = getClass().getResource(SVCLOGIC_XSD);
-
         }
 
         if (xsdUrl != null) {
             try {
                 SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
                 schema = schemaFactory.newSchema(xsdUrl);
+                LOGGER.info("Schema path {}", xsdUrl.getPath());
             } catch (Exception e) {
-                LOGGER.warn("Could not validate using schema " + xsdUrl.getPath(), e);
+                LOGGER.warn("Could not validate using schema {}", xsdUrl.getPath(), e);
             }
         } else {
             LOGGER.warn("Could not find resource {}", SVCLOGIC_XSD);
@@ -379,19 +377,19 @@ public class SvcLogicParser {
             SAXParser saxParser = factory.newSAXParser();
 
             if (saxParser.isValidating()) {
-                LOGGER.info("Parser not configured to validate XML {}", (xsdUrl != null ? xsdUrl.getPath() : null));
+                LOGGER.info("Parser configured to validate XML {}", (xsdUrl != null ? xsdUrl.getPath() : null));
             }
+
             graphs = new LinkedList<>();
 
             saxParser.parse(fileName, new SvcLogicHandler(graphs, store));
 
         } catch (Exception e) {
+            LOGGER.error("Parsing failed {}", e);
             String msg = e.getMessage();
             if (msg != null) {
-                LOGGER.error(msg);
                 throw new SvcLogicException("Compiler error: " + fileName + " @ " + msg);
             } else {
-                LOGGER.info("Caught exception parsing " + fileName, e);
                 throw new SvcLogicException("Compiler error: " + fileName, e);
             }
         }
@@ -414,7 +412,7 @@ public class SvcLogicParser {
                 try {
                     SvcLogicParser.load(xmlfile, store);
                 } catch (Exception e) {
-                    LOGGER.error(e.getMessage(), e);
+                    LOGGER.error("Load failed {}", e);
                 }
             } else {
                 SvcLogicParser.usage();
@@ -462,7 +460,7 @@ public class SvcLogicParser {
             try {
                 SvcLogicParser.validate(xmlfile, store);
             } catch (Exception e) {
-                LOGGER.error(e.getMessage(), e);
+                LOGGER.error("Validate failed", e);
             }
             } else {
             SvcLogicParser.usage();
@@ -494,8 +492,9 @@ public class SvcLogicParser {
         }
 
         SvcLogicParser parser = new SvcLogicParser(store);
-        LinkedList<SvcLogicGraph> graphs = null;
+        LinkedList<SvcLogicGraph> graphs;
         try {
+            LOGGER.info("Loading {}", xmlfile);
             graphs = parser.parse(xmlfile);
         } catch (Exception e) {
             throw new SvcLogicException(e.getMessage(), e);
@@ -530,7 +529,7 @@ public class SvcLogicParser {
         }
 
         SvcLogicParser parser = new SvcLogicParser(store);
-        LinkedList<SvcLogicGraph> graphs = null;
+        LinkedList<SvcLogicGraph> graphs;
         try {
             LOGGER.info("Validating {}", xmlfile);
             graphs = parser.parse(xmlfile);
