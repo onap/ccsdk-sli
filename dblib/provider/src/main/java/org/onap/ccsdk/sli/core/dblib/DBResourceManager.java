@@ -52,18 +52,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.sql.DataSource;
-import javax.sql.rowset.CachedRowSet;
-
-import org.apache.tomcat.jdbc.pool.PoolExhaustedException;
-import org.onap.ccsdk.sli.core.dblib.config.DbConfigPool;
 import org.onap.ccsdk.sli.core.dblib.config.JDBCConfiguration;
-import org.onap.ccsdk.sli.core.dblib.factory.DBConfigFactory;
-import org.onap.ccsdk.sli.core.dblib.pm.PollingWorker;
-import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitor;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @version $Revision: 1.15 $
@@ -161,7 +150,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 	}
 
 	private void config(Properties configProps) throws Exception {
-		final ConcurrentLinkedQueue<CachedDataSource> semaphore = new ConcurrentLinkedQueue<CachedDataSource>();
+		final ConcurrentLinkedQueue<CachedDataSource> semaphore = new ConcurrentLinkedQueue<>();
 		final DbConfigPool dbConfig = DBConfigFactory.createConfig(configProps);
 
 		long startTime = System.currentTimeMillis();
@@ -268,7 +257,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 		String value = null;
 		long tmpLongValue = defaultValue;
 		try {
-			value = (String)props.getProperty(property);
+			value = props.getProperty(property);
 			if(value != null)
 				tmpLongValue = Long.parseLong(value);
 
@@ -288,7 +277,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 		String value = null;
 
 		try {
-			value = (String)props.getProperty(property);
+			value = props.getProperty(property);
 			if(value != null)
 				tmpValue = Boolean.parseBoolean(value);
 
@@ -303,6 +292,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 	}
 
 
+	@Override
 	public void update(Observable observable, Object data) {
 		// if observable is active and there is a standby available, switch
 		if(observable instanceof SQLExecutionMonitor)
@@ -400,7 +390,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 		CachedDataSource active = null;
 
 		// test if there are any connection pools available
-		LinkedList<CachedDataSource> sources = new LinkedList<CachedDataSource>(this.dsQueue);
+		LinkedList<CachedDataSource> sources = new LinkedList<>(this.dsQueue);
 		if(sources.isEmpty()){
 			LOGGER.error("Generated alarm: DBResourceManager.getData - No active DB connection pools are available.");
 			throw new DBLibException("No active DB connection pools are available in RequestDataWithRecovery call.");
@@ -603,6 +593,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 		}
 	}
 
+	@Override
 	public Connection getConnection() throws SQLException {
 		Throwable lastException = null;
 		CachedDataSource active = null;
@@ -664,6 +655,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 		}
 	}
 
+	@Override
 	public Connection getConnection(String username, String password)
 	throws SQLException {
 		CachedDataSource active = null;
@@ -754,18 +746,22 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 		}
 	}
 
+	@Override
 	public PrintWriter getLogWriter() throws SQLException {
 		return ((CachedDataSource)this.dsQueue.peek()).getLogWriter();
 	}
 
+	@Override
 	public int getLoginTimeout() throws SQLException {
 		return ((CachedDataSource)this.dsQueue.peek()).getLoginTimeout();
 	}
 
+	@Override
 	public void setLogWriter(PrintWriter out) throws SQLException {
 		((CachedDataSource)this.dsQueue.peek()).setLogWriter(out);
 	}
 
+	@Override
 	public void setLoginTimeout(int seconds) throws SQLException {
 		((CachedDataSource)this.dsQueue.peek()).setLoginTimeout(seconds);
 	}
@@ -795,7 +791,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 	public String getDBStatus(boolean htmlFormat) {
 		StringBuilder buffer = new StringBuilder();
 
-		ArrayList<CachedDataSource> list = new ArrayList<CachedDataSource>();
+		ArrayList<CachedDataSource> list = new ArrayList<>();
 		list.addAll(dsQueue);
 		list.addAll(broken);
 		if (htmlFormat)
@@ -843,10 +839,12 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 		return buffer.toString();
 	}
 
+	@Override
 	public boolean isWrapperFor(Class<?> iface) throws SQLException {
 		return false;
 	}
 
+	@Override
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		return null;
 	}
@@ -854,6 +852,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 	/**
 	 * @return the monitorDbResponse
 	 */
+	@Override
 	public final boolean isMonitorDbResponse() {
 		return recoveryMode && monitorDbResponse;
 	}
@@ -880,7 +879,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
 	public String getPreferredDataSourceName(AtomicBoolean flipper) {
 
-		LinkedList<CachedDataSource> snapshot = new LinkedList<CachedDataSource>(dsQueue);
+		LinkedList<CachedDataSource> snapshot = new LinkedList<>(dsQueue);
 		if(snapshot.size() > 1){
 			CachedDataSource first = snapshot.getFirst();
 			CachedDataSource last = snapshot.getLast();
@@ -901,6 +900,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 		return snapshot.peek().getDbConnectionName();
 	}
 
+	@Override
 	public java.util.logging.Logger getParentLogger()
 			throws SQLFeatureNotSupportedException {
 		return null;
@@ -916,7 +916,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
 	private String getMasterDataSourceName(AtomicBoolean flipper) {
 
-		LinkedList<CachedDataSource> snapshot = new LinkedList<CachedDataSource>(dsQueue);
+		LinkedList<CachedDataSource> snapshot = new LinkedList<>(dsQueue);
 		if(snapshot.size() > 1){
 			CachedDataSource first = snapshot.getFirst();
 			CachedDataSource last = snapshot.getLast();
@@ -938,7 +938,8 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 	}
 
     class RemindTask extends TimerTask {
-        public void run() {
+        @Override
+		public void run() {
 			CachedDataSource ds = dsQueue.peek();
 			if(ds != null)
 				ds.getPoolInfo(false);
