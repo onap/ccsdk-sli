@@ -58,7 +58,7 @@
         </dependency>
 		<dependency>
 			<groupId>org.onap.ccsdk.sli.core</groupId>
-			<artifactId>utils</artifactId>
+			<artifactId>utils-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
