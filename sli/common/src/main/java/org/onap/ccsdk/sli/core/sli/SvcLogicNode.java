@@ -87,28 +87,28 @@ public class SvcLogicNode implements Serializable {
 	
 	public String getNodeName()
 	{
-		return(nodeName);
+		return nodeName;
 	}
 	
 	public String getNodeType()
 	{
-		return(nodeType);
+		return nodeType;
 	}
 	
 	public SvcLogicGraph getGraph()
 	{
-		return(graph);
+		return graph;
 	}
 	
 	public int getNumOutcomes()
 	{
 		if (outcomes == null)
 		{
-			return(0);
+			return 0;
 		}
 		else
 		{
-			return(outcomes.size());
+			return outcomes.size();
 		}
 	}
 	
@@ -116,11 +116,11 @@ public class SvcLogicNode implements Serializable {
 	{
 		if (attributes.containsKey(name))
 		{
-			return(attributes.get(name));
+			return attributes.get(name);
 		}
 		else
 		{
-			return(null);
+			return null;
 		}
 			
 	}
@@ -151,7 +151,7 @@ public class SvcLogicNode implements Serializable {
 		try
 		{
 			SvcLogicExpression parmValue;
-			if ((value == null) || (value.length() == 0))
+			if (value == null || value.length() == 0)
 			{
 				parmValue = new SvcLogicAtom("STRING", "");
 			}
@@ -187,11 +187,11 @@ public class SvcLogicNode implements Serializable {
 	{
 		if (parameters.containsKey(name))
 		{
-			return(parameters.get(name));
+			return parameters.get(name);
 		}
 		else
 		{
-			return(null);
+			return null;
 		}
 	}
 	
@@ -245,7 +245,7 @@ public class SvcLogicNode implements Serializable {
 			return null;
 		}
 		
-		return(outcomes.entrySet());
+		return outcomes.entrySet();
 		
 	}
 	
@@ -256,7 +256,7 @@ public class SvcLogicNode implements Serializable {
 			return null;
 		}
 		
-		return(parameters.entrySet());
+		return parameters.entrySet();
 		
 	}
 	
@@ -346,8 +346,8 @@ public class SvcLogicNode implements Serializable {
 			pstr.print("'`");
 		}
 		
-		if (((parameters == null) || (parameters.isEmpty())) && 
-				((outcomes == null) || outcomes.isEmpty()))
+		if ((parameters == null || parameters.isEmpty()) &&
+				(outcomes == null || outcomes.isEmpty()))
 		{
 			pstr.print("/>\n");
 			pstr.flush();
@@ -424,12 +424,12 @@ public class SvcLogicNode implements Serializable {
 		}
 		if (outcomes == null)
 		{
-			return(null);
+			return null;
 		}
 		
 		if (outcomes.containsKey(value))
 		{
-			return(outcomes.get(value));
+			return outcomes.get(value);
 		}
 		else
 		{
@@ -443,11 +443,11 @@ public class SvcLogicNode implements Serializable {
 
 			if (outcomes.containsKey("Other"))
 			{
-				return(outcomes.get("Other"));
+				return outcomes.get("Other");
 			}
 			else
 			{
-				return(null);
+				return null;
 			}
 		}
 	}
