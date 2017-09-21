@@ -20,11 +20,7 @@
 
 package org.onap.ccsdk.sli.core.dblib.jdbc;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLFeatureNotSupportedException;
-
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.onap.ccsdk.sli.core.dblib.CachedDataSource;
@@ -34,66 +30,61 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class JdbcDBCachedDataSource extends CachedDataSource
-{
-	private String dbDriver;
-	private String dbUserId;
-	private String dbPasswd;
-	private String dbUrl;
+public class JdbcDBCachedDataSource extends CachedDataSource {
 
-	private int minLimit;
-	private int maxLimit;
-	private int initialLimit;
+    private String dbDriver;
+    private String dbUserId;
+    private String dbPasswd;
+    private String dbUrl;
 
-	private static final String AS_CONF_ERROR = "AS_CONF_ERROR: ";
+    private int minLimit;
+    private int maxLimit;
+    private int initialLimit;
 
-	private static Logger LOGGER = LoggerFactory.getLogger(JdbcDBCachedDataSource.class);
+    private static final String AS_CONF_ERROR = "AS_CONF_ERROR: ";
 
-	/**
-	 * @param jdbcElem
-	 */
-	public JdbcDBCachedDataSource(BaseDBConfiguration jdbcElem)
-	{
-			super(jdbcElem);
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcDBCachedDataSource.class);
 
-	@Override
-	protected void configure(BaseDBConfiguration xmlElem) throws DBConfigException
-	{
-		BaseDBConfiguration jdbcConfig = (BaseDBConfiguration)xmlElem;
-		if(jdbcConfig.getConnTimeout() > 0){
-			this.CONN_REQ_TIMEOUT = jdbcConfig.getConnTimeout();
-		}
-		if(jdbcConfig.getRequestTimeout() > 0){
-				this.DATA_REQ_TIMEOUT = jdbcConfig.getRequestTimeout();
-		}
+    /**
+     * @param jdbcElem
+     */
+    public JdbcDBCachedDataSource(BaseDBConfiguration jdbcElem) {
+        super(jdbcElem);
+    }
 
-    	// set connection pool name
-		String dbConnectionName = jdbcConfig.getDbConnectionName();
-    	super.setDbConnectionName(dbConnectionName);
-    	// Configure the JDBC connection
-    	dbUserId = jdbcConfig.getDbUserId();
-        if (dbUserId == null)
-        {
-        	String errorMsg =  "Invalid XML contents: JDBCConnection missing dbUserId attribute";
-        	LOGGER.error(AS_CONF_ERROR + errorMsg);
+    @Override
+    protected void configure(BaseDBConfiguration xmlElem) throws DBConfigException {
+        BaseDBConfiguration jdbcConfig = xmlElem;
+        if (jdbcConfig.getConnTimeout() > 0) {
+            this.connReqTimeout = jdbcConfig.getConnTimeout();
+        }
+        if (jdbcConfig.getRequestTimeout() > 0) {
+            this.dataReqTimeout = jdbcConfig.getRequestTimeout();
+        }
+
+        // set connection pool name
+        String dbConnectionName = jdbcConfig.getDbConnectionName();
+        super.setDbConnectionName(dbConnectionName);
+        // Configure the JDBC connection
+        dbUserId = jdbcConfig.getDbUserId();
+        if (dbUserId == null) {
+            String errorMsg = "Invalid XML contents: JDBCConnection missing dbUserId attribute";
+            LOGGER.error(AS_CONF_ERROR + errorMsg);
             throw new DBConfigException(errorMsg);
         }
 
         dbPasswd = jdbcConfig.getDbPasswd();
-        if (dbPasswd == null)
-        {
-        	String errorMsg =  "Invalid XML contents: JDBCConnection missing dbPasswd attribute";
-        	LOGGER.error(AS_CONF_ERROR + errorMsg);
+        if (dbPasswd == null) {
+            String errorMsg = "Invalid XML contents: JDBCConnection missing dbPasswd attribute";
+            LOGGER.error(AS_CONF_ERROR + errorMsg);
             throw new DBConfigException(errorMsg);
         }
 
         dbDriver = jdbcConfig.getDriverName();
-        if (dbDriver == null)
-        {
-        	String errorMsg =  "Invalid XML contents: JDBCConnection missing dbDriver attribute";
-        	LOGGER.error(AS_CONF_ERROR + errorMsg);
-        	throw new DBConfigException(errorMsg);
+        if (dbDriver == null) {
+            String errorMsg = "Invalid XML contents: JDBCConnection missing dbDriver attribute";
+            LOGGER.error(AS_CONF_ERROR + errorMsg);
+            throw new DBConfigException(errorMsg);
         }
 
         minLimit = jdbcConfig.getDbMinLimit();
@@ -103,14 +94,14 @@ public class JdbcDBCachedDataSource extends CachedDataSource
 //        	LOGGER.error(AS_CONF_ERROR + errorMsg);
 //        	throw new DBConfigException(errorMsg);
 //        }
-        maxLimit =  jdbcConfig.getDbMaxLimit();
+        maxLimit = jdbcConfig.getDbMaxLimit();
 //        if (maxLimit == null)
 //        {
 //        	String errorMsg =  "Invalid XML contents: JDBC Connection missing maxLimit attribute";
 //        	LOGGER.error(AS_CONF_ERROR + errorMsg);
 //        	throw new DBConfigException(errorMsg);
 //        }
-        initialLimit =  jdbcConfig.getDbInitialLimit();
+        initialLimit = jdbcConfig.getDbInitialLimit();
 //        if (initialLimit == null)
 //        {
 //        	String errorMsg =  "Invalid XML contents: JDBC Connection missing initialLimit attribute";
@@ -119,98 +110,86 @@ public class JdbcDBCachedDataSource extends CachedDataSource
 //        }
 
         dbUrl = jdbcConfig.getDbUrl();
-        if(dbUrl == null){
-        	String errorMsg =  "Invalid XML contents: JDBCConnection missing dbUrl attribute";
-        	LOGGER.error(AS_CONF_ERROR + errorMsg);
+        if (dbUrl == null) {
+            String errorMsg = "Invalid XML contents: JDBCConnection missing dbUrl attribute";
+            LOGGER.error(AS_CONF_ERROR + errorMsg);
             throw new DBConfigException(errorMsg);
         }
 
-		try {
-			Class clazz = Class.forName(dbDriver) ;
+        try {
 
-			PoolProperties p = new PoolProperties();
-			p.setDriverClassName(dbDriver);
-			p.setUrl(dbUrl);
-			p.setUsername(dbUserId);
-			p.setPassword(dbPasswd);
-			p.setJmxEnabled(true);
-			p.setTestWhileIdle(false);
-			p.setTestOnBorrow(true);
-			p.setValidationQuery("SELECT 1");
-			p.setTestOnReturn(false);
-			p.setValidationInterval(30000);
-			p.setTimeBetweenEvictionRunsMillis(30000);
-			p.setInitialSize(initialLimit);
-			p.setMaxActive(maxLimit);
-			p.setMaxIdle(maxLimit);
-			p.setMaxWait(10000);
-			p.setRemoveAbandonedTimeout(60);
-			p.setMinEvictableIdleTimeMillis(30000);
-			p.setMinIdle(minLimit);
-			p.setLogAbandoned(true);
-			p.setRemoveAbandoned(true);
-			p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"
-					+ "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
+            PoolProperties p = new PoolProperties();
+            p.setDriverClassName(dbDriver);
+            p.setUrl(dbUrl);
+            p.setUsername(dbUserId);
+            p.setPassword(dbPasswd);
+            p.setJmxEnabled(true);
+            p.setTestWhileIdle(false);
+            p.setTestOnBorrow(true);
+            p.setValidationQuery("SELECT 1");
+            p.setTestOnReturn(false);
+            p.setValidationInterval(30000);
+            p.setTimeBetweenEvictionRunsMillis(30000);
+            p.setInitialSize(initialLimit);
+            p.setMaxActive(maxLimit);
+            p.setMaxIdle(maxLimit);
+            p.setMaxWait(10000);
+            p.setRemoveAbandonedTimeout(60);
+            p.setMinEvictableIdleTimeMillis(30000);
+            p.setMinIdle(minLimit);
+            p.setLogAbandoned(true);
+            p.setRemoveAbandoned(true);
+            p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"
+                + "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
 
-			DataSource dataSource = new DataSource(p);
+            DataSource dataSource = new DataSource(p);
 
-			synchronized(this)
-			{
-				this.ds = dataSource;
-				Connection con = null;
-				PreparedStatement st = null;
-				ResultSet rs = null;
+            synchronized (this) {
+                this.ds = dataSource;
 
-				initialized = true;
-				LOGGER.info("JdbcDBCachedDataSource <"+dbConnectionName+"> configured successfully. Using URL: "+dbUrl);
-			}
-		} catch (Exception exc) {
-    		initialized = false;
-			StringBuffer sb = new StringBuffer();
-			sb.append("Failed to initialize MySQLCachedDataSource <");
-			sb.append(dbConnectionName).append(">. Reason: ");
-			sb.append(exc.getMessage());
-			LOGGER.error("AS_CONF_ERROR: " + sb.toString());
+                initialized = true;
+                LOGGER.info(String.format("JdbcDBCachedDataSource <%s> configured successfully. Using URL: %s",
+                    dbConnectionName, dbUrl));
+            }
+        } catch (Exception exc) {
+            initialized = false;
+            LOGGER.error(String.format("AS_CONF_ERROR: Failed to initialize MySQLCachedDataSource <%s>. Reason: %s",
+                dbConnectionName, exc.getMessage()));
 //    		throw new DBConfigException(e.getMessage());
-    	}
+        }
     }
 
-	public final String getDbUrl()
-	{
-		return dbUrl;
-	}
+    public final String getDbUrl() {
+        return dbUrl;
+    }
 
-	public final String getDbUserId()
-	{
-		return dbUserId;
-	}
+    public final String getDbUserId() {
+        return dbUserId;
+    }
 
-	public final String getDbPasswd()
-	{
-		return dbPasswd;
-	}
+    public final String getDbPasswd() {
+        return dbPasswd;
+    }
 
-	public static JdbcDBCachedDataSource createInstance(BaseDBConfiguration config) /*throws Exception*/ {
-		return new JdbcDBCachedDataSource(config);
-	}
+    public static JdbcDBCachedDataSource createInstance(BaseDBConfiguration config) /*throws Exception*/ {
+        return new JdbcDBCachedDataSource(config);
+    }
 
-	public String toString(){
-		return getDbConnectionName();
-	}
+    public String toString() {
+        return getDbConnectionName();
+    }
 
-	public java.util.logging.Logger getParentLogger()
-			throws SQLFeatureNotSupportedException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public java.util.logging.Logger getParentLogger()
+        throws SQLFeatureNotSupportedException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public void cleanUp(){
-		DataSource dataSource = (DataSource)ds;
-		dataSource.getPool().purge();
-		int active = dataSource.getActive();
-		int size = dataSource.getSize();
-		dataSource.close(true);
-		super.cleanUp();
-	}
-
+    @Override
+    public void cleanUp() {
+        DataSource dataSource = (DataSource) ds;
+        dataSource.getPool().purge();
+        dataSource.close(true);
+        super.cleanUp();
+    }
 }
