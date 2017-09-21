@@ -1,98 +1,182 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.onap.ccsdk.sli.core</groupId>
-		<artifactId>sli</artifactId>
-		<version>0.1.2-SNAPSHOT</version>
-	</parent>
-	<artifactId>sli-provider</artifactId>
-	<packaging>bundle</packaging>
-	<name>SLI - Provider</name>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.onap.ccsdk.sli.core</groupId>
+        <artifactId>sli</artifactId>
+        <version>0.1.2-SNAPSHOT</version>
+    </parent>
+    <artifactId>sli-provider</artifactId>
+    <packaging>bundle</packaging>
+    <name>SLI - Provider</name>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>ch.vorburger.mariaDB4j</groupId>
             <artifactId>mariaDB4j</artifactId>
             <version>2.2.3</version>
             <scope>test</scope>
         </dependency>
-		<dependency>
-			<groupId>org.onap.ccsdk.sli.core</groupId>
-			<artifactId>sli-common</artifactId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>equinoxSDK381</groupId>
-			<artifactId>org.eclipse.osgi</artifactId>
-			<version>${equinox.osgi.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>${commons.lang.version}</version>
-			<scope>compile</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.onap.ccsdk.sli.core</groupId>
+            <artifactId>sli-common</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>equinoxSDK381</groupId>
+            <artifactId>org.eclipse.osgi</artifactId>
+            <version>${equinox.osgi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${commons.lang.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
+        <!--
+        <dependency>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr4</artifactId>
+          <version>${antlr.version}</version>
+          <type>jar</type>
+          <scope>compile</scope>
+        </dependency>
+        -->
 
-		<!--
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr4</artifactId>
-			<version>${antlr.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		-->
+    </dependencies>
 
-	</dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${bundle.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>org.onap.ccsdk.sli.core.sli.provider.SvcLogicActivator</Bundle-Activator>
+                        <Export-Package>org.onap.ccsdk.sli.core.sli.provider;version=${project.version}</Export-Package>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>${bundle.plugin.version}</version>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-Activator>org.onap.ccsdk.sli.core.sli.provider.SvcLogicActivator</Bundle-Activator>
-						<Export-Package>org.onap.ccsdk.sli.core.sli.provider;version=${project.version}</Export-Package>
-
-						<DynamicImport-Package>*</DynamicImport-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
 
 
                         <Import-Package>org.onap.ccsdk.sli.core.sli;version="${project.version}",*</Import-Package>
 
-						<Embed-Dependency>*;scope=compile;artifactId=commons-lang|commons-lang3</Embed-Dependency>
+                        <Embed-Dependency>*;scope=compile;artifactId=commons-lang|commons-lang3</Embed-Dependency>
 
-						<Embed-Transitive>true</Embed-Transitive>
-					</instructions>
+                        <Embed-Transitive>true</Embed-Transitive>
+                    </instructions>
+                </configuration>
 
+            </plugin>
+            <plugin>
+                <groupId>org.opendaylight.yangtools</groupId>
+                <artifactId>yang-maven-plugin</artifactId>
+                <version>${odl.yangtools.yang.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>config</id>
+                        <goals>
+                            <goal>generate-sources</goal>
+                        </goals>
+                        <configuration>
+                            <yangFilesRootDir>src/test/resources</yangFilesRootDir>
+                            <codeGenerators>
+                                <generator>
+                                    <codeGeneratorClass>
+                                        org.opendaylight.controller.config.yangjmxgenerator.plugin.JMXGenerator
+                                    </codeGeneratorClass>
+                                    <outputBaseDir>${jmxGeneratorPath}</outputBaseDir>
+                                    <additionalConfiguration>
+                                        <namespaceToPackage1>
+                                            urn:opendaylight:params:xml:ns:yang:controller==org.opendaylight.controller.config.yang
+                                        </namespaceToPackage1>
+                                    </additionalConfiguration>
+                                </generator>
+                                <generator>
+                                    <codeGeneratorClass>
+                                        org.opendaylight.mdsal.binding.maven.api.gen.plugin.CodeGeneratorImpl
+                                    </codeGeneratorClass>
+                                    <outputBaseDir>${salGeneratorPath}</outputBaseDir>
+                                </generator>
+                            </codeGenerators>
+                            <inspectDependencies>true</inspectDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.opendaylight.mdsal</groupId>
+                        <artifactId>maven-sal-api-gen-plugin</artifactId>
+                        <version>${odl.sal.api.gen.plugin.version}</version>
+                        <type>jar</type>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.opendaylight.controller</groupId>
+                        <artifactId>yang-jmx-generator-plugin</artifactId>
+                        <version>${odl.yang.jmx.generator.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
 
-				</configuration>
+            <!--
+            Cleans up generated test artifacts which get included as a source
+            directory, but which we don't want as part of the bundle.
+             -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete includeemptydirs="true">
+                                    <fileset
+                                        dir="${salGeneratorPath}"
+                                        includes="**/*"/>
+                                    <fileset
+                                        dir="${basedir}"
+                                        includes="${salGeneratorPath}"/>
+                                    <fileset
+                                        dir="${jmxGeneratorPath}"
+                                        includes="**/*"/>
+                                    <fileset
+                                        dir="${basedir}"
+                                        includes="${jmxGeneratorPath}"/>
+                                </delete>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-			</plugin>
-		</plugins>
-	</build>
-	<description>SLI Provider is the OSGi bundle that exposes the service logic interpreter as a service.</description>
+        </plugins>
+    </build>
+    <description>SLI Provider is the OSGi bundle that exposes the service logic interpreter as a service.</description>
 </project>
