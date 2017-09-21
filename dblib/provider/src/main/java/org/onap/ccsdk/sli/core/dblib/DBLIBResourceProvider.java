@@ -84,8 +84,7 @@ public class DBLIBResourceProvider {
         // determines properties file as according to the priority described in the class header comment
         final File propertiesFile = determinePropertiesFile(this);
         if (propertiesFile != null) {
-            try {
-                final FileInputStream fileInputStream = new FileInputStream(propertiesFile);
+            try(FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
                 properties = new Properties();
                 properties.load(fileInputStream);
             } catch (final IOException e) {
@@ -113,9 +112,12 @@ public class DBLIBResourceProvider {
      * @return the file location of the chosen properties file
      */
     private static File reportSuccess(final String message, final Optional<File> fileOptional) {
-        final File file = fileOptional.get();
-        LOG.info("{} {}", message, file.getPath());
-        return file;
+        if(fileOptional.isPresent()) {
+            final File file = fileOptional.get();
+            LOG.info("{} {}", message, file.getPath());
+            return file;
+        }
+        return null;
     }
 
     /**
