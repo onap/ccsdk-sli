@@ -23,6 +23,7 @@ package org.onap.ccsdk.sli.core.dblib.pm;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.SortedSet;
@@ -30,208 +31,190 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.onap.ccsdk.sli.core.dblib.DBResourceObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SQLExecutionMonitor extends Observable
-{
-	private static Logger LOGGER = LoggerFactory.getLogger(SQLExecutionMonitor.class);
-	
-	final static long MILISECOND = 1000000L;
-	final static long SECOND = 1000L*MILISECOND;
-	
-	private final Timer timer;
-	// collection
-	private final SortedSet<TestObject> innerSet;
-	private SQLExecutionMonitorObserver parent = null; 
-	private final AtomicLong completionCounter;
-	private boolean activeState = false;
-	private final long interval;
-	private final long initialDelay;
-	private final long EXPECTED_TIME_TO_COMPLETE;
-	private final long UNPROCESSED_FAILOVER_THRESHOLD;
+public class SQLExecutionMonitor extends Observable {
 
-	private final class MonitoringTask extends TimerTask 
-	{
-		
-		public void run() 
-		{
-			try {
-				TestObject testObj = new TestObject();
-				testObj.setStartTime(testObj.getStartTime() - EXPECTED_TIME_TO_COMPLETE);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SQLExecutionMonitor.class);
 
-				// take a snapshot of the current task list
-				TestObject[] array = innerSet.toArray(new TestObject[0]);
-				SortedSet<TestObject> copyCurrent = new TreeSet<TestObject>(Arrays.asList(array));
-				// get the list of the tasks that are older than the specified
-				// interval.
-				SortedSet<TestObject> unprocessed = copyCurrent.headSet(testObj);
+    static final long MILISECOND = 1000000L;
+    static final long SECOND = 1000L * MILISECOND;
 
-				long succesfulCount = completionCounter.get();
-				int unprocessedCount = unprocessed.size();
-				
-				if (!unprocessed.isEmpty() && unprocessedCount > UNPROCESSED_FAILOVER_THRESHOLD && succesfulCount == 0)
-				{
-					// switch the Connection Pool to passive
-					setChanged();
-					notifyObservers("Open JDBC requests=" + unprocessedCount+" in "+SQLExecutionMonitor.this.parent.getDbConnectionName());
-				}
-			} catch (Exception exc) {
-				LOGGER.error("", exc);
-			} finally {
-				completionCounter.set(0L);
-			}
-		}
-	}
+    private final Timer timer;
+    // collection
+    private final SortedSet<TestObject> innerSet;
+    private SQLExecutionMonitorObserver parent = null;
+    private final AtomicLong completionCounter;
+    private boolean activeState = false;
+    private final long interval;
+    private final long initialDelay;
+    private final long EXPECTED_TIME_TO_COMPLETE;
+    private final long UNPROCESSED_FAILOVER_THRESHOLD;
 
-	public static class TestObject implements Comparable<TestObject>, Serializable 
-	{
+    private final class MonitoringTask extends TimerTask {
 
-		private static final long serialVersionUID = 1L;
-		private long starttime;
-		private long randId;
+        public void run() {
+            try {
+                TestObject testObj = new TestObject();
+                testObj.setStartTime(testObj.getStartTime() - EXPECTED_TIME_TO_COMPLETE);
 
-		public TestObject()
-		{
-			starttime = System.nanoTime();
-		}
+                // take a snapshot of the current task list
+                TestObject[] array = innerSet.toArray(new TestObject[0]);
+                SortedSet<TestObject> copyCurrent = new TreeSet<>(Arrays.asList(array));
+                // get the list of the tasks that are older than the specified
+                // interval.
+                SortedSet<TestObject> unprocessed = copyCurrent.headSet(testObj);
 
-		public long getStartTime()
-		{
-			return starttime;
-		}
+                long successfulCount = completionCounter.get();
+                int unprocessedCount = unprocessed.size();
 
-		public void setStartTime(long newTime) 
-		{
-			starttime = newTime;
-		}
+                if (!unprocessed.isEmpty() && unprocessedCount > UNPROCESSED_FAILOVER_THRESHOLD
+                    && successfulCount == 0) {
+                    // switch the Connection Pool to passive
+                    setChanged();
+                    notifyObservers("Open JDBC requests=" + unprocessedCount + " in " + SQLExecutionMonitor.this.parent
+                        .getDbConnectionName());
+                }
+            } catch (Exception exc) {
+                LOGGER.error("", exc);
+            } finally {
+                completionCounter.set(0L);
+            }
+        }
+    }
 
-		public int compareTo(TestObject o)
-		{
-			if( this == o)
-				return 0;
-			if(this.starttime > o.getStartTime())
-				return 1;
-			if(this.starttime < o.getStartTime())
-				return -1;
+    public static class TestObject implements Comparable<TestObject>, Serializable {
 
-			if(this.hashCode() > o.hashCode())
-				return 1;
-			if(this.hashCode() < o.hashCode())
-				return -1;
+        private static final long serialVersionUID = 1L;
+        private long startTime;
+        private long randId;
 
-			return 0;
-		}
+        public TestObject() {
+            startTime = System.nanoTime();
+        }
 
-		public String toString()
-		{
-			return Long.toString(starttime)+"#"+ this.hashCode();
-		}
-	
-		public boolean equals(Object obj)
-		{
-			if (this == obj)
-				return true;
+        public long getStartTime() {
+            return startTime;
+        }
 
-			return (obj instanceof TestObject 
-		            && starttime == ((TestObject) obj).getStartTime()
-		            && hashCode() == ((TestObject) obj).hashCode());		
-		}
-	}
+        public void setStartTime(long newTime) {
+            startTime = newTime;
+        }
 
-	public SQLExecutionMonitor(SQLExecutionMonitorObserver parent)
-	{
-		this.parent = parent;
-		completionCounter = new AtomicLong(0L);
-		interval = parent.getInterval();
-		initialDelay = parent.getInitialDelay();
-		this.UNPROCESSED_FAILOVER_THRESHOLD = parent.getUnprocessedFailoverThreshold();
-		this.EXPECTED_TIME_TO_COMPLETE = parent.getExpectedCompletionTime()*MILISECOND;
-		
-		innerSet = Collections.synchronizedSortedSet(new TreeSet<TestObject>());
-		timer = new Timer();
-	}
-	
-	public void cleanup()
-	{
-		timer.cancel();
-	}
-	
-	// registerRequest
-	public TestObject registerRequest()
-	{
-		if(activeState)
-		{
-			TestObject test = new TestObject();
-			if(innerSet.add(test))
-				return test;
-		}
-		return null;
-	}
+        public int compareTo(TestObject o) {
+            if (this == o) {
+                return 0;
+            }
+            if (this.startTime > o.getStartTime()) {
+                return 1;
+            }
+            if (this.startTime < o.getStartTime()) {
+                return -1;
+            }
 
-	// deregisterSuccessfulReguest
-	public boolean deregisterReguest(TestObject test)
-	{
-		if(test == null)
-			return false;
-		// remove from the collection
-		if(innerSet.remove(test) && activeState)
-		{
-			completionCounter.incrementAndGet();
-			return true;
-		}
-		return false; 
-	}
+            if (this.hashCode() > o.hashCode()) {
+                return 1;
+            }
+            if (this.hashCode() < o.hashCode()) {
+                return -1;
+            }
 
-	public void terminate() {
-		timer.cancel();
-	}
+            return 0;
+        }
 
-	/**
-	 * @return the parent
-	 */
-	public final Object getParent() {
-		return parent;
-	}
-	
-	public void addObserver(Observer observer)
-	{
-		if(observer instanceof DBResourceObserver)
-		{
-			DBResourceObserver dbObserver = (DBResourceObserver)observer;
-			if(dbObserver.isMonitorDbResponse())
-			{
-				if(countObservers() == 0)
-				{
-					TimerTask remindTask = new MonitoringTask();
-					timer.schedule(remindTask, initialDelay, interval);
-					activeState = true;
-				}
-			}
-		}
-		super.addObserver(observer);
-	}
-	
-	public void deleteObserver(Observer observer)
-	{
-		super.deleteObserver(observer);
-		if(observer instanceof DBResourceObserver)
-		{
-			DBResourceObserver dbObserver = (DBResourceObserver)observer;
-			if(dbObserver.isMonitorDbResponse())
-			{
-				if(countObservers() == 0)
-				{
-					timer.cancel();
-					activeState = false;
-				}
-			}
-		}
-	}
-	
-	public final int getPorcessedConnectionsCount() {
-		return innerSet.size();
-	}
+        public String toString() {
+            return Long.toString(startTime) + "#" + this.hashCode();
+        }
+
+        public int hashCode() {
+            return Objects.hash(startTime, randId);
+        }
+
+        public boolean equals(Object obj) {
+            return this == obj || (obj instanceof TestObject && startTime == ((TestObject) obj).getStartTime()
+                && hashCode() == obj.hashCode());
+        }
+    }
+
+    public SQLExecutionMonitor(SQLExecutionMonitorObserver parent) {
+        this.parent = parent;
+        completionCounter = new AtomicLong(0L);
+        interval = parent.getInterval();
+        initialDelay = parent.getInitialDelay();
+        this.UNPROCESSED_FAILOVER_THRESHOLD = parent.getUnprocessedFailoverThreshold();
+        this.EXPECTED_TIME_TO_COMPLETE = parent.getExpectedCompletionTime() * MILISECOND;
+
+        innerSet = Collections.synchronizedSortedSet(new TreeSet<TestObject>());
+        timer = new Timer();
+    }
+
+    public void cleanup() {
+        timer.cancel();
+    }
+
+    // registerRequest
+    public TestObject registerRequest() {
+        if (activeState) {
+            TestObject test = new TestObject();
+            if (innerSet.add(test)) {
+                return test;
+            }
+        }
+        return null;
+    }
+
+    // deregisterSuccessfulRequest
+    public boolean deregisterRequest(TestObject test) {
+        if (test == null) {
+            return false;
+        }
+        // remove from the collection
+        if (innerSet.remove(test) && activeState) {
+            completionCounter.incrementAndGet();
+            return true;
+        }
+        return false;
+    }
+
+    public void terminate() {
+        timer.cancel();
+    }
+
+    /**
+     * @return the parent
+     */
+    public final Object getParent() {
+        return parent;
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+        if (observer instanceof DBResourceObserver) {
+            DBResourceObserver dbObserver = (DBResourceObserver) observer;
+            if (dbObserver.isMonitorDbResponse() && countObservers() == 0) {
+                TimerTask remindTask = new MonitoringTask();
+                timer.schedule(remindTask, initialDelay, interval);
+                activeState = true;
+            }
+        }
+        super.addObserver(observer);
+    }
+
+    @Override
+    public void deleteObserver(Observer observer) {
+        super.deleteObserver(observer);
+        if (observer instanceof DBResourceObserver) {
+            DBResourceObserver dbObserver = (DBResourceObserver) observer;
+            if (dbObserver.isMonitorDbResponse() && countObservers() == 0) {
+                timer.cancel();
+                activeState = false;
+            }
+        }
+    }
+
+    public final int getProcessedConnectionsCount() {
+        return innerSet.size();
+    }
 }

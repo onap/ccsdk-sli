@@ -884,7 +884,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 			CachedDataSource first = snapshot.getFirst();
 			CachedDataSource last = snapshot.getLast();
 
-			int delta = first.getMonitor().getPorcessedConnectionsCount() - last.getMonitor().getPorcessedConnectionsCount();
+			int delta = first.getMonitor().getProcessedConnectionsCount() - last.getMonitor().getProcessedConnectionsCount();
 			if(delta < 0) {
 				flipper.set(false);
 			} else if(delta > 0) {
@@ -921,7 +921,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 			CachedDataSource first = snapshot.getFirst();
 			CachedDataSource last = snapshot.getLast();
 
-			int delta = first.getMonitor().getPorcessedConnectionsCount() - last.getMonitor().getPorcessedConnectionsCount();
+			int delta = first.getMonitor().getProcessedConnectionsCount() - last.getMonitor().getProcessedConnectionsCount();
 			if(delta < 0) {
 				flipper.set(false);
 			} else if(delta > 0) {

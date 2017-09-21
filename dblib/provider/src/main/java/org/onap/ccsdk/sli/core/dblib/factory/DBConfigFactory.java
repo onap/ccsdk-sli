@@ -24,7 +24,6 @@ package org.onap.ccsdk.sli.core.dblib.factory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
-
 import org.onap.ccsdk.sli.core.dblib.config.BaseDBConfiguration;
 import org.onap.ccsdk.sli.core.dblib.config.DbConfigPool;
 import org.onap.ccsdk.sli.core.dblib.config.JDBCConfiguration;
@@ -39,61 +38,66 @@ import org.slf4j.LoggerFactory;
  */
 public class DBConfigFactory {
 
-	public static DbConfigPool createConfig(Properties resource) {
-		return getConfigparams(resource);
-	}
+    public static DbConfigPool createConfig(Properties resource) {
+        return getConfigparams(resource);
+    }
 
-	static DbConfigPool getConfigparams(Properties properties){
-		DbConfigPool xmlConfig = new DbConfigPool(properties);
-		ArrayList<Properties> propertySets = new ArrayList<Properties>();
+    static DbConfigPool getConfigparams(Properties properties) {
+        DbConfigPool xmlConfig = new DbConfigPool(properties);
+        ArrayList<Properties> propertySets = new ArrayList<Properties>();
 
-		if("JDBC".equalsIgnoreCase(xmlConfig.getType())) {
-			String hosts = properties.getProperty(BaseDBConfiguration.DATABASE_HOSTS);
-			if(hosts == null || hosts.isEmpty()) {
-				propertySets.add(properties);
-			} else {
-				String[] newhost = hosts.split(",");
-				for(int i=0; i< newhost.length; i++) {
-					Properties localset = new Properties();
-					localset.putAll(properties);
-					String url = localset.getProperty(BaseDBConfiguration.DATABASE_URL);
-					if(url.contains("DBHOST"))
-						url = url.replace("DBHOST", newhost[i]);
-					if(url.contains("dbhost"))
-						url = url.replace("dbhost", newhost[i]);
-					localset.setProperty(BaseDBConfiguration.DATABASE_URL, url);
-					localset.setProperty(BaseDBConfiguration.CONNECTION_NAME, newhost[i]);
-					propertySets.add(localset);
-				}
-			}
-		} else {
-			propertySets.add(properties);
-		}
-		try {
-			Iterator<Properties>  it = propertySets.iterator();
-			while(it.hasNext()) {
-				BaseDBConfiguration config = parse(it.next());
-				xmlConfig.addConfiguration(config);
-			}
+        if ("JDBC".equalsIgnoreCase(xmlConfig.getType())) {
+            String hosts = properties.getProperty(BaseDBConfiguration.DATABASE_HOSTS);
+            if (hosts == null || hosts.isEmpty()) {
+                propertySets.add(properties);
+            } else {
+                setPropertyWhenHostsNonEmpty(hosts, properties, propertySets);
+            }
+        } else {
+            propertySets.add(properties);
+        }
+        try {
+            Iterator<Properties> it = propertySets.iterator();
+            while (it.hasNext()) {
+                BaseDBConfiguration config = parse(it.next());
+                xmlConfig.addConfiguration(config);
+            }
+        } catch (Exception e) {
+            LoggerFactory.getLogger(DBConfigFactory.class).warn("", e);
+        }
 
-		} catch (Exception e) {
-			LoggerFactory.getLogger(DBConfigFactory.class).warn("",e);
-		}
+        return xmlConfig;
+    }
 
-		return xmlConfig;
-	}
+    private static void setPropertyWhenHostsNonEmpty(String hosts, Properties properties, ArrayList<Properties>
+        propertySets) {
+        String[] newhost = hosts.split(",");
+        for (String aNewhost : newhost) {
+            Properties localSet = new Properties();
+            localSet.putAll(properties);
+            String url = localSet.getProperty(BaseDBConfiguration.DATABASE_URL);
+            if (url.contains("DBHOST")) {
+                url = url.replace("DBHOST", aNewhost);
+            }
+            if (url.contains("dbhost")) {
+                url = url.replace("dbhost", aNewhost);
+            }
+            localSet.setProperty(BaseDBConfiguration.DATABASE_URL, url);
+            localSet.setProperty(BaseDBConfiguration.CONNECTION_NAME, aNewhost);
+            propertySets.add(localSet);
+        }
+    }
 
-	public static BaseDBConfiguration parse(Properties props) throws Exception {
+    public static BaseDBConfiguration parse(Properties props) throws Exception {
 
-		String type = props.getProperty(BaseDBConfiguration.DATABASE_TYPE);
+        String type = props.getProperty(BaseDBConfiguration.DATABASE_TYPE);
 
-		BaseDBConfiguration config = null;
+        BaseDBConfiguration config = null;
 
-		if("JDBC".equalsIgnoreCase(type)) {
-			config = new JDBCConfiguration(props);
-		}
+        if ("JDBC".equalsIgnoreCase(type)) {
+            config = new JDBCConfiguration(props);
+        }
 
-		return config;
-
-	}
+        return config;
+    }
 }

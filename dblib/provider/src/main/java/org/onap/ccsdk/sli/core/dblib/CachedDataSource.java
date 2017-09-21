@@ -123,7 +123,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
 				connection = null;
 			}
 
-			monitor.deregisterReguest(testObject);
+			monitor.deregisterRequest(testObject);
 		}
 	}
 
@@ -153,7 +153,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
 				connection = null;
 			}
 
-			monitor.deregisterReguest(testObject);
+			monitor.deregisterRequest(testObject);
 		}
 	}
 
