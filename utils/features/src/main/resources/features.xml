@@ -10,7 +10,7 @@
     <feature name='sdnc-slicore-utils' description="sdnc-slicore-utils" version='${project.version}'>
         <!-- Most applications will have a dependency on the ODL MD-SAL Broker -->
         <feature version="${odl.mdsal.version}">odl-mdsal-broker</feature>
-        <bundle>mvn:org.onap.ccsdk.sli.core/util-provider/${project.version}</bundle>
+        <bundle>mvn:org.onap.ccsdk.sli.core/utils-provider/${project.version}</bundle>
     </feature>
 
 </features>

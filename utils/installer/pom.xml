@@ -11,8 +11,8 @@
     <packaging>pom</packaging>
 
     <properties>
-        <application.name>sdnc-core-utils</application.name>
-        <features.boot>sdnc-core-utils</features.boot>
+        <application.name>sdnc-slicore-utils</application.name>
+        <features.boot>sdnc-slicore-utils</features.boot>
         <features.repositories>mvn:org.onap.ccsdk.sli.core/utils-features/${project.version}/xml/features</features.repositories>
         <include.transitive.dependencies>false</include.transitive.dependencies>
     </properties>
