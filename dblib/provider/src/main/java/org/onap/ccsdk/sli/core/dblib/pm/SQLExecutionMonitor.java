@@ -55,6 +55,7 @@ public class SQLExecutionMonitor extends Observable {
 
     private final class MonitoringTask extends TimerTask {
 
+        @Override
         public void run() {
             try {
                 TestObject testObj = new TestObject();
@@ -103,6 +104,7 @@ public class SQLExecutionMonitor extends Observable {
             startTime = newTime;
         }
 
+        @Override
         public int compareTo(TestObject o) {
             if (this == o) {
                 return 0;
