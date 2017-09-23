@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Observer;
 import javax.sql.DataSource;
@@ -109,7 +108,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
                 throw new SQLException("Connection invalid");
             }
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Obtained connection <" + connectionName + ">: " + connection.toString());
+                LOGGER.debug("Obtained connection <{}>: {}", connectionName, connection);
             }
             return executePreparedStatement(connection, statement, arguments, true);
         } finally {
@@ -126,7 +125,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
                 throw new SQLException("Connection invalid");
             }
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Obtained connection <" + connectionName + ">: " + connection.toString());
+                LOGGER.debug("Obtained connection <{}>: {}", connectionName, connection);
             }
             return executeUpdatePreparedStatement(connection, statement, arguments, true);
         } finally {
@@ -140,9 +139,9 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
 
         CachedRowSet data = null;
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("SQL Statement: " + statement);
+            LOGGER.debug("SQL Statement: {}", statement);
             if (arguments != null && !arguments.isEmpty()) {
-                LOGGER.debug("Argunments: " + Arrays.toString(arguments.toArray()));
+                LOGGER.debug("Argunments: {}", arguments);
             }
         }
 
@@ -158,7 +157,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
             data.populate(rs);
             // Point the rowset Cursor to the start
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("SQL SUCCESS. rows returned: " + data.size() + ", time(ms): " + (System.currentTimeMillis()
+                LOGGER.debug("SQL SUCCESS. rows returned: {}, time(ms): {}", data.size(), (System.currentTimeMillis()
                     - time));
             }
         } catch (SQLException exc) {
@@ -182,7 +181,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
         }
         if (arguments != null && !arguments.isEmpty()) {
             LOGGER.error(String.format("<%s%s%s%s%s", connectionName, FAILED_TO_EXECUTE, statement, WITH_ARGUMENTS,
-                arguments.toString()), exc);
+                arguments), exc);
         } else {
             LOGGER.error(String.format("<%s%s%s%s", connectionName, FAILED_TO_EXECUTE, statement, WITH_NO_ARGUMENTS),
                 exc);
@@ -221,7 +220,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
             ps.executeUpdate();
             // Point the rowset Cursor to the start
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("SQL SUCCESS. rows returned: " + data.size() + ", time(ms): " + (System.currentTimeMillis()
+                LOGGER.debug("SQL SUCCESS. rows returned: {}, time(ms): {}", data.size(), (System.currentTimeMillis()
                     - time));
             }
             ps.close();
@@ -465,12 +464,12 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
     }
 
     protected boolean isSlave() throws PoolExhaustedException {
-        CachedRowSet rs = null;
-        boolean isSlave = true;
+        CachedRowSet rs;
+        boolean isSlave;
         String hostname = "UNDETERMINED";
         try {
             boolean localSlave = true;
-            rs = this.getData("SELECT @@global.read_only, @@global.hostname", new ArrayList<Object>());
+            rs = this.getData("SELECT @@global.read_only, @@global.hostname", new ArrayList<>());
             while (rs.next()) {
                 localSlave = rs.getBoolean(1);
                 hostname = rs.getString(2);
@@ -483,9 +482,9 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
             isSlave = true;
         }
         if (isSlave) {
-            LOGGER.debug(String.format("SQL SLAVE : %s on server %s", connectionName, hostname));
+            LOGGER.debug("SQL SLAVE : {} on server {}", connectionName, hostname);
         } else {
-            LOGGER.debug(String.format("SQL MASTER : %s on server %s", connectionName, hostname));
+            LOGGER.debug("SQL MASTER : {} on server {}", connectionName, hostname);
         }
         return isSlave;
     }
@@ -524,7 +523,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
         boolean retValue;
         try (Statement lock = conn.createStatement()) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Executing 'UNLOCK TABLES' on connection " + conn.toString());
+                LOGGER.debug("Executing 'UNLOCK TABLES' on connection {}", conn);
             }
             retValue = lock.execute("UNLOCK TABLES");
         } catch (Exception exc) {
