@@ -3,7 +3,7 @@
  * ONAP : CCSDK
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 						reserved.
+ *                         reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
-
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicAdaptor;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -44,180 +43,172 @@ import org.slf4j.LoggerFactory;
 
 public class SvcLogicActivator implements BundleActivator {
 
-	private static final String SVCLOGIC_PROP_VAR = "SDNC_SLI_PROPERTIES";
-	private static final String SDNC_CONFIG_DIR = "SDNC_CONFIG_DIR";
+    private static final String SVCLOGIC_PROP_VAR = "SDNC_SLI_PROPERTIES";
+    private static final String SDNC_CONFIG_DIR = "SDNC_CONFIG_DIR";
 
-	private static final Map<String, SvcLogicNodeExecutor> BUILTIN_NODES = new HashMap<String, SvcLogicNodeExecutor>() {
-		{
-			put("block", new BlockNodeExecutor());
-			put("call", new CallNodeExecutor());
-			put("configure", new ConfigureNodeExecutor());
-			put("delete", new DeleteNodeExecutor());
-			put("execute", new ExecuteNodeExecutor());
-			put("exists", new ExistsNodeExecutor());
-			put("for", new ForNodeExecutor());
-			put("get-resource", new GetResourceNodeExecutor());
-			put("is-available", new IsAvailableNodeExecutor());
-			put("notify", new NotifyNodeExecutor());
-			put("record", new RecordNodeExecutor());
-			put("release", new ReleaseNodeExecutor());
-			put("reserve", new ReserveNodeExecutor());
-			put("return", new ReturnNodeExecutor());
-			put("save", new SaveNodeExecutor());
-			put("set", new SetNodeExecutor());
-			put("switch", new SwitchNodeExecutor());
-			put("update", new UpdateNodeExecutor());
+    private static final Map<String, SvcLogicNodeExecutor> BUILTIN_NODES = new HashMap<String, SvcLogicNodeExecutor>() {
+        {
+            put("block", new BlockNodeExecutor());
+            put("call", new CallNodeExecutor());
+            put("configure", new ConfigureNodeExecutor());
+            put("delete", new DeleteNodeExecutor());
+            put("execute", new ExecuteNodeExecutor());
+            put("exists", new ExistsNodeExecutor());
+            put("for", new ForNodeExecutor());
+            put("get-resource", new GetResourceNodeExecutor());
+            put("is-available", new IsAvailableNodeExecutor());
+            put("notify", new NotifyNodeExecutor());
+            put("record", new RecordNodeExecutor());
+            put("release", new ReleaseNodeExecutor());
+            put("reserve", new ReserveNodeExecutor());
+            put("return", new ReturnNodeExecutor());
+            put("save", new SaveNodeExecutor());
+            put("set", new SetNodeExecutor());
+            put("switch", new SwitchNodeExecutor());
+            put("update", new UpdateNodeExecutor());
             put("break", new BreakNodeExecutor());
 
-		}
-	};
+        }
+    };
 
-	private static LinkedList<ServiceRegistration> registrations = new LinkedList<ServiceRegistration>();
+    private static final Logger LOG = LoggerFactory.getLogger(SvcLogicActivator.class);
 
-	private static HashMap<String, SvcLogicAdaptor> adaptorMap = null;
+    private static LinkedList<ServiceRegistration> registrations = new LinkedList<>();
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(SvcLogicActivator.class);
+    private static HashMap<String, SvcLogicAdaptor> adaptorMap;
 
-	private static Properties props = null;
+    private static Properties props;
 
-	private static BundleContext bundleCtx = null;
+    private static BundleContext bundleCtx;
 
-	private static SvcLogicService svcLogicServiceImpl = null;
+    private static SvcLogicService svcLogicServiceImpl;
 
-	@Override
-	public void start(BundleContext ctx) throws Exception {
+    @Override
+    public void start(BundleContext ctx) throws Exception {
 
-		LOG.info("Activating SLI");
+        LOG.info("Activating SLI");
 
-		bundleCtx = ctx;
+        synchronized (SvcLogicActivator.class) {
+            bundleCtx = ctx;
+            props = new Properties();
+        }
 
-		// Read properties
-		props = new Properties();
-		String propPath = System.getenv(SVCLOGIC_PROP_VAR);
+        // Read properties
+        String propPath = System.getenv(SVCLOGIC_PROP_VAR);
 
-		if (propPath == null) {
-			String propDir = System.getenv(SDNC_CONFIG_DIR);
-			if (propDir == null) {
+        if (propPath == null) {
+            String propDir = System.getenv(SDNC_CONFIG_DIR);
+            if (propDir == null) {
 
-				propDir = "/opt/sdnc/data/properties";
-			}
-			propPath = propDir + "/svclogic.properties";
-			LOG.warn("Environment variable "+SVCLOGIC_PROP_VAR+" unset - defaulting to "+propPath);
-		}
+                propDir = "/opt/sdnc/data/properties";
+            }
+            propPath = propDir + "/svclogic.properties";
+            LOG.warn("Environment variable {} unset - defaulting to {}", SVCLOGIC_PROP_VAR, propPath);
+        }
 
-		File propFile = new File(propPath);
+        File propFile = new File(propPath);
 
-		if (!propFile.exists()) {
+        if (!propFile.exists()) {
+            throw new ConfigurationException("Missing configuration properties file : " + propFile);
+        }
 
-			throw new ConfigurationException(
-					"Missing configuration properties file : "
-							+ propFile);
-		}
-		try {
+        try {
+            props.load(new FileInputStream(propFile));
+        } catch (Exception e) {
+            throw new ConfigurationException("Could not load properties file " + propPath, e);
 
-			props.load(new FileInputStream(propFile));
-		} catch (Exception e) {
-			throw new ConfigurationException(
-					"Could not load properties file " + propPath, e);
+        }
 
-		}
+        synchronized (SvcLogicActivator.class) {
+            if (registrations == null) {
+                registrations = new LinkedList<>();
+            }
+            // Advertise SvcLogicService
+            svcLogicServiceImpl = new SvcLogicServiceImpl();
+        }
 
+        LOG.info("SLI: Registering service {} in bundle {}", SvcLogicService.NAME, ctx.getBundle().getSymbolicName());
+        ServiceRegistration reg = ctx.registerService(SvcLogicService.NAME, svcLogicServiceImpl, null);
+        registrations.add(reg);
 
-		if (registrations == null) {
+        // Initialize SvcLogicStore
+        try {
+            SvcLogicStore store = getStore();
+            registerNodeTypes(store);
+        } catch (ConfigurationException e) {
+            LOG.warn("Could not initialize SvcLogicScore", e);
+        }
 
-			registrations = new LinkedList<ServiceRegistration>();
-		}
+        LOG.info("SLI - done registering services");
+    }
 
-		// Advertise SvcLogicService
-		svcLogicServiceImpl = new SvcLogicServiceImpl();
+    @Override
+    public void stop(BundleContext ctx) throws Exception {
 
-		LOG.info("SLI: Registering service " + SvcLogicService.NAME
-				+ " in bundle " + ctx.getBundle().getSymbolicName());
-		ServiceRegistration reg = ctx.registerService(SvcLogicService.NAME,
-				svcLogicServiceImpl, null);
-		registrations.add(reg);
+        if (registrations != null) {
+            for (ServiceRegistration reg : registrations) {
+                ServiceReference regRef = reg.getReference();
+                /* Don't bother to remove node types from table
+                String nodeType = (String) regRef.getProperty("nodeType");
+                if (nodeType != null) {
+                    LOG.info("SLI - unregistering node type " + nodeType);
+                    store.unregisterNodeType(nodeType);
+                }
+                */
+                reg.unregister();
+            }
+            synchronized (SvcLogicActivator.class) {
+                registrations = null;
+            }
+        }
+    }
 
-		// Initialize SvcLogicStore
-		try {
-			SvcLogicStore store = getStore();
-			registerNodeTypes(store);
-		} catch (ConfigurationException e) {
-			LOG.warn("Could not initialize SvcLogicScore", e);
-		}
+    public static SvcLogicStore getStore() throws SvcLogicException {
+        // Create and initialize SvcLogicStore object - used to access
+        // saved service logic.
 
-		LOG.info("SLI - done registering services");
-	}
+        SvcLogicStore store;
 
-	@Override
-	public void stop(BundleContext ctx) throws Exception {
+        try {
+            store = SvcLogicStoreFactory.getSvcLogicStore(props);
+        } catch (Exception e) {
+            throw new ConfigurationException("Could not get service logic store", e);
 
-		if (registrations != null) {
-			for (ServiceRegistration reg : registrations) {
-				ServiceReference regRef = reg.getReference();
-				/* Don't bother to remove node types from table
-				String nodeType = (String) regRef.getProperty("nodeType");
-				if (nodeType != null) {
-					LOG.info("SLI - unregistering node type " + nodeType);
-					store.unregisterNodeType(nodeType);
-				}
-				*/
-				reg.unregister();
-			}
-			registrations = null;
-		}
-	}
+        }
 
-	public static SvcLogicStore getStore() throws SvcLogicException {
-		// Create and initialize SvcLogicStore object - used to access
-		// saved service logic.
+        try {
+            store.init(props);
+        } catch (Exception e) {
+            throw new ConfigurationException("Could not get service logic store", e);
+        }
 
-		SvcLogicStore store = null;
+        return(store);
+    }
 
-		try {
-			store = SvcLogicStoreFactory.getSvcLogicStore(props);
-		} catch (Exception e) {
-			throw new ConfigurationException(
-					"Could not get service logic store", e);
+    private static void registerNodeTypes(SvcLogicStore store) throws SvcLogicException {
 
-		}
+        if (store == null) {
+            return;
+        }
+        // Advertise built-in node executors
+        LOG.info("SLI : Registering built-in node executors");
+        Hashtable propTable = new Hashtable();
 
-		try {
-			store.init(props);
-		} catch (Exception e) {
-			throw new ConfigurationException(
-					"Could not get service logic store", e);
-		}
+        for (String nodeType : BUILTIN_NODES.keySet()) {
+            LOG.info("SLI - registering node type {}", nodeType);
+            propTable.clear();
+            propTable.put("nodeType", nodeType);
 
-		return(store);
-	}
+            ServiceRegistration reg = bundleCtx.registerService(SvcLogicNodeExecutor.class.getName(),
+                    BUILTIN_NODES.get(nodeType), propTable);
+            registrations.add(reg);
 
-	private static void registerNodeTypes(SvcLogicStore store) throws SvcLogicException {
+            store.registerNodeType(nodeType);
 
-		if (store == null) {
-			return;
-		}
-		// Advertise built-in node executors
-		LOG.info("SLI : Registering built-in node executors");
-		Hashtable propTable = new Hashtable();
+            LOG.info("SLI - registering node executor");
 
-		for (String nodeType : BUILTIN_NODES.keySet()) {
-			LOG.info("SLI - registering node type " + nodeType);
-			propTable.clear();
-			propTable.put("nodeType", nodeType);
+            ((SvcLogicServiceImpl)svcLogicServiceImpl).registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
 
-			ServiceRegistration reg = bundleCtx.registerService(SvcLogicNodeExecutor.class.getName(),
-					BUILTIN_NODES.get(nodeType), propTable);
-			registrations.add(reg);
-
-			store.registerNodeType(nodeType);
-
-			LOG.info("SLI - registering node executor");
-
-			((SvcLogicServiceImpl)svcLogicServiceImpl).registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
-
-		}
-
-	}
-
+        }
+    }
 }
