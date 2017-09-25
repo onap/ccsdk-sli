@@ -96,6 +96,13 @@ public class ITCaseSvcLogicParser {
 		store.registerNodeType("release");
 		store.registerNodeType("for");
 		store.registerNodeType("set");
+		store.registerNodeType("call");
+		store.registerNodeType("delete");
+		store.registerNodeType("execute");
+		store.registerNodeType("notify");
+		store.registerNodeType("save");
+		store.registerNodeType("update");
+		store.registerNodeType("break");
 	}
 
 	@Before

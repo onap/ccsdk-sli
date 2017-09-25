@@ -385,7 +385,7 @@ public class SvcLogicParser {
             saxParser.parse(fileName, new SvcLogicHandler(graphs, store));
 
         } catch (Exception e) {
-            LOGGER.error("Parsing failed {}", e);
+            LOGGER.error("Parsing failed ", e);
             String msg = e.getMessage();
             if (msg != null) {
                 throw new SvcLogicException("Compiler error: " + fileName + " @ " + msg);
@@ -412,7 +412,7 @@ public class SvcLogicParser {
                 try {
                     SvcLogicParser.load(xmlfile, store);
                 } catch (Exception e) {
-                    LOGGER.error("Load failed {}", e);
+                    LOGGER.error("Load failed ", e);
                 }
             } else {
                 SvcLogicParser.usage();
