@@ -209,7 +209,7 @@ public class MetricLogger {
     }
 
     private void setElapsedTime(long elapsedTime) {
-        MDC.put(ELAPSED_TIME, ""+elapsedTime);
+        MDC.put(ELAPSED_TIME, Long.toString(elapsedTime));
     }
 
     public String getServer() {
