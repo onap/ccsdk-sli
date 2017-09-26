@@ -91,6 +91,12 @@ public class SliStringUtilsTest {
     }
 
     @Test
+    public final void testQuotedOrNull() throws SvcLogicException {
+        //param.put("nullString",null);
+        assertEquals("NULL",SliStringUtils.quotedOrNULL(null));
+    }
+
+    @Test
     public void equalsIgnoreCaseTrue() throws SvcLogicException {
         String sourceString = "HeLlOwORLD";
         String targetSTring = "HELLOWORLD";

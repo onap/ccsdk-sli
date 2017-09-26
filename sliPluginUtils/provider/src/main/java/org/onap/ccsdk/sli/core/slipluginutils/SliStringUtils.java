@@ -100,7 +100,7 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
 		}
 	}
 
-	private static String quotedOrNULL( String str ) {
+	public static String quotedOrNULL( String str ) {
 		return (str == null) ? "NULL" : '"' + str + '"';
 	}
 
