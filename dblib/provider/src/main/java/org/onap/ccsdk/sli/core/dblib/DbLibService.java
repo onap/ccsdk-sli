@@ -24,9 +24,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
-public interface DbLibService {
+public interface DbLibService extends DataSource {
 
     /* (non-Javadoc)
      * @see DataAccessor#getData(java.lang.String, java.util.ArrayList)
