@@ -47,10 +47,10 @@ public class SvcLogicVariableTerm extends SvcLogicExpression {
 		}
 	}
 
-	
+    @Override
 	public String toString()
 	{
-		String retval = "";
+		String retval;
 		
 		if (numOperands() > 0)
 		{
