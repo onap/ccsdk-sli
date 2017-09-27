@@ -651,6 +651,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 			return 0;
 		}
 
+                @Override
 		public boolean equals(Object object) {
 			if (this == object) {
 				return true;
@@ -676,6 +677,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 			return true;
 		}
 
+                @Override
 		public int hashCode() {
 			int result = super.hashCode();
 			result = 31 * result + (child_elements != null ? child_elements.hashCode() : 0);
