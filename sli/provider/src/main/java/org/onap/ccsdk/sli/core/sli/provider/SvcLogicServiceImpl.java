@@ -59,12 +59,11 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         }
 
         if (nodeExecutors == null) {
-            nodeExecutors = new HashMap<String, SvcLogicNodeExecutor>();
+            nodeExecutors = new HashMap<>();
         }
 
         LOG.info("Opening service tracker");
-        ServiceTracker tracker = new ServiceTracker(bctx,
-                SvcLogicNodeExecutor.class.getName(), null);
+        ServiceTracker tracker = new ServiceTracker(bctx, SvcLogicNodeExecutor.class.getName(), null);
 
         tracker.open();
 
@@ -90,14 +89,12 @@ public class SvcLogicServiceImpl implements SvcLogicService {
                 + ")";
         try {
             bctx.addServiceListener(listener, filter);
-            ServiceReference[] srl = bctx.getServiceReferences(
-                    SvcLogicNodeExecutor.class.getName(), null);
+            ServiceReference[] srl = bctx.getServiceReferences(SvcLogicNodeExecutor.class.getName(), null);
             for (int i = 0; srl != null && i < srl.length; i++) {
-                listener.serviceChanged(new ServiceEvent(
-                        ServiceEvent.REGISTERED, srl[i]));
+                listener.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, srl[i]));
             }
         } catch (InvalidSyntaxException e) {
-            e.printStackTrace();
+            LOG.info("Invalid syntax", e);
         }
         LOG.info("Done registerExecutors");
     }
@@ -107,26 +104,24 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         String nodeName = (String) sr.getProperty("nodeType");
         if (nodeName != null) {
 
-            SvcLogicNodeExecutor executor = null;
+            SvcLogicNodeExecutor executor;
 
             try {
                 executor = (SvcLogicNodeExecutor) bctx.getService(sr);
             } catch (Exception e) {
-                LOG.error("Cannot get service executor for " + nodeName);
+                LOG.error("Cannot get service executor for {}", nodeName, e);
                 return;
             }
-
             registerExecutor(nodeName, executor);
-
         }
     }
 
     public void registerExecutor(String nodeName, SvcLogicNodeExecutor executor)
     {
         if (nodeExecutors == null) {
-            nodeExecutors = new HashMap<String, SvcLogicNodeExecutor>();
+            nodeExecutors = new HashMap<>();
         }
-        LOG.info("SLI - registering executor for node type "+nodeName);
+        LOG.info("SLI - registering executor for node type {}", nodeName);
         nodeExecutors.put(nodeName, executor);
     }
 
@@ -134,25 +129,16 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         String nodeName = (String) sr.getProperty("nodeType");
 
         if (nodeName != null) {
-
              unregisterExecutor(nodeName);
-
         }
-
     }
 
-    public void unregisterExecutor(String nodeName)
-    {
-
-        LOG.info("SLI - unregistering executor for node type "+nodeName);
+    public void unregisterExecutor(String nodeName) {
+        LOG.info("SLI - unregistering executor for node type {}", nodeName);
         nodeExecutors.remove(nodeName);
     }
 
-
-
-
-    public SvcLogicContext execute(SvcLogicGraph graph, SvcLogicContext ctx)
-            throws SvcLogicException {
+    public SvcLogicContext execute(SvcLogicGraph graph, SvcLogicContext ctx) throws SvcLogicException {
 
         if (nodeExecutors == null) {
             registerExecutors();
@@ -164,13 +150,11 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         MDC.put("currentGraph", graph.toString());
 
         SvcLogicNode curNode = graph.getRootNode();
-        LOG.info("About to execute graph " + graph.toString());
-
-
+        LOG.info("About to execute graph {}", graph.toString());
 
         while (curNode != null) {
             MDC.put("nodeId", curNode.getNodeId()+" ("+curNode.getNodeType()+")");
-            LOG.info("About to execute node # "+curNode.getNodeId()+" ("+curNode.getNodeType()+")");
+            LOG.info("About to execute node # {} ({})", curNode.getNodeId(), curNode.getNodeType());
 
             SvcLogicNode nextNode = executeNode(curNode, ctx);
             curNode = nextNode;
@@ -181,25 +165,24 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         return (ctx);
     }
 
-
-    public SvcLogicNode executeNode(SvcLogicNode node, SvcLogicContext ctx)
-            throws SvcLogicException {
+    public SvcLogicNode executeNode(SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException {
         if (node == null) {
             return (null);
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Executing node " + node.getNodeId());
+            LOG.debug("Executing node {}", node.getNodeId());
         }
 
         SvcLogicNodeExecutor executor = nodeExecutors.get(node.getNodeType());
 
         if (executor != null) {
-            LOG.debug("Executing node executor for node type "+node.getNodeType()+" - "+executor.getClass().getName());
+            LOG.debug("Executing node executor for node type {} - {}",
+                node.getNodeType(), executor.getClass().getName());
             return (executor.execute(this, node, ctx));
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(node.getNodeType() + " node not implemented");
+                LOG.debug("{} node not implemented", node.getNodeType());
             }
             SvcLogicNode nextNode = node.getOutcomeValue("failure");
             if (nextNode != null) {
@@ -243,15 +226,11 @@ public class SvcLogicServiceImpl implements SvcLogicService {
     public Properties execute(String module, String rpc, String version, String mode,
             Properties props, DOMDataBroker domDataBroker) throws SvcLogicException {
 
-
         // See if there is a service logic defined
-        //
         SvcLogicStore store = SvcLogicActivator.getStore();
 
         LOG.info("Fetching service logic from data store");
         SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
-
-
 
         if (graph == null)
         {
@@ -259,7 +238,6 @@ public class SvcLogicServiceImpl implements SvcLogicService {
             retProps.setProperty("error-code", "401");
             retProps.setProperty("error-message", "No service logic found for ["+module+","+rpc+","+version+","+mode+"]");
             return(retProps);
-
         }
 
         SvcLogicContext ctx = new SvcLogicContext(props);
@@ -271,8 +249,4 @@ public class SvcLogicServiceImpl implements SvcLogicService {
 
         return(ctx.toProperties());
     }
-
-
-
-
 }

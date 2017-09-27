@@ -21,6 +21,11 @@
 
 package org.onap.ccsdk.sli.core.sli.provider;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
+import ch.vorburger.mariadb4j.DB;
+import ch.vorburger.mariadb4j.DBConfigurationBuilder;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,7 +35,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
-
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.onap.ccsdk.sli.core.sli.SvcLogicParser;
@@ -39,170 +48,220 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.vorburger.mariadb4j.DB;
-import ch.vorburger.mariadb4j.DBConfigurationBuilder;
-import junit.framework.TestCase;
+public class ITCaseSvcLogicGraphExecutor {
 
-public class ITCaseSvcLogicGraphExecutor extends TestCase {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(SvcLogicGraph.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SvcLogicGraph.class);
+    private static final Map<String, SvcLogicNodeExecutor> BUILTIN_NODES = new HashMap<String, SvcLogicNodeExecutor>() {
+        {
+            put("block", new BlockNodeExecutor());
+            put("call", new CallNodeExecutor());
+            put("configure", new ConfigureNodeExecutor());
+            put("delete", new DeleteNodeExecutor());
+            put("execute", new ExecuteNodeExecutor());
+            put("exists", new ExistsNodeExecutor());
+            put("for", new ForNodeExecutor());
+            put("get-resource", new GetResourceNodeExecutor());
+            put("is-available", new IsAvailableNodeExecutor());
+            put("notify", new NotifyNodeExecutor());
+            put("record", new RecordNodeExecutor());
+            put("release", new ReleaseNodeExecutor());
+            put("reserve", new ReserveNodeExecutor());
+            put("return", new ReturnNodeExecutor());
+            put("save", new SaveNodeExecutor());
+            put("set", new SetNodeExecutor());
+            put("switch", new SwitchNodeExecutor());
+            put("update", new UpdateNodeExecutor());
 
-	private static final Map<String, SvcLogicNodeExecutor> BUILTIN_NODES = new HashMap<String, SvcLogicNodeExecutor>() {
-		{
-			put("block", new BlockNodeExecutor());
-			put("call", new CallNodeExecutor());
-			put("configure", new ConfigureNodeExecutor());
-			put("delete", new DeleteNodeExecutor());
-			put("execute", new ExecuteNodeExecutor());
-			put("exists", new ExistsNodeExecutor());
-			put("for", new ForNodeExecutor());
-			put("get-resource", new GetResourceNodeExecutor());
-			put("is-available", new IsAvailableNodeExecutor());
-			put("notify", new NotifyNodeExecutor());
-			put("record", new RecordNodeExecutor());
-			put("release", new ReleaseNodeExecutor());
-			put("reserve", new ReserveNodeExecutor());
-			put("return", new ReturnNodeExecutor());
-			put("save", new SaveNodeExecutor());
-			put("set", new SetNodeExecutor());
-			put("switch", new SwitchNodeExecutor());
-			put("update", new UpdateNodeExecutor());
+        }
+    };
 
-		}
-	};
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
 
-	public void testExecute() {
+        LOG.info("before class");
 
-		try {
-			InputStream testStr = getClass().getResourceAsStream("/executor.tests");
-			BufferedReader testsReader = new BufferedReader(new InputStreamReader(testStr));
+        InputStream propStr = ITCaseSvcLogicGraphExecutor.class.getResourceAsStream("/svclogic.properties");
 
-			InputStream propStr = getClass().getResourceAsStream("/svclogic.properties");
+        Properties svcprops = new Properties();
+        svcprops.load(propStr);
 
-			Properties svcprops = new Properties();
-			svcprops.load(propStr);
+        // Start MariaDB4j database
+        DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
+        config.setPort(0); // 0 => autom. detect free port
+        DB db = DB.newEmbeddedDB(config.build());
+        db.start();
 
-			// Start MariaDB4j database
-	        DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
-	        config.setPort(0); // 0 => autom. detect free port
-	        DB db = DB.newEmbeddedDB(config.build());
-	        db.start();
+        // Override jdbc URL and database name
+        svcprops.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
+        svcprops.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
 
+        SvcLogicStore store = SvcLogicStoreFactory.getSvcLogicStore(svcprops);
 
+        assertNotNull(store);
 
-			// Override jdbc URL and database name
-	        svcprops.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
-			svcprops.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
+        store.registerNodeType("switch");
+        store.registerNodeType("block");
+        store.registerNodeType("get-resource");
+        store.registerNodeType("reserve");
+        store.registerNodeType("is-available");
+        store.registerNodeType("exists");
+        store.registerNodeType("configure");
+        store.registerNodeType("return");
+        store.registerNodeType("record");
+        store.registerNodeType("allocate");
+        store.registerNodeType("release");
+        store.registerNodeType("for");
+        store.registerNodeType("set");
+        SvcLogicParser parser = new SvcLogicParser(store);
 
+        // Loop through executor tests
 
+        SvcLogicServiceImpl svc = new SvcLogicServiceImpl();
 
-			SvcLogicStore store = SvcLogicStoreFactory.getSvcLogicStore(svcprops);
+        for (String nodeType : BUILTIN_NODES.keySet()) {
+            LOG.info("SLI - registering node executor for node type " + nodeType);
+            svc.registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
+        }
+    }
 
-			assertNotNull(store);
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        LOG.info("after class");
+    }
 
-			store.registerNodeType("switch");
-			store.registerNodeType("block");
-			store.registerNodeType("get-resource");
-			store.registerNodeType("reserve");
-			store.registerNodeType("is-available");
-			store.registerNodeType("exists");
-			store.registerNodeType("configure");
-			store.registerNodeType("return");
-			store.registerNodeType("record");
-			store.registerNodeType("allocate");
-			store.registerNodeType("release");
-			store.registerNodeType("for");
-			store.registerNodeType("set");
-			SvcLogicParser parser = new SvcLogicParser(store);
+    @Before
+    public void setUp() throws Exception {
+        LOG.info("before");
+    }
 
-			// Loop through executor tests
+    @After
+    public void tearDown() throws Exception {
+        LOG.info("after");
+    }
 
-			SvcLogicServiceImpl svc = new SvcLogicServiceImpl();
+    @Test
+    public void testExecute() {
 
-			for (String nodeType : BUILTIN_NODES.keySet()) {
+        try {
+            InputStream testStr = getClass().getResourceAsStream("/executor.tests");
+            BufferedReader testsReader = new BufferedReader(new InputStreamReader(testStr));
 
-				LOG.info("SLI - registering node executor for node type "+nodeType);
+            InputStream propStr = getClass().getResourceAsStream("/svclogic.properties");
 
-				svc.registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
+            Properties svcprops = new Properties();
+            svcprops.load(propStr);
 
-			}
-			String testCaseLine = null;
-			while ((testCaseLine = testsReader.readLine()) != null) {
+            // Start MariaDB4j database
+            DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
+            config.setPort(0); // 0 => autom. detect free port
+            DB db = DB.newEmbeddedDB(config.build());
+            db.start();
 
-				String[] testCaseFields = testCaseLine.split(":");
-				String testCaseFile = testCaseFields[0];
-				String testCaseMethod = testCaseFields[1];
-				String testCaseParameters = null;
+            // Override jdbc URL and database name
+            svcprops.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
+            svcprops.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
 
-				if (testCaseFields.length > 2) {
-					testCaseParameters = testCaseFields[2];
-				}
+            SvcLogicStore store = SvcLogicStoreFactory.getSvcLogicStore(svcprops);
 
-				SvcLogicContext ctx = new SvcLogicContext();
-				if (testCaseParameters != null) {
-					String[] testCaseParameterSettings = testCaseParameters.split(",");
+            assertNotNull(store);
 
-					for (int i = 0 ; i < testCaseParameterSettings.length ; i++) {
-						String[] nameValue = testCaseParameterSettings[i].split("=");
-						if (nameValue != null) {
-							String name = nameValue[0];
-							String value = "";
-							if (nameValue.length > 1) {
-								value = nameValue[1];
-							}
+            store.registerNodeType("switch");
+            store.registerNodeType("block");
+            store.registerNodeType("get-resource");
+            store.registerNodeType("reserve");
+            store.registerNodeType("is-available");
+            store.registerNodeType("exists");
+            store.registerNodeType("configure");
+            store.registerNodeType("return");
+            store.registerNodeType("record");
+            store.registerNodeType("allocate");
+            store.registerNodeType("release");
+            store.registerNodeType("for");
+            store.registerNodeType("set");
+            SvcLogicParser parser = new SvcLogicParser(store);
 
-							ctx.setAttribute(name,  value);
-						}
-					}
-				}
+            // Loop through executor tests
 
-				testCaseFile = testCaseFile.trim();
+            SvcLogicServiceImpl svc = new SvcLogicServiceImpl();
 
-				if (testCaseFile.length() > 0) {
-					if (!testCaseFile.startsWith("/")) {
-						testCaseFile = "/"+testCaseFile;
-					}
-					URL testCaseUrl = getClass().getResource(testCaseFile);
-					if (testCaseUrl == null) {
-						fail("Could not resolve test case file "+testCaseFile);
-					}
+            for (String nodeType : BUILTIN_NODES.keySet()) {
 
-					LinkedList<SvcLogicGraph> graphs = parser.parse(testCaseUrl.getPath());
+                LOG.info("SLI - registering node executor for node type {}", nodeType);
 
+                svc.registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
 
-					assertNotNull(graphs);
+            }
+            String testCaseLine = null;
+            while ((testCaseLine = testsReader.readLine()) != null) {
 
-					for (SvcLogicGraph graph: graphs) {
-						if (graph.getRpc().equals(testCaseMethod)) {
-							Properties props = ctx.toProperties();
-							LOG.info("SvcLogicContext before executing "+testCaseMethod+":");
-							for (Enumeration e1 = props.propertyNames(); e1.hasMoreElements() ; ) {
-								String propName = (String) e1.nextElement();
-								LOG.info(propName+" = "+props.getProperty(propName));
-							}
+                String[] testCaseFields = testCaseLine.split(":");
+                String testCaseFile = testCaseFields[0];
+                String testCaseMethod = testCaseFields[1];
+                String testCaseParameters = null;
 
-							svc.execute(graph, ctx);
+                if (testCaseFields.length > 2) {
+                    testCaseParameters = testCaseFields[2];
+                }
 
-							props = ctx.toProperties();
-							LOG.info("SvcLogicContext after executing "+testCaseMethod+":");
-							for (Enumeration e2 = props.propertyNames(); e2.hasMoreElements() ; ) {
-								String propName = (String) e2.nextElement();
-								LOG.info(propName+" = "+props.getProperty(propName));
-							}
-						}
-					}
+                SvcLogicContext ctx = new SvcLogicContext();
+                if (testCaseParameters != null) {
+                    String[] testCaseParameterSettings = testCaseParameters.split(",");
 
-				}
+                    for (int i = 0; i < testCaseParameterSettings.length; i++) {
+                        String[] nameValue = testCaseParameterSettings[i].split("=");
+                        if (nameValue != null) {
+                            String name = nameValue[0];
+                            String value = "";
+                            if (nameValue.length > 1) {
+                                value = nameValue[1];
+                            }
 
+                            ctx.setAttribute(name, value);
+                        }
+                    }
+                }
 
-			}
+                testCaseFile = testCaseFile.trim();
 
+                if (testCaseFile.length() > 0) {
+                    if (!testCaseFile.startsWith("/")) {
+                        testCaseFile = "/" + testCaseFile;
+                    }
+                    URL testCaseUrl = getClass().getResource(testCaseFile);
+                    if (testCaseUrl == null) {
+                        fail("Could not resolve test case file " + testCaseFile);
+                    }
 
-		} catch (Exception e) {
-			LOG.error("Caught exception executing directed graphs", e);
-			fail("Exception executing graphs");
-		}
-	}
+                    LinkedList<SvcLogicGraph> graphs = parser.parse(testCaseUrl.getPath());
 
+                    assertNotNull(graphs);
 
+                    for (SvcLogicGraph graph : graphs) {
+                        if (graph.getRpc().equals(testCaseMethod)) {
+                            Properties props = ctx.toProperties();
+                            LOG.info("SvcLogicContext before executing {}:", testCaseMethod);
+                            for (Enumeration e1 = props.propertyNames(); e1.hasMoreElements(); ) {
+                                String propName = (String) e1.nextElement();
+                                LOG.info(propName + " = " + props.getProperty(propName));
+                            }
+
+                            svc.execute(graph, ctx);
+
+                            props = ctx.toProperties();
+                            LOG.info("SvcLogicContext after executing {}:", testCaseMethod);
+                            for (Enumeration e2 = props.propertyNames(); e2.hasMoreElements(); ) {
+                                String propName = (String) e2.nextElement();
+                                LOG.info(propName + " = " + props.getProperty(propName));
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        } catch (Exception e) {
+            LOG.error("Caught exception executing directed graphs", e);
+            fail("Exception executing graphs");
+        }
+    }
 }

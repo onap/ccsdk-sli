@@ -28,6 +28,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -103,117 +104,81 @@ public class ITCaseSvcLogicParser {
 		store.registerNodeType("save");
 		store.registerNodeType("update");
 		store.registerNodeType("break");
-	}
+    }
 
-	@Before
-	public void setUp() throws Exception {
-		LOG.info("before");
-	}
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        LOG.info("after class");
+    }
 
-	@After
-	public void tearDown() throws Exception {
-		LOG.info("after");
-	}
+    @Before
+    public void setUp() throws Exception {
+        LOG.info("before");
+    }
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		LOG.info("after class");
-	}
+    @After
+    public void tearDown() throws Exception {
+        LOG.info("after");
+    }
 
-	/**
-	 * Test method for {@link org.onap.ccsdk.sli.core.sli.SvcLogicParser#parse(java.lang.String)}.
-	 */
-	@Test
-	public void testParseValidXml() {
+    /**
+     * Test method for {@link org.onap.ccsdk.sli.core.sli.SvcLogicParser#parse(java.lang.String)}.
+     */
+    @Test
+    public void testParseValidXml() {
 
-		try
-		{
-			InputStream testStr = getClass().getResourceAsStream("/parser-good.tests");
-			BufferedReader testsReader = new BufferedReader(new InputStreamReader(testStr));
-			String testCaseFile = null;
-			while ((testCaseFile = testsReader.readLine()) != null) {
+        try {
+            InputStream testStr = getClass().getResourceAsStream("/parser-good.tests");
+            BufferedReader testsReader = new BufferedReader(new InputStreamReader(testStr));
+            String testCaseFile = null;
+            while ((testCaseFile = testsReader.readLine()) != null) {
 
-				testCaseFile = testCaseFile.trim();
+                testCaseFile = testCaseFile.trim();
 
-				if (testCaseFile.length() > 0)
-				{
-					if (!testCaseFile.startsWith("/"))
-					{
-						testCaseFile = "/"+testCaseFile;
-					}
-					URL testCaseUrl = getClass().getResource(testCaseFile);
-					if (testCaseUrl == null)
-					{
-						fail("Could not resolve test case file "+testCaseFile);
-					}
+                if (testCaseFile.length() > 0) {
+                    if (!testCaseFile.startsWith("/")) {
+                        testCaseFile = "/" + testCaseFile;
+                    }
+                    URL testCaseUrl = getClass().getResource(testCaseFile);
+                    if (testCaseUrl == null) {
+                        fail("Could not resolve test case file " + testCaseFile);
+                    }
 
-					try {
-						SvcLogicParser.validate(testCaseUrl.getPath(), store);
-					} catch (Exception e) {
-						fail("Validation failure ["+e.getMessage()+"]");
-					}
-				}
-			}
-		}
-		catch (SvcLogicParserException e)
-		{
-			fail("Parser error : "+e.getMessage());
-		}
-		catch (Exception e)
-		{
-			LOG.error("", e);
-			fail("Caught exception processing test cases");
-		}
-	}
+                    try {
+                        SvcLogicParser.validate(testCaseUrl.getPath(), store);
+                    } catch (Exception e) {
+                        fail("Validation failure [" + e.getMessage() + "]");
+                    }
+                }
+            }
+        } catch (SvcLogicParserException e) {
+            fail("Parser error : " + e.getMessage());
+        } catch (Exception e) {
+            LOG.error("", e);
+            fail("Caught exception processing test cases");
+        }
+    }
 
-	@Test
-	public void testParseInvalidXml() {
+    @Test(expected = SvcLogicException.class)
+    public void testParseInvalidXml() throws SvcLogicException, IOException {
 
-		try
-		{
-			InputStream testStr = getClass().getResourceAsStream("/parser-bad.tests");
-			BufferedReader testsReader = new BufferedReader(new InputStreamReader(testStr));
-			String testCaseFile = null;
-			while ((testCaseFile = testsReader.readLine()) != null) {
+        InputStream testStr = getClass().getResourceAsStream("/parser-bad.tests");
+        BufferedReader testsReader = new BufferedReader(new InputStreamReader(testStr));
+        String testCaseFile;
+        while ((testCaseFile = testsReader.readLine()) != null) {
 
-				testCaseFile = testCaseFile.trim();
+            testCaseFile = testCaseFile.trim();
 
-				if (testCaseFile.length() > 0)
-				{
-					if (!testCaseFile.startsWith("/"))
-					{
-						testCaseFile = "/"+testCaseFile;
-					}
-					URL testCaseUrl = getClass().getResource(testCaseFile);
-					if (testCaseUrl == null)
-					{
-						fail("Could not resolve test case file "+testCaseFile);
-					}
-
-					boolean valid = true;
-					try {
-						SvcLogicParser.load(testCaseUrl.getPath(), store);
-					} catch (Exception e) {
-						System.out.println(e.getMessage());
-						valid = false;
-					}
-
-					if (valid) {
-						fail("Expected compiler error on "+testCaseFile+", but got success");
-					}
-				}
-			}
-		}
-		catch (SvcLogicParserException e)
-		{
-			fail("Parser error : "+e.getMessage());
-		}
-		catch (Exception e)
-		{
-			LOG.error("", e);
-			fail("Caught exception processing test cases");
-		}
-
-	}
-
+            if (testCaseFile.length() > 0) {
+                if (!testCaseFile.startsWith("/")) {
+                    testCaseFile = "/" + testCaseFile;
+                }
+                URL testCaseUrl = getClass().getResource(testCaseFile);
+                if (testCaseUrl == null) {
+                    fail("Could not resolve test case file " + testCaseFile);
+                }
+                SvcLogicParser.load(testCaseUrl.getPath(), store);
+            }
+        }
+    }
 }

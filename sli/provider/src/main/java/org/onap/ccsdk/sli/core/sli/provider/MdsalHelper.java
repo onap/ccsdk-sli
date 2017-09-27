@@ -765,7 +765,7 @@ public class MdsalHelper {
 
                                                 } catch (Exception gme) {
                                                     LOG.info("Unable to find static method getDefaultInstance for "
-                                                        + "class {}", paramClass.getSimpleName(), e);
+                                                        + "class {}", paramClass.getSimpleName(), gme);
                                                 }
                                             }
 
