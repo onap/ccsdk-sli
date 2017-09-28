@@ -71,29 +71,29 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 	protected final AtomicBoolean dsSelector = new  AtomicBoolean();
 
 //	Queue<CachedDataSource> dsQueue = new ConcurrentLinkedQueue<CachedDataSource>();
-	Queue<CachedDataSource> dsQueue = new PriorityQueue<CachedDataSource>(4, new Comparator<CachedDataSource>() {
-		@Override
-		public int compare(CachedDataSource left, CachedDataSource right) {
-			try {
-				if(left == null){
-					return 1;
-				}
-				if(right == null){
-					return -1;
-				}
-
-				if(!left.isSlave()) {
-					return -1;
-				}
-				if (!right.isSlave()) {
-					return 1;
-				}
-			} catch (Throwable e) {
-				LOGGER.warn("", e);
+	Queue<CachedDataSource> dsQueue = new PriorityQueue<>(4, new Comparator<CachedDataSource>() {
+	@Override
+	public int compare(CachedDataSource left, CachedDataSource right) {
+		try {
+			if (left == null) {
+				return 1;
 			}
-			return 0;
+			if (right == null) {
+				return -1;
+			}
+
+			if (!left.isSlave()) {
+				return -1;
+			}
+			if (!right.isSlave()) {
+				return 1;
+			}
+		} catch (Throwable e) {
+			LOGGER.warn("", e);
 		}
-		});
+		return 0;
+	}
+});
 	protected final Set<CachedDataSource> broken = Collections.synchronizedSet(new HashSet<CachedDataSource>());
 	protected final Object monitor = new Object();
 	protected final Properties configProps;
@@ -313,7 +313,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
 	public void testForceRecovery()
 	{
-		CachedDataSource active = (CachedDataSource) this.dsQueue.peek();
+		CachedDataSource active = this.dsQueue.peek();
 		handleGetConnectionException(active, new Exception("test"));
 	}
 
@@ -461,7 +461,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 			LOGGER.error("Generated alarm: DBResourceManager.getData - No active DB connection pools are available.");
 			throw new DBLibException("No active DB connection pools are available in RequestDataNoRecovery call.");
 		}
-		CachedDataSource active = (CachedDataSource) this.dsQueue.peek();
+		CachedDataSource active = this.dsQueue.peek();
 		long time = System.currentTimeMillis();
 		try {
 			if(!active.isFabric()) {
@@ -533,7 +533,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
 		boolean initialRequest = true;
 		boolean retryAllowed = true;
-		CachedDataSource active = (CachedDataSource) this.dsQueue.peek();
+		CachedDataSource active = this.dsQueue.peek();
 		long time = System.currentTimeMillis();
 		while(initialRequest) {
 			initialRequest = false;
@@ -724,7 +724,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
 	public void cleanUp() {
 		for(Iterator<CachedDataSource> it=dsQueue.iterator();it.hasNext();){
-			CachedDataSource cds = (CachedDataSource)it.next();
+			CachedDataSource cds = it.next();
 			it.remove();
 			cds.cleanUp();
 		}
@@ -748,28 +748,28 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
 	@Override
 	public PrintWriter getLogWriter() throws SQLException {
-		return ((CachedDataSource)this.dsQueue.peek()).getLogWriter();
+		return this.dsQueue.peek().getLogWriter();
 	}
 
 	@Override
 	public int getLoginTimeout() throws SQLException {
-		return ((CachedDataSource)this.dsQueue.peek()).getLoginTimeout();
+		return this.dsQueue.peek().getLoginTimeout();
 	}
 
 	@Override
 	public void setLogWriter(PrintWriter out) throws SQLException {
-		((CachedDataSource)this.dsQueue.peek()).setLogWriter(out);
+		this.dsQueue.peek().setLogWriter(out);
 	}
 
 	@Override
 	public void setLoginTimeout(int seconds) throws SQLException {
-		((CachedDataSource)this.dsQueue.peek()).setLoginTimeout(seconds);
+		this.dsQueue.peek().setLoginTimeout(seconds);
 	}
 
 	public void displayState(){
 		if(LOGGER.isDebugEnabled()){
 			LOGGER.debug("POOLS : Active = "+dsQueue.size() + ";\t Broken = "+broken.size());
-			CachedDataSource current = (CachedDataSource)dsQueue.peek();
+			CachedDataSource current = dsQueue.peek();
 			if(current != null) {
 				LOGGER.debug("POOL : Active name = \'"+current.getDbConnectionName()+ "\'");
 			}
@@ -800,7 +800,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 					.append("Name:").append("</th>");
 			for (int i = 0; i < list.size(); i++) {
 				buffer.append("<th id=\"header").append(2 + i).append("\">");
-				buffer.append(((CachedDataSource) list.get(i)).getDbConnectionName()).append("</th>");
+				buffer.append(list.get(i).getDbConnectionName()).append("</th>");
 			}
 			buffer.append("</tr>");
 
@@ -820,7 +820,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
 		} else {
 			for (int i = 0; i < list.size(); i++) {
-				buffer.append("Name: ").append(((CachedDataSource) list.get(i)).getDbConnectionName());
+				buffer.append("Name: ").append(list.get(i).getDbConnectionName());
 				buffer.append("\tState: ");
 				if (broken.contains(list.get(i))) {
 					buffer.append("in recovery");
