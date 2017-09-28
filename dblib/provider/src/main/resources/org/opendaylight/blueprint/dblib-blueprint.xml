@@ -8,6 +8,11 @@
     <bean id="dbResourceManager" class="org.onap.ccsdk.sli.core.dblib.DBResourceManager">
         <argument ref="provider" />
     </bean>
-    <service ref="dbResourceManager" interface="org.onap.ccsdk.sli.core.dblib.DbLibService" />
+    <service ref="dbResourceManager">
+        <interfaces>
+            <value>javax.sql.DataSource</value>
+            <value>org.onap.ccsdk.sli.core.dblib.DbLibService</value>
+        </interfaces>
+    </service>
 
 </blueprint>
