@@ -2,64 +2,65 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 
-	<parent>
-		<groupId>org.onap.ccsdk.sli.core</groupId>
-		<artifactId>ccsdk-sli-core</artifactId>
-        	<version>0.1.2-SNAPSHOT</version>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-	<packaging>pom</packaging>
-	<groupId>org.onap.ccsdk.sli.core</groupId>
-	<artifactId>sli</artifactId>
+    <parent>
+        <groupId>org.onap.ccsdk.sli.core</groupId>
+        <artifactId>ccsdk-sli-core</artifactId>
+            <version>0.1.2-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <groupId>org.onap.ccsdk.sli.core</groupId>
+    <artifactId>sli</artifactId>
 
-	<dependencyManagement>
+    <dependencyManagement>
 
-		<dependencies>
-			<dependency>
-				<groupId>org.onap.ccsdk.sli.core</groupId>
-				<artifactId>sli-features</artifactId>
-				<classifier>features</classifier>
-				<type>xml</type>
-				<version>${project.version}</version>
-			</dependency>
+        <dependencies>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.core</groupId>
+                <artifactId>sli-features</artifactId>
+                <classifier>features</classifier>
+                <type>xml</type>
+                <version>${project.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.onap.ccsdk.sli.core</groupId>
-				<artifactId>sli-common</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.core</groupId>
+                <artifactId>sli-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.onap.ccsdk.sli.core</groupId>
-				<artifactId>sli-provider</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.core</groupId>
+                <artifactId>sli-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.onap.ccsdk.sli.core</groupId>
-				<artifactId>sli-recording</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.core</groupId>
+                <artifactId>sli-recording</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-		</dependencies>
+        </dependencies>
 
-	</dependencyManagement>
+    </dependencyManagement>
 
 
-	<name>Service Logic Interpreter</name>
-	<description>The Service Logic Interpreter (SLI) allows service planners to design the flow of logic within the SDN controller in an XML format, without a need for custom Java code. </description>
+    <name>Service Logic Interpreter</name>
+    <description>The Service Logic Interpreter (SLI) allows service planners to design the flow of logic within the SDN controller in an XML format, without a need for custom Java code. </description>
 
-	<modules>
-		<module>common</module>
-		<module>provider</module>
-		<module>recording</module>
-		<module>features</module>
-		<module>installer</module>
-	</modules>
-	<organization>
-		<name>ONAP</name>
-	</organization>
-	<version>0.1.2-SNAPSHOT</version>
+    <modules>
+        <module>model</module>
+        <module>common</module>
+        <module>provider</module>
+        <module>recording</module>
+        <module>features</module>
+        <module>installer</module>
+    </modules>
+    <organization>
+        <name>ONAP</name>
+    </organization>
+    <version>0.1.2-SNAPSHOT</version>
 
 
 </project>

@@ -1,0 +1,111 @@
+module SLI-API {
+
+    yang-version 1;
+
+    namespace "org:onap:ccsdk:sli:core:sliapi";
+
+    prefix sample;
+
+    import ietf-inet-types { prefix "inet"; revision-date 2010-09-24; }
+
+    organization "ONAP";
+
+    contact
+        "Dan Timoney";
+
+    description
+        "Defines API to service logic interpreter";
+
+    revision "2016-11-10" {
+        description
+                "REST API to Service Logic Interpreter";
+    }
+
+    grouping parameter-setting {
+        description
+                "Parameter setting";
+
+        leaf parameter-name {
+            type string;
+            description "Parameter name";
+        }
+
+        leaf int-value {
+            type int32;
+        }
+        leaf string-value {
+            type string;
+        }
+        leaf boolean-value {
+            type boolean;
+        }
+    }
+
+    grouping response-fields {
+        leaf response-code {
+            type string;
+        }
+        leaf ack-final-indicator {
+            type string;
+        }
+        leaf response-message {
+            type string;
+        }
+        leaf context-memory-json {
+            type string;
+        }
+    }
+
+    container test-results {
+        description "Test results";
+
+            list test-result {
+                key "test-identifier";
+
+                leaf test-identifier {
+                    type string;
+                }
+
+                leaf-list results {
+                    type string;
+                }
+            }
+    }
+
+    rpc execute-graph {
+        description " Method to add a new parameter.";
+        input {
+
+            leaf module-name {
+                type string;
+            }
+
+            leaf rpc-name {
+                type string;
+            }
+
+            leaf mode {
+                type enumeration {
+                    enum sync;
+                    enum async;
+                }
+            }
+
+            list sli-parameter {
+                key "parameter-name";
+                uses parameter-setting;
+            }
+        }
+
+        output {
+           uses response-fields;
+        }
+    }
+
+    rpc healthcheck {
+        output {
+            uses response-fields;
+        }
+    }
+
+}

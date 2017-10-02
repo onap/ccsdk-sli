@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,10 +21,26 @@
 
 package org.onap.ccsdk.sli.core.sli.provider;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput.Mode;
+import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import junit.framework.TestCase;
 
-public class MdsalHelperTest extends TestCase {
 
+public class MdsalHelperTest extends TestCase {
+	private static final Logger LOG = LoggerFactory
+			.getLogger(MdsalHelperTest.class);
     public static final String pathToSdnPropertiesFile = "./src/test/resources/l3sdn.properties";
 
     public void testSdnProperties() {
@@ -40,4 +56,63 @@ public class MdsalHelperTest extends TestCase {
         assertNotSame("synccomplete", MdsalHelperTesterUtil.mapEnumeratedValue("request-status", "Synccomplete"));
     }
 
+    public void testToProperties() {
+
+    		ExecuteGraphInputBuilder execBuilder = new ExecuteGraphInputBuilder();
+    		SliParameterBuilder parmBuilder = new SliParameterBuilder();
+    		List<SliParameter> params = new LinkedList<SliParameter>();
+
+    		parmBuilder.setParameterName("boolean-parm");
+    		parmBuilder.setBooleanValue(Boolean.TRUE);
+    		params.add(parmBuilder.build());
+
+    		parmBuilder.setParameterName("int-parm");
+    		parmBuilder.setIntValue(1);
+    		params.add(parmBuilder.build());
+
+    		parmBuilder.setParameterName("str-parm");
+    		parmBuilder.setStringValue("hello");
+    		params.add(parmBuilder.build());
+
+
+    		execBuilder.setMode(Mode.Sync);
+    		execBuilder.setModuleName("my-module");
+    		execBuilder.setRpcName("do-it-now");
+    		execBuilder.setSliParameter(params);
+
+
+    		Properties props = new Properties();
+
+    		MdsalHelperTesterUtil.toProperties(props, execBuilder);
+
+    		LOG.info("Converted to properties");
+    		for (Map.Entry<Object, Object> e : props.entrySet()) {
+    			LOG.info(e.getKey().toString() + " = "+e.getValue().toString());
+
+    		}
+
+
+    }
+
+    public void testToBuilder() {
+
+    	Properties props = new Properties();
+
+    	props.setProperty("execute-graph-input.mode", "Sync");
+    	props.setProperty("execute-graph-input.module", "my-module");
+    	props.setProperty("execute-graph-input.rpc", "do-it-now");
+    	props.setProperty("execute-graph-input.sli-parameter[0].parameter-name", "bool-parm");
+    	props.setProperty("execute-graph-input.sli-parameter[0].boolean-value", "true");
+    	props.setProperty("execute-graph-input,sli-parameter[1].parameter-name", "int-param");
+    	props.setProperty("execute-graph-input.sli-parameter[1].int-value", "1");
+    	props.setProperty("execute-graph-input.sli-parameter[2].parameter-name", "str-param");
+    	props.setProperty("execute-graph-input.sli-parameter[2].str-value",  "hello");
+
+    	ExecuteGraphInputBuilder execBuilder = new ExecuteGraphInputBuilder();
+
+    	MdsalHelperTesterUtil.toBuilder(props, execBuilder);
+
+
+
+    }
 }
