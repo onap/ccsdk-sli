@@ -21,6 +21,7 @@
 
 package org.onap.ccsdk.sli.core.sli.provider;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddressBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +43,10 @@ import junit.framework.TestCase;
 public class MdsalHelperTest extends TestCase {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(MdsalHelperTest.class);
-    public static final String pathToSdnPropertiesFile = "./src/test/resources/l3sdn.properties";
+    public static final String pathToSdnPropertiesFile = "src/test/resources/l3sdn.properties";
 
     public void testSdnProperties() {
+
         MdsalHelperTesterUtil.loadProperties(pathToSdnPropertiesFile);
         assertEquals("synccomplete", MdsalHelperTesterUtil.mapEnumeratedValue("request-status", "synccomplete"));
         assertEquals("asynccomplete", MdsalHelperTesterUtil.mapEnumeratedValue("request-status", "asynccomplete"));
@@ -67,11 +70,22 @@ public class MdsalHelperTest extends TestCase {
     		params.add(parmBuilder.build());
 
     		parmBuilder.setParameterName("int-parm");
+    		parmBuilder.setBooleanValue(null);
     		parmBuilder.setIntValue(1);
     		params.add(parmBuilder.build());
 
     		parmBuilder.setParameterName("str-parm");
+    		parmBuilder.setIntValue(null);
     		parmBuilder.setStringValue("hello");
+    		params.add(parmBuilder.build());
+
+    		parmBuilder.setParameterName("ipaddress4-parm");
+    		parmBuilder.setStringValue(null);
+    		parmBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("127.0.0.1"));
+    		params.add(parmBuilder.build());
+
+    		parmBuilder.setParameterName("ipaddress6-parm");
+    		parmBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("ef::1"));
     		params.add(parmBuilder.build());
 
 
@@ -107,7 +121,10 @@ public class MdsalHelperTest extends TestCase {
     	props.setProperty("execute-graph-input.sli-parameter[1].int-value", "1");
     	props.setProperty("execute-graph-input.sli-parameter[2].parameter-name", "str-param");
     	props.setProperty("execute-graph-input.sli-parameter[2].str-value",  "hello");
-
+    	props.setProperty("execute-graph-input.sli-parameter[3].parameter-name", "ipv4address-param");
+    	props.setProperty("execute-graph-input.sli-parameter[3].ipaddress-value",  "127.0.0.1");
+    	props.setProperty("execute-graph-input.sli-parameter[4].parameter-name", "ipv6address-param");
+    	props.setProperty("execute-graph-input.sli-parameter[4].ipaddress-value",  "ef::1");
     	ExecuteGraphInputBuilder execBuilder = new ExecuteGraphInputBuilder();
 
     	MdsalHelperTesterUtil.toBuilder(props, execBuilder);

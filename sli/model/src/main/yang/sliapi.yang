@@ -39,6 +39,12 @@ module SLI-API {
         leaf boolean-value {
             type boolean;
         }
+        leaf ipaddress-value {
+            type inet:ip-address;
+        }
+        leaf ipprefix-value {
+            type inet:ip-prefix;
+        }
     }
 
     grouping response-fields {
