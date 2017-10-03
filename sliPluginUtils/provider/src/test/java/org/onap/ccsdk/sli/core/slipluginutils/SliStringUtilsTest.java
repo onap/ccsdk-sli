@@ -91,6 +91,18 @@ public class SliStringUtilsTest {
     }
 
     @Test
+    public final void testSubString() throws SvcLogicException {
+        param.put("string","splitatgivenindex");
+        param.put("begin-index","0");
+        param.put("end-index","5");
+        param.put("result","result");
+
+        stringUtils.substring(param, ctx);
+
+        assertEquals("split", ctx.getAttribute("result"));
+    }
+
+    @Test
     public final void testQuotedOrNull() throws SvcLogicException {
         //param.put("nullString",null);
         assertEquals("NULL",SliStringUtils.quotedOrNULL(null));
