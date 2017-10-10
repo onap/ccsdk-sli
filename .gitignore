@@ -17,6 +17,7 @@ workspace
 target
 target-ide
 MANIFEST.MF
+**/yang-gen-sal
 
 ## Misc Ignores (OS specific etc) ##
 bin/
