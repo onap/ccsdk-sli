@@ -4,24 +4,17 @@
 Architecture
 ============
 
-.. note::
-   * This section is used to describe a software component from a high level
-     view of capability, common usage scenarios, and interactions with other
-     components required in the usage scenarios.
-
-   * The architecture section is typically: provided in a platform-component
-     and sdk collections; and referenced from developer and user guides.
-
-   * This note must be removed after content has been added.
 
 
 Capabilities
 ------------
+Provides the core Service Logic Interpreter (SLI) functionality, used to execute directed graphs (DGs).  Directed graphs allow service designers to define the
+logic to be executed within the SDN controller in a graphical format which can be
+updated in real time, without a need to restart the controller.
+
+.. toctree::
+   :maxdepth: 1
+
+   nodes.rst
 
 
-Usage Scenarios
----------------
-
-
-Interactions
-------------

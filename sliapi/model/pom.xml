@@ -33,6 +33,12 @@
 						<version>${odl.sal.api.gen.plugin.version}</version>
 						<type>jar</type>
 					</dependency>
+                    <dependency>
+                        <groupId>org.opendaylight.netconf</groupId>
+                        <artifactId>sal-rest-docgen-maven</artifactId>
+                        <version>${odl.restconf.version}</version>
+                        <type>jar</type>
+                    </dependency>
 				</dependencies>
 				<executions>
 					<execution>
@@ -43,12 +49,13 @@
 							<yangFilesRootDir>${yang.file.directory}</yangFilesRootDir>
 							<codeGenerators>
 								<generator>
-									<!--
-									<codeGeneratorClass>org.opendaylight.yangtools.maven.sal.api.gen.plugin.CodeGeneratorImpl</codeGeneratorClass>
-									-->
 									<codeGeneratorClass>org.opendaylight.mdsal.binding.maven.api.gen.plugin.CodeGeneratorImpl</codeGeneratorClass>
 									<outputBaseDir>${salGeneratorPath}</outputBaseDir>
 								</generator>
+                                 <generator>
+                                    <codeGeneratorClass>org.opendaylight.netconf.sal.rest.doc.maven.StaticDocGenerator</codeGeneratorClass>
+                                    <outputBaseDir>target/swagger</outputBaseDir>
+                                </generator>
 							</codeGenerators>
 							<inspectDependencies>true</inspectDependencies>
 						</configuration>

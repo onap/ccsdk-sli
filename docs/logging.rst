@@ -3,20 +3,12 @@
 
 Logging
 =======
-
-.. note::
-   * This section is used to describe the informational or diagnostic messages emitted from
-     a software component and the methods or collecting them.
-
-   * This section is typically: provided for a platform-component and sdk; and
-     referenced in developer and user guides
-
-   * This note must be removed after content has been added.
-
+CCSDK uses slf4j to log messages to the standard OpenDaylight karaf.log
+log file.
 
 Where to Access Information
 ---------------------------
+Logs are found within the SDNC docker container, in the directory
+/opt/opendaylight/current/data/logs.
 
 
-Error / Warning Messages
-------------------------
