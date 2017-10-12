@@ -102,6 +102,7 @@ public class PollingWorker implements Runnable {
 		tasks.remove(object);
 	}
 
+	@Override
 	public void run() {
 		for(;;){
 			Set data = new TreeSet();
@@ -150,6 +151,7 @@ public class PollingWorker implements Runnable {
 
 	class MyTimerTask extends TimerTask{
 
+		@Override
 		public void run() {
 
 			clearReqister();
@@ -198,6 +200,7 @@ public class PollingWorker implements Runnable {
 			return endtime - starttime;
 		}
 
+		@Override
 		public int compareTo(Object o) {
 			if(o instanceof TestSample){
 				TestSample x = (TestSample)o;
