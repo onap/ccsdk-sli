@@ -95,6 +95,12 @@
             <artifactId>dblib-provider</artifactId>
             <version>${sdnctl.dblib.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.onap.ccsdk.sli.core</groupId>
+            <artifactId>sliapi-model</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
