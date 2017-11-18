@@ -4,7 +4,7 @@
     <parent>
         <artifactId>utils</artifactId>
         <groupId>org.onap.ccsdk.sli.core</groupId>
-        <version>0.1.3-SNAPSHOT</version>
+        <version>0.2.0-SNAPSHOT</version>
     </parent>
     <artifactId>utils-installer</artifactId>
     <name>SLI core utils - Karaf  Installer</name>
