@@ -134,7 +134,6 @@ public class SvcLogicActivator implements BundleActivator {
         // Initialize SvcLogicStore
         try {
             SvcLogicStore store = getStore();
-            registerNodeTypes(store);
         } catch (ConfigurationException e) {
             LOG.warn("Could not initialize SvcLogicScore", e);
         }
@@ -148,13 +147,6 @@ public class SvcLogicActivator implements BundleActivator {
         if (registrations != null) {
             for (ServiceRegistration reg : registrations) {
                 ServiceReference regRef = reg.getReference();
-                /* Don't bother to remove node types from table
-                String nodeType = (String) regRef.getProperty("nodeType");
-                if (nodeType != null) {
-                    LOG.info("SLI - unregistering node type " + nodeType);
-                    store.unregisterNodeType(nodeType);
-                }
-                */
                 reg.unregister();
             }
             synchronized (SvcLogicActivator.class) {
@@ -185,30 +177,5 @@ public class SvcLogicActivator implements BundleActivator {
         return(store);
     }
 
-    private static void registerNodeTypes(SvcLogicStore store) throws SvcLogicException {
 
-        if (store == null) {
-            return;
-        }
-        // Advertise built-in node executors
-        LOG.info("SLI : Registering built-in node executors");
-        Hashtable propTable = new Hashtable();
-
-        for (String nodeType : BUILTIN_NODES.keySet()) {
-            LOG.info("SLI - registering node type {}", nodeType);
-            propTable.clear();
-            propTable.put("nodeType", nodeType);
-
-            ServiceRegistration reg = bundleCtx.registerService(SvcLogicNodeExecutor.class.getName(),
-                    BUILTIN_NODES.get(nodeType), propTable);
-            registrations.add(reg);
-
-            store.registerNodeType(nodeType);
-
-            LOG.info("SLI - registering node executor");
-
-            ((SvcLogicServiceImpl)svcLogicServiceImpl).registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
-
-        }
-    }
 }

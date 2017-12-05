@@ -99,20 +99,7 @@ public class ITCaseSvcLogicGraphExecutor {
 
         assertNotNull(store);
 
-        store.registerNodeType("switch");
-        store.registerNodeType("block");
-        store.registerNodeType("get-resource");
-        store.registerNodeType("reserve");
-        store.registerNodeType("is-available");
-        store.registerNodeType("exists");
-        store.registerNodeType("configure");
-        store.registerNodeType("return");
-        store.registerNodeType("record");
-        store.registerNodeType("allocate");
-        store.registerNodeType("release");
-        store.registerNodeType("for");
-        store.registerNodeType("set");
-        SvcLogicParser parser = new SvcLogicParser(store);
+        SvcLogicParser parser = new SvcLogicParser();
 
         // Loop through executor tests
 
@@ -165,20 +152,8 @@ public class ITCaseSvcLogicGraphExecutor {
 
             assertNotNull(store);
 
-            store.registerNodeType("switch");
-            store.registerNodeType("block");
-            store.registerNodeType("get-resource");
-            store.registerNodeType("reserve");
-            store.registerNodeType("is-available");
-            store.registerNodeType("exists");
-            store.registerNodeType("configure");
-            store.registerNodeType("return");
-            store.registerNodeType("record");
-            store.registerNodeType("allocate");
-            store.registerNodeType("release");
-            store.registerNodeType("for");
-            store.registerNodeType("set");
-            SvcLogicParser parser = new SvcLogicParser(store);
+
+            SvcLogicParser parser = new SvcLogicParser();
 
             // Loop through executor tests
 

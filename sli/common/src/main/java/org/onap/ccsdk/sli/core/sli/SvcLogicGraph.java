@@ -37,7 +37,9 @@ public class SvcLogicGraph implements Serializable {
 	private String rpc = null;
 	private String mode = null;
 	private String version = null;
-	
+
+  private String md5sum = null;
+
 	private Map<String, Serializable> attributes;
 	private Map<String, SvcLogicNode> namedNodes;
 	private SvcLogicNode rootNode;
@@ -48,6 +50,16 @@ public class SvcLogicGraph implements Serializable {
 		namedNodes = new HashMap<String, SvcLogicNode>();
 		rootNode = null;
 	}
+
+  public String getMd5sum() {
+    return md5sum;
+  }
+
+
+  public void setMd5sum(String md5sum) {
+    this.md5sum = md5sum;
+  }
+
 	
 	
 	public String getModule() {
@@ -178,7 +190,7 @@ public class SvcLogicGraph implements Serializable {
 	
 	@Override
 	public String toString() {
-	    return "SvcLogicGraph [module=" + module + ", rpc=" + rpc + ", mode=" + mode + ", version=" + version + "]";
+	    return "SvcLogicGraph [module=" + module + ", rpc=" + rpc + ", mode=" + mode + ", version=" + version + ", md5sum=" + md5sum + "]";
 	}
 	
 }

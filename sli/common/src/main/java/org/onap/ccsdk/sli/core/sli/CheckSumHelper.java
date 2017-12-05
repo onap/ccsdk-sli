@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * ONAP : CCSDK
+ * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
@@ -21,16 +21,25 @@
 
 package org.onap.ccsdk.sli.core.sli;
 
-import java.util.Properties;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
-public interface SvcLogicStore {
-	
-	public void init(Properties props) throws SvcLogicException;
-	public boolean hasGraph(String module, String rpc, String version, String mode) throws SvcLogicException;
-	public SvcLogicGraph fetch(String module, String rpc, String version, String mode) throws SvcLogicException;
-	public void store(SvcLogicGraph graph) throws SvcLogicException;
-	public void delete(String module, String rpc, String version, String mode) throws SvcLogicException;
-	public void activate(SvcLogicGraph graph) throws SvcLogicException;
-	public void activate(String module, String rpc, String version, String mode) throws SvcLogicException;
+import javax.xml.bind.DatatypeConverter;
+
+public class CheckSumHelper {
+
+  public static String md5SumFromFile(String pathToFile) throws NoSuchAlgorithmException, IOException {
+    byte[] b = Files.readAllBytes(Paths.get(pathToFile));
+    return md5SumFromByteArray(b);
+  }
+
+  private static String md5SumFromByteArray(byte[] input) throws NoSuchAlgorithmException {
+    byte[] hash = MessageDigest.getInstance("MD5").digest(input);
+    String hexString = DatatypeConverter.printHexBinary(hash);
+    return hexString.toLowerCase();
+  }
 
 }

@@ -79,31 +79,6 @@ public class ITCaseSvcLogicParser {
 		props.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
 		props.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
 
-
-		store = SvcLogicStoreFactory.getSvcLogicStore(props);
-
-		assertNotNull(store);
-
-		store.registerNodeType("switch");
-		store.registerNodeType("block");
-		store.registerNodeType("get-resource");
-		store.registerNodeType("reserve");
-		store.registerNodeType("is-available");
-		store.registerNodeType("exists");
-		store.registerNodeType("configure");
-		store.registerNodeType("return");
-		store.registerNodeType("record");
-		store.registerNodeType("allocate");
-		store.registerNodeType("release");
-		store.registerNodeType("for");
-		store.registerNodeType("set");
-		store.registerNodeType("call");
-		store.registerNodeType("delete");
-		store.registerNodeType("execute");
-		store.registerNodeType("notify");
-		store.registerNodeType("save");
-		store.registerNodeType("update");
-		store.registerNodeType("break");
     }
 
     @AfterClass

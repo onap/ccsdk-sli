@@ -295,7 +295,13 @@ public class MetricLogger {
         setResponseCode(responseCode);
         setResponseDescription(responseDescription);
 
-        METRIC.info(lastMsg);
+        METRIC.info(formatString(lastMsg));
 
+    }
+    
+    protected String formatString(String str) {
+    	str = str.replaceAll("\\R",""); // this will strip all new line characters
+    	str = str.replaceAll("\\|","%7C"); //log records should not contain a pipe, encode the pipe character
+    	return str;
     }
 }

@@ -326,80 +326,6 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		}
 	}
 
-	@Override
-	public void registerNodeType(String nodeType) throws SvcLogicException {
-
-		String registerNodeSql = "INSERT INTO NODE_TYPES (nodetype) VALUES(?)";
-
-		if (isValidNodeType(nodeType)) {
-			return;
-		}
-
-		DbLibService dbSvc = getDbLibService();
-		ArrayList<String> args = new ArrayList<>();
-
-		args.add(nodeType);
-
-		try {
-			dbSvc.writeData(registerNodeSql, args, null);
-		} catch (Exception e) {
-			throw new SvcLogicException("Could not add node type to database", e);
-		}
-
-	}
-
-	@Override
-	public void unregisterNodeType(String nodeType) throws SvcLogicException {
-
-		if (!isValidNodeType(nodeType)) {
-			return;
-		}
-
-		String unregisterNodeSql = "DELETE FROM NODE_TYPES WHERE nodetype = ?";
-
-		DbLibService dbSvc = getDbLibService();
-		ArrayList<String> args = new ArrayList<>();
-
-		args.add(nodeType);
-
-		try {
-			dbSvc.writeData(unregisterNodeSql, args, null);
-		} catch (Exception e) {
-			throw new SvcLogicException(
-					"Could not delete node type from database", e);
-		}
-
-	}
-
-	@Override
-	public boolean isValidNodeType(String nodeType) throws SvcLogicException {
-
-		String validateNodeSql = "SELECT count(*) FROM NODE_TYPES WHERE nodetype = ?";
-
-		DbLibService dbSvc = getDbLibService();
-
-		ArrayList<String> args = new ArrayList<>();
-
-		args.add(nodeType);
-
-		boolean isValid = false;
-
-		try (CachedRowSet results = dbSvc.getData(validateNodeSql, args, null)) {
-
-			if (results != null && results.next()) {
-				int cnt = results.getInt(1);
-
-				if (cnt > 0) {
-					isValid = true;
-				}
-			}
-		} catch (Exception e) {
-			throw new SvcLogicException("Cannot select node type from database", e);
-		}
-
-		return isValid;
-	}
-
 	private DbLibService getDbLibService() {
 
 		// Get DbLibService interface object.
@@ -490,4 +416,31 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		        INSTANCE = dbresource;
 		     }
 	}
+
+    @Override
+    public void activate(String module, String rpc, String version, String mode) throws SvcLogicException {
+        DbLibService dbSvc = getDbLibService();
+
+        String deactivateSql = "UPDATE SVC_LOGIC SET active = 'N' WHERE module = ? AND rpc = ? AND mode = ?";
+
+        String activateSql = "UPDATE SVC_LOGIC SET active = 'Y' WHERE module = ? AND rpc = ? AND mode = ? AND version = ?";
+
+        ArrayList<String> args = new ArrayList<String>();
+
+        args.add(module);
+        args.add(rpc);
+        args.add(mode);
+
+        try {
+
+            dbSvc.writeData(deactivateSql, args, null);
+
+            args.add(version);
+            dbSvc.writeData(activateSql, args, null);
+
+        } catch (Exception e) {
+            throw new SvcLogicException("Could not activate graph", e);
+        }
+    }
+
 }

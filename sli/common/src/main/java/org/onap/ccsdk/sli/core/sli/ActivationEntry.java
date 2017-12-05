@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * ONAP : CCSDK
+ * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
@@ -21,16 +21,21 @@
 
 package org.onap.ccsdk.sli.core.sli;
 
-import java.util.Properties;
+public class ActivationEntry {
+    String module;
+    String rpc;
+    String version;
+    String mode;
 
-public interface SvcLogicStore {
-	
-	public void init(Properties props) throws SvcLogicException;
-	public boolean hasGraph(String module, String rpc, String version, String mode) throws SvcLogicException;
-	public SvcLogicGraph fetch(String module, String rpc, String version, String mode) throws SvcLogicException;
-	public void store(SvcLogicGraph graph) throws SvcLogicException;
-	public void delete(String module, String rpc, String version, String mode) throws SvcLogicException;
-	public void activate(SvcLogicGraph graph) throws SvcLogicException;
-	public void activate(String module, String rpc, String version, String mode) throws SvcLogicException;
-
+    public ActivationEntry(String module, String rpc, String version, String mode) {
+        this.module = module;
+        this.rpc = rpc;
+        this.version = version;
+        this.mode = mode;
+    }
+    
+    @Override
+    public String toString() {
+        return "ActivationEntry [module=" + module + ", rpc=" + rpc + ", version=" + version + ", mode=" + mode + "]";
+    }
 }
