@@ -487,13 +487,8 @@ public class SvcLogicParser {
 
         for (SvcLogicGraph graph : graphs) {
 
-            String module = graph.getModule();
-            String rpc = graph.getRpc();
-            String version = graph.getVersion();
-            String mode = graph.getMode();
             try {
-                LOGGER.info("Saving SvcLogicGraph to database (module:{},rpc:{},mode:{},version:{})", module, rpc, mode,
-                        version);
+                LOGGER.info("Saving " + graph.toString() + " to database.");
                 store.store(graph);
             } catch (Exception e) {
                 throw new SvcLogicException(e.getMessage(), e);

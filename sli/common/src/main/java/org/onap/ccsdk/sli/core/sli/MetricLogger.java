@@ -169,7 +169,7 @@ public class MetricLogger {
     }
 
     private void setResponseDescription(String responseDesc) {
-        MDC.put(RESPONSE_DESCRIPTION, responseDesc);
+        MDC.put(RESPONSE_DESCRIPTION, formatString(responseDesc));
     }
 
     public String getInstanceUUID() {
