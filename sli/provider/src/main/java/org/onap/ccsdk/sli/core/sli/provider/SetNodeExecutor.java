@@ -60,8 +60,16 @@ public class SetNodeExecutor extends SvcLogicNodeExecutor {
 			
 			// Resolve LHS of assignment (could contain index variables)
 			try {
+                //Backticks symbolize the variable should be handled as an expression instead of as a variable
+                if (curName.trim().startsWith("`")) {
+                    int lastParen = curName.lastIndexOf("`");
+                    String evalExpr = curName.trim().substring(1, lastParen);
+                    SvcLogicExpression lhsExpr = SvcLogicExpressionFactory.parse(evalExpr);
+                    lhsVarName = SvcLogicExpressionResolver.evaluate(lhsExpr, node, ctx);
+                } else {
 				SvcLogicExpression lhsExpr = SvcLogicExpressionFactory.parse(curName);
 				lhsVarName = SvcLogicExpressionResolver.resolveVariableName(lhsExpr, node, ctx);
+                }
 			} catch (Exception e) {
 				LOG.warn("Caught exception trying to resolve variable name ("+curName+")", e);
 			}

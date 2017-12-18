@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,7 @@ package org.onap.ccsdk.sli.core.sli.provider;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
@@ -33,12 +34,14 @@ import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Dscp;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpPrefixBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.PortNumber;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,8 +191,9 @@ public class MdsalHelper {
                                 }
                             } catch (Exception e) {
                                 LOG.error(
-                                    "Caught exception trying to convert Yang-generated enum returned by " + fromClass
-                                        .getName() + "." + m.getName() + "() to Properties entry", e);
+                                        "Caught exception trying to convert Yang-generated enum returned by "
+                                                + fromClass.getName() + "." + m.getName() + "() to Properties entry",
+                                        e);
                             }
                         } else if (isIpv4Address(returnType)) {
                             // Save its value
@@ -211,9 +215,8 @@ public class MdsalHelper {
 
                                 }
                             } catch (Exception e) {
-                                LOG.error(
-                                    "Caught exception trying to convert value returned by " + fromClass.getName() + "."
-                                        + m.getName() + "() to Properties entry", e);
+                                LOG.error("Caught exception trying to convert value returned by " + fromClass.getName()
+                                        + "." + m.getName() + "() to Properties entry", e);
                             }
                         } else if (isIpv6Address(returnType)) {
                             // Save its value
@@ -235,9 +238,8 @@ public class MdsalHelper {
 
                                 }
                             } catch (Exception e) {
-                                LOG.error(
-                                    "Caught exception trying to convert value returned by " + fromClass.getName() + "."
-                                        + m.getName() + "() to Properties entry", e);
+                                LOG.error("Caught exception trying to convert value returned by " + fromClass.getName()
+                                        + "." + m.getName() + "() to Properties entry", e);
                             }
                         } else if (isIpAddress(returnType)) {
                             // Save its value
@@ -259,9 +261,8 @@ public class MdsalHelper {
 
                                 }
                             } catch (Exception e) {
-                                LOG.error(
-                                    "Caught exception trying to convert value returned by " + fromClass.getName() + "."
-                                        + m.getName() + "() to Properties entry", e);
+                                LOG.error("Caught exception trying to convert value returned by " + fromClass.getName()
+                                        + "." + m.getName() + "() to Properties entry", e);
                             }
                         } else if (isIpPrefix(returnType)) {
                             // Save its value
@@ -283,9 +284,54 @@ public class MdsalHelper {
 
                                 }
                             } catch (Exception e) {
-                                LOG.error(
-                                    "Caught exception trying to convert value returned by " + fromClass.getName() + "."
-                                        + m.getName() + "() to Properties entry", e);
+                                LOG.error("Caught exception trying to convert value returned by " + fromClass.getName()
+                                        + "." + m.getName() + "() to Properties entry", e);
+                            }
+                        } else if (isPortNumber(returnType)) {
+                            // Save its value
+                            try {
+                                String propName = propNamePfx + "." + fieldName;
+                                boolean isAccessible = m.isAccessible();
+                                if (!isAccessible) {
+                                    m.setAccessible(true);
+                                }
+                                PortNumber retValue = (PortNumber) m.invoke(fromObj);
+                                if (!isAccessible) {
+                                    m.setAccessible(isAccessible);
+                                }
+
+                                if (retValue != null) {
+                                    propVal = "" + retValue.getValue();
+                                    LOG.debug("Setting property " + propName + " to " + propVal);
+                                    props.setProperty(propName, propVal);
+
+                                }
+                            } catch (Exception e) {
+                                LOG.error("Caught exception trying to convert value returned by " + fromClass.getName()
+                                        + "." + m.getName() + "() to Properties entry", e);
+                            }
+                        } else if (isDscp(returnType)) {
+                            // Save its value
+                            try {
+                                String propName = propNamePfx + "." + fieldName;
+                                boolean isAccessible = m.isAccessible();
+                                if (!isAccessible) {
+                                    m.setAccessible(true);
+                                }
+                                Dscp retValue = (Dscp) m.invoke(fromObj);
+                                if (!isAccessible) {
+                                    m.setAccessible(isAccessible);
+                                }
+
+                                if (retValue != null) {
+                                    propVal = "" + retValue.getValue();
+                                    LOG.debug("Setting property " + propName + " to " + propVal);
+                                    props.setProperty(propName, propVal);
+
+                                }
+                            } catch (Exception e) {
+                                LOG.error("Caught exception trying to convert value returned by " + fromClass.getName()
+                                        + "." + m.getName() + "() to Properties entry", e);
                             }
                         } else {
                             try {
@@ -299,7 +345,7 @@ public class MdsalHelper {
                                     LOG.trace(m.getName() + " returns a byte[]");
                                     retValue = new String((byte[]) retValue, "UTF-8");
                                     LOG.trace("Converted byte array " + propNamePfx + "." + fieldName + "to string "
-                                        + retValue);
+                                            + retValue);
                                 }
                                 if (!isAccessible) {
                                     m.setAccessible(isAccessible);
@@ -311,10 +357,10 @@ public class MdsalHelper {
 
                                 if (m.getName().equals("getKey")) {
                                     LOG.trace("Caught " + e.getClass().getName()
-                                        + " exception trying to convert results from getKey() - ignoring");
+                                            + " exception trying to convert results from getKey() - ignoring");
                                 } else {
                                     LOG.error("Caught exception trying to convert Yang-generated class returned by"
-                                        + fromClass.getName() + "." + m.getName() + "() to Properties entry", e);
+                                            + fromClass.getName() + "." + m.getName() + "() to Properties entry", e);
                                 }
                             }
                         }
@@ -340,9 +386,8 @@ public class MdsalHelper {
                             Type elementType = ((ParameterizedType) paramType).getActualTypeArguments()[0];
                             toProperties(props, propNamePfx + "." + fieldName, retList, (Class) elementType);
                         } catch (Exception e) {
-                            LOG.error(
-                                "Caught exception trying to convert List returned by " + fromClass.getName() + "." + m
-                                    .getName() + "() to Properties entry", e);
+                            LOG.error("Caught exception trying to convert List returned by " + fromClass.getName() + "."
+                                    + m.getName() + "() to Properties entry", e);
                         }
 
                     } else {
@@ -366,7 +411,7 @@ public class MdsalHelper {
                                     LOG.trace(m.getName() + " returns a byte[]");
                                     propVal = new String((byte[]) propValObj, "UTF-8");
                                     LOG.trace("Converted byte array " + propNamePfx + "." + fieldName + "to string "
-                                        + propVal);
+                                            + propVal);
 
                                 } else {
                                     propVal = propValObj.toString();
@@ -378,11 +423,10 @@ public class MdsalHelper {
                         } catch (Exception e) {
                             if (m.getName().equals("getKey")) {
                                 LOG.trace("Caught " + e.getClass().getName()
-                                    + " exception trying to convert results from getKey() - ignoring");
+                                        + " exception trying to convert results from getKey() - ignoring");
                             } else {
-                                LOG.error(
-                                    "Caught exception trying to convert value returned by" + fromClass.getName() + "."
-                                        + m.getName() + "() to Properties entry", e);
+                                LOG.error("Caught exception trying to convert value returned by" + fromClass.getName()
+                                        + "." + m.getName() + "() to Properties entry", e);
                             }
                         }
                     }
@@ -394,13 +438,12 @@ public class MdsalHelper {
             // "getValue", then
             // set value identified by "prefix" to that one value.
             if ((numGetters == 1) && ("getValue".equals(lastGetterName))) {
-                LOG.trace(
-                    "getValueFIX : " + propNamePfx + " only has getValue() getter - setting " + propNamePfx + " = "
-                        + propVal);
+                LOG.trace("getValueFIX : " + propNamePfx + " only has getValue() getter - setting " + propNamePfx
+                        + " = " + propVal);
                 props.setProperty(propNamePfx, propVal);
             } else {
                 LOG.trace("getValueFIX : " + propNamePfx + " has " + numGetters + " getter(s), last one found was "
-                    + lastGetterName);
+                        + lastGetterName);
 
             }
 
@@ -578,6 +621,9 @@ public class MdsalHelper {
                     String paramValue = props.getProperty(propName);
                     if (paramValue == null) {
                         LOG.trace(propName + " is unset");
+                    } else if ("".equals(paramValue)) {
+                        LOG.trace(propName + " was set to the empty string, setting it to null");
+                        paramValue = null;
                     } else {
                         LOG.trace(propName + " = " + paramValue);
                     }
@@ -596,7 +642,7 @@ public class MdsalHelper {
                                     paramObj = Enum.valueOf(paramClass, toJavaEnum(paramValue));
                                 } catch (Exception e) {
                                     LOG.error("Caught exception trying to convert field " + propName + " to enum "
-                                        + paramClass.getName(), e);
+                                            + paramClass.getName(), e);
                                 }
 
                                 try {
@@ -605,9 +651,8 @@ public class MdsalHelper {
                                         m.setAccessible(true);
                                     }
 
-                                    LOG.trace(
-                                        "Calling " + toObj.getClass().getName() + "." + m.getName() + "(" + paramValue
-                                            + ")");
+                                    LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
+                                            + paramValue + ")");
                                     m.invoke(toObj, paramObj);
 
                                     if (!isAccessible) {
@@ -616,17 +661,16 @@ public class MdsalHelper {
                                     foundValue = true;
 
                                 } catch (Exception e) {
-                                    LOG.error(
-                                        "Caught exception trying to create Yang-generated enum expected by" + toClass
-                                            .getName() + "." + m.getName() + "() from Properties entry", e);
+                                    LOG.error("Caught exception trying to create Yang-generated enum expected by"
+                                            + toClass.getName() + "." + m.getName() + "() from Properties entry", e);
                                 }
                             }
                         } else {
 
                             String simpleName = paramClass.getSimpleName();
 
-                            if ("Ipv4Address".equals(simpleName) || "Ipv6Address".equals(simpleName) || "IpAddress"
-                                .equals(simpleName)) {
+                            if ("Ipv4Address".equals(simpleName) || "Ipv6Address".equals(simpleName)
+                                    || "IpAddress".equals(simpleName)) {
 
                                 if ((paramValue != null) && (paramValue.length() > 0)) {
                                     try {
@@ -642,9 +686,8 @@ public class MdsalHelper {
                                         }
                                         foundValue = true;
                                     } catch (Exception e) {
-                                        LOG.error(
-                                            "Caught exception calling " + toClass.getName() + "." + m.getName() + "("
-                                                + paramValue + ")", e);
+                                        LOG.error("Caught exception calling " + toClass.getName() + "." + m.getName()
+                                                + "(" + paramValue + ")", e);
 
                                     }
                                 } else {
@@ -654,7 +697,7 @@ public class MdsalHelper {
                                             m.setAccessible(true);
                                         }
                                         LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
-                                            + paramValue + ")");
+                                                + paramValue + ")");
                                         m.invoke(toObj, paramValue);
                                         if (!isAccessible) {
                                             m.setAccessible(isAccessible);
@@ -662,9 +705,8 @@ public class MdsalHelper {
                                         foundValue = true;
 
                                     } catch (Exception e) {
-                                        LOG.error(
-                                            "Caught exception trying to call " + toClass.getName() + "." + m.getName()
-                                                + "() with Properties entry", e);
+                                        LOG.error("Caught exception trying to call " + toClass.getName() + "."
+                                                + m.getName() + "() with Properties entry", e);
                                     }
                                 }
                             } else if ("IpPrefix".equals(simpleName)) {
@@ -674,9 +716,30 @@ public class MdsalHelper {
                                         m.invoke(toObj, ipPrefix);
                                         foundValue = true;
                                     } catch (Exception e) {
-                                        LOG.error(
-                                            "Caught exception calling " + toClass.getName() + "." + m.getName() + "("
-                                                + paramValue + ")", e);
+                                        LOG.error("Caught exception calling " + toClass.getName() + "." + m.getName()
+                                                + "(" + paramValue + ")", e);
+                                    }
+                                }
+                            } else if ("PortNumber".equals(simpleName)) {
+                                if ((paramValue != null) && (paramValue.length() > 0)) {
+                                    try {
+                                        PortNumber portNumber = PortNumber.getDefaultInstance(paramValue);
+                                        m.invoke(toObj, portNumber);
+                                        foundValue = true;
+                                    } catch (Exception e) {
+                                        LOG.error("Caught exception calling " + toClass.getName() + "." + m.getName()
+                                                + "(" + paramValue + ")", e);
+                                    }
+                                }
+                            } else if ("Dscp".equals(simpleName)) {
+                                if ((paramValue != null) && (paramValue.length() > 0)) {
+                                    try {
+                                        Dscp dscp = Dscp.getDefaultInstance(paramValue);
+                                        m.invoke(toObj, dscp);
+                                        foundValue = true;
+                                    } catch (Exception e) {
+                                        LOG.error("Caught exception calling " + toClass.getName() + "." + m.getName()
+                                                + "(" + paramValue + ")", e);
                                     }
                                 }
                             } else {
@@ -692,7 +755,7 @@ public class MdsalHelper {
                                 Object constObj = null;
 
                                 LOG.trace(m.getName() + " expects a yang-generated class - looking for builder "
-                                    + builderName);
+                                        + builderName);
                                 try {
                                     builderClass = Class.forName(builderName);
                                     builderObj = builderClass.newInstance();
@@ -705,17 +768,17 @@ public class MdsalHelper {
                                             if (!isAccessible) {
                                                 m.setAccessible(true);
                                             }
-                                            LOG.trace(
-                                                "Calling " + toObj.getClass().getName() + "." + m.getName() + "(null)");
-                                            m.invoke(toObj, new Object[]{null});
+                                            LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName()
+                                                    + "(null)");
+                                            m.invoke(toObj, new Object[] {null});
                                             if (!isAccessible) {
                                                 m.setAccessible(isAccessible);
                                             }
                                             foundValue = true;
 
                                         } catch (Exception e1) {
-                                            LOG.error("Caught exception trying to cally" + toClass.getName() + "." + m
-                                                .getName() + "() with Properties entry", e1);
+                                            LOG.error("Caught exception trying to cally" + toClass.getName() + "."
+                                                    + m.getName() + "() with Properties entry", e1);
                                         }
                                     } else {
                                         try {
@@ -753,8 +816,8 @@ public class MdsalHelper {
                                                 // method
                                                 // getDefaultInstance(String)
                                                 try {
-                                                    Method gm = paramClass
-                                                        .getMethod("getDefaultInstance", String.class);
+                                                    Method gm =
+                                                            paramClass.getMethod("getDefaultInstance", String.class);
 
                                                     int gmodifier = gm.getModifiers();
                                                     if (Modifier.isStatic(gmodifier)) {
@@ -765,20 +828,20 @@ public class MdsalHelper {
 
                                                 } catch (Exception gme) {
                                                     LOG.info("Unable to find static method getDefaultInstance for "
-                                                        + "class {}", paramClass.getSimpleName(), gme);
+                                                            + "class {}", paramClass.getSimpleName(), gme);
                                                 }
                                             }
 
                                         } catch (Exception e1) {
                                             LOG.warn(
-                                                "Could not find a suitable constructor for " + paramClass.getName(),
-                                                e1);
+                                                    "Could not find a suitable constructor for " + paramClass.getName(),
+                                                    e1);
                                         }
 
                                         if (constObj == null) {
                                             LOG.warn("Could not find builder class " + builderName
-                                                + " and could not find a String or Long constructor or static "
-                                                + "getDefaultInstance(String) - trying just to set passing paramValue");
+                                                    + " and could not find a String or Long constructor or static "
+                                                    + "getDefaultInstance(String) - trying just to set passing paramValue");
 
                                         }
                                     }
@@ -790,9 +853,8 @@ public class MdsalHelper {
 
                                     try {
                                         Method buildMethod = builderClass.getMethod("build");
-                                        LOG.trace(
-                                            "Calling " + paramObj.getClass().getName() + "." + buildMethod.getName()
-                                                + "()");
+                                        LOG.trace("Calling " + paramObj.getClass().getName() + "."
+                                                + buildMethod.getName() + "()");
                                         Object builtObj = buildMethod.invoke(paramObj);
 
                                         boolean isAccessible = m.isAccessible();
@@ -808,9 +870,9 @@ public class MdsalHelper {
                                         foundValue = true;
 
                                     } catch (Exception e) {
-                                        LOG.error(
-                                            "Caught exception trying to set Yang-generated class expected by" + toClass
-                                                .getName() + "." + m.getName() + "() from Properties entry", e);
+                                        LOG.error("Caught exception trying to set Yang-generated class expected by"
+                                                + toClass.getName() + "." + m.getName() + "() from Properties entry",
+                                                e);
                                     }
                                 } else {
                                     try {
@@ -822,11 +884,11 @@ public class MdsalHelper {
                                         if (constObj != null) {
 
                                             LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
-                                                + constObj.toString() + ")");
+                                                    + constObj.toString() + ")");
                                             m.invoke(toObj, constObj);
                                         } else {
                                             LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
-                                                + paramValue + ")");
+                                                    + paramValue + ")");
                                             m.invoke(toObj, paramValue);
 
                                         }
@@ -836,9 +898,8 @@ public class MdsalHelper {
                                         foundValue = true;
 
                                     } catch (Exception e) {
-                                        LOG.error(
-                                            "Caught exception trying to convert value returned by" + toClass.getName()
-                                                + "." + m.getName() + "() to Properties entry", e);
+                                        LOG.error("Caught exception trying to convert value returned by"
+                                                + toClass.getName() + "." + m.getName() + "() to Properties entry", e);
                                     }
                                 }
                             }
@@ -862,7 +923,7 @@ public class MdsalHelper {
                                 paramObj = toList(props, propName, (List) paramObj, (Class) elementType);
                             } catch (Exception e) {
                                 LOG.error("Caught exception trying to create list expected as argument to {}.{}",
-                                    toClass.getName(), m.getName(), e);
+                                        toClass.getName(), m.getName(), e);
                             }
 
                             if (paramObj != null) {
@@ -871,9 +932,8 @@ public class MdsalHelper {
                                     if (!isAccessible) {
                                         m.setAccessible(true);
                                     }
-                                    LOG.trace(
-                                        "Calling " + toObj.getClass().getName() + "." + m.getName() + "(" + paramValue
-                                            + ")");
+                                    LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
+                                            + paramValue + ")");
                                     m.invoke(toObj, paramObj);
                                     if (!isAccessible) {
                                         m.setAccessible(isAccessible);
@@ -881,9 +941,8 @@ public class MdsalHelper {
                                     foundValue = true;
 
                                 } catch (Exception e) {
-                                    LOG.error(
-                                        "Caught exception trying to convert List returned by" + toClass.getName() + "."
-                                            + m.getName() + "() to Properties entry", e);
+                                    LOG.error("Caught exception trying to convert List returned by" + toClass.getName()
+                                            + "." + m.getName() + "() to Properties entry", e);
                                 }
                             }
                         } else {
@@ -891,8 +950,8 @@ public class MdsalHelper {
                             // Setter expects something that is not a List and
                             // not yang-generated. Just pass the parameter value
 
-                            LOG.trace(
-                                "Parameter class " + paramClass.getName() + " is not a yang-generated class or a List");
+                            LOG.trace("Parameter class " + paramClass.getName()
+                                    + " is not a yang-generated class or a List");
 
                             if ((paramValue != null) && (paramValue.length() > 0)) {
 
@@ -927,7 +986,7 @@ public class MdsalHelper {
                                     if (constObj != null) {
                                         try {
                                             LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
-                                                + constObj + ")");
+                                                    + constObj + ")");
                                             m.invoke(toObj, constObj);
                                             foundValue = true;
                                         } catch (Exception e2) {
@@ -940,7 +999,7 @@ public class MdsalHelper {
                                                 m.setAccessible(true);
                                             }
                                             LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
-                                                + paramValue + ")");
+                                                    + paramValue + ")");
                                             m.invoke(toObj, paramValue);
                                             if (!isAccessible) {
                                                 m.setAccessible(isAccessible);
@@ -948,8 +1007,9 @@ public class MdsalHelper {
                                             foundValue = true;
 
                                         } catch (Exception e) {
-                                            LOG.error("Caught exception trying to convert value returned by" + toClass
-                                                .getName() + "." + m.getName() + "() to Properties entry", e);
+                                            LOG.error("Caught exception trying to convert value returned by"
+                                                    + toClass.getName() + "." + m.getName() + "() to Properties entry",
+                                                    e);
                                         }
                                     }
                                 } catch (Exception e1) {
@@ -1034,8 +1094,9 @@ public class MdsalHelper {
 
                             String simpleName = returnClass.getSimpleName();
 
-                            if ("Ipv4Address".equals(simpleName) || "Ipv6Address".equals(simpleName) || "IpAddress"
-                                .equals(simpleName) || "IpPrefix".equals(simpleName)) {
+                            if ("Ipv4Address".equals(simpleName) || "Ipv6Address".equals(simpleName)
+                                    || "IpAddress".equals(simpleName) || "IpPrefix".equals(simpleName)
+                                    || "PortNumber".equals(simpleName) || "Dscp".equals(simpleName)) {
                                 LOG.trace(m.getName() + " is an " + simpleName);
                                 pstr.print("\n\n     * " + propName);
                             } else {
@@ -1058,11 +1119,11 @@ public class MdsalHelper {
                             Type returnType = m.getGenericReturnType();
                             Type elementType = ((ParameterizedType) returnType).getActualTypeArguments()[0];
                             Class elementClass = (Class) elementType;
-                            LOG.trace(
-                                "Calling printPropertyList on list type (" + elementClass.getName() + "), pfx is ("
-                                    + pfx + "), toClass is (" + toClass.getName() + ")");
+                            LOG.trace("Calling printPropertyList on list type (" + elementClass.getName()
+                                    + "), pfx is (" + pfx + "), toClass is (" + toClass.getName() + ")");
                             printPropertyList(pstr,
-                                propNamePfx + "." + toLowerHyphen(elementClass.getSimpleName()) + "[]", elementClass);
+                                    propNamePfx + "." + toLowerHyphen(elementClass.getSimpleName()) + "[]",
+                                    elementClass);
 
                         } else if (!returnClass.equals(Class.class)) {
 
@@ -1070,7 +1131,7 @@ public class MdsalHelper {
                             // not yang-generated. Just pass the parameter value
 
                             LOG.trace("Parameter class " + returnClass.getName()
-                                + " is not a yang-generated class or a List");
+                                    + " is not a yang-generated class or a List");
 
                             pstr.print("\n\n     * " + propName);
                         }
@@ -1094,6 +1155,9 @@ public class MdsalHelper {
         if (c == null) {
             return (false);
         }
+        if (!isIetfInet(c)) {
+            return (false);
+        }
         String simpleName = c.getSimpleName();
         return ("IpPrefix".equals(simpleName));
     }
@@ -1101,6 +1165,9 @@ public class MdsalHelper {
     public static boolean isIpv4Address(Class c) {
 
         if (c == null) {
+            return (false);
+        }
+        if (!isIetfInet(c)) {
             return (false);
         }
         String simpleName = c.getSimpleName();
@@ -1112,6 +1179,9 @@ public class MdsalHelper {
         if (c == null) {
             return (false);
         }
+        if (!isIetfInet(c)) {
+            return (false);
+        }
         String simpleName = c.getSimpleName();
         return ("Ipv6Address".equals(simpleName));
     }
@@ -1121,8 +1191,50 @@ public class MdsalHelper {
         if (c == null) {
             return (false);
         }
+        if (!isIetfInet(c)) {
+            return (false);
+        }
         String simpleName = c.getSimpleName();
         return ("IpAddress".equals(simpleName));
+    }
+
+    public static boolean isPortNumber(Class c) {
+
+        if (c == null) {
+            return (false);
+        }
+        if (!isIetfInet(c)) {
+            return (false);
+        }
+
+        String simpleName = c.getSimpleName();
+        return ("PortNumber".equals(simpleName));
+    }
+
+    public static boolean isDscp(Class c) {
+
+        if (c == null) {
+            return (false);
+        }
+        if (!isIetfInet(c)) {
+            return (false);
+        }
+        String simpleName = c.getSimpleName();
+        return ("Dscp".equals(simpleName));
+    }
+
+    public static boolean isIetfInet(Class c) {
+
+        Package p = c.getPackage();
+        if (p != null) {
+            String pkgName = p.getName();
+
+            if ((pkgName != null) && (pkgName.indexOf("yang.ietf.inet.types") > -1)) {
+                return (true);
+            }
+        }
+
+        return (false);
     }
 
     public static String toLowerHyphen(String inStr) {
@@ -1144,7 +1256,7 @@ public class MdsalHelper {
         return (retval);
     }
 
-    //This is called when mapping the yang value back to a valid java enumeration
+    // This is called when mapping the yang value back to a valid java enumeration
     public static String toJavaEnum(String inStr) {
         if (inStr == null) {
             return (null);
@@ -1152,17 +1264,17 @@ public class MdsalHelper {
             return (inStr);
         }
 
-        //This will strip out all periods, which cannot be in a java enum
+        // This will strip out all periods, which cannot be in a java enum
         inStr = inStr.replaceAll("\\.", "");
 
         String[] terms = inStr.split("-");
         StringBuffer sbuff = new StringBuffer();
 
-        //appends an _ if the string starts with a digit to make it a valid java enum
+        // appends an _ if the string starts with a digit to make it a valid java enum
         if (Character.isDigit(inStr.charAt(0))) {
             sbuff.append('_');
         }
-        //If the string contains hyphens it will convert the string to upperCamelCase without hyphens
+        // If the string contains hyphens it will convert the string to upperCamelCase without hyphens
         for (String term : terms) {
             sbuff.append(term.substring(0, 1).toUpperCase());
             if (term.length() > 1) {
@@ -1205,8 +1317,8 @@ public class MdsalHelper {
         if (Modifier.isPublic(m.getModifiers()) && (m.getParameterTypes().length == 1)) {
             if (m.getName().matches("^set[A-Z].*")) {
                 Class[] paramTypes = m.getParameterTypes();
-                if (paramTypes[0].isAssignableFrom(Identifier.class) || Identifier.class
-                    .isAssignableFrom(paramTypes[0])) {
+                if (paramTypes[0].isAssignableFrom(Identifier.class)
+                        || Identifier.class.isAssignableFrom(paramTypes[0])) {
                     return (false);
                 } else {
                     return (true);
@@ -1222,7 +1334,7 @@ public class MdsalHelper {
         return "/opt/bvc/controller/configuration/" + propertiesFileName;
     }
 
-    //This is called when mapping a valid java enumeration back to the yang model value
+    // This is called when mapping a valid java enumeration back to the yang model value
     public static String mapEnumeratedValue(String propertyName, String propertyValue) {
         LOG.info("mapEnumeratedValue called with propertyName=" + propertyName + " and value=" + propertyValue);
         String mappingKey = "yang." + propertyName + "." + propertyValue;
