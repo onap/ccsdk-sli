@@ -194,7 +194,13 @@ public class LogFilter implements Filter {
         //MDC.put(SERVER_IP,""); //by chef
         MDC.put(ELAPSED_TIME,Long.toString(System.currentTimeMillis() - startTime));
         //MDC.put(SERVER_HOST,""); //by chef
+        String forwardedHost = request.getHeader("X-Forwarded-For");
+        if (forwardedHost != null) {
+            MDC.put(CLIENT_IP, forwardedHost);
+        }
+        else{
         MDC.put(CLIENT_IP,request.getRemoteHost());
+        }
         MDC.put(CLASS,"");
         MDC.put(UNUSED,"");
         MDC.put(PROCESS_KEY,"");
@@ -209,7 +215,7 @@ public class LogFilter implements Filter {
 
     private String asIso8601(Date date) {
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyy-MM-dd'T'hh:mm:ss:SS'+00:00'");
+        DateFormat df = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss.SS'+00:00'");
         df.setTimeZone(tz);
         return df.format(date);
     }
