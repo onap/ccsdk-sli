@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@ package org.onap.ccsdk.sli.core.slipluginutils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
-
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -38,6 +38,9 @@ import org.slf4j.LoggerFactory;
 public class SliStringUtils implements SvcLogicJavaPlugin {
 	private static final Logger LOG = LoggerFactory.getLogger(SliStringUtils.class);
 
+	public static String INPUT_PARAM_SOURCE = "source";
+	public static String INPUT_PARAM_TARGET = "target";
+	
 	public SliStringUtils() {}
 
 	/**
@@ -393,4 +396,21 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
         }
     }
 
+	/**
+	 * xmlEscapeText() will be used to format input xml with text.
+	 *
+	 * @param inParams
+	 *            accepts the instance of {@link Map} holds the input xml in string
+	 *            format.
+	 * @param ctx
+	 *            accepts the instance of {@link SvcLogicContext} holds the service
+	 *            logic context.
+	 *
+	 */
+	public static void xmlEscapeText(Map<String, String> inParams, SvcLogicContext ctx) {
+		String source = inParams.get(INPUT_PARAM_SOURCE);
+		String target = inParams.get(INPUT_PARAM_TARGET);
+		source = StringEscapeUtils.escapeXml(source);
+		ctx.setAttribute(target, source);
+	}
 }

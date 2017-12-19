@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,18 +30,24 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * A utility class used to streamline the interface between Java plugins,
@@ -61,6 +67,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 
 	public SliPluginUtils() {}
 
+	public SliPluginUtils( Properties props ) {}
 
 
 	// ========== CONTEXT MEMORY FUNCTIONS ==========
@@ -785,4 +792,317 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
             throw new SvcLogicException("problem with setTime", ex);
         }
     }
+
+    /**
+    * jsonStringToCtx takes a json string stored as a single property in context memory and breaks it into individual properties
+    * @param parameters - requires source, outputPath and isEscaped to not be null.
+    * @param ctx Reference to context memory
+    * @throws SvcLogicException if a required parameter is missing an exception is thrown
+    */
+    public static void jsonStringToCtx(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException
+    {
+        checkParameters(parameters, new String[] { "source","outputPath","isEscaped" }, LOG);
+        try {
+            String source = ctx.getAttribute(parameters.get("source"));
+            if("true".equals(parameters.get("isEscaped"))){
+                source = StringEscapeUtils.unescapeJson(source);
+            }
+            writeJsonToCtx(source, ctx,parameters.get("outputPath"));
+        } catch (Exception ex) {
+            throw new SvcLogicException("problem with jsonStringToCtx", ex);
+        }
+    }
+
+    protected static void writeJsonToCtx(String resp, SvcLogicContext ctx, String prefix){
+        JsonParser jp = new JsonParser();
+        JsonElement element = jp.parse(resp);
+        writeJsonObject(element.getAsJsonObject(), ctx, prefix + ".");
+    }
+
+    protected static void writeJsonObject(JsonObject obj, SvcLogicContext ctx, String root) {
+        for (Entry<String, JsonElement> entry : obj.entrySet()) {
+            if (entry.getValue().isJsonObject()) {
+                writeJsonObject(entry.getValue().getAsJsonObject(), ctx, root + entry.getKey() + ".");
+            } else if (entry.getValue().isJsonArray()) {
+                JsonArray array = entry.getValue().getAsJsonArray();
+                ctx.setAttribute(root + entry.getKey() + "_length", String.valueOf(array.size()));
+                Integer arrayIdx = 0;
+                for (JsonElement element : array) {
+                    if (element.isJsonObject()) {
+                        writeJsonObject(element.getAsJsonObject(), ctx, root + entry.getKey() + "[" + arrayIdx + "].");
+                    } else if (element.isJsonPrimitive()) {
+                        ctx.setAttribute(root + entry.getKey() + "[" + arrayIdx + "]", element.getAsString());
+                    }
+                    arrayIdx++;
+                }
+            } else {
+                //Handles when a JSON obj is nested within a JSON obj
+                if(!root.endsWith(".")){
+                    root = root + ".";
+                }
+                ctx.setAttribute(root + entry.getKey(), entry.getValue().getAsString());
+            }
+        }
+    }
+
+    /**
+     * getAttributeValue takes a ctx memory path as a string, gets the value stored at this path and set this value in context memory at
+     * outputPath
+     * @param parameters - requires source and outputPath
+     * @param ctx Reference to context memory
+     * @throws SvcLogicException if a required parameter is missing an exception is thrown
+     */
+     public static void getAttributeValue(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
+         checkParameters(parameters, new String[] { "source", "outputPath" }, LOG);
+         String source = ctx.getAttribute(parameters.get("source"));
+         ctx.setAttribute(parameters.get("outputPath"), source);
+     }
+
+	/**
+	 * ctxListContains provides a way to see if a context memory list contains a key value
+	 * @param parameters - requires list, keyName, keyValue, outputPath to all not be null.
+	 * @param ctx        Reference to context memory
+	 * @throws SvcLogicException if a required parameter is missing an exception is thrown
+	 */
+	public static String ctxListContains(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
+		checkParameters(parameters, new String[]{"list", "keyName", "keyValue"}, LOG);
+
+		try {
+			String ctxList = parameters.get("list");
+			ctxList = (ctxList.endsWith("_length")) ? ctxList : ctxList + "_length";
+			int listLength = getArrayLength(ctx, ctxList);
+
+			if (listLength == 0) {
+				LOG.debug("List is not in context memory");
+				return "false";
+			} else {
+				Set<String> keys = new HashSet<String>();
+
+				String listPrefix = ctxList.substring(0, ctxList.lastIndexOf("_")) + "[";
+				String listSuffix = "]." + parameters.get("keyName");
+
+				for (int i = 0; i < listLength; i++) {
+					String keyLocation = listPrefix + i + listSuffix;
+					keys.add(ctx.getAttribute(keyLocation));
+				}
+
+				if (keys.contains(parameters.get("keyValue"))) {
+					LOG.debug("List " + parameters.get("list") + " contains " + parameters.get("keyValue"));
+					return "true";
+				} else {
+					LOG.debug("List " + parameters.get("list") + " do not contains " + parameters.get("keyValue"));
+					return "false";
+				}
+			}
+		} catch (Exception ex) {
+			throw new SvcLogicException("ctxListContains failed", ex);
+		}
+	}
+
+	/**
+	 * set properties in context memory for a container </br>
+	 * parameters with a null or empty key or value are ignored </br>
+	 * required parameter root - root + "." + parameters.key
+	 * is the key to set the value too value in context memory </br>
+	 * optional parameter valueRoot - if set: valueRoot + "." + parameters.value
+	 * is the key to get the value from context memory
+	 *
+	 * @param parameters - root (required), valueRoot (optional), properties names and values to be set
+	 * @param ctx        Reference to context memory
+	 * @return success or failure of operation
+	 */
+	public static String setPropertiesForRoot(Map<String, String> parameters, SvcLogicContext ctx) {
+		LOG.debug("Execute Node \"setPropertiesForRoot\"");
+		try {
+			checkParameters(parameters, new String[]{"root"}, LOG);
+		} catch (Exception ex) {
+			return "failure";
+		}
+
+		String root = parameters.get("root");
+
+		if (StringUtils.isEmpty(root)) {
+			return "failure";
+		}
+
+		// set context memory to the the properties passed with root as prefix
+		setParameterValuesToRoot(parameters, ctx, root);
+
+		return "success";
+	}
+
+	private static boolean setParameterValuesToRoot(Map<String, String> parameters, SvcLogicContext ctx, String root) {
+		boolean changeFlag = false;
+		String valueRoot = parameters.get("valueRoot");
+
+		for (Map.Entry<String, String> entry : parameters.entrySet()) {
+			// ignore if it's the root parameter
+			if (!entry.getKey().equals("root")) {
+				String keyToBeSet = root + "." + entry.getKey();
+				String valueToBeSet = "";
+
+				if (StringUtils.isEmpty(valueRoot)) {
+					valueToBeSet = entry.getValue();
+				} else {
+					valueToBeSet = ctx.getAttribute(valueRoot + "." + entry.getValue());
+				}
+
+				LOG.debug("Setting context memory: " + keyToBeSet + " = " + valueToBeSet);
+
+				if (!StringUtils.isEmpty(entry.getKey()) && !StringUtils.isEmpty(valueToBeSet)) {
+					ctxSetAttribute(ctx, keyToBeSet, valueToBeSet);
+					changeFlag = true;
+				}
+			}
+		}
+
+		return changeFlag;
+	}
+
+	/**
+	 * takes container list and set the properties with the value provided </br>
+	 * parameters with a null or empty key or value are ignored </br>
+	 * required parameters </br>
+	 * prefixKey + "." + parameters.key is the key to set the value too value in context memory </br>
+	 * prefixKey + "[index]." + keyName is the key of the entry in the list in context memory </br>
+	 * keyValue is the value of the key of the list entry in context memory (must be actual value)</br>
+	 * optional parameter valuePrefixKey - if set: valuePrefixKey + "." + parameters.value
+	 * is the key to get the value from context memory
+	 *
+	 * @param parameters </br>
+	 * 					 - prefixKey e.g "service-data.universal-cpe-ft.l2-switch-interfaces" </br>
+	 *                   - keyName e.g "name" </br>
+	 *                   - keyValue e.g "WAN1" (must be actual value and not use the prefixKey as root) </br>
+	 *                   - valuePrefixKey (optional) e.g "input.universal-cpe-ft.l2-switch-interfaces[1] </br>
+	 *                   - properties to be set, values for the properties </br>
+	 * @param ctx        reference to context memory
+	 * @return success or failure of operation
+	 */
+	public static String setPropertiesForList(Map<String, String> parameters, SvcLogicContext ctx) {
+		LOG.debug("Execute Node \"setPropertiesForList\"");
+		try {
+			checkParameters(parameters, new String[]{"prefixKey", "keyName", "keyValue"}, LOG);
+		} catch (Exception e) {
+			LOG.error("a required parameter is missing");
+			return "failure";
+		}
+
+		String prefixKey = parameters.get("prefixKey");
+		String keyName = parameters.get("keyName");
+		String keyValue = parameters.get("keyValue");
+
+		if (StringUtils.isEmpty(keyName) || StringUtils.isEmpty(keyValue) || StringUtils.isEmpty(prefixKey)) {
+			LOG.error("a required parameters value is empty or null");
+			return "failure";
+		}
+
+		int listLength = getArrayLength(ctx, prefixKey);
+
+		Map<String, String> containParams = new HashMap<>();
+		containParams.put("list", prefixKey);
+		containParams.put("keyName", keyName);
+		containParams.put("keyValue", keyValue);
+
+		String valuePrefixKey = parameters.get("valuePrefixKey");
+
+		try {
+			// create new list in context memory
+			if (listLength == 0) {
+				// since there's no length found make sure there's no current data at prefixKey in context memory
+				Map<String, String> map = ctxGetBeginsWith(ctx, prefixKey);
+
+				if (map.size() == 0) {
+					setNewEntryInList(parameters, ctx, keyName, keyValue, prefixKey, valuePrefixKey, listLength);
+				} else {
+					LOG.error("there was no length for the list parameter set in context memory "
+							+ "but " + map.size() + " entries were found in context memory "
+							+ "where the key begins with: " + prefixKey);
+
+					return "failure";
+				}
+			} else if (ctxListContains(containParams, ctx) == "false") {
+				setNewEntryInList(parameters, ctx, keyName, keyValue, prefixKey, valuePrefixKey, listLength);
+			} else if (ctxListContains(containParams, ctx) == "true") {
+				// else update the context memory with the properties passed in at the right index level
+				String listPrefix = prefixKey + "[";
+				String listSuffix = "].";
+
+				for (int i = 0; i < listLength; i++) {
+					String listRootWithIndex = listPrefix + i + listSuffix;
+					String listKeyName = listRootWithIndex + keyName;
+					String valueAtListIndexKey = ctx.getAttribute(listKeyName);
+
+					if (valueAtListIndexKey.equals(keyValue)) {
+						setParametersToCtxList(parameters, ctx, listRootWithIndex, valuePrefixKey);
+					}
+				}
+			}
+		} catch (SvcLogicException e) {
+			LOG.error("Call to ctxListContains failed: " + e.getMessage());
+
+			return "failure";
+		}
+
+		return "success";
+	}
+
+	private static void setNewEntryInList(Map<String, String> parameters, SvcLogicContext ctx, String keyName,
+										  String keyValue, String prefixKey, String valuePrefixKey, int listLength) {
+		String prefixKeyWithIndex = prefixKey + "[" + listLength + "].";
+		String listKeyName = prefixKeyWithIndex + keyName;
+
+		// set list key
+		LOG.debug("Setting context memory, new list entry with key:  " + listKeyName + " = " + keyValue);
+		ctxSetAttribute(ctx, listKeyName, keyValue);
+
+		// set the other parameters
+		setParametersToCtxList(parameters, ctx, prefixKeyWithIndex, valuePrefixKey);
+
+		// set length of list
+		String ListLengthKeyName = prefixKey + "_length";
+
+		ctxSetAttribute(ctx, prefixKey + "_length", listLength + 1);
+		LOG.debug("Updated _length: " + prefixKey + "_length is now " + ctx.getAttribute(ListLengthKeyName));
+	}
+
+	/**
+	 * helper function to set the parameter properties for list at the provided prefix key
+	 *
+	 * @param parameters
+	 * @param ctx
+	 * @param prefixKey
+	 * @return true if any new context memory was added and or modified
+	 */
+	private static boolean setParametersToCtxList(Map<String, String> parameters, SvcLogicContext ctx, String prefixKeyWithIndex,
+												  String valuePrefixKey) {
+		boolean changeFlag = false;
+
+		for (Map.Entry<String, String> entry : parameters.entrySet()) {
+			if (! (entry.getKey().equals("prefixKey") ||
+					entry.getKey().equals("keyName") ||
+					entry.getKey().equals("keyValue")) ||
+					entry.getKey().equals("valuePrefixKey")) {
+
+				String keyToBeSet = prefixKeyWithIndex + entry.getKey();
+				String valueToBeSet = "";
+
+				if (StringUtils.isEmpty(valuePrefixKey)) {
+					valueToBeSet = entry.getValue();
+				} else {
+					valueToBeSet = ctx.getAttribute(valuePrefixKey + "." + entry.getValue());
+				}
+
+				LOG.debug("Setting context memory: " + keyToBeSet + " = " + valueToBeSet);
+
+				// only set context memory if properties key and value are not empty or null
+				if (!StringUtils.isEmpty(entry.getKey()) && !StringUtils.isEmpty(valueToBeSet)) {
+					ctxSetAttribute(ctx, keyToBeSet, valueToBeSet);
+					changeFlag = true;
+				}
+			}
+		}
+
+		return changeFlag;
+	}
+
 }
