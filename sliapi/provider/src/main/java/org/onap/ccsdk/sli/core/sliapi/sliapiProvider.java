@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,11 +21,14 @@
 
 package org.onap.ccsdk.sli.core.sliapi;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.concurrent.Future;
-
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -47,11 +50,14 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.Hea
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.HealthcheckOutputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.SLIAPIService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.TestResults;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckOutput;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckOutputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.test.results.TestResult;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.test.results.TestResultBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -69,7 +75,6 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.google.common.util.concurrent.Futures;
 
 
@@ -120,6 +125,8 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 
 	private static String SLIAPI_NAMESPACE = "org:onap:ccsdk:sli:core:sliapi";
 	private static String SLIAPI_REVISION = "2016-11-10";
+	private static String SDNC_STATUS_FILE = "SDNC_STATUS_FILE";
+	private static String sdncStatusFile = null;
 
 	private static QName TEST_RESULTS_QNAME = null;
 	private static QName TEST_RESULT_QNAME = null;
@@ -142,7 +149,8 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
     public void initialize(){
         LOG.info( "Initializing provider for " + appName );
         //initialization code goes here.
-
+        sdncStatusFile = System.getenv(SDNC_STATUS_FILE);
+        LOG.info( "SDNC STATUS FILE = " + sdncStatusFile );
 		rpcRegistration = rpcRegistry.addRpcImplementation(SLIAPIService.class, this);
         LOG.info( "Initialization complete for " + appName );
     }
@@ -554,4 +562,50 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 
 		}
 
+		@Override
+		public Future<RpcResult<VlbcheckOutput>> vlbcheck() {
+			RpcResult<VlbcheckOutput> rpcResult = null;
+			VlbcheckOutputBuilder respBuilder = new VlbcheckOutputBuilder();
+			boolean suspended = false;
+			BufferedReader br = null;
+			String line = "";
+
+			// check the state based on the config file
+
+			if (sdncStatusFile != null) {
+				try	{
+					br = new BufferedReader(new FileReader(sdncStatusFile));
+					while((line = br.readLine()) != null)
+					{
+						if ("ODL_STATE=SUSPENDED".equals(line)) {
+							suspended = true;
+							LOG.debug("vlbcheck: server is suspended");
+						}
+					}
+					br.close();
+				} catch (FileNotFoundException e) {
+					LOG.trace("Caught File not found exception " + sdncStatusFile +"\n",e);
+				} catch (Exception e) {
+					LOG.trace("Failed to read status file " + sdncStatusFile +"\n",e);
+				} finally {
+					if (br != null) {
+						try {
+							br.close();
+						} catch (IOException e) {
+							LOG.warn("Failed to close status file " + sdncStatusFile +"\n",e);
+						}
+					}
+				}
+			}
+
+			if (suspended) {
+				rpcResult = RpcResultBuilder.<VlbcheckOutput>failed().withError(ErrorType.APPLICATION,
+						"resource-denied", "Server Suspended").build();
+			} else {
+				respBuilder.setResponseMessage("server is normal");
+				rpcResult = RpcResultBuilder.<VlbcheckOutput> status(true)
+						.withResult(respBuilder.build()).build();
+			}
+			return (Futures.immediateFuture(rpcResult));
+		}
 }

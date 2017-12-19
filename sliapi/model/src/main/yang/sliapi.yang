@@ -108,4 +108,10 @@ module SLI-API {
         }
     }
 
+    rpc vlbcheck {
+        output {
+            uses response-fields;
+        }
+    }
+
 }
