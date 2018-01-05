@@ -2,6 +2,14 @@ package org.onap.ccsdk.sli.core.utils.dblib;
 
 import org.onap.ccsdk.sli.core.utils.EnvVarFileResolver;
 
+/**
+ * Resolve properties file location based on the default directory name.
+ *
+ * @deprecated
+ *    This class has been replaced by generic version of this class
+ *    {@link #SdncConfigEnvVarFileResolver} in common package.
+ */
+@Deprecated
 public class DblibEnvVarFileResolver extends EnvVarFileResolver {
 
     /**

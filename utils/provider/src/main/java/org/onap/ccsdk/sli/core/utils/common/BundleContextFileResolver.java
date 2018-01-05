@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,32 +18,33 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.sli.core.utils;
+package org.onap.ccsdk.sli.core.utils.common;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+
+import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
+
 /**
- * Resolves project properties files relative to the directory identified by the JRE property
- * <code>dblib.properties</code>.
+ * Resolves properties files from runtime property value <code>SDNC_CONFIG_DIR</code> defined in the osgi properties.
  */
-public class JREFileResolver implements PropertiesFileResolver {
+public class BundleContextFileResolver implements PropertiesFileResolver {
 
     /**
-     * Key for JRE argument representing the configuration directory
+     * Key for osgi variable representing the configuration directory
      */
+    private static final String SDNC_CONFIG_DIR_PROP_KEY = "SDNC_CONFIG_DIR";
 
     private final String successMessage;
-    private final Class clazz;
+    private final Class<?> clazz;
 
-    public JREFileResolver(final String successMessage, final Class clazz) {
+    public BundleContextFileResolver(final String successMessage, final Class<?> clazz) {
         this.successMessage = successMessage;
         this.clazz = clazz;
     }
@@ -55,17 +56,20 @@ public class JREFileResolver implements PropertiesFileResolver {
      */
     @Override
     public Optional<File> resolveFile(final String filename) {
-        final URL jreArgumentUrl = FrameworkUtil.getBundle(this.clazz)
-                .getResource(filename);
-        try {
-            if (jreArgumentUrl == null) {
+        if(FrameworkUtil.getBundle(clazz) == null) {
+            return Optional.empty();
+        } else {
+            try {
+                final String pathProperty = FrameworkUtil.getBundle(this.clazz).getBundleContext().getProperty(SDNC_CONFIG_DIR_PROP_KEY);
+                if(Strings.isNullOrEmpty(pathProperty)) {
+                    return Optional.empty();
+                }
+                final Path dblibPath = Paths.get(pathProperty);
+                return Optional.of(dblibPath.resolve(filename).toFile());
+            } catch(final Exception e) {
+                LoggerFactory.getLogger(this.getClass()).error("", e);
                 return Optional.empty();
             }
-            final Path dblibPath = Paths.get(jreArgumentUrl.toURI());
-            return Optional.of(dblibPath.resolve(filename).toFile());
-        } catch(final URISyntaxException | FileSystemNotFoundException e) {
-            LoggerFactory.getLogger(this.getClass()).error("", e);
-            return Optional.empty();
         }
     }
 

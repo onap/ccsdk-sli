@@ -27,7 +27,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
- * Resolves dblib properties files relative to the directory identified by the <code>SDNC_CONFIG_DIR</code>
+ * Resolves properties files relative to the directory identified by the <code>SDNC_CONFIG_DIR</code>
  * environment variable.
  */
 public abstract class EnvVarFileResolver implements PropertiesFileResolver {

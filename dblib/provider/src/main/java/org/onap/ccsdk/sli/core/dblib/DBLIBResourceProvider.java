@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,11 +27,11 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Vector;
 
-import org.onap.ccsdk.sli.core.utils.dblib.DblibDefaultFileResolver;
-import org.onap.ccsdk.sli.core.utils.dblib.DblibEnvVarFileResolver;
 import org.onap.ccsdk.sli.core.utils.JREFileResolver;
 import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
 import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
+import org.onap.ccsdk.sli.core.utils.common.CoreDefaultFileResolver;
+import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +58,7 @@ public class DBLIBResourceProvider {
     /**
      * A prioritized list of strategies for resolving dblib properties files.
      */
-    private Vector<PropertiesFileResolver> dblibPropertiesFileResolvers = new Vector();
+    private Vector<PropertiesFileResolver> dblibPropertiesFileResolvers = new Vector<>();
 
     /**
      * The configuration properties for the db connection.
@@ -69,14 +69,14 @@ public class DBLIBResourceProvider {
      * Set up the prioritized list of strategies for resolving dblib properties files.
      */
     public DBLIBResourceProvider() {
-        dblibPropertiesFileResolvers.add(new DblibEnvVarFileResolver(
+        dblibPropertiesFileResolvers.add(new SdncConfigEnvVarFileResolver(
                 "Using property file (1) from environment variable"
         ));
-        dblibPropertiesFileResolvers.add(new DblibDefaultFileResolver(
-                "Using property file (1) from default directory"
+        dblibPropertiesFileResolvers.add(new CoreDefaultFileResolver(
+                "Using property file (2) from default directory"
         ));
         dblibPropertiesFileResolvers.add(new JREFileResolver(
-                "Using property file (2) from JRE argument", DBLIBResourceProvider.class
+                "Using property file (3) from JRE argument", DBLIBResourceProvider.class
         ));
         dblibPropertiesFileResolvers.add(new KarafRootFileResolver(
                 "Using property file (4) from karaf root", this));
