@@ -21,14 +21,13 @@
 package org.onap.ccsdk.sli.core.utils;
 
 import java.io.File;
-import java.net.URISyntaxException;
+import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.FileSystemNotFoundException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.Files;
 import java.util.Optional;
+
+import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
-import org.slf4j.LoggerFactory;
 
 /**
  * Resolves project properties files relative to the directory identified by the JRE property
@@ -41,9 +40,9 @@ public class JREFileResolver implements PropertiesFileResolver {
      */
 
     private final String successMessage;
-    private final Class clazz;
+    private final Class<?> clazz;
 
-    public JREFileResolver(final String successMessage, final Class clazz) {
+    public JREFileResolver(final String successMessage, final Class<?> clazz) {
         this.successMessage = successMessage;
         this.clazz = clazz;
     }
@@ -55,16 +54,32 @@ public class JREFileResolver implements PropertiesFileResolver {
      */
     @Override
     public Optional<File> resolveFile(final String filename) {
-        final URL jreArgumentUrl = FrameworkUtil.getBundle(this.clazz)
-                .getResource(filename);
+        final Bundle bundle = FrameworkUtil.getBundle(this.clazz);
+        final File dataFile;
+
         try {
-            if (jreArgumentUrl == null) {
+            if (bundle == null) {
                 return Optional.empty();
             }
-            final Path dblibPath = Paths.get(jreArgumentUrl.toURI());
-            return Optional.of(dblibPath.resolve(filename).toFile());
-        } catch(final URISyntaxException | FileSystemNotFoundException e) {
-            LoggerFactory.getLogger(this.getClass()).error("", e);
+
+            URL jreArgumentEntry = bundle.getEntry(filename);
+            if (jreArgumentEntry == null) {
+                return Optional.empty();
+            }
+
+            dataFile = bundle.getDataFile(filename);
+            if(dataFile.exists()) {
+                dataFile.delete();
+            }
+
+            try (InputStream input = jreArgumentEntry.openStream()){
+                Files.copy(input, dataFile.toPath());
+            } catch(Exception exc) {
+                return Optional.empty();
+            }
+
+            return Optional.of(dataFile);
+        } catch(final Exception e) {
             return Optional.empty();
         }
     }
