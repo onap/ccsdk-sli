@@ -31,6 +31,7 @@ import java.util.Properties;
 import java.util.concurrent.Future;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.binding.impl.AbstractForwardedDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -118,7 +119,7 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 
     protected DataBroker dataBroker;
     protected DOMDataBroker domDataBroker;
-    protected NotificationProviderService notificationService;
+    protected NotificationPublishService notificationService;
     protected RpcProviderRegistry rpcRegistry;
 
 	protected BindingAwareBroker.RpcRegistration<SLIAPIService> rpcRegistration;
@@ -142,16 +143,24 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 	}
 
 
-    public sliapiProvider() {
+    public sliapiProvider(
+			DataBroker dataBroker,
+			NotificationPublishService notificationPublishService,
+			RpcProviderRegistry rpcProviderRegistry) {
         this.LOG.info( "Creating provider for " + appName );
+        this.dataBroker = dataBroker;
+        this.notificationService = notificationPublishService;
+        this.rpcRegistry = rpcProviderRegistry;
+        initialize();
     }
+
+
 
     public void initialize(){
         LOG.info( "Initializing provider for " + appName );
         //initialization code goes here.
         sdncStatusFile = System.getenv(SDNC_STATUS_FILE);
         LOG.info( "SDNC STATUS FILE = " + sdncStatusFile );
-		rpcRegistration = rpcRegistry.addRpcImplementation(SLIAPIService.class, this);
         LOG.info( "Initialization complete for " + appName );
     }
 
@@ -179,7 +188,7 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
     }
 
     public void setNotificationService(
-            NotificationProviderService notificationService) {
+            NotificationPublishService notificationService) {
         this.notificationService = notificationService;
         if( LOG.isDebugEnabled() ){
             LOG.debug( "Notification Service set to " + (notificationService==null?"null":"non-null") + "." );

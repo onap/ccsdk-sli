@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,193 +31,248 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Vector;
 
+import org.onap.ccsdk.sli.core.utils.JREFileResolver;
+import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
+import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
+import org.onap.ccsdk.sli.core.utils.common.CoreDefaultFileResolver;
+import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Immutable properties container for dme2 properties.  Since the initial design decision was made to
- * utilize <code>Properties</code> instead of an OSGi <code>ManagedService</code>, it was decided
- * to make these properties immutable.
+ * Immutable properties container for dme2 properties. Since the initial design
+ * decision was made to utilize <code>Properties</code> instead of an OSGi
+ * <code>ManagedService</code>, it was decided to make these properties
+ * immutable.
  */
 public final class Dme2PropertiesProvider {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Dme2PropertiesProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Dme2PropertiesProvider.class);
 
-    /**
-     * The name of the environment variable to specify the configuration directory.
-     */
-    private static final String SDNC_ROOT_DIR_ENV_VAR_KEY = "SDNC_CONFIG_DIR";
+	/**
+	 * The name of the environment variable to specify the configuration directory.
+	 */
+	private static final String SDNC_ROOT_DIR_ENV_VAR_KEY = "SDNC_CONFIG_DIR";
 
-    /**
-     * the dme2 properties file name.
-     */
-    private static final String DME2_PROPERTIES_FILE_NAME = "dme2.properties";
+	/**
+	 * the dme2 properties file name.
+	 */
+	private static final String DME2_PROPERTIES_FILE_NAME = "dme2.properties";
 
-    /**
-     * the key for <code>proxyUrl</code>, which represents a CSV list of urls
-     */
-    static final String PROXY_URL_KEY = "proxyUrl";
+	/**
+	 * the key for <code>proxyUrl</code>, which represents a CSV list of urls
+	 */
+	static final String PROXY_URL_KEY = "proxyUrl";
 
-    /**
-     * indicates that proxy urls are separated by commas
-     */
-    private static final String PROXY_URLS_VALUE_SEPARATOR = ",";
+	/**
+	 * indicates that proxy urls are separated by commas
+	 */
+	private static final String PROXY_URLS_VALUE_SEPARATOR = ",";
 
-    /**
-     * the key for <code>aafUserName</code>
-     */
-    static final String AAF_USERNAME_KEY = "aafUserName";
+	/**
+	 * the key for <code>aafUserName</code>
+	 */
+	static final String AAF_USERNAME_KEY = "aafUserName";
 
-    /**
-     * the key for <code>aafPassword</code>
-     */
-    static final String AAF_PASSWORD_KEY = "aafPassword";
+	/**
+	 * the key for <code>aafPassword</code>
+	 */
+	static final String AAF_PASSWORD_KEY = "aafPassword";
 
-    /**
-     * the key for <code>envContext</code>
-     */
-    static final String ENV_CONTEXT_KEY = "envContext";
+	/**
+	 * the key for <code>envContext</code>
+	 */
+	static final String ENV_CONTEXT_KEY = "envContext";
 
-    /**
-     * the key for <code>routeOffer</code>
-     */
-    static final String ROUTE_OFFER_KEY = "routeOffer";
+	/**
+	 * the key for <code>routeOffer</code>
+	 */
+	static final String ROUTE_OFFER_KEY = "routeOffer";
 
-    /**
-     * the key for <code>commonServiceVersion</code>
-     */
-    static final String COMMON_SERVICE_VERSION_KEY = "commonServiceVersion";
+	/**
+	 * the key for <code>commonServiceVersion</code>
+	 */
+	static final String COMMON_SERVICE_VERSION_KEY = "commonServiceVersion";
 
-    /**
-     * the key for <code>partner</code>
-     */
-    static final String PARTNER_KEY = "partner";
+	/**
+	 * the key for <code>partner</code>
+	 */
+	static final String PARTNER_KEY = "partner";
 
-    private Optional<String []> proxyUrls = Optional.empty();
+	private Optional<String[]> proxyUrls = Optional.empty();
 
-    private Optional<String> aafUsername = Optional.empty();
+	private Optional<String> aafUsername = Optional.empty();
 
-    private Optional<String> aafPassword = Optional.empty();
+	private Optional<String> aafPassword = Optional.empty();
 
-    private Optional<String> envContext = Optional.empty();
+	private Optional<String> envContext = Optional.empty();
 
-    private Optional<String> routeOffer = Optional.empty();
+	private Optional<String> routeOffer = Optional.empty();
 
-    private Optional<String> commonServiceVersion = Optional.empty();
+	private Optional<String> commonServiceVersion = Optional.empty();
 
-    private Optional<String> partner = Optional.empty();
+	private Optional<String> partner = Optional.empty();
 
+	/**
+	 * A prioritized list of strategies for resolving dme2 properties files.
+	 */
+	private Vector<PropertiesFileResolver> dme2PropertiesFileResolvers = new Vector<>();
 
-    /**
-     * Instantiates the properties provider, which involves loading the appropriate properties for dme2.
-     */
-    public Dme2PropertiesProvider() {
-        this(getDme2Path(SDNC_ROOT_DIR_ENV_VAR_KEY, DME2_PROPERTIES_FILE_NAME).toString());
-    }
+	/**
+	 * Instantiates the properties provider, which involves loading the appropriate
+	 * properties for dme2.
+	 */
+	public Dme2PropertiesProvider() {
+		this(DME2_PROPERTIES_FILE_NAME);
+	}
 
-    /**
-     * Instantiates the properties provider, which involves loading the appropriate properties for dme2.
-     *
-     * @param dme2Path location of the dme2.properties file
-     */
-    @VisibleForTesting
-    Dme2PropertiesProvider(final String dme2Path) {
-        final Properties properties;
-        try {
-            properties = getProperties(dme2Path);
-            this.proxyUrls = getProxyUrls(properties);
-            this.aafUsername = getAafUsername(properties);
-            this.aafPassword = getAafPassword(properties);
-            this.envContext = getEnvContext(properties);
-            this.routeOffer = getRouteOffer(properties);
-            this.commonServiceVersion = getCommonServiceVersion(properties);
-            this.partner = getPartner(properties);
-        } catch (final FileNotFoundException e) {
-            LOG.error("dme2.properties file could not be found at path: {}", dme2Path, e);
-        } catch (final IOException e) {
-            LOG.error("fatal error reading dme2.properties at path: {}", dme2Path, e);
-        }
-    }
+	/**
+	 * Instantiates the properties provider, which involves loading the appropriate
+	 * properties for dme2.
+	 *
+	 * @param dme2Path
+	 *            location of the dme2.properties file
+	 */
+	@VisibleForTesting
+	Dme2PropertiesProvider(final String dme2FileName) {
+		dme2PropertiesFileResolvers
+				.add(new SdncConfigEnvVarFileResolver("Using property file (1) from environment variable"));
+		dme2PropertiesFileResolvers.add(new CoreDefaultFileResolver("Using property file (2) from default directory"));
 
-    private static Path getDme2Path(final String sdncRootDirectory, final String dme2Filename) {
-        return Paths.get(sdncRootDirectory, dme2Filename);
-    }
+		dme2PropertiesFileResolvers
+				.add(new JREFileResolver("Using property file (3) from JRE argument", Dme2PropertiesProvider.class));
+		dme2PropertiesFileResolvers.add(new KarafRootFileResolver("Using property file (4) from karaf root", this));
 
-    private static Properties getProperties(final String dme2Path) throws IOException {
-        final File dme2File = new File(dme2Path);
-        final Properties properties = new Properties();
-        properties.load(new FileReader(dme2File));
-        return properties;
-    }
+		File dme2File = getDme2File(dme2FileName);
 
-    private String getProxyUrl(final Properties properties) {
-        return properties.getProperty(PROXY_URL_KEY);
-    }
+		init(dme2File);
+	}
 
-    private Optional<String []> getProxyUrls(final Properties properties) {
-        final String proxyUrlsValue = getProxyUrl(properties);
-        if (!Strings.isNullOrEmpty(proxyUrlsValue)) {
-            return Optional.ofNullable(proxyUrlsValue.split(PROXY_URLS_VALUE_SEPARATOR));
-        }
-        return Optional.empty();
-    }
+	private void init(final File dme2Path) {
+		final Properties properties;
+		try {
+			properties = getProperties(dme2Path);
+			this.proxyUrls = getProxyUrls(properties);
+			this.aafUsername = getAafUsername(properties);
+			this.aafPassword = getAafPassword(properties);
+			this.envContext = getEnvContext(properties);
+			this.routeOffer = getRouteOffer(properties);
+			this.commonServiceVersion = getCommonServiceVersion(properties);
+			this.partner = getPartner(properties);
+		} catch (final FileNotFoundException e) {
 
-    public Optional<String []> getProxyUrls() {
-        return this.proxyUrls;
-    }
+			LOG.error("dme2.properties file could not be found at path: {}", dme2Path, e);
+		} catch (final IOException e) {
+			LOG.error("fatal error reading dme2.properties at path: {}", dme2Path, e);
+		}
+	}
 
-    private Optional<String> getAafUsername(final Properties properties) {
-        final String aafUsernameValue = properties.getProperty(AAF_USERNAME_KEY);
-        return Optional.ofNullable(aafUsernameValue);
-    }
+	/**
+	 * Reports the method chosen for properties resolution to the
+	 * <code>Logger</code>.
+	 *
+	 * @param message
+	 *            Some user friendly message
+	 * @param fileOptional
+	 *            The file location of the chosen properties file
+	 * @return the file location of the chosen properties file
+	 */
+	private static File reportSuccess(final String message, final Optional<File> fileOptional) {
+		if (fileOptional.isPresent()) {
+			final File file = fileOptional.get();
+			LOG.info("{} {}", message, file.getPath());
+			return file;
+		}
+		return null;
+	}
 
-    Optional<String> getAafUsername() {
-        return this.aafUsername;
-    }
+	private File getDme2File(final String dme2Filename) {
 
-    private Optional<String> getAafPassword(final Properties properties) {
-        final String aafPassword = properties.getProperty(AAF_PASSWORD_KEY);
-        return Optional.ofNullable(aafPassword);
-    }
+		for (final PropertiesFileResolver dblibPropertiesFileResolver : dme2PropertiesFileResolvers) {
+			final Optional<File> fileOptional = dblibPropertiesFileResolver.resolveFile(dme2Filename);
+			if (fileOptional.isPresent()) {
+				return reportSuccess(dblibPropertiesFileResolver.getSuccessfulResolutionMessage(), fileOptional);
+			}
+		}
+		return (new File(dme2Filename));
+	}
 
-    Optional<String> getAafPassword() {
-        return this.aafPassword;
-    }
+	private static Properties getProperties(final File dme2File) throws IOException {
 
-    private Optional<String> getEnvContext(final Properties properties) {
-        final String envContext = properties.getProperty(ENV_CONTEXT_KEY);
-        return Optional.ofNullable(envContext);
-    }
+		final Properties properties = new Properties();
+		properties.load(new FileReader(dme2File));
+		return properties;
+	}
 
-    Optional<String> getEnvContext() {
-        return this.envContext;
-    }
+	private String getProxyUrl(final Properties properties) {
+		return properties.getProperty(PROXY_URL_KEY);
+	}
 
-    private Optional<String> getRouteOffer(final Properties properties) {
-        final String routeOffer = properties.getProperty(ROUTE_OFFER_KEY);
-        return Optional.ofNullable(routeOffer);
-    }
+	private Optional<String[]> getProxyUrls(final Properties properties) {
+		final String proxyUrlsValue = getProxyUrl(properties);
+		if (!Strings.isNullOrEmpty(proxyUrlsValue)) {
+			return Optional.ofNullable(proxyUrlsValue.split(PROXY_URLS_VALUE_SEPARATOR));
+		}
+		return Optional.empty();
+	}
 
-    Optional<String> getRouteOffer() {
-        return this.routeOffer;
-    }
+	public Optional<String[]> getProxyUrls() {
+		return this.proxyUrls;
+	}
 
-    private Optional<String> getCommonServiceVersion(final Properties properties) {
-        final String commonServiceVersion = properties.getProperty(COMMON_SERVICE_VERSION_KEY);
-        return Optional.ofNullable(commonServiceVersion);
-    }
+	private Optional<String> getAafUsername(final Properties properties) {
+		final String aafUsernameValue = properties.getProperty(AAF_USERNAME_KEY);
+		return Optional.ofNullable(aafUsernameValue);
+	}
 
-    Optional<String> getCommonServiceVersion() {
-        return this.commonServiceVersion;
-    }
+	Optional<String> getAafUsername() {
+		return this.aafUsername;
+	}
 
-    private Optional<String> getPartner(final Properties properties) {
-        final String partner = properties.getProperty(PARTNER_KEY);
-        return Optional.ofNullable(partner);
-    }
+	private Optional<String> getAafPassword(final Properties properties) {
+		final String aafPassword = properties.getProperty(AAF_PASSWORD_KEY);
+		return Optional.ofNullable(aafPassword);
+	}
 
-    Optional<String> getPartner() {
-        return this.partner;
-    }
+	Optional<String> getAafPassword() {
+		return this.aafPassword;
+	}
+
+	private Optional<String> getEnvContext(final Properties properties) {
+		final String envContext = properties.getProperty(ENV_CONTEXT_KEY);
+		return Optional.ofNullable(envContext);
+	}
+
+	Optional<String> getEnvContext() {
+		return this.envContext;
+	}
+
+	private Optional<String> getRouteOffer(final Properties properties) {
+		final String routeOffer = properties.getProperty(ROUTE_OFFER_KEY);
+		return Optional.ofNullable(routeOffer);
+	}
+
+	Optional<String> getRouteOffer() {
+		return this.routeOffer;
+	}
+
+	private Optional<String> getCommonServiceVersion(final Properties properties) {
+		final String commonServiceVersion = properties.getProperty(COMMON_SERVICE_VERSION_KEY);
+		return Optional.ofNullable(commonServiceVersion);
+	}
+
+	Optional<String> getCommonServiceVersion() {
+		return this.commonServiceVersion;
+	}
+
+	private Optional<String> getPartner(final Properties properties) {
+		final String partner = properties.getProperty(PARTNER_KEY);
+		return Optional.ofNullable(partner);
+	}
+
+	Optional<String> getPartner() {
+		return this.partner;
+	}
 }

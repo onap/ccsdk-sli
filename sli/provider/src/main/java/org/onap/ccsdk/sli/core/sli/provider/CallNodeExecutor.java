@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,15 +34,15 @@ public class CallNodeExecutor extends SvcLogicNodeExecutor {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(CallNodeExecutor.class);
-	
+
 	@Override
 	public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node, SvcLogicContext ctx)
 			throws SvcLogicException {
 
 		String outValue = "not-found";
-		
+
 		SvcLogicGraph myGraph = node.getGraph();
-		
+
 		if (myGraph == null)
 		{
 			LOG.debug("execute: getGraph returned null");
@@ -51,17 +51,17 @@ public class CallNodeExecutor extends SvcLogicNodeExecutor {
 		{
 			LOG.debug("execute: got SvcLogicGraph");
 		}
-		
+
 		SvcLogicExpression moduleExpr = null;
-		
+
 		String module = null;
-		
+
 		moduleExpr = node.getAttribute("module");
 		if (moduleExpr != null)
 		{
 			module  = SvcLogicExpressionResolver.evaluate(moduleExpr, node, ctx);
 		}
-		
+
 		if ((module == null) || (module.length() == 0))
 		{
 			if (myGraph != null)
@@ -70,7 +70,7 @@ public class CallNodeExecutor extends SvcLogicNodeExecutor {
 				LOG.debug("myGraph.getModule() returned "+module);
 			}
 		}
-		
+
 		SvcLogicExpression rpcExpr = null;
 		String rpc = null;
 		rpcExpr = node.getAttribute("rpc");
@@ -78,7 +78,7 @@ public class CallNodeExecutor extends SvcLogicNodeExecutor {
 		{
 			rpc  = SvcLogicExpressionResolver.evaluate(rpcExpr, node, ctx);
 		}
-		
+
 		if ((rpc == null) || (rpc.length() == 0))
 		{
 			if (myGraph != null)
@@ -87,9 +87,9 @@ public class CallNodeExecutor extends SvcLogicNodeExecutor {
 				LOG.debug("myGraph.getRpc() returned "+rpc);
 			}
 		}
-		
+
 		String mode = null;
-		
+
 		moduleExpr = node.getAttribute("mode");
 		if (moduleExpr != null)
 		{
@@ -105,9 +105,9 @@ public class CallNodeExecutor extends SvcLogicNodeExecutor {
 				LOG.debug("myGraph.getMode() returned "+mode);
 			}
 		}
-		
+
 		String version = null;
-		
+
 		moduleExpr = node.getAttribute("version");
 		if (moduleExpr != null)
 		{
@@ -116,9 +116,9 @@ public class CallNodeExecutor extends SvcLogicNodeExecutor {
 
 		String parentGraph = ctx.getAttribute("currentGraph");
         ctx.setAttribute("parentGraph", parentGraph);
-		
-		SvcLogicStore store = getStore();
-		
+
+		SvcLogicStore store = svc.getStore();
+
         if (store != null) {
             SvcLogicGraph calledGraph = store.fetch(module, rpc, version, mode);
             if (calledGraph != null) {
@@ -132,7 +132,7 @@ public class CallNodeExecutor extends SvcLogicNodeExecutor {
         } else {
             LOG.debug("Could not get SvcLogicStore reference");
         }
-		
+
 		SvcLogicNode nextNode = node.getOutcomeValue(outValue);
 		if (nextNode != null) {
 			if (LOG.isDebugEnabled()) {

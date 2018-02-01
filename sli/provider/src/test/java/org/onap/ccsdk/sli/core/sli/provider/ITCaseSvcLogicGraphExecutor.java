@@ -102,8 +102,8 @@ public class ITCaseSvcLogicGraphExecutor {
         SvcLogicParser parser = new SvcLogicParser();
 
         // Loop through executor tests
-
-        SvcLogicServiceImpl svc = new SvcLogicServiceImpl();
+        SvcLogicPropertiesProvider resourceProvider = new SvcLogicPropertiesProvider();
+        SvcLogicServiceImpl svc = new SvcLogicServiceImpl(resourceProvider);
 
         for (String nodeType : BUILTIN_NODES.keySet()) {
             LOG.info("SLI - registering node executor for node type " + nodeType);
@@ -156,8 +156,9 @@ public class ITCaseSvcLogicGraphExecutor {
             SvcLogicParser parser = new SvcLogicParser();
 
             // Loop through executor tests
+            SvcLogicPropertiesProvider resourceProvider = new SvcLogicPropertiesProvider();
 
-            SvcLogicServiceImpl svc = new SvcLogicServiceImpl();
+            SvcLogicServiceImpl svc = new SvcLogicServiceImpl(resourceProvider);
 
             for (String nodeType : BUILTIN_NODES.keySet()) {
 

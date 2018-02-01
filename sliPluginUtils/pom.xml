@@ -1,37 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.onap.ccsdk.parent</groupId>
+		<artifactId>odlparent-lite</artifactId>
+		<version>1.0.1-SNAPSHOT</version>
+		<relativePath/>
+	</parent>
 
 	<groupId>org.onap.ccsdk.sli.core</groupId>
 	<artifactId>sliPluginUtils</artifactId>
-	<version>0.2.0-SNAPSHOT</version>
+	<version>0.2.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<modelVersion>4.0.0</modelVersion>
 
-
-	<parent>
-		<groupId>org.onap.ccsdk.sli.core</groupId>
-		<artifactId>ccsdk-sli-core</artifactId>
-        	<version>0.2.0-SNAPSHOT</version>
-	</parent>
-	<name>Service Logic Interface Plugin Utilities</name>
+	<name>ccsdk-sli-core :: sliPluginUtils</name>
 	<description>A package of static utility functions to be used when developing SLI plugins</description>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.onap.ccsdk.sli.core</groupId>
-				<artifactId>SliPluginUtils-features</artifactId>
-				<classifier>features</classifier>
-				<type>xml</type>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.onap.ccsdk.sli.core</groupId>
-				<artifactId>SliPluginUtils-provider</artifactId>
-				<version>${project.version}</version>
-				</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<modules>
 		<module>provider</module>

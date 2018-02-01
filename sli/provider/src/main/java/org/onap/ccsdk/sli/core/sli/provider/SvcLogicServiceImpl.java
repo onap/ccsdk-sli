@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,12 +24,16 @@ package org.onap.ccsdk.sli.core.sli.provider;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.onap.ccsdk.sli.core.dblib.DbLibService;
+import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.sli.MetricLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.sli.SvcLogicDblibStore;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.onap.ccsdk.sli.core.sli.SvcLogicNode;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
+import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
 import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -50,6 +54,25 @@ public class SvcLogicServiceImpl implements SvcLogicService {
     private HashMap<String, SvcLogicNodeExecutor> nodeExecutors = null;
 
     private BundleContext bctx = null;
+
+    private Properties properties;
+
+    private SvcLogicStore store;
+
+    public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider) throws SvcLogicException{
+
+    		properties = resourceProvider.getProperties();
+
+    		getStore();
+    }
+
+    public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider, DbLibService dbSvc) throws SvcLogicException{
+
+		properties = resourceProvider.getProperties();
+		store = new SvcLogicDblibStore(dbSvc);
+}
+
+
 
     private void registerExecutors() {
 
@@ -210,8 +233,6 @@ public class SvcLogicServiceImpl implements SvcLogicService {
     @Override
     public boolean hasGraph(String module, String rpc, String version, String mode) throws SvcLogicException
     {
-        SvcLogicStore store = SvcLogicActivator.getStore();
-
         return (store.hasGraph(module, rpc, version, mode));
     }
 
@@ -226,8 +247,6 @@ public class SvcLogicServiceImpl implements SvcLogicService {
     public Properties execute(String module, String rpc, String version, String mode,
             Properties props, DOMDataBroker domDataBroker) throws SvcLogicException {
 
-        // See if there is a service logic defined
-        SvcLogicStore store = SvcLogicActivator.getStore();
 
         LOG.info("Fetching service logic from data store");
         SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
@@ -248,5 +267,29 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         execute(graph, ctx);
 
         return(ctx.toProperties());
+    }
+
+    public  SvcLogicStore getStore() throws SvcLogicException {
+        // Create and initialize SvcLogicStore object - used to access
+        // saved service logic.
+
+		if (store != null) {
+			return store;
+		}
+
+        try {
+            store = SvcLogicStoreFactory.getSvcLogicStore(properties);
+        } catch (Exception e) {
+            throw new ConfigurationException("Could not get service logic store", e);
+
+        }
+
+        try {
+            store.init(properties);
+        } catch (SvcLogicException e) {
+            throw new ConfigurationException("Could not get service logic store", e);
+        }
+
+        return store;
     }
 }

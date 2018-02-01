@@ -1,125 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
-		<artifactId>sliapi</artifactId>
-		<groupId>org.onap.ccsdk.sli.core</groupId>
-		<version>0.2.0-SNAPSHOT</version>
+		<groupId>org.onap.ccsdk.parent</groupId>
+		<artifactId>binding-parent</artifactId>
+		<version>1.0.1-SNAPSHOT</version>
+		<relativePath/>
 	</parent>
+
+	<groupId>org.onap.ccsdk.sli.core</groupId>
 	<artifactId>sliapi-provider</artifactId>
+	<version>0.2.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Export-Package>org.opendaylight.controller.config.yang.config.sliapi.impl</Export-Package>
-						<Import-Package>*</Import-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.opendaylight.yangtools</groupId>
-				<artifactId>yang-maven-plugin</artifactId>
-				<version>${odl.yangtools.yang.maven.plugin.version}</version>
-				<executions>
-					<execution>
-						<id>config</id>
-						<goals>
-							<goal>generate-sources</goal>
-						</goals>
-						<configuration>
-							<codeGenerators>
-								<generator>
-									<codeGeneratorClass>org.opendaylight.controller.config.yangjmxgenerator.plugin.JMXGenerator</codeGeneratorClass>
-									<outputBaseDir>${jmxGeneratorPath}</outputBaseDir>
-									<additionalConfiguration>
-										<namespaceToPackage1>urn:opendaylight:params:xml:ns:yang:controller==org.opendaylight.controller.config.yang</namespaceToPackage1>
-									</additionalConfiguration>
-								</generator>
-								<generator>
-									<!--
-									<codeGeneratorClass>org.opendaylight.yangtools.maven.sal.api.gen.plugin.CodeGeneratorImpl</codeGeneratorClass>
-									-->
-									<codeGeneratorClass>org.opendaylight.mdsal.binding.maven.api.gen.plugin.CodeGeneratorImpl</codeGeneratorClass>
-									<outputBaseDir>${salGeneratorPath}</outputBaseDir>
-								</generator>
-							</codeGenerators>
-							<inspectDependencies>true</inspectDependencies>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.opendaylight.mdsal</groupId>
-						<artifactId>maven-sal-api-gen-plugin</artifactId>
-						<version>${odl.sal.api.gen.plugin.version}</version>
-						<type>jar</type>
-					</dependency>
-					<dependency>
-						<groupId>org.opendaylight.controller</groupId>
-						<artifactId>yang-jmx-generator-plugin</artifactId>
-						<version>${odl.yang.jmx.generator.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-artifacts</id>
-						<goals>
-							<goal>attach-artifact</goal>
-						</goals>
-						<phase>package</phase>
-						<configuration>
-							<artifacts>
-								<artifact>
-									<file>${project.build.directory}/classes/initial/sliapi-provider.xml</file>
-									<type>xml</type>
-									<classifier>config</classifier>
-								</artifact>
-							</artifacts>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+	<name>ccsdk-sli-core :: sliapi :: ${project.artifactId}</name>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.opendaylight.controller</groupId>
+				<artifactId>mdsal-artifacts</artifactId>
+				<version>1.6.1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>sliapi-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.opendaylight.controller</groupId>
-			<artifactId>config-api</artifactId>
-			<version>${odl.controller.config.api.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>org.opendaylight.controller</groupId>
 			<artifactId>sal-binding-config</artifactId>
-			<version>${odl.mdsal.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.opendaylight.controller</groupId>
 			<artifactId>sal-binding-api</artifactId>
-			<version>${odl.mdsal.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.opendaylight.controller</groupId>
 			<artifactId>sal-common-util</artifactId>
-			<version>${odl.mdsal.version}</version>
 		</dependency>
 
 
@@ -136,12 +64,10 @@
 		<dependency>
 			<groupId>org.opendaylight.controller</groupId>
 			<artifactId>sal-core-api</artifactId>
-			<version>${odl.mdsal.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.opendaylight.yangtools</groupId>
 			<artifactId>yang-data-impl</artifactId>
-			<version>${odl.yangtools.version}</version>
 		</dependency>
 	</dependencies>
 </project>

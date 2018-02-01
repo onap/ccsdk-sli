@@ -54,10 +54,22 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 	private static final String DBLIB_SERVICE = "org.onap.ccsdk.sli.core.dblib.DbLibService";
 
+	private DbLibService dbSvc;
+
+	public SvcLogicDblibStore()
+	{
+		// Does nothing, but needed so that argumentless constructor
+		// still works.
+	}
+
+	public SvcLogicDblibStore(DbLibService dbsvc) {
+		this.dbSvc = dbsvc;
+	}
+
 	@Override
 	public void init(Properties props) throws ConfigurationException {
 
-		DbLibService dbSvc = getDbLibService();
+		dbSvc = getDbLibService();
 		if(dbSvc == null) {
 			LOG.error("SvcLogic cannot acquire DBLIB_SERVICE");
 			return;
@@ -74,7 +86,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 	public boolean hasGraph(String module, String rpc, String version,
 			String mode) throws SvcLogicException {
 
-		DbLibService dbSvc = getDbLibService();
+
 
 		boolean retval = false;
 		CachedRowSet results = null;
@@ -124,7 +136,6 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 	public SvcLogicGraph fetch(String module, String rpc, String version,
 			String mode) throws SvcLogicException {
 
-		DbLibService dbSvc = getDbLibService();
 		PreparedStatement fetchGraphStmt = null;
 		Connection dbConn = null;
 		SvcLogicGraph retval = null;
@@ -210,7 +221,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 	public void store(SvcLogicGraph graph) throws SvcLogicException {
 
-		DbLibService dbSvc = getDbLibService();
+
 
 		String storeGraphSql = "INSERT INTO SVC_LOGIC (module, rpc, version, mode, active, graph)"
 				+ " VALUES(?, ?, ?, ?, ?, ?)";
@@ -283,7 +294,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 	public void delete(String module, String rpc, String version, String mode)
 			throws SvcLogicException {
 
-		DbLibService dbSvc = getDbLibService();
+
 
 		String deleteGraphSql = "DELETE FROM SVC_LOGIC WHERE module = ? AND rpc = ? AND version = ? AND mode = ?";
 
@@ -302,7 +313,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 	}
 
 	public void activate(SvcLogicGraph graph) throws SvcLogicException {
-		DbLibService dbSvc = getDbLibService();
+
 
 		String deactivateSql = "UPDATE SVC_LOGIC SET active = 'N' WHERE module = ? AND rpc = ? AND mode = ?";
 
@@ -328,8 +339,11 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 	private DbLibService getDbLibService() {
 
+		if (dbSvc != null) {
+			return dbSvc;
+		}
+
 		// Get DbLibService interface object.
-		DbLibService dblibSvc = null;
 		ServiceReference sref = null;
 		BundleContext bctx = null;
 
@@ -345,8 +359,8 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 			if (sref == null) {
 				LOG.warn("Could not find service reference for DBLIB service ({})", DBLIB_SERVICE);
 			} else {
-				dblibSvc = (DbLibService) bctx.getService(sref);
-				if (dblibSvc == null) {
+				dbSvc = (DbLibService) bctx.getService(sref);
+				if (dbSvc == null) {
 
 					LOG.warn("Could not find service reference for DBLIB service ({})", DBLIB_SERVICE);
 				}
@@ -385,16 +399,16 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 				}
 
 				try {
-					dblibSvc = new DBResourceManager(dblibProps);
-					JavaSingleton.setInstance(dblibSvc);
+					dbSvc = new DBResourceManager(dblibProps);
+					JavaSingleton.setInstance(dbSvc);
 				} catch (Exception e) {
 					LOG.warn("Caught exception trying to create DBResourceManager", e);
 				}
 			} else {
-				dblibSvc = JavaSingleton.getInstance();
+				dbSvc = JavaSingleton.getInstance();
 			}
 		}
-		return dblibSvc;
+		return dbSvc;
 	}
 
 
@@ -419,7 +433,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
     @Override
     public void activate(String module, String rpc, String version, String mode) throws SvcLogicException {
-        DbLibService dbSvc = getDbLibService();
+
 
         String deactivateSql = "UPDATE SVC_LOGIC SET active = 'N' WHERE module = ? AND rpc = ? AND mode = ?";
 
