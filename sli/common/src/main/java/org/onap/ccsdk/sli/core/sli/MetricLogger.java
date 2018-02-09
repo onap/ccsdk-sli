@@ -246,7 +246,7 @@ public class MetricLogger {
 
     public static String asIso8601(Date date) {
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss:SS'+00:00'");
+        DateFormat df = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss.SS'+00:00'");
         df.setTimeZone(tz);
         return df.format(date);
     }
