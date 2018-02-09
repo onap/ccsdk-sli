@@ -304,4 +304,13 @@ public class MetricLogger {
     	str = str.replaceAll("\\|","%7C"); //log records should not contain a pipe, encode the pipe character
     	return str;
     }
+    
+    public static void resetContext() {
+        MDC.remove(TARGET_ENTITY);
+        MDC.remove(TARGET_SERVICE_NAME);
+        MDC.remove(TARGET_VIRTUAL_ENTITY);
+        MDC.remove(STATUS_CODE);
+        MDC.remove(RESPONSE_CODE);
+        MDC.remove(RESPONSE_DESCRIPTION);
+    }
 }

@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicExpression;
@@ -36,107 +35,73 @@ import org.slf4j.LoggerFactory;
 
 public class SaveNodeExecutor extends SvcLogicNodeExecutor {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(SaveNodeExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SaveNodeExecutor.class);
 
-	@Override
-	public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node,
-			SvcLogicContext ctx) throws SvcLogicException {
+    @Override
+    public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node, SvcLogicContext ctx)
+            throws SvcLogicException {
 
-		String plugin = SvcLogicExpressionResolver.evaluate(
-				node.getAttribute("plugin"), node, ctx);
-		String resourceType = SvcLogicExpressionResolver.evaluate(
-				node.getAttribute("resource"), node, ctx);
-		String key = SvcLogicExpressionResolver.evaluateAsKey(
-				node.getAttribute("key"), node, ctx);
-		String forceStr = SvcLogicExpressionResolver.evaluate(
-				node.getAttribute("force"), node, ctx);
-		String localOnlyStr = SvcLogicExpressionResolver.evaluate(
-				node.getAttribute("local-only"), node, ctx);
-		String pfx = SvcLogicExpressionResolver.evaluate(
-				node.getAttribute("pfx"), node, ctx);
+        String plugin = SvcLogicExpressionResolver.evaluate(node.getAttribute("plugin"), node, ctx);
+        String resourceType = SvcLogicExpressionResolver.evaluate(node.getAttribute("resource"), node, ctx);
+        String key = SvcLogicExpressionResolver.evaluateAsKey(node.getAttribute("key"), node, ctx);
+        String forceStr = SvcLogicExpressionResolver.evaluate(node.getAttribute("force"), node, ctx);
+        String localOnlyStr = SvcLogicExpressionResolver.evaluate(node.getAttribute("local-only"), node, ctx);
+        String pfx = SvcLogicExpressionResolver.evaluate(node.getAttribute("pfx"), node, ctx);
 
-		boolean force = "true".equalsIgnoreCase(forceStr);
-		boolean localOnly = "true".equalsIgnoreCase(localOnlyStr);
+        boolean force = "true".equalsIgnoreCase(forceStr);
+        boolean localOnly = "true".equalsIgnoreCase(localOnlyStr);
 
-		Map<String, String> parmMap = new HashMap<String, String>();
+        Map<String, String> parmMap = new HashMap<String, String>();
 
-		Set<Map.Entry<String, SvcLogicExpression>> parmSet = node
-				.getParameterSet();
-		boolean hasParms = false;
+        Set<Map.Entry<String, SvcLogicExpression>> parmSet = node.getParameterSet();
+        boolean hasParms = false;
 
-		for (Iterator<Map.Entry<String, SvcLogicExpression>> iter = parmSet
-				.iterator(); iter.hasNext();) {
-			hasParms = true;
-			Map.Entry<String, SvcLogicExpression> curEnt = iter.next();
-			String curName = curEnt.getKey();
-			SvcLogicExpression curExpr = curEnt.getValue();
-			if (curExpr != null) {
-				String curExprValue = SvcLogicExpressionResolver.evaluate(
-						curExpr, node, ctx);
+        for (Iterator<Map.Entry<String, SvcLogicExpression>> iter = parmSet.iterator(); iter.hasNext();) {
+            hasParms = true;
+            Map.Entry<String, SvcLogicExpression> curEnt = iter.next();
+            String curName = curEnt.getKey();
+            SvcLogicExpression curExpr = curEnt.getValue();
+            if (curExpr != null) {
+                String curExprValue = SvcLogicExpressionResolver.evaluate(curExpr, node, ctx);
 
-				LOG.debug("Parameter " + curName + " = "
-						+ curExpr.asParsedExpr() + " resolves to "
-						+ curExprValue);
+                LOG.debug("Parameter " + curName + " = " + curExpr.asParsedExpr() + " resolves to " + curExprValue);
 
-				parmMap.put(curName, curExprValue);
-			}
-		}
+                parmMap.put(curName, curExprValue);
+            }
+        }
 
-		String outValue = "failure";
+        String outValue = "failure";
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("save node encountered - looking for resource class "
-					+ plugin);
-		}
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("save node encountered - looking for resource class " + plugin);
+        }
 
 
 
         SvcLogicResource resourcePlugin = getSvcLogicResource(plugin);
 
-			if (resourcePlugin != null) {
+        if (resourcePlugin != null) {
 
-				try {
-					switch (resourcePlugin.save(resourceType, force, localOnly, key,
-							parmMap, pfx, ctx)) {
-					case SUCCESS:
-						outValue = "success";
-						break;
-					case NOT_FOUND:
-						outValue = "not-found";
-						break;
-					case FAILURE:
-					default:
-						outValue = "failure";
-					}
-				} catch (SvcLogicException e) {
-					LOG.error("Caught exception from resource plugin", e);
-					outValue = "failure";
-				}
-			} else {
-				LOG.warn("Could not find SvcLogicResource object for plugin "
-						+ plugin);
-			}
-
-		SvcLogicNode nextNode = node.getOutcomeValue(outValue);
-		if (nextNode != null) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("about to execute " + outValue + " branch");
-			}
-			return (nextNode);
-		}
-
-		nextNode = node.getOutcomeValue("Other");
-		if (nextNode != null) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("about to execute Other branch");
-			}
-		} else {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("no "+outValue+" or Other branch found");
-			}
-		}
-		return (nextNode);
-	}
+            try {
+                switch (resourcePlugin.save(resourceType, force, localOnly, key, parmMap, pfx, ctx)) {
+                    case SUCCESS:
+                        outValue = "success";
+                        break;
+                    case NOT_FOUND:
+                        outValue = "not-found";
+                        break;
+                    case FAILURE:
+                    default:
+                        outValue = "failure";
+                }
+            } catch (SvcLogicException e) {
+                LOG.error("Caught exception from resource plugin", e);
+                outValue = "failure";
+            }
+        } else {
+            LOG.warn("Could not find SvcLogicResource object for plugin " + plugin);
+        }
+        return (getNextNode(node, outValue));
+    }
 
 }

@@ -30,73 +30,45 @@ import org.slf4j.LoggerFactory;
 
 public class NotifyNodeExecutor extends SvcLogicNodeExecutor {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(NotifyNodeExecutor.class);
-	
-	@Override
-	public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node,
-			SvcLogicContext ctx) throws SvcLogicException {
+    private static final Logger LOG = LoggerFactory.getLogger(NotifyNodeExecutor.class);
 
-		String plugin = SvcLogicExpressionResolver.evaluate(
-				node.getAttribute("plugin"), node, ctx);
-		String resourceType = SvcLogicExpressionResolver.evaluate(
-				node.getAttribute("resource"), node, ctx);
-		String action = SvcLogicExpressionResolver.evaluateAsKey(
-				node.getAttribute("action"), node, ctx);
-		String key = SvcLogicExpressionResolver.evaluateAsKey(
-				node.getAttribute("key"), node, ctx);
+    @Override
+    public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node, SvcLogicContext ctx)
+            throws SvcLogicException {
 
-		String outValue = "failure";
+        String plugin = SvcLogicExpressionResolver.evaluate(node.getAttribute("plugin"), node, ctx);
+        String resourceType = SvcLogicExpressionResolver.evaluate(node.getAttribute("resource"), node, ctx);
+        String action = SvcLogicExpressionResolver.evaluateAsKey(node.getAttribute("action"), node, ctx);
+        String key = SvcLogicExpressionResolver.evaluateAsKey(node.getAttribute("key"), node, ctx);
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("release node encountered - looking for resource class "
-					+ plugin);
-		}
+        String outValue = "failure";
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("release node encountered - looking for resource class " + plugin);
+        }
 
         SvcLogicResource resourcePlugin = getSvcLogicResource(plugin);
-			if (resourcePlugin != null) {
-
-				try {
-
-					switch (resourcePlugin.notify(resourceType, action, key, ctx)) {
-					case SUCCESS:
-						outValue = "success";
-						break;
-					case NOT_FOUND:
-						outValue = "not-found";
-						break;
-					case FAILURE:
-					default:
-						outValue = "failure";
-					}
-				} catch (SvcLogicException e) {
-					LOG.error("Caught exception from resource plugin", e);
-					outValue = "failure";
-				}
-			} else {
-				LOG.warn("Could not find SvcLogicResource object for plugin "
-						+ plugin);
-			}
-
-		SvcLogicNode nextNode = node.getOutcomeValue(outValue);
-		if (nextNode != null) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("about to execute " + outValue + " branch");
-			}
-			return (nextNode);
-		}
-
-		nextNode = node.getOutcomeValue("Other");
-		if (nextNode != null) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("about to execute Other branch");
-			}
-		} else {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("no "+outValue+" or Other branch found");
-			}
-		}
-		return (nextNode);
-	}
+        if (resourcePlugin != null) {
+            try {
+                switch (resourcePlugin.notify(resourceType, action, key, ctx)) {
+                    case SUCCESS:
+                        outValue = "success";
+                        break;
+                    case NOT_FOUND:
+                        outValue = "not-found";
+                        break;
+                    case FAILURE:
+                    default:
+                        outValue = "failure";
+                }
+            } catch (SvcLogicException e) {
+                LOG.error("Caught exception from resource plugin", e);
+                outValue = "failure";
+            }
+        } else {
+            LOG.warn("Could not find SvcLogicResource object for plugin " + plugin);
+        }
+        return (getNextNode(node, outValue));
+    }
 
 }

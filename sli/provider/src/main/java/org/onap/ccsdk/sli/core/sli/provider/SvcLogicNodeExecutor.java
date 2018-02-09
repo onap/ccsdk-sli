@@ -21,6 +21,7 @@
 
 package org.onap.ccsdk.sli.core.sli.provider;
 
+import org.onap.ccsdk.sli.core.sli.MetricLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicAdaptor;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -28,7 +29,6 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.sli.SvcLogicNode;
 import org.onap.ccsdk.sli.core.sli.SvcLogicRecorder;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
-import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -103,5 +103,26 @@ public abstract class SvcLogicNodeExecutor {
              return plugin;
          }
  }
+    protected SvcLogicNode getNextNode(SvcLogicNode node, String outValue) {
+        MetricLogger.resetContext();
+        SvcLogicNode nextNode = node.getOutcomeValue(outValue);
+        if (nextNode != null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("about to execute " + outValue + " branch");
+            }
+            return (nextNode);
+        }
 
+        nextNode = node.getOutcomeValue("Other");
+        if (nextNode != null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("about to execute Other branch");
+            }
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("no " + outValue + " or Other branch found");
+            }
+        }
+        return (nextNode);
+    }
 }

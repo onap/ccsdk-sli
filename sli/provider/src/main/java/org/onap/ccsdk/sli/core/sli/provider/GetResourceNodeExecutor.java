@@ -31,104 +31,69 @@ import org.slf4j.LoggerFactory;
 
 public class GetResourceNodeExecutor extends SvcLogicNodeExecutor {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(GetResourceNodeExecutor.class);
-	
-	public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node,
-			SvcLogicContext ctx) throws SvcLogicException {
+    private static final Logger LOG = LoggerFactory.getLogger(GetResourceNodeExecutor.class);
 
-		String plugin = SvcLogicExpressionResolver.evaluate(
-				node.getAttribute("plugin"), node, ctx);
-		String resourceType = SvcLogicExpressionResolver.evaluate(
-				node.getAttribute("resource"), node, ctx);
-		String key = SvcLogicExpressionResolver.evaluateAsKey(
-				node.getAttribute("key"), node, ctx);
-		String pfx = SvcLogicExpressionResolver.evaluate(
-				node.getAttribute("pfx"), node, ctx);
+    public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node, SvcLogicContext ctx)
+            throws SvcLogicException {
 
-		String localOnlyStr = SvcLogicExpressionResolver.evaluate(
-				node.getAttribute("local-only"), node, ctx);
+        String plugin = SvcLogicExpressionResolver.evaluate(node.getAttribute("plugin"), node, ctx);
+        String resourceType = SvcLogicExpressionResolver.evaluate(node.getAttribute("resource"), node, ctx);
+        String key = SvcLogicExpressionResolver.evaluateAsKey(node.getAttribute("key"), node, ctx);
+        String pfx = SvcLogicExpressionResolver.evaluate(node.getAttribute("pfx"), node, ctx);
 
-		// Note: for get-resource, only refresh from A&AI if the DG explicitly set
-		// local-only to false.  Otherwise, just read from local database.
-		boolean localOnly = true;
-		
-		if ("false".equalsIgnoreCase(localOnlyStr)) {
-			localOnly = false;
-		} 
+        String localOnlyStr = SvcLogicExpressionResolver.evaluate(node.getAttribute("local-only"), node, ctx);
 
-		SvcLogicExpression selectExpr = node.getAttribute("select");
-		String select = null;
+        // Note: for get-resource, only refresh from A&AI if the DG explicitly set
+        // local-only to false. Otherwise, just read from local database.
+        boolean localOnly = true;
 
-		if (selectExpr != null) {
-			select = SvcLogicExpressionResolver.evaluateAsKey(selectExpr, node,
-					ctx);
-		}
-		
-		SvcLogicExpression orderByExpr = node.getAttribute("order-by");
-		String orderBy = null;
+        if ("false".equalsIgnoreCase(localOnlyStr)) {
+            localOnly = false;
+        }
 
-		if (orderByExpr != null) {
-			orderBy = SvcLogicExpressionResolver.evaluateAsKey(orderByExpr, node,
-					ctx);
-		}
+        SvcLogicExpression selectExpr = node.getAttribute("select");
+        String select = null;
 
-		String outValue = "failure";
+        if (selectExpr != null) {
+            select = SvcLogicExpressionResolver.evaluateAsKey(selectExpr, node, ctx);
+        }
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug(node.getNodeType()
-					+ " node encountered - looking for resource class "
-					+ plugin);
-		}
+        SvcLogicExpression orderByExpr = node.getAttribute("order-by");
+        String orderBy = null;
 
+        if (orderByExpr != null) {
+            orderBy = SvcLogicExpressionResolver.evaluateAsKey(orderByExpr, node, ctx);
+        }
 
-			SvcLogicResource resourcePlugin = getSvcLogicResource(plugin);
+        String outValue = "failure";
 
-			if (resourcePlugin != null) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(node.getNodeType() + " node encountered - looking for resource class " + plugin);
+        }
 
-				try {
-					switch (resourcePlugin.query(resourceType, localOnly, select, key,
-							pfx, orderBy, ctx)) {
-					case SUCCESS:
-						outValue = "success";
-						break;
-					case NOT_FOUND:
-						outValue = "not-found";
-						break;
-					case FAILURE:
-					default:
-						outValue = "failure";
-					}
-				} catch (SvcLogicException e) {
-					LOG.error("Caught exception from resource plugin", e);
-					outValue = "failure";
-				}
-			} else {
-				LOG.warn("Could not find SvcLogicResource object for plugin "
-						+ plugin);
-			}
+        SvcLogicResource resourcePlugin = getSvcLogicResource(plugin);
 
-
-		SvcLogicNode nextNode = node.getOutcomeValue(outValue);
-		if (nextNode != null) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("about to execute " + outValue + " branch");
-			}
-			return (nextNode);
-		}
-
-		nextNode = node.getOutcomeValue("Other");
-		if (nextNode != null) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("about to execute Other branch");
-			}
-		} else {
-			if (LOG.isDebugEnabled()) {
-
-				LOG.debug("no "+outValue+" or Other branch found");
-			}
-		}
-		return (nextNode);
-	}
+        if (resourcePlugin != null) {
+            try {
+                switch (resourcePlugin.query(resourceType, localOnly, select, key, pfx, orderBy, ctx)) {
+                    case SUCCESS:
+                        outValue = "success";
+                        break;
+                    case NOT_FOUND:
+                        outValue = "not-found";
+                        break;
+                    case FAILURE:
+                    default:
+                        outValue = "failure";
+                }
+            } catch (SvcLogicException e) {
+                LOG.error("Caught exception from resource plugin", e);
+                outValue = "failure";
+            }
+        } else {
+            LOG.warn("Could not find SvcLogicResource object for plugin " + plugin);
+        }
+        return (getNextNode(node, outValue));
+    }
 
 }
