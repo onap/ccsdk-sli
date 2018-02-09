@@ -120,21 +120,18 @@ public class CallNodeExecutor extends SvcLogicNodeExecutor {
 		SvcLogicStore store = getStore();
 		
         if (store != null) {
-			SvcLogicGraph calledGraph = store.fetch(module, rpc, version, mode);
-            LOG.debug("Parent " + parentGraph + " is calling child " + calledGraph.toString());
-            ctx.setAttribute("currentGraph", calledGraph.toString());
+            SvcLogicGraph calledGraph = store.fetch(module, rpc, version, mode);
             if (calledGraph != null) {
-				svc.execute(calledGraph, ctx);
-				
-				outValue = ctx.getStatus();
+                LOG.debug("Parent " + parentGraph + " is calling child " + calledGraph.toString());
+                ctx.setAttribute("currentGraph", calledGraph.toString());
+                svc.execute(calledGraph, ctx);
+                outValue = ctx.getStatus();
             } else {
-                LOG.error("Could not find service logic for [" + module + "," + rpc + "," + version + "," + mode + "]");
-			}
-		}
-		else
-		{
-			LOG.debug("Could not get SvcLogicStore reference");
-		}
+                LOG.debug("Parent " + parentGraph + " failed to call child [" + module + "," + rpc + "," + version + "," + mode + "] because the graph could not be found");
+            }
+        } else {
+            LOG.debug("Could not get SvcLogicStore reference");
+        }
 		
 		SvcLogicNode nextNode = node.getOutcomeValue(outValue);
 		if (nextNode != null) {
