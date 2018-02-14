@@ -9,7 +9,7 @@
 		<relativePath/>
 	</parent>
 
-	<groupId>org.onap.ccsdl.sli.core</groupId>
+	<groupId>org.onap.ccsdk.sli.core</groupId>
 	<artifactId>sliPluginUtils-installer</artifactId>
 	<version>0.2.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -19,7 +19,7 @@
 	<properties>
 		<application.name>ccsdk-sliPluginUtils</application.name>
 		<features.boot>${application.name}</features.boot>
-		<features.repositories>mvn:org.onap.ccsdk.sli.core/sliPluginUtils-features/${project.version}/xml/features</features.repositories>
+        <features.repositories>mvn:org.onap.ccsdk.sli.core/${features.boot}/${project.version}/xml/features</features.repositories>
 		<include.transitive.dependencies>false</include.transitive.dependencies>
 	</properties>
 
@@ -45,7 +45,11 @@
 			<version>${project.version}</version>
 		</dependency>
 
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.1</version>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -104,8 +108,7 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-							<includeGroupIds>org.onap.ccsdk.sli</includeGroupIds>
-							<excludeArtifactIds>sli-common,sli-provider,dblib-provider</excludeArtifactIds>
+							<includeArtifactIds>sliPluginUtils-provider,ccsdk-sliPluginUtils,features-sliPluginUtils,commons-text</includeArtifactIds>
 							<scope>provided</scope>
 						</configuration>
 					</execution>

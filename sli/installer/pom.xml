@@ -56,7 +56,11 @@
 			<artifactId>sli-recording</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4</artifactId>
+            <version>${antlr.version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -115,8 +119,8 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-							<includeGroupIds>org.onap.ccsdk.sli</includeGroupIds>
-							<excludeArtifactIds>dblib-provider</excludeArtifactIds>
+                             <includeGroupIds>org.onap.ccsdk.sli.core,org.antlr</includeGroupIds>
+							<excludeArtifactIds>utils-provider,dblib-provider</excludeArtifactIds>
 							<scope>provided</scope>
 						</configuration>
 					</execution>

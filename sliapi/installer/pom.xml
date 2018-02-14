@@ -104,8 +104,7 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-							<includeGroupIds>org.onap.ccsdk.sli.core</includeGroupIds>
-							<excludeArtifactIds>sli-common,sli-provider,dblib-provider</excludeArtifactIds>
+							<includeArtifactIds>sliapi-model,sliapi-provider,ccsdk-sliapi,features-sliapi</includeArtifactIds>
 							<scope>provided</scope>
 						</configuration>
 					</execution>

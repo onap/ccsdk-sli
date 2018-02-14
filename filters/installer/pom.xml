@@ -19,7 +19,7 @@
 	<properties>
 		<application.name>ccsdk-filters</application.name>
 		<features.boot>${application.name}</features.boot>
-		<features.repositories>mvn:org.onap.ccsdk.sli.core/filters-features/${project.version}/xml/features</features.repositories>
+        <features.repositories>mvn:org.onap.ccsdk.sli.core/${features.boot}/${project.version}/xml/features</features.repositories>
 		<include.transitive.dependencies>false</include.transitive.dependencies>
 	</properties>
 
@@ -104,8 +104,8 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-							<includeGroupIds>org.onap.ccsdk.sli</includeGroupIds>
-							<excludeArtifactIds>sli-common,sli-provider</excludeArtifactIds>
+							<includeGroupIds>org.onap.ccsdk.sli.core</includeGroupIds>
+							<excludeArtifactIds>sli-common,sli-provider,utils-provider,dblib-provider</excludeArtifactIds>
 							<scope>provided</scope>
 						</configuration>
 					</execution>
