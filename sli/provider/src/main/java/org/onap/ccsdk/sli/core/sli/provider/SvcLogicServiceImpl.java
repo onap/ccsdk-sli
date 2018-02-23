@@ -23,7 +23,6 @@ package org.onap.ccsdk.sli.core.sli.provider;
 
 import java.util.HashMap;
 import java.util.Properties;
-
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.sli.MetricLogger;
@@ -47,35 +46,24 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 public class SvcLogicServiceImpl implements SvcLogicService {
+    private static final Logger LOG = LoggerFactory.getLogger(SvcLogicServiceImpl.class);
+    protected HashMap<String, SvcLogicNodeExecutor> nodeExecutors = null;
+    protected BundleContext bctx = null;
+    protected Properties properties;
+    protected SvcLogicStore store;
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(SvcLogicServiceImpl.class);
-
-    private HashMap<String, SvcLogicNodeExecutor> nodeExecutors = null;
-
-    private BundleContext bctx = null;
-
-    private Properties properties;
-
-    private SvcLogicStore store;
-
-    public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider) throws SvcLogicException{
-
-    		properties = resourceProvider.getProperties();
-
-    		getStore();
+    public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider) throws SvcLogicException {
+        properties = resourceProvider.getProperties();
+        getStore();
     }
 
-    public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider, DbLibService dbSvc) throws SvcLogicException{
+    public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider, DbLibService dbSvc)
+            throws SvcLogicException {
+        properties = resourceProvider.getProperties();
+        store = new SvcLogicDblibStore(dbSvc);
+    }
 
-		properties = resourceProvider.getProperties();
-		store = new SvcLogicDblibStore(dbSvc);
-}
-
-
-
-    private void registerExecutors() {
-
+    protected void registerExecutors() {
         LOG.info("Entered register executors");
         if (bctx == null) {
             bctx = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
@@ -91,25 +79,23 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         tracker.open();
 
         ServiceListener listener = new ServiceListener() {
-
             public void serviceChanged(ServiceEvent ev) {
                 ServiceReference sr = ev.getServiceReference();
                 switch (ev.getType()) {
-                case ServiceEvent.REGISTERED: {
-                    registerExecutor(sr);
-                }
-                    break;
-                case ServiceEvent.UNREGISTERING: {
-                    unregisterExecutor(sr);
-                }
-                    break;
+                    case ServiceEvent.REGISTERED: {
+                        registerExecutor(sr);
+                    }
+                        break;
+                    case ServiceEvent.UNREGISTERING: {
+                        unregisterExecutor(sr);
+                    }
+                        break;
                 }
             }
         };
 
         LOG.info("Adding service listener");
-        String filter = "(objectclass=" + SvcLogicNodeExecutor.class.getName()
-                + ")";
+        String filter = "(objectclass=" + SvcLogicNodeExecutor.class.getName() + ")";
         try {
             bctx.addServiceListener(listener, filter);
             ServiceReference[] srl = bctx.getServiceReferences(SvcLogicNodeExecutor.class.getName(), null);
@@ -123,7 +109,6 @@ public class SvcLogicServiceImpl implements SvcLogicService {
     }
 
     public void registerExecutor(ServiceReference sr) {
-
         String nodeName = (String) sr.getProperty("nodeType");
         if (nodeName != null) {
 
@@ -139,8 +124,7 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         }
     }
 
-    public void registerExecutor(String nodeName, SvcLogicNodeExecutor executor)
-    {
+    public void registerExecutor(String nodeName, SvcLogicNodeExecutor executor) {
         if (nodeExecutors == null) {
             nodeExecutors = new HashMap<>();
         }
@@ -152,7 +136,7 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         String nodeName = (String) sr.getProperty("nodeType");
 
         if (nodeName != null) {
-             unregisterExecutor(nodeName);
+            unregisterExecutor(nodeName);
         }
     }
 
@@ -162,13 +146,12 @@ public class SvcLogicServiceImpl implements SvcLogicService {
     }
 
     public SvcLogicContext execute(SvcLogicGraph graph, SvcLogicContext ctx) throws SvcLogicException {
-
         if (nodeExecutors == null) {
             registerExecutors();
         }
 
         // Set service name in MDC to reference current working directed graph
-        MDC.put(MetricLogger.SERVICE_NAME, graph.getModule()+":"+graph.getRpc()+"/v"+graph.getVersion());
+        MDC.put(MetricLogger.SERVICE_NAME, graph.getModule() + ":" + graph.getRpc() + "/v" + graph.getVersion());
 
         MDC.put("currentGraph", graph.toString());
 
@@ -176,7 +159,7 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         LOG.info("About to execute graph {}", graph.toString());
 
         while (curNode != null) {
-            MDC.put("nodeId", curNode.getNodeId()+" ("+curNode.getNodeType()+")");
+            MDC.put("nodeId", curNode.getNodeId() + " (" + curNode.getNodeType() + ")");
             LOG.info("About to execute node # {} ({})", curNode.getNodeId(), curNode.getNodeType());
 
             SvcLogicNode nextNode = executeNode(curNode, ctx);
@@ -200,8 +183,8 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         SvcLogicNodeExecutor executor = nodeExecutors.get(node.getNodeType());
 
         if (executor != null) {
-            LOG.debug("Executing node executor for node type {} - {}",
-                node.getNodeType(), executor.getClass().getName());
+            LOG.debug("Executing node executor for node type {} - {}", node.getNodeType(),
+                    executor.getClass().getName());
             return (executor.execute(this, node, ctx));
         } else {
             if (LOG.isDebugEnabled()) {
@@ -227,36 +210,31 @@ public class SvcLogicServiceImpl implements SvcLogicService {
             }
             return (nextNode);
         }
-
     }
 
     @Override
-    public boolean hasGraph(String module, String rpc, String version, String mode) throws SvcLogicException
-    {
+    public boolean hasGraph(String module, String rpc, String version, String mode) throws SvcLogicException {
         return (store.hasGraph(module, rpc, version, mode));
     }
 
     @Override
     public Properties execute(String module, String rpc, String version, String mode, Properties props)
             throws SvcLogicException {
-        return(execute(module, rpc, version, mode, props, null));
+        return (execute(module, rpc, version, mode, props, null));
     }
 
-
     @Override
-    public Properties execute(String module, String rpc, String version, String mode,
-            Properties props, DOMDataBroker domDataBroker) throws SvcLogicException {
-
-
+    public Properties execute(String module, String rpc, String version, String mode, Properties props,
+            DOMDataBroker domDataBroker) throws SvcLogicException {
         LOG.info("Fetching service logic from data store");
         SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
 
-        if (graph == null)
-        {
+        if (graph == null) {
             Properties retProps = new Properties();
             retProps.setProperty("error-code", "401");
-            retProps.setProperty("error-message", "No service logic found for ["+module+","+rpc+","+version+","+mode+"]");
-            return(retProps);
+            retProps.setProperty("error-message",
+                    "No service logic found for [" + module + "," + rpc + "," + version + "," + mode + "]");
+            return (retProps);
         }
 
         SvcLogicContext ctx = new SvcLogicContext(props);
@@ -266,16 +244,15 @@ public class SvcLogicServiceImpl implements SvcLogicService {
 
         execute(graph, ctx);
 
-        return(ctx.toProperties());
+        return (ctx.toProperties());
     }
 
-    public  SvcLogicStore getStore() throws SvcLogicException {
+    public SvcLogicStore getStore() throws SvcLogicException {
         // Create and initialize SvcLogicStore object - used to access
         // saved service logic.
-
-		if (store != null) {
-			return store;
-		}
+        if (store != null) {
+            return store;
+        }
 
         try {
             store = SvcLogicStoreFactory.getSvcLogicStore(properties);

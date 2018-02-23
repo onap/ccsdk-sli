@@ -36,7 +36,7 @@ public class CallNodeExecutor extends SvcLogicNodeExecutor {
 			.getLogger(CallNodeExecutor.class);
 
 	@Override
-	public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node, SvcLogicContext ctx)
+	public SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node, SvcLogicContext ctx)
 			throws SvcLogicException {
 
 		String outValue = "not-found";

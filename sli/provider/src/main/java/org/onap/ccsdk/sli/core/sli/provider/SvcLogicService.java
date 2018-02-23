@@ -22,8 +22,11 @@
 package org.onap.ccsdk.sli.core.sli.provider;
 
 import java.util.Properties;
-
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
+import org.onap.ccsdk.sli.core.sli.SvcLogicNode;
+import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
 import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
 
 public interface SvcLogicService {
@@ -72,5 +75,11 @@ public interface SvcLogicService {
      * @throws SvcLogicException
      */
     Properties execute(String module, String rpc, String version, String mode, Properties parms, DOMDataBroker domDataBroker) throws SvcLogicException;
+
+    SvcLogicStore getStore() throws SvcLogicException;
+
+    SvcLogicContext execute(SvcLogicGraph calledGraph, SvcLogicContext ctx) throws SvcLogicException;
+
+    SvcLogicNode executeNode(SvcLogicNode nextNode, SvcLogicContext ctx) throws SvcLogicException;
 
 }

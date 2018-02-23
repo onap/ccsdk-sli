@@ -102,7 +102,7 @@ public class ITCaseSvcLogicGraphExecutor {
         SvcLogicParser parser = new SvcLogicParser();
 
         // Loop through executor tests
-        SvcLogicPropertiesProvider resourceProvider = new SvcLogicPropertiesProvider();
+        SvcLogicPropertiesProvider resourceProvider = new SvcLogicPropertiesProviderImpl();
         SvcLogicServiceImpl svc = new SvcLogicServiceImpl(resourceProvider);
 
         for (String nodeType : BUILTIN_NODES.keySet()) {
@@ -156,7 +156,7 @@ public class ITCaseSvcLogicGraphExecutor {
             SvcLogicParser parser = new SvcLogicParser();
 
             // Loop through executor tests
-            SvcLogicPropertiesProvider resourceProvider = new SvcLogicPropertiesProvider();
+            SvcLogicPropertiesProvider resourceProvider = new SvcLogicPropertiesProviderImpl();
 
             SvcLogicServiceImpl svc = new SvcLogicServiceImpl(resourceProvider);
 

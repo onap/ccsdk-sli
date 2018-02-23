@@ -34,7 +34,7 @@ public class SwitchNodeExecutor extends SvcLogicNodeExecutor {
 	
 	@Override
 
-	public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node,
+	public SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node,
 			SvcLogicContext ctx) throws SvcLogicException {
 
 

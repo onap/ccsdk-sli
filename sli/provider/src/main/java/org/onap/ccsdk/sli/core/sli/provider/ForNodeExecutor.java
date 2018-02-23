@@ -35,7 +35,7 @@ public class ForNodeExecutor extends SvcLogicNodeExecutor {
 			.getLogger(ForNodeExecutor.class);
 
 	@Override
-	public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node,
+	public SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node,
 			SvcLogicContext ctx) throws SvcLogicException {
 
 		SvcLogicExpression atomicExpr = node.getAttribute("atomic");

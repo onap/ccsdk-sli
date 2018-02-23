@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class SvcLogicNodeExecutor {
 
-	public abstract SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException;
+	public abstract SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException;
 
     private static final Logger LOG = LoggerFactory.getLogger(SvcLogicNodeExecutor.class);
 

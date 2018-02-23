@@ -38,7 +38,7 @@ public class ReturnNodeExecutor extends SvcLogicNodeExecutor {
 			.getLogger(ReturnNodeExecutor.class);
 	
 	@Override
-	public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node,
+	public SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node,
 			SvcLogicContext ctx) throws SvcLogicException {
 
 		String status = SvcLogicExpressionResolver.evaluate(

@@ -41,7 +41,7 @@ public class SetNodeExecutor extends SvcLogicNodeExecutor {
 			.getLogger(SetNodeExecutor.class);
 
 	@Override
-	public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node,
+	public SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node,
 			SvcLogicContext ctx) throws SvcLogicException {
 
 		String ifunsetStr = SvcLogicExpressionResolver.evaluate(

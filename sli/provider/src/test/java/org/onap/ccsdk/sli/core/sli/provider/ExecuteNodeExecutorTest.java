@@ -53,7 +53,7 @@ public class ExecuteNodeExecutorTest extends TestCase {
         MockExecuteNodeExecutor execute = new MockExecuteNodeExecutor();
         SvcLogicNode node = new SvcLogicNode(0, "", "", new SvcLogicGraph());
         node.setAttribute("method", "selectLunch");
-        SvcLogicPropertiesProvider resourceProvider = new SvcLogicPropertiesProvider();
+        SvcLogicPropertiesProvider resourceProvider = new SvcLogicPropertiesProviderImpl();
         execute.execute(new SvcLogicServiceImpl(resourceProvider), new SvcLogicNode(0, "", "", new SvcLogicGraph()), new SvcLogicContext());
     }
 

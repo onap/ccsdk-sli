@@ -38,7 +38,7 @@ public class ConfigureNodeExecutor extends SvcLogicNodeExecutor {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ConfigureNodeExecutor.class);
 
-	public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node,
+	public SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node,
 			SvcLogicContext ctx) throws SvcLogicException {
 
 		String adaptorName = SvcLogicExpressionResolver.evaluate(

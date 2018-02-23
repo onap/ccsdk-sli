@@ -34,7 +34,7 @@ public class ReserveNodeExecutor extends SvcLogicNodeExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(ReserveNodeExecutor.class);
 
     @Override
-    public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node, SvcLogicContext ctx)
+    public SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node, SvcLogicContext ctx)
             throws SvcLogicException {
 
         String plugin = SvcLogicExpressionResolver.evaluate(node.getAttribute("plugin"), node, ctx);

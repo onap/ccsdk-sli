@@ -33,7 +33,7 @@ public class BreakNodeExecutor extends SvcLogicNodeExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(BreakNodeExecutor.class);
 
     @Override
-    public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException {
+    public SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException {
         String message = "BreakNodeExecutor encountered break with nodeId " + node.getNodeId();
         LOG.debug(message);
         throw new BreakNodeException(message);

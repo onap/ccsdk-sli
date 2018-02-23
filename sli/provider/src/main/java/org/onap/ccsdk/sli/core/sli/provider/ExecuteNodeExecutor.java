@@ -41,7 +41,7 @@ public class ExecuteNodeExecutor extends SvcLogicNodeExecutor {
 			.getLogger(ExecuteNodeExecutor.class);
 
 	private static final String pluginErrorMessage = "Could not execute plugin. SvcLogic status will be set to failure.";
-	public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node,
+	public SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node,
 			SvcLogicContext ctx) throws SvcLogicException {
 
 		String pluginName = SvcLogicExpressionResolver.evaluate(

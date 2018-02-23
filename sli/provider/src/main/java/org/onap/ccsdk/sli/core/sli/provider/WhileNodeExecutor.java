@@ -34,7 +34,7 @@ public class WhileNodeExecutor extends SvcLogicNodeExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(WhileNodeExecutor.class);
 
     @Override
-    public SvcLogicNode execute(SvcLogicServiceImpl svc, SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException {
+    public SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException {
 
         String testResult = evaluateNodeTest(node, ctx);
         SvcLogicExpression silentFailureExpr = node.getAttribute("do");
