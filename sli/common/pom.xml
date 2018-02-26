@@ -37,10 +37,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
-			<artifactId>antlr4</artifactId>
+			<artifactId>antlr4-runtime</artifactId>
 			<version>${antlr.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
