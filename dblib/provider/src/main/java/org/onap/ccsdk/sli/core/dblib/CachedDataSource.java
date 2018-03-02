@@ -47,7 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * Change Log
  * Author         Date     Comments
  * ============== ======== ====================================================
@@ -68,7 +68,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
     protected long dataReqTimeout = 100L;
 
     private final SQLExecutionMonitor monitor;
-    protected DataSource ds = null;
+    protected final DataSource ds;
     protected String connectionName = null;
     protected boolean initialized = false;
 
@@ -85,7 +85,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
     private boolean isDerby = false;
 
     public CachedDataSource(BaseDBConfiguration jdbcElem) throws DBConfigException {
-        configure(jdbcElem);
+        ds = configure(jdbcElem);
 
         if ("org.apache.derby.jdbc.EmbeddedDriver".equals(jdbcElem.getDriverName())) {
             isDerby = true;
@@ -93,7 +93,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
         monitor = new SQLExecutionMonitor(this);
     }
 
-    protected abstract void configure(BaseDBConfiguration jdbcElem) throws DBConfigException;
+    protected abstract DataSource configure(BaseDBConfiguration jdbcElem) throws DBConfigException;
 
     /*
      * (non-Javadoc)
@@ -329,7 +329,6 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
                 LOGGER.warn(e.getMessage());
             }
         }
-        ds = null;
         monitor.deleteObservers();
         monitor.cleanup();
     }
@@ -387,16 +386,6 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
         return null;
-    }
-
-    @SuppressWarnings("deprecation")
-    public void setConnectionCachingEnabled(boolean state) {
-        // if(ds != null && ds instanceof OracleDataSource)
-        // try {
-        // ((OracleDataSource)ds).setConnectionCachingEnabled(true);
-        // } catch (SQLException exc) {
-        // LOGGER.warn("", exc);
-        // }
     }
 
     public void addObserver(Observer observer) {

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import javax.sql.rowset.CachedRowSet;
 
+@FunctionalInterface
 public interface DataAccessor {
 
     CachedRowSet getData(String statement, ArrayList<String> arguments, String preferredDS)

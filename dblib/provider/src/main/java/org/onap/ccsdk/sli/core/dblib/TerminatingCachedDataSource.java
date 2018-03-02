@@ -22,71 +22,71 @@ package org.onap.ccsdk.sli.core.dblib;
 
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;
-
+import javax.sql.DataSource;
 import org.onap.ccsdk.sli.core.dblib.config.BaseDBConfiguration;
 import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitorObserver;
 
 
 public class TerminatingCachedDataSource extends CachedDataSource implements SQLExecutionMonitorObserver {
 
-	public TerminatingCachedDataSource(BaseDBConfiguration jdbcElem) throws DBConfigException {
-		super(jdbcElem);
-	}
+    public TerminatingCachedDataSource(BaseDBConfiguration jdbcElem) throws DBConfigException {
+        super(jdbcElem);
+    }
 
-	@Override
-	protected void configure(BaseDBConfiguration jdbcElem) throws DBConfigException {
-		// no action
-	}
+    @Override
+    protected DataSource configure(BaseDBConfiguration jdbcElem) throws DBConfigException {
+        return null;
+    }
 
-	@Override
-	public long getInterval() {
-		return 1000;
-	}
+    @Override
+    public long getInterval() {
+        return 1000;
+    }
 
-	@Override
-	public long getInitialDelay() {
-		return 1000;
-	}
+    @Override
+    public long getInitialDelay() {
+        return 1000;
+    }
 
-	@Override
-	public long getExpectedCompletionTime() {
-		return 50;
-	}
+    @Override
+    public long getExpectedCompletionTime() {
+        return 50;
+    }
 
-	@Override
-	public void setExpectedCompletionTime(long value) {
-		
-	}
+    @Override
+    public void setExpectedCompletionTime(long value) {
 
-	@Override
-	public void setInterval(long value) {
-		
-	}
+    }
 
-	@Override
-	public void setInitialDelay(long value) {
-		
-	}
+    @Override
+    public void setInterval(long value) {
 
-	@Override
-	public long getUnprocessedFailoverThreshold() {
-		return 3;
-	}
+    }
 
-	@Override
-	public void setUnprocessedFailoverThreshold(long value) {
-		
-	}
-	
-	public int compareTo(CachedDataSource ods)
-	{
-		return 0;
-	}
+    @Override
+    public void setInitialDelay(long value) {
 
-	@Override
-	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    }
+
+    @Override
+    public long getUnprocessedFailoverThreshold() {
+        return 3;
+    }
+
+    @Override
+    public void setUnprocessedFailoverThreshold(long value) {
+
+    }
+
+    public int compareTo(CachedDataSource ods)
+    {
+        return 0;
+    }
+
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

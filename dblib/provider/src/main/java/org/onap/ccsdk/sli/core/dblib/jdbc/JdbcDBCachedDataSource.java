@@ -53,7 +53,7 @@ public class JdbcDBCachedDataSource extends CachedDataSource {
     }
 
     @Override
-    protected void configure(BaseDBConfiguration xmlElem) throws DBConfigException {
+    protected DataSource configure(BaseDBConfiguration xmlElem) throws DBConfigException {
         BaseDBConfiguration jdbcConfig = xmlElem;
         if (jdbcConfig.getConnTimeout() > 0) {
             this.connReqTimeout = jdbcConfig.getConnTimeout();
@@ -90,23 +90,23 @@ public class JdbcDBCachedDataSource extends CachedDataSource {
         minLimit = jdbcConfig.getDbMinLimit();
 //        if (minLimit == null)
 //        {
-//        	String errorMsg =  "Invalid XML contents: JDBC Connection missing minLimit attribute";
-//        	LOGGER.error(AS_CONF_ERROR + errorMsg);
-//        	throw new DBConfigException(errorMsg);
+//            String errorMsg =  "Invalid XML contents: JDBC Connection missing minLimit attribute";
+//            LOGGER.error(AS_CONF_ERROR + errorMsg);
+//            throw new DBConfigException(errorMsg);
 //        }
         maxLimit = jdbcConfig.getDbMaxLimit();
 //        if (maxLimit == null)
 //        {
-//        	String errorMsg =  "Invalid XML contents: JDBC Connection missing maxLimit attribute";
-//        	LOGGER.error(AS_CONF_ERROR + errorMsg);
-//        	throw new DBConfigException(errorMsg);
+//            String errorMsg =  "Invalid XML contents: JDBC Connection missing maxLimit attribute";
+//            LOGGER.error(AS_CONF_ERROR + errorMsg);
+//            throw new DBConfigException(errorMsg);
 //        }
         initialLimit = jdbcConfig.getDbInitialLimit();
 //        if (initialLimit == null)
 //        {
-//        	String errorMsg =  "Invalid XML contents: JDBC Connection missing initialLimit attribute";
-//        	LOGGER.error(AS_CONF_ERROR + errorMsg);
-//        	throw new DBConfigException(errorMsg);
+//            String errorMsg =  "Invalid XML contents: JDBC Connection missing initialLimit attribute";
+//            LOGGER.error(AS_CONF_ERROR + errorMsg);
+//            throw new DBConfigException(errorMsg);
 //        }
 
         dbUrl = jdbcConfig.getDbUrl();
@@ -142,20 +142,19 @@ public class JdbcDBCachedDataSource extends CachedDataSource {
             p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"
                 + "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
 
-            DataSource dataSource = new DataSource(p);
+            final DataSource dataSource = new DataSource(p);
 
             synchronized (this) {
-                this.ds = dataSource;
-
                 initialized = true;
+            }
                 LOGGER.info(String.format("JdbcDBCachedDataSource <%s> configured successfully. Using URL: %s",
                     dbConnectionName, dbUrl));
-            }
+            return dataSource;
         } catch (Exception exc) {
             initialized = false;
             LOGGER.error(String.format("AS_CONF_ERROR: Failed to initialize MySQLCachedDataSource <%s>. Reason: %s",
                 dbConnectionName, exc.getMessage()));
-//    		throw new DBConfigException(e.getMessage());
+            return null;
         }
     }
 
