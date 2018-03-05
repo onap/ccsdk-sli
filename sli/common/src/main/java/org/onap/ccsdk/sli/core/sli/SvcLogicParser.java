@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.validation.Schema;
@@ -59,6 +60,7 @@ public class SvcLogicParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(SvcLogicParser.class);
     private static final String SLI_VALIDATING_PARSER = "org.onap.ccsdk.sli.parser.validate";
     private static final String SVCLOGIC_XSD = "/svclogic.xsd";
+    private SAXParser saxParser;
 
     private class SvcLogicHandler extends DefaultHandler {
         private Locator locator = null;
@@ -309,41 +311,12 @@ public class SvcLogicParser {
     public LinkedList<SvcLogicGraph> parse(String fileName) throws SvcLogicException {
         LinkedList<SvcLogicGraph> graphs;
 
-        URL xsdUrl = null;
-        Schema schema = null;
-        String validateSchema = System.getProperty(SLI_VALIDATING_PARSER, "true");
-
-        if ("true".equalsIgnoreCase(validateSchema)) {
-            xsdUrl = getClass().getResource(SVCLOGIC_XSD);
-        }
-
-        if (xsdUrl != null) {
-            try {
-                SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-                schema = schemaFactory.newSchema(xsdUrl);
-                LOGGER.info("Schema path {}", xsdUrl.getPath());
-            } catch (Exception e) {
-                LOGGER.warn("Could not validate using schema {}", xsdUrl.getPath(), e);
-            }
-        } else {
-            LOGGER.warn("Could not find resource {}", SVCLOGIC_XSD);
-        }
-
         try {
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-
-            if (schema != null) {
-                factory.setNamespaceAware(true);
-                factory.setSchema(schema);
-            }
-            SAXParser saxParser = factory.newSAXParser();
-
-            if (saxParser.isValidating()) {
-                LOGGER.info("Parser configured to validate XML {}", (xsdUrl != null ? xsdUrl.getPath() : null));
+            if (saxParser == null) {
+                saxParser = initParser();
             }
 
             graphs = new LinkedList<>();
-
             saxParser.parse(fileName, new SvcLogicHandler(graphs));
 
             try {
@@ -353,7 +326,6 @@ public class SvcLogicParser {
             } catch (Exception exc) {
                 LOGGER.error("Couldn't set md5sum on graphs", exc);
             }
-
         } catch (Exception e) {
             LOGGER.error("Parsing failed ", e);
             String msg = e.getMessage();
@@ -363,7 +335,6 @@ public class SvcLogicParser {
                 throw new SvcLogicException("Compiler error: " + fileName, e);
             }
         }
-
         return graphs;
     }
 
@@ -466,6 +437,7 @@ public class SvcLogicParser {
 
     }
 
+    
     public static void load(String xmlfile, SvcLogicStore store) throws SvcLogicException {
         File xmlFile = new File(xmlfile);
         if (!xmlFile.canRead()) {
@@ -588,5 +560,41 @@ public class SvcLogicParser {
 
         System.exit(1);
     }
+    
+    protected SAXParser initParser() throws ParserConfigurationException, SAXException {
+        URL xsdUrl = null;
+        Schema schema = null;
+        String validateSchema = System.getProperty(SLI_VALIDATING_PARSER, "true");
+
+        if ("true".equalsIgnoreCase(validateSchema)) {
+            xsdUrl = getClass().getResource(SVCLOGIC_XSD);
+        }
+
+        if (xsdUrl != null) {
+            try {
+                SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                schema = schemaFactory.newSchema(xsdUrl);
+                LOGGER.info("Schema path {}", xsdUrl.getPath());
+            } catch (Exception e) {
+                LOGGER.warn("Could not validate using schema {}", xsdUrl.getPath(), e);
+            }
+        } else {
+            LOGGER.warn("Could not find resource {}", SVCLOGIC_XSD);
+        }
+
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+
+        if (schema != null) {
+            factory.setNamespaceAware(true);
+            factory.setSchema(schema);
+        }
+
+        SAXParser saxParser = factory.newSAXParser();
+        if (saxParser.isValidating()) {
+            LOGGER.info("Parser configured to validate XML {}", (xsdUrl != null ? xsdUrl.getPath() : null));
+        }
+        return saxParser;
+    }
+
 
 }

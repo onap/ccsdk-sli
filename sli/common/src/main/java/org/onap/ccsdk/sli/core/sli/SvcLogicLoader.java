@@ -39,15 +39,18 @@ public class SvcLogicLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(SvcLogicLoader.class);
     protected SvcLogicStore store;
     protected String directoryRoot;
+    protected SvcLogicParser parser;
 
     public SvcLogicLoader(String directoryRoot, SvcLogicStore store) {
         this.store = store;
         this.directoryRoot = directoryRoot;
+        this.parser = new SvcLogicParser();
     }
-
+    
     public SvcLogicLoader(String directoryRoot, String propFile) {
         this.store = SvcLogicParser.getStore(propFile);
         this.directoryRoot = directoryRoot;
+        this.parser = new SvcLogicParser();
     }
 
     public void loadAndActivate() throws IOException {
@@ -58,7 +61,7 @@ public class SvcLogicLoader {
         activateGraphs(activationEntries);
     }
 
-    private List<ActivationEntry> processActivationFiles(List<Path> activationPaths) {
+    protected List<ActivationEntry> processActivationFiles(List<Path> activationPaths) {
         List<ActivationEntry> activationEntries = new ArrayList<ActivationEntry>();
         for (Path activationFile : activationPaths) {
             activationEntries.addAll(getActivationEntries(activationFile));
@@ -66,10 +69,12 @@ public class SvcLogicLoader {
         return activationEntries;
     }
 
-    private void activateGraphs(List<ActivationEntry> activationEntries) {
+    protected void activateGraphs(List<ActivationEntry> activationEntries) {
         for (ActivationEntry entry : activationEntries) {
             try {
                 if (store.hasGraph(entry.module, entry.rpc, entry.version, entry.mode)) {
+                    LOGGER.info("Activating SvcLogicGraph [module=" + entry.module + ", rpc=" + entry.rpc + ", mode="
+                            + entry.mode + ", version=" + entry.version + "]");
                     store.activate(entry.module, entry.rpc, entry.version, entry.mode);
                 } else {
                     LOGGER.error("hasGraph returned false for " + entry.toString());
@@ -113,13 +118,12 @@ public class SvcLogicLoader {
         }
     }
 
-    private void saveGraph(String xmlFile) throws SvcLogicException {
+    protected void saveGraph(String xmlFile) throws SvcLogicException {
         File f = new File(xmlFile);
         if (!f.canRead()) {
             throw new ConfigurationException("Cannot read xml file (" + xmlFile + ")");
         }
 
-        SvcLogicParser parser = new SvcLogicParser();
         LinkedList<SvcLogicGraph> graphs = null;
 
         try {
