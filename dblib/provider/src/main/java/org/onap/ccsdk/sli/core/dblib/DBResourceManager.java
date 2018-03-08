@@ -248,7 +248,8 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
             } catch(Exception exc) {
                 LOGGER.warn("", exc);
             }
-            LOGGER.info("Thread DataSourceTester terminated {} for {}", this.getName(), ds.getDbConnectionName());
+            if(ds != null)
+                LOGGER.info("Thread DataSourceTester terminated {} for {}", this.getName(), ds.getDbConnectionName());
         }
 
     }

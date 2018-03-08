@@ -180,7 +180,6 @@ public class JdbcDBCachedDataSource extends CachedDataSource {
 
     public java.util.logging.Logger getParentLogger()
         throws SQLFeatureNotSupportedException {
-        // TODO Auto-generated method stub
         return null;
     }
 
