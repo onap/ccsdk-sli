@@ -28,7 +28,7 @@ import java.util.Optional;
 
 /**
  * Resolves properties files relative to the directory identified by the <code>SDNC_CONFIG_DIR</code>
- * environment variable.
+ * environment variable. If a system property with the same name is set it is given precedence.
  */
 public abstract class EnvVarFileResolver implements PropertiesFileResolver {
 
@@ -51,8 +51,14 @@ public abstract class EnvVarFileResolver implements PropertiesFileResolver {
      */
     @Override
     public Optional<File> resolveFile(final String filename) {
-        // attempt to resolve the property directory from the corresponding environment variable
-        final String propDirectoryFromEnvVariable = System.getenv(propertyKey);
+        // attempt to read the system property first
+        String propDirectoryFromEnvVariable = System.getProperty(propertyKey);
+ 
+        if(propDirectoryFromEnvVariable == null) {
+            // attempt to resolve the property directory from the corresponding environment variable
+            propDirectoryFromEnvVariable = System.getenv(propertyKey);
+        }
+
         final File fileFromEnvVariable;
         if (!Strings.isNullOrEmpty(propDirectoryFromEnvVariable)) {
             fileFromEnvVariable = Paths.get(propDirectoryFromEnvVariable).resolve(filename).toFile();
