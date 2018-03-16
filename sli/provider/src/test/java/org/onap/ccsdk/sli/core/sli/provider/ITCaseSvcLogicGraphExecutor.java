@@ -45,6 +45,9 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.onap.ccsdk.sli.core.sli.SvcLogicParser;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +104,6 @@ public class ITCaseSvcLogicGraphExecutor {
 
         SvcLogicParser parser = new SvcLogicParser();
 
-        // Loop through executor tests
         SvcLogicPropertiesProvider resourceProvider = new SvcLogicPropertiesProviderImpl();
         SvcLogicServiceImpl svc = new SvcLogicServiceImpl(resourceProvider);
 
@@ -109,6 +111,10 @@ public class ITCaseSvcLogicGraphExecutor {
             LOG.info("SLI - registering node executor for node type " + nodeType);
             svc.registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
         }
+
+
+
+
     }
 
     @AfterClass

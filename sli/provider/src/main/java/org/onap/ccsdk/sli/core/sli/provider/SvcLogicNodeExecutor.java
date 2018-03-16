@@ -29,6 +29,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.sli.SvcLogicNode;
 import org.onap.ccsdk.sli.core.sli.SvcLogicRecorder;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -53,56 +54,25 @@ public abstract class SvcLogicNodeExecutor {
 	}
 
 
+
     protected SvcLogicAdaptor getAdaptor(String adaptorName) {
         return SvcLogicAdaptorFactory.getInstance(adaptorName);
     }
 
     protected SvcLogicResource getSvcLogicResource(String plugin) {
-        BundleContext bctx = FrameworkUtil.getBundle(this.getClass())
-                .getBundleContext();
 
-        ServiceReference sref = bctx.getServiceReference(plugin);
-        if (sref != null) {
-            SvcLogicResource resourcePlugin = (SvcLogicResource) bctx
-                    .getService(sref);
-            return resourcePlugin;
-        }
-        else {
-            LOG.warn("Could not find service reference object for plugin " + plugin);
-            return null;
-        }
+        return((SvcLogicResource) SvcLogicClassResolver.resolve(plugin));
     }
 
     protected SvcLogicRecorder getSvcLogicRecorder(String plugin) {
-        BundleContext bctx = FrameworkUtil.getBundle(this.getClass())
-                .getBundleContext();
-
-        ServiceReference sref = bctx.getServiceReference(plugin);
-        if (sref != null) {
-            SvcLogicRecorder resourcePlugin = (SvcLogicRecorder) bctx
-                    .getService(sref);
-            return resourcePlugin;
-        }
-        else {
-            return null;
-        }
+        return((SvcLogicRecorder) SvcLogicClassResolver.resolve(plugin));
     }
 
     protected SvcLogicJavaPlugin getSvcLogicJavaPlugin(String pluginName){
-        BundleContext bctx = FrameworkUtil.getBundle(this.getClass())
-                 .getBundleContext();
+        return((SvcLogicJavaPlugin) SvcLogicClassResolver.resolve(pluginName));
 
-         ServiceReference sref = bctx.getServiceReference(pluginName);
+    }
 
-         if (sref == null) {
-             LOG.warn("Could not find service reference object for plugin " + pluginName);
-             return null;
-         } else {
-             SvcLogicJavaPlugin plugin  = (SvcLogicJavaPlugin) bctx
-                     .getService(sref);
-             return plugin;
-         }
- }
     protected SvcLogicNode getNextNode(SvcLogicNode node, String outValue) {
         MetricLogger.resetContext();
         SvcLogicNode nextNode = node.getOutcomeValue(outValue);

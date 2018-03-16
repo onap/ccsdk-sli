@@ -1,2 +1,6 @@
 l3sdn_logic_v10.xml:switchTester:test-value=""
 l3sdn_logic_v10.xml:switchTester:test-value="hi"
+l3sdn_logic_v10.xml:forRecordTester
+l3sdn_logic_v10.xml:resourceTester
+l3sdn_logic_v10.xml:configureTester
+l3sdn_logic_v10.xml:javaPluginTester
