@@ -28,7 +28,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import static org.junit.Assert.*;
+
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput.Mode;
+import org.onap.ccsdk.sli.core.sli.provider.MdsalHelper;
 import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
@@ -131,5 +134,11 @@ public class MdsalHelperTest extends TestCase {
 
 
 
+    }
+
+    public void testToJavaEnum() throws Exception{
+        assertEquals("_2018HelloWorld",MdsalHelper.toJavaEnum("2018Hello World"));
+        assertEquals("SomethingElse",MdsalHelper.toJavaEnum("Something.Else"));
+        assertEquals("MyTestString",MdsalHelper.toJavaEnum("my-test-string"));
     }
 }

@@ -1267,6 +1267,9 @@ public class MdsalHelper {
         // This will strip out all periods, which cannot be in a java enum
         inStr = inStr.replaceAll("\\.", "");
 
+        //This is needed for enums containing spaces
+        inStr = inStr.replaceAll(" ", "");
+
         String[] terms = inStr.split("-");
         StringBuffer sbuff = new StringBuffer();
 
