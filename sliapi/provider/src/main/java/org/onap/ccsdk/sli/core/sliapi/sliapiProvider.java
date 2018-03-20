@@ -159,6 +159,8 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
     public void initialize(){
         LOG.info( "Initializing provider for " + appName );
         //initialization code goes here.
+        rpcRegistration = rpcRegistry.addRpcImplementation(SLIAPIService.class, this);
+
         sdncStatusFile = System.getenv(SDNC_STATUS_FILE);
         LOG.info( "SDNC STATUS FILE = " + sdncStatusFile );
         LOG.info( "Initialization complete for " + appName );
