@@ -97,6 +97,39 @@
             <configure adaptor="`$configure-plugin`" key="dummy" activate="true">
                 <parameter name="field1" value="1"/>
             </configure>
+            <configure adaptor="`$configure-plugin`" key="SUCCESS" activate="true">
+                <parameter name="field1" value="1"/>
+            </configure>
+            <configure adaptor="`$configure-plugin`" key="ALREADY_ACTIVE" activate="true">
+                <parameter name="field1" value="1"/>
+            </configure>
+            <configure adaptor="`$configure-plugin`" key="NOT_FOUND" activate="true">
+                <parameter name="field1" value="1"/>
+            </configure>
+            <configure adaptor="`$configure-plugin`" key="NOT_READY" activate="true">
+                <parameter name="field1" value="1"/>
+            </configure>
+            <configure adaptor="`$configure-plugin`" key="FAILURE" activate="true">
+                <parameter name="field1" value="1"/>
+            </configure>
+            <configure adaptor="`$configure-plugin`" key="dummy" activate="false">
+                <parameter name="field1" value="1"/>
+            </configure>
+            <configure adaptor="`$configure-plugin`" key="SUCCESS" activate="false">
+                <parameter name="field1" value="1"/>
+            </configure>
+            <configure adaptor="`$configure-plugin`" key="ALREADY_ACTIVE" activate="false">
+                <parameter name="field1" value="1"/>
+            </configure>
+            <configure adaptor="`$configure-plugin`" key="NOT_FOUND" activate="false">
+                <parameter name="field1" value="1"/>
+            </configure>
+            <configure adaptor="`$configure-plugin`" key="NOT_READY" activate="false">
+                <parameter name="field1" value="1"/>
+            </configure>
+            <configure adaptor="`$configure-plugin`" key="FAILURE" activate="false">
+                <parameter name="field1" value="1"/>
+            </configure>
 
        </block>
     </method>

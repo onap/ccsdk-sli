@@ -98,6 +98,11 @@
             <artifactId>sal-binding-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.att.eelf</groupId>
+            <artifactId>eelf-core</artifactId>
+        </dependency>
+
         <!-- Testing Dependencies -->
         <dependency>
             <groupId>junit</groupId>

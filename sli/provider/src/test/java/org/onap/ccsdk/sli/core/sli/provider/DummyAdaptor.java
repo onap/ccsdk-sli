@@ -20,6 +20,18 @@ public class DummyAdaptor implements SvcLogicAdaptor {
     @Override
     public ConfigStatus configure(String key, Map<String, String> parameters, SvcLogicContext ctx) {
 
+        if ("ALREADY_ACTIVE".equalsIgnoreCase(key)) {
+            return ConfigStatus.ALREADY_ACTIVE;
+        } else if ("NOT_FOUND".equalsIgnoreCase(key)) {
+            return ConfigStatus.NOT_FOUND;
+        }else if ("NOT_READY".equalsIgnoreCase(key)) {
+            return ConfigStatus.NOT_READY;
+        } else if ("FAILURE".equalsIgnoreCase(key)) {
+            return ConfigStatus.FAILURE;
+        } else if ("SUCCESS".equalsIgnoreCase(key)) {
+            return ConfigStatus.SUCCESS;
+        }
+
         return ConfigStatus.SUCCESS;
     }
 
