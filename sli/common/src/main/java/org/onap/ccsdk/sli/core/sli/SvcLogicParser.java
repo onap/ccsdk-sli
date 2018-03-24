@@ -437,7 +437,7 @@ public class SvcLogicParser {
 
     }
 
-    
+
     public static void load(String xmlfile, SvcLogicStore store) throws SvcLogicException {
         File xmlFile = new File(xmlfile);
         if (!xmlFile.canRead()) {
@@ -531,7 +531,7 @@ public class SvcLogicParser {
 
     }
 
-    private static void activate(String module, String rpc, String version, String mode, SvcLogicStore store) {
+    public static void activate(String module, String rpc, String version, String mode, SvcLogicStore store) {
         String details = "(module:" + module + ", rpc:" + rpc + ", version:" + version + ", mode:" + mode + ")";
 
         try {
@@ -560,7 +560,7 @@ public class SvcLogicParser {
 
         System.exit(1);
     }
-    
+
     protected SAXParser initParser() throws ParserConfigurationException, SAXException {
         URL xsdUrl = null;
         Schema schema = null;

@@ -66,6 +66,19 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		this.dbSvc = dbsvc;
 	}
 
+	public SvcLogicDblibStore(Properties props) {
+        try {
+            dbSvc = new DBResourceManager(props);
+            JavaSingleton.setInstance(dbSvc);
+        } catch (Exception e) {
+            LOG.warn("Caught exception trying to create DBResourceManager", e);
+        }
+	}
+
+	public Connection getConnection() throws SQLException {
+	    return(dbSvc.getConnection());
+	}
+
 	@Override
 	public void init(Properties props) throws ConfigurationException {
 

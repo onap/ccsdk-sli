@@ -30,6 +30,7 @@
 			<xsd:element ref="call" />
 			<xsd:element ref="notify" />
 			<xsd:element ref="break" />
+			<xsd:element ref="while" />
 		</xsd:choice>
 	</xsd:group>
 
@@ -318,6 +319,16 @@
 
 	<xsd:element name="break">
 		<xsd:complexType />
+	</xsd:element>
+
+	<xsd:element name="while">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:group ref="node" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="test" use="required" type="xsd:string" />
+			<xsd:attribute name="do" use="optional" type="xsd:boolean" />
+		</xsd:complexType>
 	</xsd:element>
 
 </xsd:schema>

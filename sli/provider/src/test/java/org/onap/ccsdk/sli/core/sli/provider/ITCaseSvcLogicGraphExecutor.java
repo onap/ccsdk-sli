@@ -24,8 +24,7 @@ package org.onap.ccsdk.sli.core.sli.provider;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import ch.vorburger.mariadb4j.DB;
-import ch.vorburger.mariadb4j.DBConfigurationBuilder;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,6 +39,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.onap.ccsdk.sli.core.sli.SvcLogicParser;
@@ -74,6 +74,7 @@ public class ITCaseSvcLogicGraphExecutor {
             put("set", new SetNodeExecutor());
             put("switch", new SwitchNodeExecutor());
             put("update", new UpdateNodeExecutor());
+            put("while", new WhileNodeExecutor());
 
         }
     };
@@ -87,16 +88,6 @@ public class ITCaseSvcLogicGraphExecutor {
 
         Properties svcprops = new Properties();
         svcprops.load(propStr);
-
-        // Start MariaDB4j database
-        DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
-        config.setPort(0); // 0 => autom. detect free port
-        DB db = DB.newEmbeddedDB(config.build());
-        db.start();
-
-        // Override jdbc URL and database name
-        svcprops.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
-        svcprops.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
 
         SvcLogicStore store = SvcLogicStoreFactory.getSvcLogicStore(svcprops);
 
@@ -144,17 +135,8 @@ public class ITCaseSvcLogicGraphExecutor {
             Properties svcprops = new Properties();
             svcprops.load(propStr);
 
-            // Start MariaDB4j database
-            DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
-            config.setPort(0); // 0 => autom. detect free port
-            DB db = DB.newEmbeddedDB(config.build());
-            db.start();
-
-            // Override jdbc URL and database name
-            svcprops.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
-            svcprops.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
-
             SvcLogicStore store = SvcLogicStoreFactory.getSvcLogicStore(svcprops);
+
 
             assertNotNull(store);
 
@@ -214,10 +196,13 @@ public class ITCaseSvcLogicGraphExecutor {
                         fail("Could not resolve test case file " + testCaseFile);
                     }
 
+
                     LinkedList<SvcLogicGraph> graphs = parser.parse(testCaseUrl.getPath());
 
                     assertNotNull(graphs);
 
+                    // Load grqphs into db to support call node
+                    parser.load(testCaseUrl.getPath(), store);
                     for (SvcLogicGraph graph : graphs) {
                         if (graph.getRpc().equals(testCaseMethod)) {
                             Properties props = ctx.toProperties();

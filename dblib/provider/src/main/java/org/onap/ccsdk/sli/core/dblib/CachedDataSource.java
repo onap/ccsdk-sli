@@ -342,11 +342,16 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
     }
 
     protected boolean testConnection(boolean errorLevel) {
+
+        String testQuery = "SELECT @@global.read_only, @@global.hostname";
+        if (isDerby) {
+            testQuery = "SELECT 'false', 'localhost' FROM SYSIBM.SYSDUMMY1";
+        }
         ResultSet rs = null;
         try (Connection conn = this.getConnection(); Statement stmt = conn.createStatement()) {
             Boolean readOnly;
             String hostname;
-            rs = stmt.executeQuery("SELECT @@global.read_only, @@global.hostname"); // ("SELECT 1 FROM DUAL"); //"select
+            rs = stmt.executeQuery(testQuery); // ("SELECT 1 FROM DUAL"); //"select
                                                                                     // BANNER from SYS.V_$VERSION"
             while (rs.next()) {
                 readOnly = rs.getBoolean(1);

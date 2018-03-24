@@ -44,3 +44,5 @@ sdnc-core_bdio.jsonld
 blackDuckHubProjectName.txt
 blackDuckHubProjectVersionName.txt
 
+# Derby log
+derby.log

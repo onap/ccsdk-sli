@@ -38,7 +38,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class SvcLogicJdbcStore implements SvcLogicStore {
     private static final Logger LOG = LoggerFactory.getLogger(SvcLogicJdbcStore.class);
 

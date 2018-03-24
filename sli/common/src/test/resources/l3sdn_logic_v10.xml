@@ -50,23 +50,9 @@
     </method>
 
     <method rpc="whileNodeTester" mode="sync">
-        <block>
-            <set>
-                <parameter name="counter" value="0" />
-
-            </set>
-            <while test="`$counter &lt; 10`">
-                <set>
-                    <parameter name="counter" value="`$counter + 1`" />
-                </set>
-
-                <switch test="`$counter > 6`">
-                    <outcome value="true">
-                        <break />
-                    </outcome>
-                </switch>
-            </while>
-        </block>
+        <while test="`$test-value`">
+            <break/>
+        </while>
 
     </method>
 

@@ -18,6 +18,12 @@
     <name>ccsdk-sli-core :: sli :: ${project.artifactId}</name>
     <description>The SLI Common package includes common classes used by the various SLI subcomponents, as well as classes used by clients to interface with the service logic interpreter</description>
 
+    <properties>
+       <!--  Ignore deprecated classes in coverage counts -->
+       <sonar.coverage.exclusions>**/MessageWriter.java</sonar.coverage.exclusions>
+
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -31,9 +37,9 @@
     </dependencyManagement>
     <dependencies>
         <dependency>
-            <groupId>ch.vorburger.mariaDB4j</groupId>
-            <artifactId>mariaDB4j</artifactId>
-            <version>2.2.3</version>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.11.1.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -32,10 +32,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
-
-import ch.vorburger.mariadb4j.DB;
-import ch.vorburger.mariadb4j.DBConfigurationBuilder;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -67,17 +69,9 @@ public class ITCaseSvcLogicParser {
 
 		props.load(propStr);
 
+        store = SvcLogicStoreFactory.getSvcLogicStore(props);
 
-		// Start MariaDB4j database
-		DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
-		config.setPort(0); // 0 => autom. detect free port
-		DB db = DB.newEmbeddedDB(config.build());
-		db.start();
-
-
-		// Override jdbc URL and database name
-		props.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
-		props.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
+        assertNotNull(store);
 
     }
 
@@ -120,8 +114,123 @@ public class ITCaseSvcLogicParser {
                     }
 
                     try {
-                        SvcLogicParser.validate(testCaseUrl.getPath(), store);
+                        SvcLogicParser.load(testCaseUrl.getPath(), store);
                     } catch (Exception e) {
+
+                        fail("Validation failure [" + e.getMessage() + "]");
+                    }
+                }
+            }
+        } catch (SvcLogicParserException e) {
+            fail("Parser error : " + e.getMessage());
+        } catch (Exception e) {
+            LOG.error("", e);
+            fail("Caught exception processing test cases");
+        }
+    }
+
+    @Test
+    public void testDblibLoadValidXml() throws IOException, SQLException, ConfigurationException {
+
+        URL propUrl = ITCaseSvcLogicParser.class.getResource("/dblib.properties");
+
+        InputStream propStr = ITCaseSvcLogicParser.class.getResourceAsStream("/dblib.properties");
+
+        Properties props = new Properties();
+
+        props.load(propStr);
+
+        SvcLogicDblibStore dblibStore = new SvcLogicDblibStore(props);
+
+        Connection dbConn = dblibStore.getConnection();
+
+        String dbName = props.getProperty("org.onap.ccsdk.sli.jdbc.database", "sdnctl");
+
+        DatabaseMetaData dbm;
+
+        try {
+            dbm = dbConn.getMetaData();
+        } catch (SQLException e) {
+
+            throw new ConfigurationException("could not get databse metadata", e);
+        }
+
+        // See if table SVC_LOGIC exists. If not, create it.
+        Statement stmt = null;
+        try {
+
+            ResultSet tables = dbm.getTables(null, null, "SVC_LOGIC", null);
+            if (tables.next()) {
+                LOG.debug("SVC_LOGIC table already exists");
+            } else {
+                String crTableCmd = "CREATE TABLE " + dbName + ".SVC_LOGIC (" + "module varchar(80) NOT NULL,"
+                        + "rpc varchar(80) NOT NULL," + "version varchar(40) NOT NULL," + "mode varchar(5) NOT NULL,"
+                        + "active varchar(1) NOT NULL," + "graph BLOB,"
+                        + "CONSTRAINT P_SVC_LOGIC PRIMARY KEY(module, rpc, version, mode))";
+
+                stmt = dbConn.createStatement();
+                stmt.executeUpdate(crTableCmd);
+            }
+        } catch (Exception e) {
+            throw new ConfigurationException("could not create SVC_LOGIC table", e);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOG.error("Statement close error ", e);
+                }
+            }
+        }
+
+        // See if NODE_TYPES table exists and, if not, create it
+        stmt = null;
+        try {
+
+            ResultSet tables = dbm.getTables(null, null, "NODE_TYPES", null);
+            if (tables.next()) {
+                LOG.debug("NODE_TYPES table already exists");
+            } else {
+                String crTableCmd = "CREATE TABLE " + dbName + ".NODE_TYPES (" + "nodetype varchar(80) NOT NULL,"
+                        + "CONSTRAINT P_NODE_TYPES PRIMARY KEY(nodetype))";
+
+                stmt = dbConn.createStatement();
+
+                stmt.executeUpdate(crTableCmd);
+            }
+        } catch (Exception e) {
+            throw new ConfigurationException("could not create SVC_LOGIC table", e);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOG.error("Statement close error ", e);
+                }
+            }
+        }
+
+        try {
+            InputStream testStr = getClass().getResourceAsStream("/parser-good.tests");
+            BufferedReader testsReader = new BufferedReader(new InputStreamReader(testStr));
+            String testCaseFile = null;
+            while ((testCaseFile = testsReader.readLine()) != null) {
+
+                testCaseFile = testCaseFile.trim();
+
+                if (testCaseFile.length() > 0) {
+                    if (!testCaseFile.startsWith("/")) {
+                        testCaseFile = "/" + testCaseFile;
+                    }
+                    URL testCaseUrl = getClass().getResource(testCaseFile);
+                    if (testCaseUrl == null) {
+                        fail("Could not resolve test case file " + testCaseFile);
+                    }
+
+                    try {
+                        SvcLogicParser.load(testCaseUrl.getPath(), dblibStore);
+                    } catch (Exception e) {
+
                         fail("Validation failure [" + e.getMessage() + "]");
                     }
                 }
@@ -152,7 +261,7 @@ public class ITCaseSvcLogicParser {
                 if (testCaseUrl == null) {
                     fail("Could not resolve test case file " + testCaseFile);
                 }
-                SvcLogicParser.load(testCaseUrl.getPath(), store);
+                SvcLogicParser.validate(testCaseUrl.getPath(), store);
             }
         }
     }

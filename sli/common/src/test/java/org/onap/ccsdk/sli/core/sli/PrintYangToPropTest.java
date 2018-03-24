@@ -15,6 +15,9 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.Exe
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddressBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpPrefixBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +53,22 @@ public class PrintYangToPropTest {
 		pBuilder.setIntValue(null);
 		pBuilder.setBooleanValue(true);
 		pList.add(pBuilder.build());
+		pBuilder.setParameterName("ipaddress-value1");
+		pBuilder.setBooleanValue(null);
+		pBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("127.0.0.1"));
+		pList.add(pBuilder.build());
+		pBuilder.setParameterName("ipaddress-value1");
+		pBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("::1"));
+		pList.add(pBuilder.build());
+		pBuilder.setParameterName("ipprefix-value1");
+		pBuilder.setIpaddressValue(null);
+		pBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("192.168.0.0/16"));
+		pList.add(pBuilder.build());
+		pBuilder.setParameterName("ipprefix-value2");
+		pBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("2001:db8:3c4d::/48"));
+		pList.add(pBuilder.build());
+
+
 
 		egBuilder.setSliParameter(pList);
 
@@ -63,6 +82,9 @@ public class PrintYangToPropTest {
 			String propName = (String) propNames.nextElement();
 			LOG.info("Property {} = {}", propName, props.getProperty(propName));
 		}
+
+		// Generate builder from properties just generated
+		PrintYangToProp.toBuilder(props, pBuilder);
 
 	}
 

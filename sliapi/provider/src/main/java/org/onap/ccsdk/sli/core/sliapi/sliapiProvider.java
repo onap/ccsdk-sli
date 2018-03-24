@@ -114,13 +114,15 @@ import com.google.common.util.concurrent.Futures;
  */
 public class sliapiProvider implements AutoCloseable, SLIAPIService{
 
-    private final Logger LOG = LoggerFactory.getLogger( sliapiProvider.class );
-    private final String appName = "slitester";
+    private static final Logger LOG = LoggerFactory.getLogger( sliapiProvider.class );
+    private static final String appName = "slitester";
 
     protected DataBroker dataBroker;
     protected DOMDataBroker domDataBroker;
     protected NotificationPublishService notificationService;
     protected RpcProviderRegistry rpcRegistry;
+
+    private SvcLogicService svcLogic;
 
 	protected BindingAwareBroker.RpcRegistration<SLIAPIService> rpcRegistration;
 
@@ -142,15 +144,23 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 		RESULTS_QNAME = QName.create(TEST_RESULT_QNAME, "results");
 	}
 
+    public sliapiProvider(
+            DataBroker dataBroker,
+            NotificationPublishService notificationPublishService,
+            RpcProviderRegistry rpcProviderRegistry) {
+        this(dataBroker, notificationPublishService, rpcProviderRegistry, findSvcLogicService());
+    }
 
     public sliapiProvider(
 			DataBroker dataBroker,
 			NotificationPublishService notificationPublishService,
-			RpcProviderRegistry rpcProviderRegistry) {
+			RpcProviderRegistry rpcProviderRegistry,
+			SvcLogicService svcLogic) {
         this.LOG.info( "Creating provider for " + appName );
         this.dataBroker = dataBroker;
         this.notificationService = notificationPublishService;
         this.rpcRegistry = rpcProviderRegistry;
+        this.svcLogic = svcLogic;
         initialize();
     }
 
@@ -357,6 +367,13 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 
 
 	private SvcLogicService getSvcLogicService() {
+	    if (svcLogic == null) {
+	        svcLogic = findSvcLogicService();
+	    }
+
+	    return(svcLogic);
+	}
+	private static SvcLogicService findSvcLogicService() {
 		BundleContext bctx = FrameworkUtil.getBundle(SvcLogicService.class).getBundleContext();
 
 		SvcLogicService svcLogic = null;
