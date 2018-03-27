@@ -56,6 +56,7 @@ public class MdsalHelper {
         setYangMappingProperties(input);
     }
 
+    @Deprecated
     public static void setYangMappingProperties(Properties properties) {
         for (Object propNameObj : properties.keySet()) {
             String propName = (String) propNameObj;
@@ -63,6 +64,7 @@ public class MdsalHelper {
         }
     }
 
+    @Deprecated
     public static void loadProperties(String propertiesFile) {
         File file = new File(propertiesFile);
         Properties properties = new Properties();
@@ -186,8 +188,9 @@ public class MdsalHelper {
                                 }
                                 if (retValue != null) {
                                     String propName = propNamePfx + "." + fieldName;
-                                    propVal = retValue.toString();
-                                    props.setProperty(propName, mapEnumeratedValue(fieldName, propVal));
+                                    Method method = retValue.getClass().getMethod("getName");
+                                    String yangValue = (String) method.invoke(retValue);
+                                    props.setProperty(propName, yangValue);
                                 }
                             } catch (Exception e) {
                                 LOG.error(
@@ -1333,11 +1336,13 @@ public class MdsalHelper {
         return (false);
     }
 
+    @Deprecated
     public static String getFullPropertiesPath(String propertiesFileName) {
         return "/opt/bvc/controller/configuration/" + propertiesFileName;
     }
 
     // This is called when mapping a valid java enumeration back to the yang model value
+    @Deprecated
     public static String mapEnumeratedValue(String propertyName, String propertyValue) {
         LOG.info("mapEnumeratedValue called with propertyName=" + propertyName + " and value=" + propertyValue);
         String mappingKey = "yang." + propertyName + "." + propertyValue;
