@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.onap.ccsdk.parent</groupId>
 		<artifactId>odlparent-lite</artifactId>
 		<version>1.0.1-SNAPSHOT</version>
-		<relativePath/>
+		<relativePath />
 	</parent>
 
 	<groupId>org.onap.ccsdk.sli.core</groupId>
@@ -19,7 +20,7 @@
 	<properties>
 		<application.name>ccsdk-sli</application.name>
 		<features.boot>${application.name}</features.boot>
-        <features.repositories>mvn:org.onap.ccsdk.sli.core/${features.boot}/${project.version}/xml/features</features.repositories>
+		<features.repositories>mvn:org.onap.ccsdk.sli.core/${features.boot}/${project.version}/xml/features</features.repositories>
 		<include.transitive.dependencies>false</include.transitive.dependencies>
 	</properties>
 
@@ -55,6 +56,21 @@
 			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>sli-recording</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.att.eelf</groupId>
+			<artifactId>eelf-core</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
 		</dependency>
 
 	</dependencies>
@@ -115,7 +131,7 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-                             <includeGroupIds>org.onap.ccsdk.sli.core</includeGroupIds>
+							<includeGroupIds>org.onap.ccsdk.sli.core,com.att.eelf,ch.qos.logback</includeGroupIds>
 							<excludeArtifactIds>utils-provider,dblib-provider</excludeArtifactIds>
 							<scope>provided</scope>
 						</configuration>
