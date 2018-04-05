@@ -151,7 +151,12 @@
             <configure adaptor="`$configure-plugin`" key="FAILURE" activate="false">
                 <parameter name="field1" value="1"/>
             </configure>
-
+            <configure adaptor="`$configure-plugin`" key="dummy" activate="true">
+                <parameter name="" value=""/>
+            </configure>
+            <configure adaptor="`$configure-plugin`" key="dummy" activate="false">
+                <parameter name="" value=""/>
+            </configure>
        </block>
     </method>
 
