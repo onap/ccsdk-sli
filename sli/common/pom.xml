@@ -107,7 +107,6 @@
         <dependency>
             <groupId>com.att.eelf</groupId>
             <artifactId>eelf-core</artifactId>
-            <version>1.0.0</version>
         </dependency>
 
         <!-- Testing Dependencies -->
