@@ -22,6 +22,7 @@
 package org.onap.ccsdk.sli.core.sli.provider;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
@@ -46,6 +47,32 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 public class SvcLogicServiceImpl implements SvcLogicService {
+
+    private static final Map<String, SvcLogicNodeExecutor> BUILTIN_NODES = new HashMap<String, SvcLogicNodeExecutor>() {
+        {
+            put("block", new BlockNodeExecutor());
+            put("call", new CallNodeExecutor());
+            put("configure", new ConfigureNodeExecutor());
+            put("delete", new DeleteNodeExecutor());
+            put("execute", new ExecuteNodeExecutor());
+            put("exists", new ExistsNodeExecutor());
+            put("for", new ForNodeExecutor());
+            put("get-resource", new GetResourceNodeExecutor());
+            put("is-available", new IsAvailableNodeExecutor());
+            put("notify", new NotifyNodeExecutor());
+            put("record", new RecordNodeExecutor());
+            put("release", new ReleaseNodeExecutor());
+            put("reserve", new ReserveNodeExecutor());
+            put("return", new ReturnNodeExecutor());
+            put("save", new SaveNodeExecutor());
+            put("set", new SetNodeExecutor());
+            put("switch", new SwitchNodeExecutor());
+            put("update", new UpdateNodeExecutor());
+            put("while", new WhileNodeExecutor());
+
+        }
+    };
+
     private static final Logger LOG = LoggerFactory.getLogger(SvcLogicServiceImpl.class);
     protected HashMap<String, SvcLogicNodeExecutor> nodeExecutors = null;
     protected BundleContext bctx = null;
@@ -63,47 +90,13 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         store = new SvcLogicDblibStore(dbSvc);
     }
 
+
     protected void registerExecutors() {
+
         LOG.info("Entered register executors");
-        if (bctx == null) {
-            bctx = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-        }
-
-        if (nodeExecutors == null) {
-            nodeExecutors = new HashMap<>();
-        }
-
-        LOG.info("Opening service tracker");
-        ServiceTracker tracker = new ServiceTracker(bctx, SvcLogicNodeExecutor.class.getName(), null);
-
-        tracker.open();
-
-        ServiceListener listener = new ServiceListener() {
-            public void serviceChanged(ServiceEvent ev) {
-                ServiceReference sr = ev.getServiceReference();
-                switch (ev.getType()) {
-                    case ServiceEvent.REGISTERED: {
-                        registerExecutor(sr);
-                    }
-                        break;
-                    case ServiceEvent.UNREGISTERING: {
-                        unregisterExecutor(sr);
-                    }
-                        break;
-                }
-            }
-        };
-
-        LOG.info("Adding service listener");
-        String filter = "(objectclass=" + SvcLogicNodeExecutor.class.getName() + ")";
-        try {
-            bctx.addServiceListener(listener, filter);
-            ServiceReference[] srl = bctx.getServiceReferences(SvcLogicNodeExecutor.class.getName(), null);
-            for (int i = 0; srl != null && i < srl.length; i++) {
-                listener.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, srl[i]));
-            }
-        } catch (InvalidSyntaxException e) {
-            LOG.info("Invalid syntax", e);
+        for (String nodeType : BUILTIN_NODES.keySet()) {
+            LOG.info("SLI - registering node executor for node type " + nodeType);
+            registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
         }
         LOG.info("Done registerExecutors");
     }
