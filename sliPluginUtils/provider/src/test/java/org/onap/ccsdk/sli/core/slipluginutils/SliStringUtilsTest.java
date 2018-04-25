@@ -234,6 +234,21 @@ public class SliStringUtilsTest {
         SliStringUtils.replace(param, ctx);
         assertEquals(sourceString.replace(old, neww), ctx.getAttribute(outputPath));
     }
+    
+    @Test
+    public void replaceAll() throws SvcLogicException {
+        String source = "cat Hello World cat";
+        String target = "\\s";
+        String replacement = "";
+        String outputPath = "out";
+
+        param.put("source", source);
+        param.put("target", target);
+        param.put("replacement", replacement);
+        param.put("outputPath", outputPath);
+        SliStringUtils.replaceAll(param, ctx);
+        assertEquals(source.replaceAll(target, replacement), ctx.getAttribute(outputPath));
+    }
 
     @Test
     public void concat() throws SvcLogicException {

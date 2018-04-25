@@ -305,6 +305,28 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
     }
 
     /**
+     * exposes replaceAll to directed graph
+     * writes the length of source to outputPath
+     * @param parameters HashMap<String,String> of parameters passed by the DG to this function
+     * <table border="1">
+     *  <thead><th>parameter</th><th>Mandatory/Optional</th><th>description</th></thead>
+     *  <tbody>
+     *      <tr><td>source</td><td>Mandatory</td><td>source string</td></tr>
+     *      <tr><td>target</td><td>Mandatory</td><td>This should be a valid regular expression</td></tr>
+     *      <tr><td>replacement</td><td>Mandatory</td><td>The replacement sequence of char values</td></tr>
+     *      <tr><td>outputPath</td><td>Mandatory</td><td>the location in context memory the result is written to</td></tr>
+     *  </tbody>
+     * </table>
+     * @param ctx Reference to context memory
+     * @throws SvcLogicException
+     * @since 11.0.2
+     */
+    public static void replaceAll(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
+        SliPluginUtils.checkParameters(parameters, new String[]{"source","outputPath","target","replacement"}, LOG);
+        ctx.setAttribute(parameters.get("outputPath"), parameters.get("source").replaceAll(parameters.get("target"), parameters.get("replacement")));
+    }
+    
+    /**
      * Provides substring functionality to Directed Graphs.
      * <p>
      * Calls either String.substring(String beginIndex) or
