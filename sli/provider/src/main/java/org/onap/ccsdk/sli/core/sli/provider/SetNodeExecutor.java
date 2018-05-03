@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 public class SetNodeExecutor extends SvcLogicNodeExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SetNodeExecutor.class);
+    protected final String arrayPattern = "\\[\\d*\\]";
 
     @Override
     public SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node, SvcLogicContext ctx)
@@ -131,8 +132,14 @@ public class SetNodeExecutor extends SvcLogicNodeExecutor {
                         LinkedList<String> parmsToRemove = new LinkedList<String>();
                         String prefix = lhsVarName + ".";
                         for (String curCtxVarname : ctx.getAttributeKeySet()) {
-                            if (curCtxVarname.startsWith(prefix)) {
-                                LOG.debug("Unsetting " + curCtxVarname);
+                            String curCtxVarnameMatchingValue = curCtxVarname;
+                            //Special handling for reseting array values, strips out brackets and any numbers between the brackets
+                            //when testing if a context memory value starts with a prefix
+                            if(!prefix.contains("[") && curCtxVarnameMatchingValue.contains("[")) {
+                                curCtxVarnameMatchingValue = curCtxVarname.replaceAll(arrayPattern, "");
+                            }
+                            if (curCtxVarnameMatchingValue.startsWith(prefix)) {
+                                LOG.debug("Unsetting " + curCtxVarname + " because matching value " + curCtxVarnameMatchingValue + " starts with the prefix " + prefix);
                                 parmsToRemove.add(curCtxVarname);
                             }
                         }
