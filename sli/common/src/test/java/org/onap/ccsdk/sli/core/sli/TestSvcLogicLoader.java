@@ -1,6 +1,7 @@
 package org.onap.ccsdk.sli.core.sli;
 
 import static org.junit.Assert.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -21,13 +22,12 @@ public class TestSvcLogicLoader {
 
         SvcLogicStore store = SvcLogicStoreFactory.getSvcLogicStore(props);
 
-        URL graphUrl = TestSvcLogicLoader.class.getClassLoader().getResource("graphs");
+        File graphDirectory =  new File(getClass().getClassLoader().getResource("graphs").getFile());
 
-        if (graphUrl == null) {
+        if (graphDirectory == null) {
             fail("Cannot find graphs directory");
         }
-
-        SvcLogicLoader loader = new SvcLogicLoader(graphUrl.getPath(), store);
+        SvcLogicLoader loader = new SvcLogicLoader(graphDirectory.getAbsolutePath(), store);
         loader.loadAndActivate();
 
 
