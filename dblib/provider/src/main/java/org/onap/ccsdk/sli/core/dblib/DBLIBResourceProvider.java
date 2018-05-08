@@ -23,6 +23,7 @@ package org.onap.ccsdk.sli.core.dblib;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Vector;
@@ -32,6 +33,9 @@ import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
 import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.CoreDefaultFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +49,12 @@ import org.slf4j.LoggerFactory;
  *     <li>A directory identified by the JRE argument <code>dblib.properties</code></li>
  *     <li>A <code>dblib.properties</code> file located in the karaf root directory</li>
  * </ol>
+ * 
+ * Encryption Support
+ * <ol>
+ *    <li>Uses ecryption provided by <code>AAAEncryptionService</code></li>
+ *    <li>AAA Configuration file is <code>aaa-cert-config.xml</code></li>
+ * </ol>
  */
 public class DBLIBResourceProvider {
 
@@ -54,6 +64,8 @@ public class DBLIBResourceProvider {
      * The name of the properties file for database configuration
      */
     private static final String DBLIB_PROP_FILE_NAME = "dblib.properties";
+
+    private static final String DBLIB_PROPERTY_NAME = "org.onap.ccsdk.sli.jdbc.password";
 
     /**
      * A prioritized list of strategies for resolving dblib properties files.
@@ -87,11 +99,55 @@ public class DBLIBResourceProvider {
             try(FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
                 properties = new Properties();
                 properties.load(fileInputStream);
+
+                if(properties.containsKey(DBLIB_PROPERTY_NAME)) {
+                    String sensitive = properties.getProperty(DBLIB_PROPERTY_NAME);
+                    if(sensitive != null && sensitive.startsWith("ENC:")) {
+                        try {
+                            sensitive = sensitive.substring(4);
+                            String postsense = decrypt(sensitive);
+                            properties.setProperty(DBLIB_PROPERTY_NAME, postsense);
+                        } catch(Exception exc) {
+                            LOG.error("Failed to translate property", exc);
+                        }
+                    }
+                }
+
             } catch (final IOException e) {
                 LOG.error("Failed to load properties for file: {}", propertiesFile.toString(),
                         new DblibConfigurationException("Failed to load properties for file: "
                                 + propertiesFile.toString(), e));
             }
+        }
+    }
+
+    /**
+     *
+     * @param value
+     * @return decrypted string if successful or the original value if unsuccessful
+     */
+    private String decrypt(String value) {
+        try {
+            BundleContext bctx = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+
+            ServiceReference sref = bctx.getServiceReference("org.opendaylight.aaa.encrypt.AAAEncryptionService");
+            if(sref == null) {
+                LOG.warn("Could not acquire service reference for 'org.opendaylight.aaa.encrypt.AAAEncryptionService'");
+                return value;
+            }
+            Object encrSvc = bctx.getService(sref);
+            if(encrSvc == null) {
+                LOG.warn("Could not access service for 'org.opendaylight.aaa.encrypt.AAAEncryptionService'");
+                return value;
+            }
+
+            Method gs2Method = encrSvc.getClass().getMethod("decrypt", new Class[] { "".getClass() });
+            Object unmasked = gs2Method.invoke(encrSvc, new Object[] { value });
+            return unmasked.toString();
+
+        } catch (Exception exc) {
+            LOG.error("Failure", exc);
+            return value;
         }
     }
 
