@@ -112,7 +112,7 @@ public class DME2 implements SvcLogicJavaPlugin {
         sb.append("?dme2.password=" + this.aafPassword);
         sb.append("&dme2.username=" + this.aafUserName);
         if (this.partner != null) {
-            sb.append("&dme2.partner=" + this.partner);
+            sb.append("&partner=" + this.partner);
         }
         sb.append("&dme2.allowhttpcode=true");
         String endpointReadTimeout = parameters.getOrDefault(ENDPOINT_READ_TIMEOUT_KEY, this.endpointReadTimeout);
