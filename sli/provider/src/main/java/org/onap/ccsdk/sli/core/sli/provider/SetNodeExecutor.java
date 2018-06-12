@@ -131,6 +131,11 @@ public class SetNodeExecutor extends SvcLogicNodeExecutor {
                         // If RHS is empty, unset attributes in LHS
                         LinkedList<String> parmsToRemove = new LinkedList<String>();
                         String prefix = lhsVarName + ".";
+                        //Clear length value in case an array exists with this prefix
+                        String lengthParamName = lhsVarName + "_length";
+                        parmsToRemove.add(lengthParamName);
+                        LOG.debug("Unsetting " + lengthParamName + " because prefix " + prefix + " is being cleared.");
+
                         for (String curCtxVarname : ctx.getAttributeKeySet()) {
                             String curCtxVarnameMatchingValue = curCtxVarname;
                             //Special handling for reseting array values, strips out brackets and any numbers between the brackets

@@ -48,6 +48,11 @@ public class SetNodeExecutorTest {
         assertNull(ctx.getAttribute("si[0].field1"));
         assertNull(ctx.getAttribute("si[1].field2"));
         assertNull(ctx.getAttribute("si[2].field3"));
+        assertNull(ctx.getAttribute("si_length"));
+        assertNull(ctx.getAttribute("si[0].subarray[0]"));
+        assertNull(ctx.getAttribute("si[0].subarray[1]"));
+        assertNull(ctx.getAttribute("si[0].subarray[2]"));
+        assertNull(ctx.getAttribute("si[0].subarray_length"));
         assertEquals("6", ctx.getAttribute("search1"));
         assertEquals("KeepMe!", ctx.getAttribute("simonSays"));
     }
