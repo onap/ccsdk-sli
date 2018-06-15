@@ -33,10 +33,7 @@
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
-			<groupId>equinoxSDK381</groupId>
-			<artifactId>org.eclipse.osgi</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>

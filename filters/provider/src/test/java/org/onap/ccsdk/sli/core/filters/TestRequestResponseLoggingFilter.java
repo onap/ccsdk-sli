@@ -18,9 +18,11 @@ import java.util.LinkedList;
 import java.util.UUID;
 import java.util.Vector;
 import javax.servlet.FilterChain;
+import javax.servlet.ReadListener;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
@@ -58,6 +60,30 @@ public class TestRequestResponseLoggingFilter {
         }
 
 
+		@Override
+		public boolean isFinished() {
+			try {
+				return stream.available() < 1;
+			} catch (IOException e) {
+				return true;
+			}
+		}
+
+
+		@Override
+		public boolean isReady() {
+			// TODO Auto-generated method stub
+			return true;
+		}
+
+
+		@Override
+		public void setReadListener(ReadListener arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
 
     }
 
@@ -73,6 +99,16 @@ public class TestRequestResponseLoggingFilter {
         public void write(int b) throws IOException {
             ostr.write(b);
         }
+
+		@Override
+		public boolean isReady() {
+			return true;
+		}
+
+		@Override
+		public void setWriteListener(WriteListener arg0) {
+			
+		}
 
     }
 

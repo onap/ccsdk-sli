@@ -21,26 +21,20 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>mdsal-model-artifacts</artifactId>
-                <version>0.11.1</version>
+                <version>${odl.mdsal.model.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>1.6.1</version>
+                <version>${odl.mdsal.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>odl-mdsal-broker</artifactId>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -55,11 +49,6 @@
             <artifactId>sliPluginUtils-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>equinoxSDK381</groupId>
-            <artifactId>org.eclipse.osgi</artifactId>
-            <version>${equinox.osgi.version}</version>
-            <scope>provided</scope>
-        </dependency>
+ 
     </dependencies>
 </project>

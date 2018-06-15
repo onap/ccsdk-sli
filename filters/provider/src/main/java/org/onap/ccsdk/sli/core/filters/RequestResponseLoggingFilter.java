@@ -34,11 +34,13 @@ import java.util.zip.GZIPInputStream;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ReadListener;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
@@ -59,6 +61,17 @@ public class RequestResponseLoggingFilter implements Filter {
 		@Override
 		public void write(int param) throws IOException {
 			baos.write(param);
+		}
+
+		@Override
+		public boolean isReady() {
+			return true;
+		}
+
+		@Override
+		public void setWriteListener(WriteListener arg0) {
+			
+			
 		}
 	}
 
@@ -104,6 +117,21 @@ public class RequestResponseLoggingFilter implements Filter {
 		@Override
 		public int read(byte[] buf, int off, int len) {
 			return bais.read(buf, off, len);
+		}
+
+		@Override
+		public boolean isFinished() {
+			return available() < 1;
+		}
+
+		@Override
+		public boolean isReady() {
+			return true;
+		}
+
+		@Override
+		public void setReadListener(ReadListener arg0) {
+			
 		}
 
 	}

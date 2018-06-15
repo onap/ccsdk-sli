@@ -16,31 +16,26 @@
 
     <name>ccsdk-sli-core :: sliapi :: ${project.artifactId}</name>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
+	<dependencyManagement>
+		<dependencies>
+		     <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>mdsal-model-artifacts</artifactId>
-                <version>0.11.1</version>
+                <version>${odl.mdsal.model.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>1.6.1</version>
+                <version>${odl.mdsal.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-        </dependencies>
-    </dependencyManagement>
+		</dependencies>
+	</dependencyManagement>
+	
     <dependencies>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>odl-mdsal-broker</artifactId>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>

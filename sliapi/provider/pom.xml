@@ -17,17 +17,7 @@
 
     <name>ccsdk-sli-core :: sliapi :: ${project.artifactId}</name>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.opendaylight.controller</groupId>
-                <artifactId>mdsal-artifacts</artifactId>
-                <version>1.6.1</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
@@ -39,16 +29,19 @@
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-binding-config</artifactId>
+            <version>${odl.mdsal.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-binding-api</artifactId>
+            <version>${odl.mdsal.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-common-util</artifactId>
+            <version>${odl.mdsal.version}</version>
         </dependency>
 
 
@@ -65,10 +58,12 @@
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-core-api</artifactId>
+            <version>${odl.mdsal.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-data-impl</artifactId>
+            <version>2.0.3</version>
         </dependency>
 
         <dependency>
@@ -87,7 +82,6 @@
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
-            <version>10.11.1.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
