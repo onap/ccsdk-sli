@@ -21,6 +21,7 @@
 
 package org.onap.ccsdk.sli.core.slipluginutils;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -98,12 +99,19 @@ public class DME2 implements SvcLogicJavaPlugin {
 
         // If the directedGraph passes an explicit version use that, if not use the commonServiceVersion
         // found in the properties file
-        String version = parameters.getOrDefault(VERSION_KEY, this.commonServiceVersion);
-        sb.append("/version=" + version);
+        String version = parameters.get(VERSION_KEY);
+        if (version != null && version.length() > 0) {
+            sb.append("/version=" + version);
+        }else {
+            sb.append("/version=" + this.commonServiceVersion);
+        }
         String envContext = parameters.getOrDefault(ENV_CONTEXT_KEY, this.envContext);
         sb.append("/envContext=" + envContext);
+
         String routeOffer = parameters.getOrDefault(ROUTE_OFFER_KEY, this.routeOffer);
-        sb.append("/routeOffer=" + routeOffer);
+        if (routeOffer != null && routeOffer.length() > 0) {
+            sb.append("/routeOffer=" + routeOffer);
+        }
 
         String subContext = parameters.get(SUBCONTEXT_KEY);
         if (subContext != null && subContext.length() > 0) {
@@ -147,4 +155,15 @@ public class DME2 implements SvcLogicJavaPlugin {
         ctx.setAttribute(parameters.get(OUTPUT_PATH_KEY), completeProxyUrl);
     }
 
+    // Support legacy direct java call
+    public String constructUrl(String service, String version, String subContext) {
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(SERVICE_KEY, service);
+        if (version != null) {
+            parameters.put(VERSION_KEY, version);
+        }
+        parameters.put(SUBCONTEXT_KEY, subContext);
+        return constructUrl(parameters);
+    }
+    
 }

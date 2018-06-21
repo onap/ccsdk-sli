@@ -23,7 +23,6 @@ package org.onap.ccsdk.sli.core.slipluginutils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class Dme2Test {
 
     @Test
     public void createUrl() {
-        String instarUrl =
+        String localUrl =
                 "http://localhost:25055/service=sample.com/services/eim/v1/rest/version=1702.0/envContext=TEST/routeOffer=DEFAULT/subContext=/enterpriseConnection/getEnterpriseConnectionDetails/v1?dme2.password=fake&dme2.username=user@sample.com&dme2.allowhttpcode=true";
         Properties props =
                 makesProperties("user@sample.com", "fake", "TEST", "DEFAULT", "http://localhost:25055", "common");
@@ -60,12 +59,12 @@ public class Dme2Test {
         parameters.put(DME2.OUTPUT_PATH_KEY, "tmp.test");
 
         String constructedUrl = dme.constructUrl(parameters);
-        assertEquals(instarUrl, constructedUrl);
+        assertEquals(localUrl, constructedUrl);
     }
 
     @Test
     public void createUrlNoSubContext() {
-        String instarUrl =
+        String localUrl =
                 "http://localhost:25055/service=sample.com/services/eim/v1/rest/version=1702.0/envContext=TEST/routeOffer=DEFAULT?dme2.password=fake&dme2.username=user@sample.com&dme2.allowhttpcode=true";
         Properties props =
                 makesProperties("user@sample.com", "fake", "TEST", "DEFAULT", "http://localhost:25055", "common");
@@ -75,7 +74,7 @@ public class Dme2Test {
         parameters.put(DME2.VERSION_KEY, "1702.0");
         parameters.put(DME2.SUBCONTEXT_KEY, null);
         String constructedUrl = dme.constructUrl(parameters);
-        assertEquals(instarUrl, constructedUrl);
+        assertEquals(localUrl, constructedUrl);
     }
 
     @Test
@@ -122,11 +121,14 @@ public class Dme2Test {
         assertEquals("1702.0", dme2.commonServiceVersion);
         assertEquals(null, dme2.partner);
         Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(DME2.SERVICE_KEY, "sample.com/restservices/instar/v1/assetSearch");
+        parameters.put(DME2.SERVICE_KEY, "sample.com/restservices/sys/v1/assetSearch");
         parameters.put(DME2.VERSION_KEY, null);
         parameters.put(DME2.SUBCONTEXT_KEY, "/mySubContext");
         String constructedUrl = dme2.constructUrl(parameters);
         assertNotNull(constructedUrl);
+        String expected =
+                "http://sample.com:25055/service=sample.com/restservices/sys/v1/assetSearch/version=1702.0/envContext=UAT/routeOffer=UAT/subContext=/mySubContext?dme2.password=fake&dme2.username=user@sample.com&dme2.allowhttpcode=true";
+        assertEquals(expected, constructedUrl);
     }
 
     @Test
@@ -149,6 +151,9 @@ public class Dme2Test {
         parameters.put(DME2.SUBCONTEXT_KEY, "/enterpriseConnection/getEnterpriseConnectionDetails/v1");
         String constructedUrl = dme2.constructUrl(parameters);
         assertNotNull(constructedUrl);
+        String expected =
+                "http://sample.com:25055/service=sample.com/services/eim/v1/rest/version=1702.0/envContext=PROD/subContext=/enterpriseConnection/getEnterpriseConnectionDetails/v1?dme2.password=fake&dme2.username=user@sample.com&partner=LPP_PROD&dme2.allowhttpcode=true";
+        assertEquals(expected, constructedUrl);
     }
 
     @Test
@@ -160,13 +165,13 @@ public class Dme2Test {
         parameters.put(DME2.VERSION_KEY, "3");
         parameters.put(DME2.SUBCONTEXT_KEY, "/sub");
         assertEquals(
-                "http://localhost:5000/service=easyService/version=3/envContext=null/routeOffer=null/subContext=/sub?dme2.password=null&dme2.username=null&dme2.allowhttpcode=true",
+                "http://localhost:5000/service=easyService/version=3/envContext=null/subContext=/sub?dme2.password=null&dme2.username=null&dme2.allowhttpcode=true",
                 dme2.constructUrl(parameters));
     }
 
     @Test
     public void optionalParameters() {
-        String instarUrl =
+        String localUrl =
                 "http://localhost:25055/service=serv/version=4/envContext=TEST/routeOffer=DEFAULT/subContext=/sub?dme2.password=fake&dme2.username=user@sample.com&dme2.allowhttpcode=true&test=123";
         Properties props =
                 makesProperties("user@sample.com", "fake", "TEST", "DEFAULT", "http://localhost:25055", "common");
@@ -178,7 +183,100 @@ public class Dme2Test {
         parameters.put("test", "123");
 
         String constructedUrl = dme.constructUrl(parameters);
-        assertEquals(instarUrl, constructedUrl);
+        assertEquals(localUrl, constructedUrl);
+    }
+
+    @Test
+    public void createLocalUrlLegacy() {
+        String localUrl =
+                "http://localhost:25055/service=sample.com/services/eim/v1/rest/version=1702.0/envContext=TEST/routeOffer=DEFAULT/subContext=/enterpriseConnection/getEnterpriseConnectionDetails/v1?dme2.password=fake&dme2.username=user@sample.com&dme2.allowhttpcode=true";
+        Properties props =
+                makesProperties("user@sample.com", "fake", "TEST", "DEFAULT", "http://localhost:25055", "common");
+        DME2 dme = new DME2(props);
+        String constructedUrl = dme.constructUrl("sample.com/services/eim/v1/rest", "1702.0",
+                "/enterpriseConnection/getEnterpriseConnectionDetails/v1");
+        assertEquals(localUrl, constructedUrl);
+    }
+
+    @Test
+    public void createLocalUrlNoSubContextLegacy() {
+        String localUrl =
+                "http://localhost:25055/service=sample.com/services/eim/v1/rest/version=1702.0/envContext=TEST/routeOffer=DEFAULT?dme2.password=fake&dme2.username=user@sample.com&dme2.allowhttpcode=true";
+        Properties props =
+                makesProperties("user@sample.com", "fake", "TEST", "DEFAULT", "http://localhost:25055", "common");
+        DME2 dme = new DME2(props);
+        Map<String, String> parameters = new HashMap<String, String>();
+        String constructedUrl = dme.constructUrl("sample.com/services/eim/v1/rest", "1702.0", parameters.get(null));
+        assertEquals(localUrl, constructedUrl);
+    }
+
+    @Test
+    public void testRoundRobinLegacy() {
+        String[] proxyHostNames = new String[] {"http://one:25055", "http://two:25055", "http://three:25055"};
+        String urlSuffix =
+                "/service=sample.com/services/eim/v1/rest/version=1702.0/envContext=TEST/routeOffer=DEFAULT/subContext=/enterpriseConnection/getEnterpriseConnectionDetails/v1?dme2.password=fake&dme2.username=user@sample.com&dme2.allowhttpcode=true";
+        Properties props = makesProperties("user@sample.com", "fake", "TEST", "DEFAULT",
+                "http://one:25055,http://two:25055,http://three:25055", "common");
+        DME2 dme = new DME2(props);
+        String constructedUrl = dme.constructUrl("sample.com/services/eim/v1/rest", "1702.0",
+                "/enterpriseConnection/getEnterpriseConnectionDetails/v1");
+        assertEquals(proxyHostNames[0] + urlSuffix, constructedUrl);
+        constructedUrl = dme.constructUrl("sample.com/services/eim/v1/rest", "1702.0",
+                "/enterpriseConnection/getEnterpriseConnectionDetails/v1");
+        assertEquals(proxyHostNames[1] + urlSuffix, constructedUrl);
+        constructedUrl = dme.constructUrl("sample.com/services/eim/v1/rest", "1702.0",
+                "/enterpriseConnection/getEnterpriseConnectionDetails/v1");
+        assertEquals(proxyHostNames[2] + urlSuffix, constructedUrl);
+        constructedUrl = dme.constructUrl("sample.com/services/eim/v1/rest", "1702.0",
+                "/enterpriseConnection/getEnterpriseConnectionDetails/v1");
+        assertEquals(proxyHostNames[0] + urlSuffix, constructedUrl);
+        constructedUrl = dme.constructUrl("sample.com/services/eim/v1/rest", "1702.0",
+                "/enterpriseConnection/getEnterpriseConnectionDetails/v1");
+        assertEquals(proxyHostNames[1] + urlSuffix, constructedUrl);
+        constructedUrl = dme.constructUrl("sample.com/services/eim/v1/rest", "1702.0",
+                "/enterpriseConnection/getEnterpriseConnectionDetails/v1");
+        assertEquals(proxyHostNames[2] + urlSuffix, constructedUrl);
+        constructedUrl = dme.constructUrl("sample.com/services/eim/v1/rest", "1702.0",
+                "/enterpriseConnection/getEnterpriseConnectionDetails/v1");
+        assertEquals(proxyHostNames[0] + urlSuffix, constructedUrl);
+    }
+
+    @Test
+    public void createDme2EndtoEndLegacy() throws Exception {
+        Properties props = new Properties();
+        props.load(new FileInputStream("src/test/resources/dme2.e2e.properties"));
+        DME2 dme2 = new DME2(props);
+        assertEquals("user@sample.com", dme2.aafUserName);
+        assertEquals("fake", dme2.aafPassword);
+        assertEquals("UAT", dme2.envContext);
+        assertEquals("UAT", dme2.routeOffer);
+        Assert.assertArrayEquals("http://sample.com:25055,http://sample.com:25055".split(","), dme2.proxyUrls);
+        assertEquals("1702.0", dme2.commonServiceVersion);
+        assertEquals(null, dme2.partner);
+        String constructedUrl = dme2.constructUrl("sample.com/restservices/sys/v1/assetSearch", null, "/mySubContext");
+        assertNotNull(constructedUrl);
+        String expected =
+                "http://sample.com:25055/service=sample.com/restservices/sys/v1/assetSearch/version=1702.0/envContext=UAT/routeOffer=UAT/subContext=/mySubContext?dme2.password=fake&dme2.username=user@sample.com&dme2.allowhttpcode=true";
+        assertEquals(expected, constructedUrl);
+    }
+
+    @Test
+    public void createDme2ProdLegacy() throws Exception {
+        Properties props = new Properties();
+        props.load(new FileInputStream("src/test/resources/dme2.prod.properties"));
+        DME2 dme2 = new DME2(props);
+        assertEquals("user@sample.com", dme2.aafUserName);
+        assertEquals("fake", dme2.aafPassword);
+        assertEquals("PROD", dme2.envContext);
+        assertEquals(null, dme2.routeOffer);
+        Assert.assertArrayEquals("http://sample.com:25055,http://sample.com:25055".split(","), dme2.proxyUrls);
+        assertEquals("1.0", dme2.commonServiceVersion);
+        assertEquals("LPP_PROD", dme2.partner);
+        String constructedUrl = dme2.constructUrl("sample.com/restservices/sys/v1/assetSearch", null, "/mySubContext");
+        assertNotNull(constructedUrl);
+        String expected =
+                "http://sample.com:25055/service=sample.com/restservices/sys/v1/assetSearch/version=1.0/envContext=PROD/subContext=/mySubContext?dme2.password=fake&dme2.username=user@sample.com&partner=LPP_PROD&dme2.allowhttpcode=true";
+        assertEquals(expected, constructedUrl);
     }
 
 }
