@@ -4,7 +4,7 @@
 	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-	<id>repo</id>
+	<id>bin</id>
 
 	<formats>
 		<format>zip</format>
@@ -17,9 +17,19 @@
 
 	<fileSets>
 		<fileSet>
-			<directory>target/assembly/</directory>
-			<outputDirectory>.</outputDirectory>
+			<directory>target/stage/</directory>
+			<outputDirectory>${application.name}</outputDirectory>
+			<fileMode>755</fileMode>
+			<includes>
+				<include>*.sh</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>target/stage/</directory>
+			<outputDirectory>${application.name}</outputDirectory>
+			<fileMode>644</fileMode>
 			<excludes>
+				<exclude>*.sh</exclude>
 			</excludes>
 		</fileSet>
 	</fileSets>

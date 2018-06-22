@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -12,14 +11,14 @@
 	</parent>
 
 	<groupId>org.onap.ccsdk.sli.core</groupId>
-	<artifactId>utils-installer</artifactId>
+	<artifactId>slicore-features-installer</artifactId>
 	<version>0.3.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>ccsdk-sli-core :: utils :: ${project.artifactId}</name>
+	<name>ccsdk-sli-core :: features :: ${project.artifactId}</name>
 
 	<properties>
-		<application.name>ccsdk-slicore-utils</application.name>
+		<application.name>ccsdk-sli-core-all</application.name>
 		<features.boot>${application.name}</features.boot>
 		<features.repositories>mvn:org.onap.ccsdk.sli.core/${features.boot}/${project.version}/xml/features</features.repositories>
 		<include.transitive.dependencies>false</include.transitive.dependencies>
@@ -39,12 +38,6 @@
 					<artifactId>*</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.onap.ccsdk.sli.core</groupId>
-			<artifactId>utils-provider</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 
@@ -106,8 +99,8 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-							<includeGroupIds>org.onap.ccsdk.sli,org.apache.tomcat</includeGroupIds>
-							<excludeArtifactIds>sli-common,sli-provider</excludeArtifactIds>
+                             <includeGroupIds>org.onap.ccsdk.sli.core,org.apache.tomcat,org.slf4j</includeGroupIds>
+							<excludeArtifactIds>utils-provider,slf4j-api</excludeArtifactIds>
 							<scope>provided</scope>
 						</configuration>
 					</execution>
