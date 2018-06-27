@@ -40,19 +40,19 @@ public class DME2 implements SvcLogicJavaPlugin {
 
     private static final Logger LOG = LoggerFactory.getLogger(DME2.class);
     // the key for <code>proxyUrl</code>, which represents a CSV list of urls
-    static final String PROXY_URL_KEY = "proxyUrl";
-    static final String PROXY_URLS_VALUE_SEPARATOR = ",";
-    static final String AAF_USERNAME_KEY = "aafUserName";
-    static final String AAF_PASSWORD_KEY = "aafPassword";
-    static final String ENV_CONTEXT_KEY = "envContext";
-    static final String ROUTE_OFFER_KEY = "routeOffer";
-    static final String COMMON_SERVICE_VERSION_KEY = "commonServiceVersion";
-    static final String PARTNER_KEY = "partner";
-    static final String VERSION_KEY = "version";
-    static final String SERVICE_KEY = "service";
-    static final String SUBCONTEXT_KEY = "subContext";
-    static final String ENDPOINT_READ_TIMEOUT_KEY = "endpointReadTimeout";
-    static final String OUTPUT_PATH_KEY = "outputPath";
+    public static final String PROXY_URL_KEY = "proxyUrl";
+    public static final String PROXY_URLS_VALUE_SEPARATOR = ",";
+    public static final String AAF_USERNAME_KEY = "aafUserName";
+    public static final String AAF_PASSWORD_KEY = "aafPassword";
+    public static final String ENV_CONTEXT_KEY = "envContext";
+    public static final String ROUTE_OFFER_KEY = "routeOffer";
+    public static final String COMMON_SERVICE_VERSION_KEY = "commonServiceVersion";
+    public static final String PARTNER_KEY = "partner";
+    public static final String VERSION_KEY = "version";
+    public static final String SERVICE_KEY = "service";
+    public static final String SUBCONTEXT_KEY = "subContext";
+    public static final String ENDPOINT_READ_TIMEOUT_KEY = "endpointReadTimeout";
+    public static final String OUTPUT_PATH_KEY = "outputPath";
 
     final String aafUserName;
     final String aafPassword;
@@ -132,7 +132,7 @@ public class DME2 implements SvcLogicJavaPlugin {
         // Support optional parameters in a flexible way
         for (Entry<String, String> param : parameters.entrySet()) {
             if (!incompleteUrl.contains(param.getKey() + "=") && param.getValue() != null
-                    && param.getValue().length() > 0 && !OUTPUT_PATH_KEY.equals(param.getKey())) {
+                    && param.getValue().length() > 0 && !OUTPUT_PATH_KEY.equals(param.getKey()) && !"partner".equals(param.getKey())) {
                 sb.append("&" + param.getKey() + "=" + param.getValue());
             }
         }

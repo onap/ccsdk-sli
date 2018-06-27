@@ -121,6 +121,7 @@ public class Dme2Test {
         assertEquals("1702.0", dme2.commonServiceVersion);
         assertEquals(null, dme2.partner);
         Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(DME2.PARTNER_KEY, "I SHOULD BE FILTERED NOW!");
         parameters.put(DME2.SERVICE_KEY, "sample.com/restservices/sys/v1/assetSearch");
         parameters.put(DME2.VERSION_KEY, null);
         parameters.put(DME2.SUBCONTEXT_KEY, "/mySubContext");
