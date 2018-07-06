@@ -1346,8 +1346,8 @@ public class PrintYangToProp {
 	}
 
 	public static void main(String[] args){
-		try{
-			PrintStream ps = new PrintStream(new FileOutputStream(FileDescriptor.out));
+		
+               try(PrintStream ps = new PrintStream(new FileOutputStream(FileDescriptor.out))){
 			PrintYangToProp printYangToProp = new PrintYangToProp();
 			String className = args[0];
 			//ClassLoader classLoader = PrintYangToProp.class.getClassLoader();
