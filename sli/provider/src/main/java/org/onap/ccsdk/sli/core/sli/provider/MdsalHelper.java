@@ -528,24 +528,60 @@ public class MdsalHelper {
             String curBase = pfx + "[" + i + "]";
 
             if (isYangGenerated(elemType)) {
-                String builderName = elemType.getName() + "Builder";
-                try {
-                    Class builderClass = Class.forName(builderName);
-                    Object builderObj = builderClass.newInstance();
-                    Method buildMethod = builderClass.getMethod("build");
-                    builderObj = toBuilder(props, curBase, builderObj, true);
-                    if (builderObj != null) {
-                        LOG.trace("Calling " + builderObj.getClass().getName() + "." + buildMethod.getName() + "()");
-                        Object builtObj = buildMethod.invoke(builderObj);
-                        toObj.add(builtObj);
+            	
+            	if (isIpAddress(elemType) || isIpv4Address(elemType) || isIpv6Address(elemType)) {
+
+                    String curValue = props.getProperty(curBase, "");
+
+                    if ((curValue != null) && (curValue.length() > 0)) {
+                    	toObj.add(IpAddressBuilder.getDefaultInstance(curValue));
                         foundValue = true;
                     }
+            	} else if (isIpPrefix(elemType)) {
 
-                } catch (ClassNotFoundException e) {
-                    LOG.warn("Could not find builder class {}", builderName, e);
-                } catch (Exception e) {
-                    LOG.error("Caught exception trying to populate list from {}", pfx, e);
-                }
+                    String curValue = props.getProperty(curBase, "");
+
+                    if ((curValue != null) && (curValue.length() > 0)) {
+                    	toObj.add(IpPrefixBuilder.getDefaultInstance(curValue));
+                        foundValue = true;
+                    }
+            	} else if (isPortNumber(elemType)) {
+
+                    String curValue = props.getProperty(curBase, "");
+
+                    if ((curValue != null) && (curValue.length() > 0)) {
+                    	toObj.add(PortNumber.getDefaultInstance(curValue));
+                        foundValue = true;
+                    }
+            	} else if (isDscp(elemType)) {
+
+                    String curValue = props.getProperty(curBase, "");
+
+                    if ((curValue != null) && (curValue.length() > 0)) {
+                    	toObj.add(Dscp.getDefaultInstance(curValue));
+                        foundValue = true;
+                    }
+				} else {
+					String builderName = elemType.getName() + "Builder";
+					try {
+						Class builderClass = Class.forName(builderName);
+						Object builderObj = builderClass.newInstance();
+						Method buildMethod = builderClass.getMethod("build");
+						builderObj = toBuilder(props, curBase, builderObj, true);
+						if (builderObj != null) {
+							LOG.trace(
+									"Calling " + builderObj.getClass().getName() + "." + buildMethod.getName() + "()");
+							Object builtObj = buildMethod.invoke(builderObj);
+							toObj.add(builtObj);
+							foundValue = true;
+						}
+
+					} catch (ClassNotFoundException e) {
+						LOG.warn("Could not find builder class {}", builderName, e);
+					} catch (Exception e) {
+						LOG.error("Caught exception trying to populate list from {}", pfx, e);
+					}
+				}
             } else {
                 // Must be a leaf list
                 String curValue = props.getProperty(curBase, "");
