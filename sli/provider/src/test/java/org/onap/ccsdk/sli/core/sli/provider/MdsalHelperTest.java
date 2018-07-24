@@ -36,6 +36,8 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterBuilder;
+import org.opendaylight.yang.gen.v1.test.CosModelType;
+import org.opendaylight.yang.gen.v1.test.WrapperObj;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddressBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,5 +142,33 @@ public class MdsalHelperTest extends TestCase {
         assertEquals("_2018HelloWorld",MdsalHelper.toJavaEnum("2018Hello World"));
         assertEquals("SomethingElse",MdsalHelper.toJavaEnum("Something.Else"));
         assertEquals("MyTestString",MdsalHelper.toJavaEnum("my-test-string"));
+    }
+    
+    // During the default enumeration mapping no properties file is needed, the yang value is returned
+    // by the java object
+    public void testDefaultEnumerationMapping() throws Exception {
+        MdsalHelper.useLegacyEnumerationMapping(false);
+        Properties props = new Properties();
+        MdsalHelper.toProperties(props, new WrapperObj());
+        assertEquals("4COS", props.getProperty("wrapper-obj.cos-model-type"));
+    }
+
+    // When no properties file exists the default java value will be returned if legacy enumeration
+    // mapping is enabled
+    public void testLegacyEnumerationMappingNoProperties() throws Exception {
+        MdsalHelper.useLegacyEnumerationMapping(true);
+        Properties props = new Properties();
+        MdsalHelper.toProperties(props, new WrapperObj());
+        assertEquals("_4COS", props.getProperty("wrapper-obj.cos-model-type"));
+    }
+
+    // When a properties file exists & legacy enumeration mapping is enabled the value from the
+    // properties file should be returned
+    public void testLegacyEnumerationMappingWithProperties() throws Exception {
+        MdsalHelper.loadProperties("src/test/resources/EnumerationMapping.properties");
+        MdsalHelper.useLegacyEnumerationMapping(true);
+        Properties props = new Properties();
+        MdsalHelper.toProperties(props, new WrapperObj());
+        assertEquals("HelloWorld", props.getProperty("wrapper-obj.cos-model-type"));
     }
 }

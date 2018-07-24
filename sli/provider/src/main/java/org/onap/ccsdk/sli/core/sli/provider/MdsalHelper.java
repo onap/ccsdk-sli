@@ -50,7 +50,12 @@ public class MdsalHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(MdsalHelper.class);
     private static Properties yangMappingProperties = new Properties();
-
+    protected static boolean useLegacyEnumerationMapping = false;
+    
+    public static void useLegacyEnumerationMapping(Boolean bool) {
+        useLegacyEnumerationMapping = bool;
+    }
+    
     @Deprecated
     public static void setProperties(Properties input) {
         setYangMappingProperties(input);
@@ -188,9 +193,15 @@ public class MdsalHelper {
                                 }
                                 if (retValue != null) {
                                     String propName = propNamePfx + "." + fieldName;
-                                    Method method = retValue.getClass().getMethod("getName");
-                                    String yangValue = (String) method.invoke(retValue);
-                                    props.setProperty(propName, yangValue);
+                                    if(useLegacyEnumerationMapping) {
+                                        propVal = retValue.toString();
+                                        props.setProperty(propName, mapEnumeratedValue(fieldName, propVal));
+                                    }else {
+                                        Method method = retValue.getClass().getMethod("getName");
+                                        String yangValue = (String) method.invoke(retValue);
+                                        props.setProperty(propName, yangValue);
+                                    }
+
                                 }
                             } catch (Exception e) {
                                 LOG.error(
