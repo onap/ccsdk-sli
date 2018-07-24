@@ -166,7 +166,7 @@ public class RequestResponseLoggingFilter implements Filter {
 				bais = new ByteArrayInputStream(buffer);
 				bsis = new BufferedServletInputStream(bais);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				log.error("Exception in getInputStream",ex);
 			}
 
 			return bsis;

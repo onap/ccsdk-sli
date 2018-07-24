@@ -214,10 +214,8 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
             throws SQLException {
         long time = System.currentTimeMillis();
 
-        CachedRowSet data;
-
-        try (PreparedStatement ps = conn.prepareStatement(statement)) {
-            data = RowSetProvider.newFactory().createCachedRowSet();
+        try (PreparedStatement ps = conn.prepareStatement(statement);
+            CachedRowSet data = RowSetProvider.newFactory().createCachedRowSet()) {
             if (arguments != null) {
                 prepareStatementForExecuteUpdate(arguments, ps);
             }
@@ -227,7 +225,6 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
                 LOGGER.debug("SQL SUCCESS. rows returned: {}, time(ms): {}", data.size(),
                         (System.currentTimeMillis() - time));
             }
-            ps.close();
         } catch (SQLException exc) {
             handleSqlExceptionForExecuteStatement(conn, statement, arguments, exc, time);
         } finally {

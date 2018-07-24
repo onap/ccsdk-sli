@@ -93,7 +93,7 @@ public class SvcLogicExpressionFactory {
 		try {
 			SvcLogicExpressionFactory.parse(sbuff.toString());
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error("Exception in SvcLogicExpressionFactory.parse",e);
 		}
 	}
 }

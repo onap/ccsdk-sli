@@ -101,7 +101,7 @@ public class ForNodeExecutor extends SvcLogicNodeExecutor {
 			}
 		}
         } catch (BreakNodeException br) {
-            LOG.debug("ForNodeExecutor caught break");
+            LOG.error("ForNodeExecutor caught break",br);
         }
 		return (null);
 	}

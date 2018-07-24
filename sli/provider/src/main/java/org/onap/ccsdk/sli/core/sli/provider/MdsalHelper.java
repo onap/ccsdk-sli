@@ -1117,8 +1117,11 @@ public class MdsalHelper {
                     Class returnClass = m.getReturnType();
 
                     String fieldName = toLowerHyphen(m.getName().substring(3));
-                    fieldName = fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1);
-
+                    if(fieldName!=null) {
+                        fieldName = fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1);
+                    }else {
+                        fieldName="";
+                    }
                     String propName = propNamePfx + "." + fieldName;
 
                     // Is the return type a yang generated class?
@@ -1182,11 +1185,10 @@ public class MdsalHelper {
     }
 
     public static boolean isYangGenerated(Class c) {
-        if (c == null) {
-            return (false);
-        } else {
+        if (c != null) {
             return (c.getName().startsWith("org.opendaylight.yang.gen."));
         }
+        return false;
     }
 
     public static boolean isIpPrefix(Class c) {
