@@ -147,7 +147,6 @@ public class MdsalHelperTest extends TestCase {
     // During the default enumeration mapping no properties file is needed, the yang value is returned
     // by the java object
     public void testDefaultEnumerationMapping() throws Exception {
-        MdsalHelper.useLegacyEnumerationMapping(false);
         Properties props = new Properties();
         MdsalHelper.toProperties(props, new WrapperObj());
         assertEquals("4COS", props.getProperty("wrapper-obj.cos-model-type"));
@@ -156,9 +155,8 @@ public class MdsalHelperTest extends TestCase {
     // When no properties file exists the default java value will be returned if legacy enumeration
     // mapping is enabled
     public void testLegacyEnumerationMappingNoProperties() throws Exception {
-        MdsalHelper.useLegacyEnumerationMapping(true);
         Properties props = new Properties();
-        MdsalHelper.toProperties(props, new WrapperObj());
+        MdsalHelper.toProperties(props, new WrapperObj(), true);
         assertEquals("_4COS", props.getProperty("wrapper-obj.cos-model-type"));
     }
 
@@ -166,9 +164,8 @@ public class MdsalHelperTest extends TestCase {
     // properties file should be returned
     public void testLegacyEnumerationMappingWithProperties() throws Exception {
         MdsalHelper.loadProperties("src/test/resources/EnumerationMapping.properties");
-        MdsalHelper.useLegacyEnumerationMapping(true);
         Properties props = new Properties();
-        MdsalHelper.toProperties(props, new WrapperObj());
+        MdsalHelper.toProperties(props, new WrapperObj(), true);
         assertEquals("HelloWorld", props.getProperty("wrapper-obj.cos-model-type"));
     }
 }

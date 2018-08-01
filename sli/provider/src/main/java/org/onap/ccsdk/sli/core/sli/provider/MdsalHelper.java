@@ -50,11 +50,6 @@ public class MdsalHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(MdsalHelper.class);
     private static Properties yangMappingProperties = new Properties();
-    protected static boolean useLegacyEnumerationMapping = false;
-    
-    public static void useLegacyEnumerationMapping(Boolean bool) {
-        useLegacyEnumerationMapping = bool;
-    }
     
     @Deprecated
     public static void setProperties(Properties input) {
@@ -88,25 +83,37 @@ public class MdsalHelper {
     }
 
     public static Properties toProperties(Properties props, Object fromObj) {
+        return toProperties(props, fromObj, false);
+    }
+    
+    public static Properties toProperties(Properties props, Object fromObj, Boolean useLegacyEnumerationMapping) {
         Class fromClass = null;
 
         if (fromObj != null) {
             fromClass = fromObj.getClass();
         }
-        return toProperties(props, "", fromObj, fromClass);
+        return toProperties(props, "", fromObj, fromClass,useLegacyEnumerationMapping );
     }
 
     public static Properties toProperties(Properties props, String pfx, Object fromObj) {
+        return toProperties(props, pfx, fromObj, false);
+    }
+    
+    public static Properties toProperties(Properties props, String pfx, Object fromObj, Boolean useLegacyEnumerationMapping) {
         Class fromClass = null;
 
         if (fromObj != null) {
             fromClass = fromObj.getClass();
         }
 
-        return toProperties(props, pfx, fromObj, fromClass);
+        return toProperties(props, pfx, fromObj, fromClass, useLegacyEnumerationMapping);
     }
 
     public static Properties toProperties(Properties props, String pfx, Object fromObj, Class fromClass) {
+        return toProperties(props, pfx, fromObj, fromClass, false);
+    }
+    
+    public static Properties toProperties(Properties props, String pfx, Object fromObj, Class fromClass, Boolean useLegacyEnumerationMapping) {
 
         if (fromObj == null) {
             return props;
@@ -121,7 +128,7 @@ public class MdsalHelper {
             List fromList = (List) fromObj;
 
             for (int i = 0; i < fromList.size(); i++) {
-                toProperties(props, pfx + "[" + i + "]", fromList.get(i), fromClass);
+                toProperties(props, pfx + "[" + i + "]", fromList.get(i), fromClass, useLegacyEnumerationMapping);
             }
             props.setProperty(pfx + "_length", Integer.toString(fromList.size()));
 
@@ -365,7 +372,7 @@ public class MdsalHelper {
                                     m.setAccessible(isAccessible);
                                 }
                                 if (retValue != null) {
-                                    toProperties(props, propNamePfx + "." + fieldName, retValue, returnType);
+                                    toProperties(props, propNamePfx + "." + fieldName, retValue, returnType, useLegacyEnumerationMapping);
                                 }
                             } catch (Exception e) {
 
@@ -398,7 +405,7 @@ public class MdsalHelper {
                             // this array.
                             Type paramType = m.getGenericReturnType();
                             Type elementType = ((ParameterizedType) paramType).getActualTypeArguments()[0];
-                            toProperties(props, propNamePfx + "." + fieldName, retList, (Class) elementType);
+                            toProperties(props, propNamePfx + "." + fieldName, retList, (Class) elementType, useLegacyEnumerationMapping);
                         } catch (Exception e) {
                             LOG.error("Caught exception trying to convert List returned by " + fromClass.getName() + "."
                                     + m.getName() + "() to Properties entry", e);
