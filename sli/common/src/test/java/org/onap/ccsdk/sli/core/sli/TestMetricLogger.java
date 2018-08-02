@@ -129,7 +129,14 @@ public class TestMetricLogger {
         logger.asIso8601(System.currentTimeMillis());
     }
 
-
-
+    @Test
+    public void formatString() {
+        String output = logger.formatString("\n");
+        assertEquals("",output);
+        output = logger.formatString("|");
+        assertEquals("%7C",output);
+        output = logger.formatString(null);
+        assertEquals(null,output);
+    }
 
 }

@@ -300,9 +300,11 @@ public class MetricLogger {
     }
     
     protected String formatString(String str) {
-    	str = str.replaceAll("\\R",""); // this will strip all new line characters
-    	str = str.replaceAll("\\|","%7C"); //log records should not contain a pipe, encode the pipe character
-    	return str;
+        if (str != null) {
+            str = str.replaceAll("\\R", ""); // this will strip all new line characters
+            str = str.replaceAll("\\|", "%7C"); // log records should not contain a pipe, encode the pipe character
+        }
+        return str;
     }
     
     public static void resetContext() {
