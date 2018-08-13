@@ -20,6 +20,10 @@
 	<organization>
 		<name>ONAP</name>
 	</organization>
+	
+	<properties>
+		<sitePath>content/sites/site/org/onap/ccsdk/sli/core/${project.version}/</sitePath>
+	</properties>
 
 	<modules>
 	</modules>
@@ -130,4 +134,10 @@
 		</profile>
 
 	</profiles>
+	<distributionManagement>
+		<site>
+			<id>ecomp-site</id>
+			<url>dav:${onap.nexus.url}/${sitePath}</url>
+		</site>
+	</distributionManagement>
 </project>
