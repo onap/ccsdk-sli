@@ -17,6 +17,6 @@
 
     <modules>
         <module>features-util</module>
-        <module>sdnc-slicore-utils</module>
+        <module>ccsdk-slicore-utils</module>
     </modules>
 </project>
