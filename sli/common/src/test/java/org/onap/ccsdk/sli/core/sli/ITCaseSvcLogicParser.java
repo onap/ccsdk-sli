@@ -165,7 +165,9 @@ public class ITCaseSvcLogicParser {
             } else {
                 String crTableCmd = "CREATE TABLE " + dbName + ".SVC_LOGIC (" + "module varchar(80) NOT NULL,"
                         + "rpc varchar(80) NOT NULL," + "version varchar(40) NOT NULL," + "mode varchar(5) NOT NULL,"
-                        + "active varchar(1) NOT NULL," + "graph BLOB,"
+                        + "active varchar(1) NOT NULL,graph BLOB,"
+                        + "modified_timestamp timestamp DEFAULT NULL,"
+                        + "md5sum varchar(128) DEFAULT NULL,"
                         + "CONSTRAINT P_SVC_LOGIC PRIMARY KEY(module, rpc, version, mode))";
 
                 stmt = dbConn.createStatement();

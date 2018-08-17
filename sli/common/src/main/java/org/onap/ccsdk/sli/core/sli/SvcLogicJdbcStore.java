@@ -58,10 +58,6 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
     private PreparedStatement deactivateStmt = null;
     private PreparedStatement activateStmt = null;
 
-    private PreparedStatement registerNodeStmt = null;
-    private PreparedStatement unregisterNodeStmt = null;
-    private PreparedStatement validateNodeStmt = null;
-
     private void getConnection() throws ConfigurationException {
 
         Properties jdbcProps = new Properties();
@@ -109,7 +105,9 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
             } else {
                 String crTableCmd = "CREATE TABLE " + dbName + ".SVC_LOGIC (" + "module varchar(80) NOT NULL,"
                         + "rpc varchar(80) NOT NULL," + "version varchar(40) NOT NULL," + "mode varchar(5) NOT NULL,"
-                        + "active varchar(1) NOT NULL," + "graph BLOB,"
+                        + "active varchar(1) NOT NULL,graph BLOB,"
+                        + "modified_timestamp timestamp DEFAULT NULL,"
+                        + "md5sum varchar(128) DEFAULT NULL,"
                         + "CONSTRAINT P_SVC_LOGIC PRIMARY KEY(module, rpc, version, mode))";
 
                 stmt = dbConn.createStatement();
@@ -199,7 +197,7 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
         }
 
         String storeGraphSql = CommonConstants.JDBC_INSERT + dbName
-                + ".SVC_LOGIC (module, rpc, version, mode, active, graph) VALUES(?, ?, ?, ?, ?, ?)";
+                + ".SVC_LOGIC (module, rpc, version, mode, active, graph, md5sum) VALUES(?, ?, ?, ?, ?, ?, ?)";
 
         try {
             storeGraphStmt = dbConn.prepareStatement(storeGraphSql);
@@ -232,27 +230,6 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
             activateStmt = dbConn.prepareStatement(activateSql);
         } catch (Exception e) {
             throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + activateSql, e);
-        }
-
-        String registerNodeSql = CommonConstants.JDBC_INSERT + dbName + ".NODE_TYPES (nodetype) VALUES(?)";
-        try {
-            registerNodeStmt = dbConn.prepareStatement(registerNodeSql);
-        } catch (Exception e) {
-            throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + registerNodeSql, e);
-        }
-
-        String unregisterNodeSql = CommonConstants.JDBC_DELETE + dbName + ".NODE_TYPES WHERE nodetype = ?";
-        try {
-            unregisterNodeStmt = dbConn.prepareStatement(unregisterNodeSql);
-        } catch (Exception e) {
-            throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + unregisterNodeSql, e);
-        }
-
-        String validateNodeSql = CommonConstants.JDBC_SELECT_COUNT + dbName + ".NODE_TYPES WHERE nodetype = ?";
-        try {
-            validateNodeStmt = dbConn.prepareStatement(validateNodeSql);
-        } catch (Exception e) {
-            throw new ConfigurationException(CommonConstants.JDBC_STATEMENT_ERR + validateNodeSql, e);
         }
     }
 
@@ -489,16 +466,17 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
         try {
             boolean oldAutoCommit = dbConn.getAutoCommit();
             dbConn.setAutoCommit(false);
-            storeGraphStmt.setString(1, graph.getModule());
-            storeGraphStmt.setString(2, graph.getRpc());
+            storeGraphStmt.setString(1,  graph.getModule());
+            storeGraphStmt.setString(2,  graph.getRpc());
             storeGraphStmt.setString(3, graph.getVersion());
             storeGraphStmt.setString(4, graph.getMode());
             storeGraphStmt.setString(5, "N");
-            storeGraphStmt.setBlob(6, new ByteArrayInputStream(graphBytes));
+            storeGraphStmt.setBlob(6,  new ByteArrayInputStream(graphBytes));
+             storeGraphStmt.setString(7, graph.getMd5sum());
 
             storeGraphStmt.executeUpdate();
             dbConn.commit();
-
+            
             dbConn.setAutoCommit(oldAutoCommit);
         } catch (Exception e) {
             throw new SvcLogicException("Could not write object to database", e);

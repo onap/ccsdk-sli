@@ -34,9 +34,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
-
 import javax.sql.rowset.CachedRowSet;
-
 import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.osgi.framework.Bundle;
@@ -98,9 +96,6 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 	@Override
 	public boolean hasGraph(String module, String rpc, String version,
 			String mode) throws SvcLogicException {
-
-
-
 		boolean retval = false;
 		CachedRowSet results = null;
 		String hasVersionGraphSql = "SELECT count(*) FROM SVC_LOGIC"
@@ -236,8 +231,8 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 
 
-		String storeGraphSql = "INSERT INTO SVC_LOGIC (module, rpc, version, mode, active, graph)"
-				+ " VALUES(?, ?, ?, ?, ?, ?)";
+		String storeGraphSql = "INSERT INTO SVC_LOGIC (module, rpc, version, mode, active, graph, md5sum)"
+				+ " VALUES(?, ?, ?, ?, ?, ?, ?)";
 
 		if (graph == null) {
 			throw new SvcLogicException("graph cannot be null");
@@ -264,23 +259,22 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		}
 
 		Connection dbConn = null;
-		PreparedStatement storeGraphStmt = null;
+        PreparedStatement storeGraphStmt = null;
 		try {
-			dbConn = dbSvc.getConnection();
-			boolean oldAutoCommit = dbConn.getAutoCommit();
+            dbConn = dbSvc.getConnection();
+            boolean oldAutoCommit = dbConn.getAutoCommit();
 			dbConn.setAutoCommit(false);
-			storeGraphStmt = dbConn.prepareStatement(storeGraphSql);
+            storeGraphStmt = dbConn.prepareStatement(storeGraphSql);
 			storeGraphStmt.setString(1, graph.getModule());
 			storeGraphStmt.setString(2, graph.getRpc());
 			storeGraphStmt.setString(3, graph.getVersion());
 			storeGraphStmt.setString(4, graph.getMode());
 			storeGraphStmt.setString(5, "N");
 			storeGraphStmt.setBlob(6, new ByteArrayInputStream(graphBytes));
-
+			storeGraphStmt.setString(7, graph.getMd5sum());
 			storeGraphStmt.executeUpdate();
 			dbConn.commit();
-
-			dbConn.setAutoCommit(oldAutoCommit);
+            dbConn.setAutoCommit(oldAutoCommit);
 		} catch (Exception e) {
 			throw new SvcLogicException("Could not write object to database", e);
 		} finally {
@@ -306,12 +300,9 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 	public void delete(String module, String rpc, String version, String mode)
 			throws SvcLogicException {
-
-
-
 		String deleteGraphSql = "DELETE FROM SVC_LOGIC WHERE module = ? AND rpc = ? AND version = ? AND mode = ?";
 
-		ArrayList<String> args = new ArrayList<>();
+		ArrayList<String> args = new ArrayList<String>();
 
 		args.add(module);
 		args.add(rpc);
@@ -326,25 +317,19 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 	}
 
 	public void activate(SvcLogicGraph graph) throws SvcLogicException {
-
-
 		String deactivateSql = "UPDATE SVC_LOGIC SET active = 'N' WHERE module = ? AND rpc = ? AND mode = ?";
-
 		String activateSql = "UPDATE SVC_LOGIC SET active = 'Y' WHERE module = ? AND rpc = ? AND mode = ? AND version = ?";
 
-		ArrayList<String> args = new ArrayList<>();
+		ArrayList<String> args = new ArrayList<String>();
 
 		args.add(graph.getModule());
 		args.add(graph.getRpc());
 		args.add(graph.getMode());
 
 		try {
-
 			dbSvc.writeData(deactivateSql, args, null);
-
 			args.add(graph.getVersion());
 			dbSvc.writeData(activateSql, args, null);
-
 		} catch (Exception e) {
 			throw new SvcLogicException("Could not activate graph", e);
 		}
@@ -444,9 +429,9 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 		     }
 	}
 
+
     @Override
     public void activate(String module, String rpc, String version, String mode) throws SvcLogicException {
-
 
         String deactivateSql = "UPDATE SVC_LOGIC SET active = 'N' WHERE module = ? AND rpc = ? AND mode = ?";
 
@@ -467,7 +452,7 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
         } catch (Exception e) {
             throw new SvcLogicException("Could not activate graph", e);
-        }
+        }        
     }
 
 }

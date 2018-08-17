@@ -417,6 +417,17 @@ public class SvcLogicParser {
             } else {
                 SvcLogicParser.usage();
             }
+        } else if ("bulkActivate".equalsIgnoreCase(argv[0])) {
+            if (argv.length == 3) {
+                SvcLogicLoader loader = new SvcLogicLoader(argv[1], argv[2]);
+                try {
+                    loader.bulkActivate();
+                } catch (Exception e) {
+                    LOGGER.error(e.getMessage(), e);
+                }
+            } else {
+                SvcLogicParser.usage();
+            }
         }
 
         System.exit(0);
@@ -557,7 +568,7 @@ public class SvcLogicParser {
         System.err.println(" OR    SvcLogicParser activate <module> <rpc> <version> <mode>");
         System.err.println(" OR    SvcLogicParser validate <file path to graph> <prop-file>");
         System.err.println(" OR    SvcLogicParser install <service-logic directory path> <prop-file>");
-
+        System.err.println(" OR    SvcLogicParser bulkActivate <path to activation file> <prop-file>");
         System.exit(1);
     }
 

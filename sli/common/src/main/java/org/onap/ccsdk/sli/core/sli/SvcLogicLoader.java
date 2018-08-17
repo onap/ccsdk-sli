@@ -164,5 +164,13 @@ public class SvcLogicLoader {
         }
         return raw;
     }
+    
+    public void bulkActivate() {
+        Path activationFile = Paths.get(directoryRoot);
+        List<Path> pathList = new ArrayList<Path>(1);
+        pathList.add(activationFile);
+        List<ActivationEntry> activationEntries = processActivationFiles(pathList);
+        activateGraphs(activationEntries);
+    }
 
 }
