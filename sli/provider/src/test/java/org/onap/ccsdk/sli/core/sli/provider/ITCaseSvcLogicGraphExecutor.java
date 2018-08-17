@@ -57,6 +57,7 @@ public class ITCaseSvcLogicGraphExecutor {
     private static final Map<String, SvcLogicNodeExecutor> BUILTIN_NODES = new HashMap<String, SvcLogicNodeExecutor>() {
         {
             put("block", new BlockNodeExecutor());
+            put("break", new BreakNodeExecutor());
             put("call", new CallNodeExecutor());
             put("configure", new ConfigureNodeExecutor());
             put("delete", new DeleteNodeExecutor());
