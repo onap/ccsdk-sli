@@ -68,8 +68,8 @@ public class SvcLogicServiceImpl implements SvcLogicService {
             put("set", new SetNodeExecutor());
             put("switch", new SwitchNodeExecutor());
             put("update", new UpdateNodeExecutor());
+            put("break", new BreakNodeExecutor());
             put("while", new WhileNodeExecutor());
-
         }
     };
 
