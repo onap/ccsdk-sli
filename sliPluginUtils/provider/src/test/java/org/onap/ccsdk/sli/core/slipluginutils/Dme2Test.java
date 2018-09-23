@@ -3,7 +3,9 @@
  * ONAP : CCSDK
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 						reserved.
+ *                         reserved.
+ * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +33,8 @@ import java.util.Map;
 import java.util.Properties;
 import org.junit.Assert;
 import org.junit.Test;
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 
 public class Dme2Test {
     public Properties makesProperties(String aafUserName, String aafPassword, String envContext, String routeOffer,
@@ -278,6 +282,21 @@ public class Dme2Test {
         String expected =
                 "http://sample.com:25055/service=sample.com/restservices/sys/v1/assetSearch/version=1.0/envContext=PROD/subContext=/mySubContext?dme2.password=fake&dme2.username=user@sample.com&partner=LPP_PROD&dme2.allowhttpcode=true";
         assertEquals(expected, constructedUrl);
+    }
+    
+    @Test
+    public void testConstructUrl() throws FileNotFoundException, IOException, SvcLogicException
+    {
+        Properties props = new Properties();
+        props.load(new FileInputStream("src/test/resources/dme2.prod.properties"));
+        DME2 dme2 = new DME2(props);
+        Map<String, String> parameters= new HashMap<>();
+        SvcLogicContext ctx= new SvcLogicContext();
+        parameters.put(DME2.SERVICE_KEY, "sample.com/services/eim/v1/rest");
+        parameters.put(DME2.OUTPUT_PATH_KEY, "tmp.test");
+        dme2.constructUrl(parameters,ctx);
+        String expected= "http://sample.com:25055/service=sample.com/services/eim/v1/rest/version=1.0/envContext=PROD?dme2.password=fake&dme2.username=user@sample.com&partner=LPP_PROD&dme2.allowhttpcode=true";
+        assertEquals(expected,ctx.getAttribute(parameters.get(DME2.OUTPUT_PATH_KEY)));
     }
 
 }
