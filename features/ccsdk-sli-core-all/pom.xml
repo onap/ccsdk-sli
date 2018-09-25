@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.onap.ccsdk.parent</groupId>
 		<artifactId>single-feature-parent</artifactId>
-		<version>1.1.0-SNAPSHOT</version>
+		<version>1.1.0</version>
 		<relativePath />
 	</parent>
 
@@ -17,6 +17,8 @@
 	<packaging>feature</packaging>
 
 	<name>ccsdk-sli-core :: features :: ${project.artifactId}</name>
+
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -32,6 +34,21 @@
 				<version>${odl.mdsal.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.onap.ccsdk.sli.core</groupId>
+				<artifactId>sli-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.onap.ccsdk.sli.core</groupId>
+				<artifactId>sli-provider</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.onap.ccsdk.sli.core</groupId>
+				<artifactId>dblib-provider</artifactId>
+				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

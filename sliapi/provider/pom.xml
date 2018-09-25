@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.1.0</version>
         <relativePath />
     </parent>
 
@@ -16,7 +16,16 @@
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-core :: sliapi :: ${project.artifactId}</name>
-
+    
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.onap.ccsdk.sli.core</groupId>
+				<artifactId>dblib-provider</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -45,10 +54,12 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-provider</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
