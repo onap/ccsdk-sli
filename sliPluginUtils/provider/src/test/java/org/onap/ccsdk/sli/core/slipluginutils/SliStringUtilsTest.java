@@ -3,7 +3,9 @@
  * ONAP : CCSDK
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 						reserved.
+ *                         reserved.
+ * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +21,6 @@
  * ============LICENSE_END=========================================================
  */
 
-/**
- *
- */
 package org.onap.ccsdk.sli.core.slipluginutils;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -30,7 +29,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
-
+ 
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
@@ -272,6 +271,15 @@ public class SliStringUtilsTest {
         param.put("outputPath", outputPath);
         SliStringUtils.urlEncode(param, ctx);
         assertEquals("102%2FGE100%2FSNJSCAMCJP8%2FSNJSCAMCJT4", ctx.getAttribute(outputPath));
+    }
+    
+    @Test
+    public void testXmlEscapeText()
+    {
+        param.put("source", "102/GE100/SNJSCAMCJP8/SNJSCAMCJT4");
+        param.put("target", "target");
+        SliStringUtils.xmlEscapeText(param,ctx);
+        assertEquals("102/GE100/SNJSCAMCJP8/SNJSCAMCJT4",ctx.getAttribute("target"));
     }
 
 }
