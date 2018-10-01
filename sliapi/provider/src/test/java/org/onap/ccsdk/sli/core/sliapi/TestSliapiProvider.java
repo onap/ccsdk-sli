@@ -4,8 +4,12 @@
 package org.onap.ccsdk.sli.core.sliapi;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -13,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Future;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,7 +92,6 @@ public class TestSliapiProvider {
         }
     };
 
-
     /**
      * @throws java.lang.Exception
      */
@@ -95,9 +100,9 @@ public class TestSliapiProvider {
         DataBroker dataBroker = mock(DataBroker.class);
         NotificationPublishService notifyService = mock(NotificationPublishService.class);
         RpcProviderRegistry rpcRegistry = mock(RpcProviderRegistry.class);
-        BindingAwareBroker.RpcRegistration<SLIAPIService> rpcRegistration = (BindingAwareBroker.RpcRegistration<SLIAPIService>) mock(BindingAwareBroker.RpcRegistration.class);
+        BindingAwareBroker.RpcRegistration<SLIAPIService> rpcRegistration = (BindingAwareBroker.RpcRegistration<SLIAPIService>) mock(
+                BindingAwareBroker.RpcRegistration.class);
         when(rpcRegistry.addRpcImplementation(any(Class.class), any(SLIAPIService.class))).thenReturn(rpcRegistration);
-
 
         // Load svclogic.properties and get a SvcLogicStore
         InputStream propStr = TestSliapiProvider.class.getResourceAsStream("/svclogic.properties");
@@ -111,7 +116,7 @@ public class TestSliapiProvider {
         // Load the DG for the healthcheck api
         URL testCaseUrl = TestSliapiProvider.class.getClassLoader().getResource(HEALTHCHECK_DG);
         if (testCaseUrl == null) {
-            fail("Cannot find "+HEALTHCHECK_DG);
+            fail("Cannot find " + HEALTHCHECK_DG);
         }
         SvcLogicParser.load(testCaseUrl.getPath(), store);
         SvcLogicParser.activate("sli", "healthcheck", "1.0.0", "sync", store);
@@ -138,7 +143,8 @@ public class TestSliapiProvider {
     }
 
     /**
-     * Test method for {@link org.onap.ccsdk.sli.core.sliapi.sliapiProvider#executeGraph(org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput)}.
+     * Test method for
+     * {@link org.onap.ccsdk.sli.core.sliapi.sliapiProvider#executeGraph(org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput)}.
      */
     @Test
     public void testExecuteGraph() {
@@ -154,14 +160,13 @@ public class TestSliapiProvider {
         pList.add(pBuilder.build());
         inputBuilder.setSliParameter(pList);
 
-
-
-
         provider.executeGraph(inputBuilder.build());
+        assertTrue(provider.vlbcheck() instanceof Future<?>);
     }
 
     /**
-     * Test method for {@link org.onap.ccsdk.sli.core.sliapi.sliapiProvider#healthcheck()}.
+     * Test method for
+     * {@link org.onap.ccsdk.sli.core.sliapi.sliapiProvider#healthcheck()}.
      */
     @Test
     public void testHealthcheck() {
