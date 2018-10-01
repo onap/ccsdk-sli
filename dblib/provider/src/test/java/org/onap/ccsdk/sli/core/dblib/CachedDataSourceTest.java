@@ -1,10 +1,12 @@
 package org.onap.ccsdk.sli.core.dblib;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 
@@ -93,5 +95,27 @@ public class CachedDataSourceTest {
 		assertEquals("dbuser", ((JdbcDBCachedDataSource) ds).getDbUserId());
 		assertEquals("passw0rd", ((JdbcDBCachedDataSource) ds).getDbPasswd());
 		assertEquals("testdb01", ((JdbcDBCachedDataSource) ds).toString());
+	}
+
+	@Test
+	public void testIsInitialised() {
+		assertTrue(ds.isInitialized());
+	}
+
+	@Test
+	public void testIsWrapperFor() throws SQLException {
+		assertFalse(ds.isWrapperFor(CachedDataSource.class));
+	}
+
+	@Test
+	public void testGetSetNextErrorReportTime() throws SQLException {
+		ds.setNextErrorReportTime(1L);
+		assertEquals(1L, ds.getNextErrorReportTime());
+	}
+
+	@Test
+	public void testGetSetGlobalHostName() throws SQLException {
+		ds.setGlobalHostName("hostName");
+		assertEquals("hostName", ds.getGlobalHostName());
 	}
 }
