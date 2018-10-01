@@ -3,8 +3,11 @@
  */
 package org.onap.ccsdk.sli.core.sli.recording;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
+
 import java.util.HashMap;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 
@@ -13,23 +16,34 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicException;
  *
  */
 public class TestFileRecorder {
+	private FileRecorder recorder;
 
-    /**
-     * Test method for {@link org.onap.ccsdk.sli.core.sli.recording.FileRecorder#record(java.util.Map)}.
-     */
-    @Test
-    public void testRecord() {
+	@Before
+	public void setUp() {
+		recorder = new FileRecorder();
+	}
 
-        FileRecorder recorder = new FileRecorder();
+	/**
+	 * Test method for
+	 * {@link org.onap.ccsdk.sli.core.sli.recording.FileRecorder#record(java.util.Map)}.
+	 */
+	@Test
+	public void testRecord() {
+		HashMap<String, String> parms = new HashMap<>();
+		parms.put("file", "/dev/null");
+		parms.put("field1", "hi");
+		try {
+			recorder.record(parms);
+		} catch (SvcLogicException e) {
+			fail("Caught SvcLogicException : " + e.getMessage());
+		}
+	}
 
-        HashMap<String,String> parms = new HashMap<>();
-        parms.put("file", "/dev/null");
-        parms.put("field1","hi");
-        try {
-            recorder.record(parms);
-        } catch (SvcLogicException e) {
-            fail("Caught SvcLogicException : "+e.getMessage());
-        }
-    }
+	@Test(expected = Exception.class)
+	public void testRecordForEmptyFileName() throws Exception {
+		HashMap<String, String> parms = new HashMap<>();
+		parms.put("field1", "hi");
+		recorder.record(parms);
+	}
 
 }
