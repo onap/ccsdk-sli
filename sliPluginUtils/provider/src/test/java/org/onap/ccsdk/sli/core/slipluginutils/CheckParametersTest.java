@@ -19,12 +19,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * ============LICENSE_END=========================================================
- */
+ */ 
 
 package org.onap.ccsdk.sli.core.slipluginutils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +33,10 @@ import java.util.Map;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.slipluginutils.SliPluginUtils.LogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 
 import com.google.gson.JsonObject;
 
@@ -182,5 +185,32 @@ public class CheckParametersTest {
         assertEquals("testName", ctx.getAttribute("root.name"));
         assertEquals("27", ctx.getAttribute("root.age"));
         assertEquals("600000", ctx.getAttribute("root.salary"));
+    }
+    
+    @Test
+    public void testCtxKeyEmpty()
+    {
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("key", "");
+        assertTrue(SliPluginUtils.ctxKeyEmpty(ctx, "key"));
+    }
+    
+    @Test
+    public void testGetArrayLength()
+    {
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("key_length", "test");
+        Logger log = LoggerFactory.getLogger(getClass());
+        SliPluginUtils.getArrayLength(ctx, "key", log , LogLevel.INFO, "invalid input");
+    }
+    
+    @Test
+    public void testSetPropertiesForRoot()
+    {
+        SvcLogicContext ctx = new SvcLogicContext();
+        Map<String, String> parameters= new HashMap<>();
+        parameters.put("root","RootVal");
+        parameters.put("valueRoot", "ValueRootVal");
+        assertEquals("success",SliPluginUtils.setPropertiesForRoot(parameters,ctx));
     }
 }
