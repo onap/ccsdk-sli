@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
+import org.onap.ccsdk.sli.core.sli.ExitNodeException;
 import org.onap.ccsdk.sli.core.sli.MetricLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicDblibStore;
@@ -70,7 +71,7 @@ public class SvcLogicServiceImpl implements SvcLogicService {
             put("update", new UpdateNodeExecutor());
             put("break", new BreakNodeExecutor());
             put("while", new WhileNodeExecutor());
-
+            put("exit", new ExitNodeExecutor());
         }
     };
 
@@ -151,14 +152,17 @@ public class SvcLogicServiceImpl implements SvcLogicService {
 
         SvcLogicNode curNode = graph.getRootNode();
         LOG.info("About to execute graph {}", graph.toString());
+		try {
+			while (curNode != null) {
+				MDC.put("nodeId", curNode.getNodeId() + " (" + curNode.getNodeType() + ")");
+				LOG.info("About to execute node # {} ({})", curNode.getNodeId(), curNode.getNodeType());
 
-        while (curNode != null) {
-            MDC.put("nodeId", curNode.getNodeId() + " (" + curNode.getNodeType() + ")");
-            LOG.info("About to execute node # {} ({})", curNode.getNodeId(), curNode.getNodeType());
-
-            SvcLogicNode nextNode = executeNode(curNode, ctx);
-            curNode = nextNode;
-        }
+				SvcLogicNode nextNode = executeNode(curNode, ctx);
+				curNode = nextNode;
+			}
+		} catch (ExitNodeException e) {
+            LOG.debug("SvcLogicServiceImpl caught ExitNodeException");
+		}
         MDC.remove("nodeId");
         MDC.remove("currentGraph");
 
@@ -181,7 +185,28 @@ public class SvcLogicServiceImpl implements SvcLogicService {
                     executor.getClass().getName());
             return (executor.execute(this, node, ctx));
         } else {
-            throw new SvcLogicException("Attempted to execute a node of type " + node.getNodeType() + ", but no executor was registered for this type");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("{} node not implemented", node.getNodeType());
+            }
+            SvcLogicNode nextNode = node.getOutcomeValue("failure");
+            if (nextNode != null) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("about to execute failure branch");
+                }
+                return (nextNode);
+            }
+
+            nextNode = node.getOutcomeValue("Other");
+            if (nextNode != null) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("about to execute Other branch");
+                }
+            } else {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("no failure or Other branch found");
+                }
+            }
+            return (nextNode);
         }
     }
 
