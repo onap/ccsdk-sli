@@ -70,6 +70,7 @@ public class SvcLogicServiceImpl implements SvcLogicService {
             put("update", new UpdateNodeExecutor());
             put("break", new BreakNodeExecutor());
             put("while", new WhileNodeExecutor());
+
         }
     };
 
@@ -180,28 +181,7 @@ public class SvcLogicServiceImpl implements SvcLogicService {
                     executor.getClass().getName());
             return (executor.execute(this, node, ctx));
         } else {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("{} node not implemented", node.getNodeType());
-            }
-            SvcLogicNode nextNode = node.getOutcomeValue("failure");
-            if (nextNode != null) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("about to execute failure branch");
-                }
-                return (nextNode);
-            }
-
-            nextNode = node.getOutcomeValue("Other");
-            if (nextNode != null) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("about to execute Other branch");
-                }
-            } else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("no failure or Other branch found");
-                }
-            }
-            return (nextNode);
+            throw new SvcLogicException("Attempted to execute a node of type " + node.getNodeType() + ", but no executor was registered for this type");
         }
     }
 
