@@ -136,19 +136,21 @@ public class ITCaseSvcLogicGraphExecutor {
             Properties svcprops = new Properties();
             svcprops.load(propStr);
 
-            SvcLogicStore store = SvcLogicStoreFactory.getSvcLogicStore(svcprops);
 
-
-            assertNotNull(store);
 
 
             SvcLogicParser parser = new SvcLogicParser();
 
             // Loop through executor tests
-            SvcLogicPropertiesProvider resourceProvider = new SvcLogicPropertiesProviderImpl();
-
+            SvcLogicPropertiesProvider resourceProvider = new SvcLogicPropertiesProvider() {
+                @Override
+                public Properties getProperties() {
+                    return svcprops;
+                }
+            };
             SvcLogicServiceImpl svc = new SvcLogicServiceImpl(resourceProvider);
-
+            SvcLogicStore store = svc.getStore();
+            assertNotNull(store);
             for (String nodeType : BUILTIN_NODES.keySet()) {
 
                 LOG.info("SLI - registering node executor for node type {}", nodeType);
@@ -203,7 +205,17 @@ public class ITCaseSvcLogicGraphExecutor {
                     assertNotNull(graphs);
 
                     // Load grqphs into db to support call node
-                    parser.load(testCaseUrl.getPath(), store);
+                    SvcLogicParser.load(testCaseUrl.getPath(), store);
+                    SvcLogicParser.activate("neutron", "canCreateNetwork", "1.0.0", "sync", store);
+                    SvcLogicParser.activate("neutron", "switchTester", "1.0.0", "sync", store);
+                    SvcLogicParser.activate("neutron", "forRecordTester", "1.0.0", "sync", store);
+                    SvcLogicParser.activate("neutron", "whileNodeTester", "1.0.0", "sync", store);
+                    SvcLogicParser.activate("neutron", "resourceTester", "1.0.0", "sync", store);
+                    SvcLogicParser.activate("neutron", "configureTester", "1.0.0", "sync", store);
+                    SvcLogicParser.activate("neutron", "javaPluginTester", "1.0.0", "sync", store);
+                    SvcLogicParser.activate("neutron", "allNodesTester", "1.0.0", "sync", store);
+                    SvcLogicParser.activate("neutron", "networkCreated", "1.0.0", "sync", store);
+
                     for (SvcLogicGraph graph : graphs) {
                         if (graph.getRpc().equals(testCaseMethod)) {
                             Properties props = ctx.toProperties();

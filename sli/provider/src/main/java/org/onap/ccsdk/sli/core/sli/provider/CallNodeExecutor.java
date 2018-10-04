@@ -118,16 +118,18 @@ public class CallNodeExecutor extends SvcLogicNodeExecutor {
         ctx.setAttribute("parentGraph", parentGraph);
 
 		SvcLogicStore store = svc.getStore();
-
-        if (store != null) {
+		String errorMessage = "Parent " + parentGraph + " failed to call child [" + module + "," + rpc + "," + version + "," + mode + "] because the graph could not be found";
+		boolean graphWasCalled = false;
+		if (store != null) {
             SvcLogicGraph calledGraph = store.fetch(module, rpc, version, mode);
             if (calledGraph != null) {
                 LOG.debug("Parent " + parentGraph + " is calling child " + calledGraph.toString());
                 ctx.setAttribute("currentGraph", calledGraph.toString());
                 svc.execute(calledGraph, ctx);
                 outValue = ctx.getStatus();
+                graphWasCalled = true;
             } else {
-                LOG.debug("Parent " + parentGraph + " failed to call child [" + module + "," + rpc + "," + version + "," + mode + "] because the graph could not be found");
+                LOG.debug(errorMessage);
             }
         } else {
             LOG.debug("Could not get SvcLogicStore reference");
@@ -152,7 +154,18 @@ public class CallNodeExecutor extends SvcLogicNodeExecutor {
 				LOG.debug("no " + outValue + " or Other branch found");
 			}
 		}
-        ctx.setAttribute("currentGraph", parentGraph);
+		
+		if (graphWasCalled == false) {
+			if (node.getOutcomeValue("catch") != null) {
+				nextNode = node.getOutcomeValue("catch");
+				LOG.debug("graph could not be called, but catch node was found and will be executed");
+			} else {
+				LOG.debug("graph could not be called and no catch node was found, throwing exception");
+				throw new SvcLogicException(errorMessage);
+			}
+		}
+
+		ctx.setAttribute("currentGraph", parentGraph);
         ctx.setAttribute("parentGraph", null);
 
 		return (nextNode);
