@@ -110,17 +110,13 @@ public class SetNodeExecutor extends SvcLogicNodeExecutor {
                         if (lhsPrefix.endsWith(".")) {
                             lhsPrefix = lhsPrefix.substring(0, lhsPrefix.length() - 1);
                         }
-                        int lhsPfxLength = lhsPrefix.length();
+
                         HashMap<String, String> parmsToAdd = new HashMap<String, String>();
 
                         for (String sourceVarName : ctx.getAttributeKeySet()) {
-
                             if (sourceVarName.startsWith(rhsRoot)) {
-
                                 String targetVar = lhsPrefix + "." + sourceVarName.substring(rhsRoot.length());
-
-                                LOG.debug("Copying " + sourceVarName + " value to " + targetVar);
-
+                                LOG.debug("Copying {} value to {}", sourceVarName, targetVar);
                                 parmsToAdd.put(targetVar, ctx.getAttribute(sourceVarName));
                             }
                         }
@@ -131,20 +127,26 @@ public class SetNodeExecutor extends SvcLogicNodeExecutor {
                         // If RHS is empty, unset attributes in LHS
                         LinkedList<String> parmsToRemove = new LinkedList<String>();
                         String prefix = lhsVarName + ".";
+                        String arrayPrefix = lhsVarName + "[";
                         //Clear length value in case an array exists with this prefix
                         String lengthParamName = lhsVarName + "_length";
-                        parmsToRemove.add(lengthParamName);
-                        LOG.debug("Unsetting " + lengthParamName + " because prefix " + prefix + " is being cleared.");
+                        LOG.debug("Unsetting {} because prefix {} is being cleared.", lengthParamName, prefix);
 
                         for (String curCtxVarname : ctx.getAttributeKeySet()) {
                             String curCtxVarnameMatchingValue = curCtxVarname;
                             //Special handling for reseting array values, strips out brackets and any numbers between the brackets
                             //when testing if a context memory value starts with a prefix
                             if(!prefix.contains("[") && curCtxVarnameMatchingValue.contains("[")) {
-                                curCtxVarnameMatchingValue = curCtxVarname.replaceAll(arrayPattern, "");
+                                curCtxVarnameMatchingValue = curCtxVarname.replaceAll(arrayPattern, "") + ".";
                             }
                             if (curCtxVarnameMatchingValue.startsWith(prefix)) {
-                                LOG.debug("Unsetting " + curCtxVarname + " because matching value " + curCtxVarnameMatchingValue + " starts with the prefix " + prefix);
+                                LOG.debug("Unsetting {} because matching value {} starts with the prefix {}", curCtxVarname, curCtxVarnameMatchingValue, prefix);
+                                parmsToRemove.add(curCtxVarname);
+                            }else if (curCtxVarnameMatchingValue.startsWith(lengthParamName)) {
+                            	LOG.debug("Unsetting {} because matching value {} starts with the lengthParamName {}", curCtxVarname, curCtxVarnameMatchingValue, lengthParamName);
+                                parmsToRemove.add(curCtxVarname);
+                            }else if (curCtxVarnameMatchingValue.startsWith(arrayPrefix)) {
+                            	LOG.debug("Unsetting {} because matching value {} starts with the arrayPrefix {}", curCtxVarname, curCtxVarnameMatchingValue, arrayPrefix);
                                 parmsToRemove.add(curCtxVarname);
                             }
                         }
@@ -158,16 +160,15 @@ public class SetNodeExecutor extends SvcLogicNodeExecutor {
                     String ctxValue = ctx.getAttribute(lhsVarName);
                     if ((ctxValue != null) && (ctxValue.length() > 0)) {
                         setValue = false;
-                        LOG.debug("Attribute " + lhsVarName
-                                + " already set and only-if-unset is true, so not overriding");
+                        LOG.debug("Attribute {} already set and only-if-unset is true, so not overriding", lhsVarName);
                     }
                 }
                 if (setValue) {
                     String curValue = SvcLogicExpressionResolver.evaluate(curEnt.getValue(), node, ctx);
 
                     if (LOG.isDebugEnabled()) {
-                        LOG.trace("Parameter value " + curEnt.getValue().asParsedExpr() + " resolves to " + curValue);
-                        LOG.debug("Setting context attribute " + lhsVarName + " to " + curValue);
+                        LOG.trace("Parameter value {} resolves to {}", curEnt.getValue().asParsedExpr(), curValue);
+                        LOG.debug("Setting context attribute {} to {}", lhsVarName, curValue);
                     }
                     ctx.setAttribute(lhsVarName, curValue);
                 }
