@@ -82,7 +82,6 @@ public class FileRecorder implements SvcLogicRecorder {
 		}
 		
 		File recordFile = new File(fileName);
-		FileWriter fileWriter = null;
 		Date now = new Date();
 
 		TimeZone tz = TimeZone.getTimeZone("UTC");
@@ -93,8 +92,8 @@ public class FileRecorder implements SvcLogicRecorder {
 			record = record.replaceFirst("__TIMESTAMP__", dateFmt.format(now));
 		}
 		
-		try ( PrintWriter recPrinter = new PrintWriter(fileWriter = new
-				FileWriter(recordFile, true)))
+		try ( FileWriter fileWriter = new FileWriter(recordFile, true);
+		        PrintWriter recPrinter = new PrintWriter(fileWriter))
 		{
 			recPrinter.println(record);
 		}
@@ -102,19 +101,6 @@ public class FileRecorder implements SvcLogicRecorder {
 		{
 			throw new SvcLogicException("Cannot write record to file", e);
 		}
-		finally
-		{
-			if (fileWriter != null)
-			{
-				try {
-					fileWriter.close();
-				} catch (IOException e) {
-
-				}
-			}
-		}
-		
-		
 	}
 
 }
