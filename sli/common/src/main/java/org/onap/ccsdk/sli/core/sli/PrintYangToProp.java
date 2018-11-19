@@ -21,14 +21,9 @@
 
 package org.onap.ccsdk.sli.core.sli;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.FileDescriptor;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -52,7 +47,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.CaseFormat;
 
 public class PrintYangToProp {
 
@@ -96,12 +90,8 @@ public class PrintYangToProp {
 		
 		String simpleName = fromClass.getSimpleName();
 
-		//LOG.debug("Extracting properties from " + fromClass.getName()
-		//		+ " class");
 		if (fromObj instanceof List) {
 
-			// Class is a List. List should contain yang-generated classes.
-			//LOG.debug(fromClass.getName() + " is a List");
 
 			List fromList = (List) fromObj;
 
@@ -111,8 +101,6 @@ public class PrintYangToProp {
 			props.setProperty(pfx + "_length", "" + fromList.size());
 
 		} else if (isYangGenerated(fromClass)) {
-			// Class is yang generated.
-			//LOG.debug(fromClass.getName() + " is a Yang-generated class");
 
 			String propNamePfx = null;
 
@@ -142,9 +130,9 @@ public class PrintYangToProp {
 			// save from
 
 			for (Method m : fromClass.getMethods()) {
-				// LOG.debug("Checking " + m.getName() + " method");
+
 				if (isGetter(m)) {
-					// LOG.debug(m.getName() + " is a getter");
+
 					Class returnType = m.getReturnType();
 					String fieldName = toLowerHyphen(m.getName().substring(3));
 					if(m != null && m.getName().matches("^is[A-Z].*")){
@@ -156,7 +144,7 @@ public class PrintYangToProp {
 
 					// Is the return type a yang generated class?
 					if (isYangGenerated(returnType)) {
-						//System.out.println("returnType:"  +returnType);
+
 						// Is it an enum?
 						if (returnType.isEnum()) {
 							// Return type is a typedef. Save its value.
@@ -178,10 +166,7 @@ public class PrintYangToProp {
 									String yangProp = "yang." + fieldName + "." + propVal;
 									if ( properties.containsKey(yangProp)) {
 										propVal = properties.getProperty(yangProp);
-										//LOG.debug("Adjusting property " + yangProp + " " + propVal);
 									}
-									//LOG.debug("Setting property " + propName
-									//		+ " to " + propVal);
 									props.setProperty(propName, propVal);
 								}
 							} catch (Exception e) {
