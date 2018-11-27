@@ -29,10 +29,6 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.sli.SvcLogicNode;
 import org.onap.ccsdk.sli.core.sli.SvcLogicRecorder;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
