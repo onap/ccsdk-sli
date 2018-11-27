@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ *  Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,12 +39,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
 import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -80,6 +77,7 @@ public class SvcLogicServiceImpl implements SvcLogicService {
     protected BundleContext bctx = null;
     protected Properties properties;
     protected SvcLogicStore store;
+    private static final String CURRENT_GRAPH="currentGraph";
 
     public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider) throws SvcLogicException {
         properties = resourceProvider.getProperties();
@@ -148,7 +146,7 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         // Set service name in MDC to reference current working directed graph
         MDC.put(MetricLogger.SERVICE_NAME, graph.getModule() + ":" + graph.getRpc() + "/v" + graph.getVersion());
 
-        MDC.put("currentGraph", graph.toString());
+        MDC.put(CURRENT_GRAPH, graph.toString());
 
         SvcLogicNode curNode = graph.getRootNode();
         LOG.info("About to execute graph {}", graph.toString());
@@ -162,7 +160,7 @@ public class SvcLogicServiceImpl implements SvcLogicService {
             LOG.debug("SvcLogicServiceImpl caught ExitNodeException");
 		}
         MDC.remove("nodeId");
-        MDC.remove("currentGraph");
+        MDC.remove(CURRENT_GRAPH);
 
         return (ctx);
     }
@@ -217,7 +215,7 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         }
 
         SvcLogicContext ctx = new SvcLogicContext(props);
-        ctx.setAttribute("currentGraph", graph.toString());
+        ctx.setAttribute(CURRENT_GRAPH, graph.toString());
         ctx.setAttribute("X-ECOMP-RequestID", MDC.get("X-ECOMP-RequestID"));
         ctx.setDomDataBroker(domDataBroker);
 
