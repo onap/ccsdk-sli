@@ -171,9 +171,9 @@ public class SvcLogicServiceImpl implements SvcLogicService {
         }
 
 		LOG.info("About to execute node # {} ({})", node.getNodeId(), node.getNodeType());
-		
+
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Executing node {}", node.getNodeId());
+            LOG.debug("Executing node " + node.getNodeId() + " of " + node.getGraph().getRpc());
         }
 
         SvcLogicNodeExecutor executor = nodeExecutors.get(node.getNodeType());
