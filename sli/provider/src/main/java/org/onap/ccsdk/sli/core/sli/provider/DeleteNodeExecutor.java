@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 public class DeleteNodeExecutor extends SvcLogicNodeExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeleteNodeExecutor.class);
+    private static final String FAILURE="failure";
 
     @Override
     public SvcLogicNode execute(SvcLogicService svc, SvcLogicNode node, SvcLogicContext ctx)
@@ -40,7 +41,7 @@ public class DeleteNodeExecutor extends SvcLogicNodeExecutor {
         String resourceType = SvcLogicExpressionResolver.evaluate(node.getAttribute("resource"), node, ctx);
         String key = SvcLogicExpressionResolver.evaluateAsKey(node.getAttribute("key"), node, ctx);
 
-        String outValue = "failure";
+        String outValue = FAILURE;
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("delete node encountered - looking for resource class " + plugin);
@@ -58,11 +59,11 @@ public class DeleteNodeExecutor extends SvcLogicNodeExecutor {
                         break;
                     case FAILURE:
                     default:
-                        outValue = "failure";
+                        outValue = FAILURE;
                 }
             } catch (SvcLogicException e) {
                 LOG.error("Caught exception from resource plugin", e);
-                outValue = "failure";
+                outValue = FAILURE;
             }
         } else {
             LOG.warn("Could not find SvcLogicResource object for plugin " + plugin);
