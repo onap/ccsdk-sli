@@ -3,6 +3,7 @@
  * onap
  * ================================================================================
  * Copyright (C) 2016 - 2017 ONAP
+ * Modifications Copyright (C) 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +22,14 @@
 package org.onap.ccsdk.sli.core.dblib.config;
 
 import java.util.Properties;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Base class responsible for parsing business logic for database configuration from given <code>Properties</code>.
  */
 public abstract class BaseDBConfiguration {
 
+    private Logger logger = LoggerFactory.getLogger(BaseDBConfiguration.class);
     /**
      * Property key within a properties configuration File for db type
      */
@@ -45,7 +48,7 @@ public abstract class BaseDBConfiguration {
     /**
      * Property key with a properties configuration File for jdbc driver
      */
-     public static final String DRIVER_NAME = "org.onap.ccsdk.sli.jdbc.driver";
+    public static final String DRIVER_NAME = "org.onap.ccsdk.sli.jdbc.driver";
 
     /**
      * Property key with a properties configuration File for db database connection name
@@ -131,6 +134,7 @@ public abstract class BaseDBConfiguration {
             String value = properties.getProperty(CONNECTION_TIMEOUT, DEFAULT_REJECT_CHANGE_VALUE);
             return Integer.parseInt(value);
         } catch (Exception exc) {
+            logger.error("Exception",exc);
             return Integer.parseInt(DEFAULT_REJECT_CHANGE_VALUE);
         }
     }
@@ -146,6 +150,7 @@ public abstract class BaseDBConfiguration {
             String value = properties.getProperty(REQUEST_TIMEOUT, DEFAULT_REJECT_CHANGE_VALUE);
             return Integer.parseInt(value);
         } catch (Exception exc) {
+            logger.error("Exception",exc);
             return Integer.parseInt(DEFAULT_REJECT_CHANGE_VALUE);
         }
     }
