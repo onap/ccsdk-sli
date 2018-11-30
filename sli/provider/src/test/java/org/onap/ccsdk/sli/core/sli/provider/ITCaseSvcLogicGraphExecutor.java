@@ -24,7 +24,6 @@ package org.onap.ccsdk.sli.core.sli.provider;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,27 +33,46 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.onap.ccsdk.sli.core.sli.SvcLogicParser;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceRegistration;
+import org.onap.ccsdk.sli.core.sli.provider.base.BlockNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.BreakNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.CallNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ConfigureNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.DeleteNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ExecuteNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ExistsNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ForNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.GetResourceNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.IsAvailableNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.NotifyNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.RecordNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ReleaseNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ReserveNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ReturnNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.SaveNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.SetNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.AbstractSvcLogicNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicPropertiesProvider;
+import org.onap.ccsdk.sli.core.sli.provider.base.SwitchNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.UpdateNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.WhileNodeExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ITCaseSvcLogicGraphExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SvcLogicGraph.class);
-    private static final Map<String, SvcLogicNodeExecutor> BUILTIN_NODES = new HashMap<String, SvcLogicNodeExecutor>() {
+    private static final Map<String, AbstractSvcLogicNodeExecutor> BUILTIN_NODES = new HashMap<String, AbstractSvcLogicNodeExecutor>() {
         {
             put("block", new BlockNodeExecutor());
             put("break", new BreakNodeExecutor());

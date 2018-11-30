@@ -25,28 +25,28 @@ import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicParser;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
-import org.onap.ccsdk.sli.core.sli.provider.BlockNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.CallNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.ConfigureNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.DeleteNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.ExecuteNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.ExistsNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.ForNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.GetResourceNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.IsAvailableNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.NotifyNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.RecordNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.ReleaseNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.ReserveNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.ReturnNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.SaveNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.SetNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.SvcLogicNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicPropertiesProviderImpl;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicServiceImpl;
-import org.onap.ccsdk.sli.core.sli.provider.SwitchNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.UpdateNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.WhileNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.AbstractSvcLogicNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.BlockNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.CallNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ConfigureNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.DeleteNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ExecuteNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ExistsNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ForNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.GetResourceNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.IsAvailableNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.NotifyNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.RecordNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ReleaseNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ReserveNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.ReturnNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.SaveNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.SetNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.SwitchNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.UpdateNodeExecutor;
+import org.onap.ccsdk.sli.core.sli.provider.base.WhileNodeExecutor;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
@@ -67,7 +67,7 @@ public class TestSliapiProvider {
 
     private static final String HEALTHCHECK_DG = "sli_healthcheck.xml";
 
-    private static final Map<String, SvcLogicNodeExecutor> BUILTIN_NODES = new HashMap<String, SvcLogicNodeExecutor>() {
+    private static final Map<String, AbstractSvcLogicNodeExecutor> BUILTIN_NODES = new HashMap<String, AbstractSvcLogicNodeExecutor>() {
         {
             put("block", new BlockNodeExecutor());
             put("call", new CallNodeExecutor());

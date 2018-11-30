@@ -21,6 +21,7 @@
     </organization>
 
     <modules>
+        <module>provider-base</module>
         <module>model</module>
         <module>common</module>
         <module>provider</module>

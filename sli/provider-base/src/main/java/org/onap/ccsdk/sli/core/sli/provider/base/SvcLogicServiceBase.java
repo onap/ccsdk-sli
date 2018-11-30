@@ -19,34 +19,48 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.sli.core.sli.provider;
+package org.onap.ccsdk.sli.core.sli.provider.base;
 
 import java.util.Properties;
-
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceBase;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
+import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
+import org.onap.ccsdk.sli.core.sli.SvcLogicNode;
+import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
 
-public interface SvcLogicService extends SvcLogicServiceBase {
+public interface SvcLogicServiceBase {
 
-    String NAME = "org.onap.ccsdk.sli.core.sli.provider.SvcLogicService";
-
-    @Deprecated
-    Properties execute(String module, String rpc, String version, String mode, Properties parms) throws SvcLogicException;
 
     /**
-     * Execute a directed graph
+     * Check for existence of a directed graph
+     * @param module - module name
+     * @param rpc - rpc name
+     * @param version - version.  If null, looks for active version
+     * @param mode - mode (sync/async)
+     * @return true if directed graph found, false otherwise
+     * @throws SvcLogicException
+     */
+    boolean hasGraph(String module, String rpc, String version, String mode) throws SvcLogicException;
+
+    /**
+     *  Execute a directed graph
      *
      * @param module - module name
      * @param rpc - rpc name
      * @param version - version.  If null, use active version
      * @param mode - mode (sync/async)
      * @param parms - parameters, used to set SvcLogicContext attributes
-     * @param domDataBroker - DOMDataBroker object
      * @return final values of attributes from SvcLogicContext, as Properties
      * @throws SvcLogicException
+     *
+     *
      */
-    Properties execute(String module, String rpc, String version, String mode, Properties parms, DOMDataBroker domDataBroker) throws SvcLogicException;
+    Properties execute(String module, String rpc, String version, String mode, Properties parms) throws SvcLogicException;
 
+    SvcLogicStore getStore() throws SvcLogicException;
+
+    SvcLogicContext execute(SvcLogicGraph calledGraph, SvcLogicContext ctx) throws SvcLogicException;
+
+    SvcLogicNode executeNode(SvcLogicNode nextNode, SvcLogicContext ctx) throws SvcLogicException;
 
 }
