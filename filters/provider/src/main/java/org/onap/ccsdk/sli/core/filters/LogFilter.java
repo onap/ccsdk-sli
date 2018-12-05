@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -84,6 +86,7 @@ public class LogFilter implements Filter {
     private static final Logger AUDIT = LoggerFactory.getLogger("org.onap.ccsdk.sli.core.filters.audit");
     @Override
     public void destroy() {
+    	// this method does nothing
         }
 
     @Override
@@ -111,6 +114,7 @@ public class LogFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+    	// this method does nothing
         }
 
 
@@ -134,11 +138,7 @@ public class LogFilter implements Filter {
 
         String userName="unknown";
 
-        /* below returning org.opendaylight.aaa.shiro.realm.TokenAuthRealm$ODLPrincipal@745dfcfe
-           if ( request.getUserPrincipal() != null) {
-           userName = request.getUserPrincipal().getName();
-           }
-         */
+        
         // going directly after Authorization header
         if (request.getHeader("Authorization") != null) {
             String authzHeader = request.getHeader("Authorization");
@@ -164,12 +164,8 @@ public class LogFilter implements Filter {
 
     private void post(HttpServletRequest request,HttpServletResponse response,long startTime) {
 
-        //AUDIT.info("{}|{}|{}{}",request.getRemoteHost(),request.getMethod(),request.getRequestURL().toString(),request.getQueryString());
-        //AUDIT.info(request.getRemoteHost() + D + request.getMethod() + D + request.getRequestURL().toString() + D + request.getQueryString());
-        //METRIC.info(request.getMethod() + D + response.getStatus() + D + request.getRequestURL().toString() + D + (System.currentTimeMillis() - startTime) + " ms");
         MDC.put(BEGIN_TIMESTAMP,asIso8601(startTime));
         MDC.put(END_TIMESTAMP,asIso8601(System.currentTimeMillis()));
-        //MDC.put(REQUEST_ID,"already done above");
         MDC.put(SERVICE_NAME,request.getRequestURL().toString());
         int idx = request.getPathInfo().lastIndexOf(':');
         String instance = "";
@@ -179,7 +175,6 @@ public class LogFilter implements Filter {
         MDC.put(SERVICE_INSTANCE,instance);
         MDC.put(THREAD_ID,"");
         MDC.put(PHYSICAL_SERVER_NAME,"");
-        //MDC.put(PARTNER_NAME,"already done above");
         if ( response.getStatus() >= 400 ) {
 			MDC.put(STATUS_CODE,"ERROR");
 		} else {
