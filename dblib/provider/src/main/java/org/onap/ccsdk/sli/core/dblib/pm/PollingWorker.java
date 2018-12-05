@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class PollingWorker implements Runnable {
 
-	private Logger LOGGER = LoggerFactory.getLogger(PollingWorker.class);
+	private Logger logger = LoggerFactory.getLogger(PollingWorker.class);
 
 	private static PollingWorker self = null;
 
@@ -46,17 +46,6 @@ public class PollingWorker implements Runnable {
 	private int[] bucketUnit = null;
 	private static boolean enabled = false;
 	private Timer timer = null;
-
-	public static void post(long starttime){
-		PollingWorker temp = self;
-		if(temp != null && enabled) {
-			temp.register(new TestSample(starttime));
-		}
-	}
-
-	public static void createInistance(Properties props){
-		self = new PollingWorker(props);
-	}
 
 	private PollingWorker(Properties ctxprops){
 		if(ctxprops==null ||  ctxprops.getProperty("org.onap.ccsdk.dblib.pm") == null){
@@ -89,6 +78,18 @@ public class PollingWorker implements Runnable {
 			timer.schedule(new MyTimerTask(), interval*1000L, interval*1000L);
 		}
 	}
+	public static void post(long starttime){
+		PollingWorker temp = self;
+		if(temp != null && enabled) {
+			temp.register(new TestSample(starttime));
+		}
+	}
+
+	public static void createInistance(Properties props){
+		self = new PollingWorker(props);
+	}
+
+
 
 	private void register(TestSample object){
 		try {
@@ -113,12 +114,14 @@ public class PollingWorker implements Runnable {
 					consume((TestSample)next);
 				} else {
 					System.out.println(next.getClass().getName());
+					logger.error(next.getClass().getName());
 				}
 			}
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+
 			}
 		}
 
@@ -146,7 +149,7 @@ public class PollingWorker implements Runnable {
 			}
 			sb.append(tmp2[i].get()).append("\t");
 		}
-		LOGGER.info(sb.toString());
+		logger.info(sb.toString());
 	}
 
 	class MyTimerTask extends TimerTask{
