@@ -115,11 +115,6 @@ public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcL
     }
     
     @Override
-    protected void resetContext() {
-		MetricLogger.resetContext();
-	}
-
-    @Override
     public SvcLogicStore getStore() throws SvcLogicException {
         // Create and initialize SvcLogicStore object - used to access
         // saved service logic.

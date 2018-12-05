@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.sli.SvcLogicNode;
@@ -41,7 +42,11 @@ public class PluginTest extends TestCase {
     // The attribute emitsOutcome will not be present, the expected outcome is success when no exception is thrown by the plugin
     public void testOldPlugin() throws Exception {
         ExecuteNodeExecutor executor = new ExecuteNodeExecutor();
-        SvcLogicJavaPlugin plugin = new VoidDummyPlugin();
+        SvcLogicJavaPlugin plugin = new SvcLogicJavaPlugin() {
+                public void dummy(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
+                        return;
+                }
+        };
 
         Class pluginClass = plugin.getClass();
         Method pluginMethod = pluginClass.getMethod("dummy", Map.class, SvcLogicContext.class);

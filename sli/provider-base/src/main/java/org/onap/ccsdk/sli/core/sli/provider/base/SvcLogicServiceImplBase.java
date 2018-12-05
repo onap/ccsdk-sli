@@ -114,7 +114,6 @@ public class SvcLogicServiceImplBase implements SvcLogicServiceBase {
         LOG.info("About to execute graph {}", graph.toString());
 		try {
 			while (curNode != null) {
-				resetContext();
 				SvcLogicNode nextNode = executeNode(curNode, ctx);
 				curNode = nextNode;
 			}
@@ -125,10 +124,6 @@ public class SvcLogicServiceImplBase implements SvcLogicServiceBase {
         MDC.remove(CURRENT_GRAPH);
 
         return (ctx);
-    }
-
-    protected void resetContext() {
-    	
     }
     
 	public SvcLogicNode executeNode(SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException {
