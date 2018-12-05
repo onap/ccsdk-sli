@@ -4,6 +4,8 @@
  * ================================================================================
  * Copyright (C) 2016 - 2017 ONAP
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -68,7 +70,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
     transient protected long retryInterval = 10000L;
     transient boolean recoveryMode = true;
 
-    SortedSet<CachedDataSource> dsQueue = new ConcurrentSkipListSet<CachedDataSource>(new DataSourceComparator());
+    SortedSet<CachedDataSource> dsQueue = new ConcurrentSkipListSet<>(new DataSourceComparator());
     protected final Set<CachedDataSource> broken = Collections.synchronizedSet(new HashSet<CachedDataSource>());
     protected final Object monitor = new Object();
     protected final Properties configProps;
@@ -80,6 +82,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
     protected final long monitoringInitialDelay;
     protected final long expectedCompletionTime;
     protected final long unprocessedFailoverThreshold;
+    private static final String LOGGER_ALARM_MSG="Generated alarm: DBResourceManager.getData - No active DB connection pools are available.";
 
     public DBResourceManager(final DBLIBResourceProvider configuration) {
         this(configuration.getProperties());
@@ -393,7 +396,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
         // test if there are any connection pools available
         if(this.dsQueue.isEmpty()){
-            LOGGER.error("Generated alarm: DBResourceManager.getData - No active DB connection pools are available.");
+            LOGGER.error(LOGGER_ALARM_MSG);
             throw new DBLibException("No active DB connection pools are available in RequestDataWithRecovery call.");
         }
 
@@ -457,7 +460,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
     private CachedRowSet requestDataNoRecovery(String statement, ArrayList<Object> arguments, String preferredDS) throws SQLException {
         if(dsQueue.isEmpty()){
-            LOGGER.error("Generated alarm: DBResourceManager.getData - No active DB connection pools are available.");
+            LOGGER.error(LOGGER_ALARM_MSG);
             throw new DBLibException("No active DB connection pools are available in RequestDataNoRecovery call.");
         }
         CachedDataSource active = this.dsQueue.first();
@@ -533,7 +536,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
     private boolean writeDataNoRecovery(String statement, ArrayList<Object> arguments, String preferredDS) throws SQLException {
         if(dsQueue.isEmpty()){
-            LOGGER.error("Generated alarm: DBResourceManager.getData - No active DB connection pools are available.");
+            LOGGER.error(LOGGER_ALARM_MSG);
             throw new DBLibException("No active DB connection pools are available in RequestDataNoRecovery call.");
         }
 
