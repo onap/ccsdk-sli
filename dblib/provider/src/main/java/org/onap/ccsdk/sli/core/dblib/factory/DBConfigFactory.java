@@ -4,6 +4,8 @@
  * ================================================================================
  * Copyright (C) 2016 - 2017 ONAP
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -44,7 +46,7 @@ public class DBConfigFactory {
 
     static DbConfigPool getConfigparams(Properties properties) {
         DbConfigPool xmlConfig = new DbConfigPool(properties);
-        ArrayList<Properties> propertySets = new ArrayList<Properties>();
+        ArrayList<Properties> propertySets = new ArrayList<>();
 
         if ("JDBC".equalsIgnoreCase(xmlConfig.getType())) {
             String hosts = properties.getProperty(BaseDBConfiguration.DATABASE_HOSTS);
