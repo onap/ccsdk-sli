@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -70,7 +72,7 @@ public class RequestResponseLoggingFilter implements Filter {
 
 		@Override
 		public void setWriteListener(WriteListener arg0) {
-			
+			//this method does nothing
 			
 		}
 	}
@@ -131,7 +133,7 @@ public class RequestResponseLoggingFilter implements Filter {
 
 		@Override
 		public void setReadListener(ReadListener arg0) {
-			
+			// this method does nothing
 		}
 
 	}
@@ -151,7 +153,7 @@ public class RequestResponseLoggingFilter implements Filter {
 
 			InputStream is = req.getInputStream();
 			baos = new ByteArrayOutputStream();
-			byte buf[] = new byte[1024];
+			byte[] buf = new byte[1024];
 			int letti;
 			while ((letti = is.read(buf)) > 0) {
 				baos.write(buf, 0, letti);
@@ -180,6 +182,7 @@ public class RequestResponseLoggingFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
+		//this method does nothing
 	}
 
 	@Override
@@ -259,6 +262,7 @@ public class RequestResponseLoggingFilter implements Filter {
 
 	@Override
 	public void destroy() {
+		//this method does nothing
 	}
 
 	private String decompressGZIPByteArray(byte[] bytes) {
