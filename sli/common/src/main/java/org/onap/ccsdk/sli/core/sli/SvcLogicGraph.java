@@ -1,8 +1,11 @@
 /*-
- * ============LICENSE_START=======================================================
+x * ============LICENSE_START=======================================================
  * ONAP : CCSDK
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
+ * 						reserved.
+ * ================================================================================
+ * Modifications copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,8 +49,8 @@ public class SvcLogicGraph implements Serializable {
 	
 	public SvcLogicGraph()
 	{
-		attributes = new HashMap<String, Serializable>();
-		namedNodes = new HashMap<String, SvcLogicNode>();
+		attributes = new HashMap<>();
+		namedNodes = new HashMap<>();
 		rootNode = null;
 	}
 
