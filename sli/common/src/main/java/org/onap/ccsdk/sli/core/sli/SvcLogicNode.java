@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,6 +33,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -61,8 +64,8 @@ public class SvcLogicNode implements Serializable {
 		nodeName = "";
 		this.nodeType = nodeType;
 		this.graph = graph;
-		attributes = new HashMap<String, SvcLogicExpression> ();
-		parameters = new HashMap<String, SvcLogicExpression> ();
+		attributes = new HashMap<> ();
+		parameters = new HashMap<> ();
 		outcomes = null;
 		
 	}
@@ -73,8 +76,8 @@ public class SvcLogicNode implements Serializable {
 		this.nodeName = nodeName;
 		this.nodeType = nodeType;
 		this.graph = graph;
-		attributes = new HashMap<String, SvcLogicExpression> ();
-		parameters = new HashMap<String, SvcLogicExpression> ();
+		attributes = new HashMap<> ();
+		parameters = new HashMap<> ();
 		outcomes = null;
 		graph.setNamedNode(nodeName, this);
 	}
@@ -224,7 +227,7 @@ public class SvcLogicNode implements Serializable {
 	{
 		if (outcomes == null)
 		{
-			outcomes = new HashMap<String, SvcLogicNode>();
+			outcomes = new HashMap<>();
 		}
 		
 		if (outcomeValue.length() == 0) {
@@ -242,7 +245,7 @@ public class SvcLogicNode implements Serializable {
 	{
 		if (outcomes == null)
 		{
-			return null;
+			return new HashSet<>();
 		}
 		
 		return outcomes.entrySet();
@@ -253,7 +256,7 @@ public class SvcLogicNode implements Serializable {
 	{
 		if (parameters == null)
 		{
-			return null;
+			return new HashSet<>();
 		}
 		
 		return parameters.entrySet();
@@ -307,7 +310,7 @@ public class SvcLogicNode implements Serializable {
 		
 		if (outcomes != null)
 		{
-			TreeMap<String, SvcLogicNode> sortedOutcomes = new TreeMap<String, SvcLogicNode>(outcomes);
+			TreeMap<String, SvcLogicNode> sortedOutcomes = new TreeMap<>(outcomes);
 			Set<Map.Entry<String, SvcLogicNode>> outcomeSet = sortedOutcomes.entrySet();
 			
 			for (Iterator<Map.Entry<String, SvcLogicNode>> iter = outcomeSet.iterator(); iter.hasNext();)
