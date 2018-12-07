@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -62,7 +64,7 @@ public class SvcLogicLoader {
     }
 
     protected List<ActivationEntry> processActivationFiles(List<Path> activationPaths) {
-        List<ActivationEntry> activationEntries = new ArrayList<ActivationEntry>();
+        List<ActivationEntry> activationEntries = new ArrayList<>();
         for (Path activationFile : activationPaths) {
             activationEntries.addAll(getActivationEntries(activationFile));
         }
@@ -104,7 +106,7 @@ public class SvcLogicLoader {
             return activationEntries;
         } catch (IOException ioe) {
             LOGGER.error("Couldn't read the activation file at " + activationFilePath, ioe);
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -167,7 +169,7 @@ public class SvcLogicLoader {
     
     public void bulkActivate() {
         Path activationFile = Paths.get(directoryRoot);
-        List<Path> pathList = new ArrayList<Path>(1);
+        List<Path> pathList = new ArrayList<>(1);
         pathList.add(activationFile);
         List<ActivationEntry> activationEntries = processActivationFiles(pathList);
         activateGraphs(activationEntries);
