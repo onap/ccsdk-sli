@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -53,9 +55,11 @@ public class PrintYangToProp {
 	private static final Logger LOG = LoggerFactory.getLogger(PrintYangToProp.class);
 	public static final String PROPERTIES_FILE="";
 	private static Properties properties;
+	private static final String BUILDER="-builder";
+	private static final String IMPL="-impl";
 	
 	public static Properties prop = new Properties();
-	public static ArrayList<String> propList = new ArrayList<String>();
+	public static ArrayList<String> propList = new ArrayList<>();
 
 	
 	public static Properties toProperties(Properties props, Object fromObj) {
@@ -115,14 +119,14 @@ public class PrintYangToProp {
 					propNamePfx = toLowerHyphen(fromClass.getSimpleName());
 				}
 
-				if (propNamePfx.endsWith("-builder")) {
+				if (propNamePfx.endsWith(BUILDER)) {
 					propNamePfx = propNamePfx.substring(0, propNamePfx.length()
-							- "-builder".length());
+							- BUILDER.length());
 				}
 
-				if (propNamePfx.endsWith("-impl")) {
+				if (propNamePfx.endsWith(IMPL)) {
 					propNamePfx = propNamePfx.substring(0, propNamePfx.length()
-							- "-impl".length());
+							- IMPL.length());
 				}
 			}
 			
@@ -486,14 +490,14 @@ public class PrintYangToProp {
 					propNamePfx = toLowerHyphen(toClass.getSimpleName());
 				}
 
-				if (propNamePfx.endsWith("-builder")) {
+				if (propNamePfx.endsWith(BUILDER)) {
 					propNamePfx = propNamePfx.substring(0, propNamePfx.length()
-							- "-builder".length());
+							- BUILDER.length());
 				}
 
-				if (propNamePfx.endsWith("-impl")) {
+				if (propNamePfx.endsWith(IMPL)) {
 					propNamePfx = propNamePfx.substring(0, propNamePfx.length()
-							- "-impl".length());
+							- IMPL.length());
 				}
 			}
 
@@ -999,14 +1003,14 @@ public class PrintYangToProp {
 					propNamePfx = toLowerHyphen(toClass.getSimpleName());
 				}
 
-				if (propNamePfx.endsWith("-builder")) {
+				if (propNamePfx.endsWith(BUILDER)) {
 					propNamePfx = propNamePfx.substring(0, propNamePfx.length()
-							- "-builder".length());
+							- BUILDER.length());
 				}
 
-				if (propNamePfx.endsWith("-impl")) {
+				if (propNamePfx.endsWith(IMPL)) {
 					propNamePfx = propNamePfx.substring(0, propNamePfx.length()
-							- "-impl".length());
+							- IMPL.length());
 				}
 			}
 
