@@ -3,6 +3,7 @@
  * onap
  * ================================================================================
  * Copyright (C) 2016 - 2017 ONAP
+ * Modifications Copyright (C) 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +25,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Vector;
 
-import org.onap.ccsdk.sli.core.dblib.DblibConfigurationException;
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicPropertiesProvider;
 import org.onap.ccsdk.sli.core.utils.JREFileResolver;
@@ -57,7 +56,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SvcLogicPropertiesProviderImpl implements SvcLogicPropertiesProvider {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SvcLogicPropertiesProviderImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(SvcLogicPropertiesProviderImpl.class);
 
 	/**
 	 * The name of the properties file for database configuration
@@ -95,7 +94,7 @@ public class SvcLogicPropertiesProviderImpl implements SvcLogicPropertiesProvide
 				properties = new Properties();
 				properties.load(fileInputStream);
 			} catch (final IOException e) {
-				LOG.error("Failed to load properties for file: {}", propertiesFile.toString(),
+				log.error("Failed to load properties for file: {}", propertiesFile.toString(),
 						new ConfigurationException("Failed to load properties for file: " + propertiesFile.toString(),
 								e));
 			}
@@ -109,6 +108,7 @@ public class SvcLogicPropertiesProviderImpl implements SvcLogicPropertiesProvide
 					properties.load(propStr);
 					propStr.close();
 				} catch (IOException e) {
+					log.error("IO Exception",e);
 					properties = null;
 				}
 			}
@@ -143,7 +143,7 @@ public class SvcLogicPropertiesProviderImpl implements SvcLogicPropertiesProvide
 	private static File reportSuccess(final String message, final Optional<File> fileOptional) {
 		if (fileOptional.isPresent()) {
 			final File file = fileOptional.get();
-			LOG.info("{} {}", message, file.getPath());
+			log.info("{} {}", message, file.getPath());
 			return file;
 		}
 		return null;
@@ -160,7 +160,7 @@ public class SvcLogicPropertiesProviderImpl implements SvcLogicPropertiesProvide
 	 */
 	private static void reportFailure(final String message, final ConfigurationException configurationException) {
 
-		LOG.error("{}", message, configurationException);
+		log.error("{}", message, configurationException);
 	}
 
 	/**
