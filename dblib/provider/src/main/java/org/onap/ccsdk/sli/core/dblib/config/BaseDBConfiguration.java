@@ -209,7 +209,7 @@ public abstract class BaseDBConfiguration {
      *             <code>Integer</code>.
      */
     public int getDbMinLimit() throws NumberFormatException {
-        String value = properties.getProperty(MIN_LIMIT);
+        String value = properties.getProperty(MIN_LIMIT, "-1");
         return Integer.parseInt(value);
     }
 
@@ -222,7 +222,7 @@ public abstract class BaseDBConfiguration {
      *             <code>Integer</code>.
      */
     public int getDbMaxLimit() throws NumberFormatException {
-        String value = properties.getProperty(MAX_LIMIT);
+        String value = properties.getProperty(MAX_LIMIT, "-1");
         return Integer.parseInt(value);
     }
 
@@ -235,7 +235,7 @@ public abstract class BaseDBConfiguration {
      *             <code>Integer</code>.
      */
     public int getDbInitialLimit() throws NumberFormatException {
-        String value = properties.getProperty(INIT_LIMIT);
+        String value = properties.getProperty(INIT_LIMIT, "-1");
         return Integer.parseInt(value);
     }
 
