@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,6 +39,7 @@ import org.slf4j.LoggerFactory;
 public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ConfigureNodeExecutor.class);
+	private static final String CAUGHT_EXCEPTION_MSG="Caught exception from ";
 
 	public SvcLogicNode execute(SvcLogicServiceBase svc, SvcLogicNode node,
 			SvcLogicContext ctx) throws SvcLogicException {
@@ -58,7 +61,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			String key = SvcLogicExpressionResolver.evaluate(
 					node.getAttribute("key"), node, ctx);
 
-			Map<String, String> parmMap = new HashMap<String, String>();
+			Map<String, String> parmMap = new HashMap<>();
 
 			Set<Map.Entry<String, SvcLogicExpression>> parmSet = node
 					.getParameterSet();
@@ -83,7 +86,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 				try {
 					confStatus = adaptor.configure(key, parmMap, ctx);
 				} catch (Exception e) {
-					LOG.warn("Caught exception from "+adaptorName+".configure", e);
+					LOG.warn(CAUGHT_EXCEPTION_MSG+adaptorName+".configure", e);
 					confStatus = SvcLogicAdaptor.ConfigStatus.FAILURE;
 				}
 				
@@ -98,7 +101,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 								activateStatus = adaptor.activate(key, ctx);
 							} catch (Exception e) {
 
-								LOG.warn("Caught exception from "+adaptorName+".activate", e);
+								LOG.warn(CAUGHT_EXCEPTION_MSG+adaptorName+".activate", e);
 								activateStatus = SvcLogicAdaptor.ConfigStatus.FAILURE;
 							}
 							switch (activateStatus) {
@@ -124,7 +127,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 								deactivateStatus = adaptor.deactivate(key, ctx);
 							} catch (Exception e) {
 
-								LOG.warn("Caught exception from "+adaptorName+".deactivate", e);
+								LOG.warn(CAUGHT_EXCEPTION_MSG+adaptorName+".deactivate", e);
 								deactivateStatus = SvcLogicAdaptor.ConfigStatus.FAILURE;
 							}
 							switch (deactivateStatus) {
@@ -166,7 +169,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 						try {
 							activateStatus = adaptor.activate(key, ctx);
 						} catch (Exception e) {
-							LOG.warn("Caught exception from "+adaptorName+".activate", e);
+							LOG.warn(CAUGHT_EXCEPTION_MSG+adaptorName+".activate", e);
 							activateStatus = SvcLogicAdaptor.ConfigStatus.FAILURE;
 						}
 						switch (activateStatus) {
@@ -192,7 +195,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 						try {
 							deactivateStatus = adaptor.deactivate(key, ctx);
 						} catch (Exception e) {
-							LOG.warn("Caught exception from "+adaptorName+".deactivate", e);
+							LOG.warn(CAUGHT_EXCEPTION_MSG+adaptorName+".deactivate", e);
 							deactivateStatus = SvcLogicAdaptor.ConfigStatus.FAILURE;
 						}
 						switch (deactivateStatus) {
