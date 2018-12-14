@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,7 +25,6 @@ package org.onap.ccsdk.sli.core.sli.provider;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
@@ -50,6 +51,8 @@ public class MdsalHelper {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MdsalHelper.class);
 	private static Properties yangMappingProperties = new Properties();
+	private static final String IP_ADDRESS="IpAddress";
+	private static final String IP_PREFIX="IpPrefix";
 
 	@Deprecated
 	public static void setProperties(Properties input) {
@@ -131,7 +134,7 @@ public class MdsalHelper {
 				Object retValue = m.invoke(fromObj);
 				if (retValue != null) {
 					String propVal = null;
-					if ("IpAddress".equals(simpleTypeName) || "IpPrefix".equals(simpleTypeName)) {
+					if (IP_ADDRESS.equals(simpleTypeName) || IP_PREFIX.equals(simpleTypeName)) {
 						propVal = String.valueOf((char[]) retValue);
 					} else if ("Ipv4Address".equals(simpleTypeName) || "Ipv6Address".equals(simpleTypeName)) {
 						propVal = (String) retValue;
@@ -632,7 +635,7 @@ public class MdsalHelper {
 							String simpleName = paramClass.getSimpleName();
 
 							if ("Ipv4Address".equals(simpleName) || "Ipv6Address".equals(simpleName)
-									|| "IpAddress".equals(simpleName)) {
+									|| IP_ADDRESS.equals(simpleName)) {
 
 								if ((paramValue != null) && (paramValue.length() > 0)) {
 									try {
@@ -671,7 +674,7 @@ public class MdsalHelper {
 												+ m.getName() + "() with Properties entry", e);
 									}
 								}
-							} else if ("IpPrefix".equals(simpleName)) {
+							} else if (IP_PREFIX.equals(simpleName)) {
 								if ((paramValue != null) && (paramValue.length() > 0)) {
 									try {
 										IpPrefix ipPrefix = IpPrefixBuilder.getDefaultInstance(paramValue);
@@ -993,8 +996,8 @@ public class MdsalHelper {
 	}
 
 	private static boolean classHasSpecialHandling(String simpleName) {
-		if ("IpAddress".equals(simpleName) || "Ipv4Address".equals(simpleName) || "Ipv6Address".equals(simpleName)
-				|| "IpPrefix".equals(simpleName) || "PortNumber".equals(simpleName) || "Dscp".equals(simpleName)) {
+		if (IP_ADDRESS.equals(simpleName) || "Ipv4Address".equals(simpleName) || "Ipv6Address".equals(simpleName)
+				|| IP_PREFIX.equals(simpleName) || "PortNumber".equals(simpleName) || "Dscp".equals(simpleName)) {
 			return true;
 		}
 		return false;
@@ -1068,7 +1071,7 @@ public class MdsalHelper {
 							String simpleName = returnClass.getSimpleName();
 
 							if ("Ipv4Address".equals(simpleName) || "Ipv6Address".equals(simpleName)
-									|| "IpAddress".equals(simpleName) || "IpPrefix".equals(simpleName)
+									|| IP_ADDRESS.equals(simpleName) || IP_PREFIX.equals(simpleName)
 									|| "PortNumber".equals(simpleName) || "Dscp".equals(simpleName)) {
 								LOG.trace(m.getName() + " is an " + simpleName);
 								pstr.print("\n\n     * " + propName);
@@ -1131,7 +1134,7 @@ public class MdsalHelper {
 			return (false);
 		}
 		String simpleName = c.getSimpleName();
-		return ("IpPrefix".equals(simpleName));
+		return (IP_PREFIX.equals(simpleName));
 	}
 
 	public static boolean isIpv4Address(Class c) {
@@ -1167,7 +1170,7 @@ public class MdsalHelper {
 			return (false);
 		}
 		String simpleName = c.getSimpleName();
-		return ("IpAddress".equals(simpleName));
+		return (IP_ADDRESS.equals(simpleName));
 	}
 
 	public static boolean isPortNumber(Class c) {
