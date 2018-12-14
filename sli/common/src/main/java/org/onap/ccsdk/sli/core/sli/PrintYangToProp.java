@@ -57,7 +57,8 @@ public class PrintYangToProp {
 	private static Properties properties;
 	private static final String BUILDER="-builder";
 	private static final String IMPL="-impl";
-	
+	private static final String TO_PROPERTIES_STRING="() to Properties entry";
+	private static final String CAUGHT_EXCEPTION_MSG="Caught exception trying to convert value returned by ";
 	public static Properties prop = new Properties();
 	public static ArrayList<String> propList = new ArrayList<>();
 
@@ -178,7 +179,7 @@ public class PrintYangToProp {
 										"Caught exception trying to convert Yang-generated enum returned by "
 												+ fromClass.getName() + "."
 												+ m.getName()
-												+ "() to Properties entry", e);
+												+ TO_PROPERTIES_STRING, e);
 							}
 						} else if (isIpv4Address(returnType)) {
 							// Save its value
@@ -194,7 +195,7 @@ public class PrintYangToProp {
 								}
 
 								if (retValue != null) {
-									String propVal = retValue.getValue().toString();
+									String propVal = retValue.getValue();
 									//LOG.debug("Setting property " + propName
 									//		+ " to " + propVal);
 									props.setProperty(propName, propVal);
@@ -202,10 +203,10 @@ public class PrintYangToProp {
 								}
 							} catch (Exception e) {
 								LOG.error(
-										"Caught exception trying to convert value returned by "
+										CAUGHT_EXCEPTION_MSG
 												+ fromClass.getName() + "."
 												+ m.getName()
-												+ "() to Properties entry", e);
+												+ TO_PROPERTIES_STRING, e);
 							}
 						} else if (isIpv6Address(returnType)) {
 							// Save its value
@@ -229,10 +230,10 @@ public class PrintYangToProp {
 								}
 							} catch (Exception e) {
 								LOG.error(
-										"Caught exception trying to convert value returned by "
+										CAUGHT_EXCEPTION_MSG
 												+ fromClass.getName() + "."
 												+ m.getName()
-												+ "() to Properties entry", e);
+												+ TO_PROPERTIES_STRING, e);
 							}
 						} else if (isIpv4Prefix(returnType)) {
 							//System.out.println("isIpv4Prefix");
@@ -257,10 +258,10 @@ public class PrintYangToProp {
 								}
 							} catch (Exception e) {
 								LOG.error(
-										"Caught exception trying to convert value returned by "
+										CAUGHT_EXCEPTION_MSG
 												+ fromClass.getName() + "."
 												+ m.getName()
-												+ "() to Properties entry", e);
+												+ TO_PROPERTIES_STRING, e);
 							}
 						} else if (isIpv6Prefix(returnType)) {
 							//System.out.println("isIpv6Prefix");
@@ -285,10 +286,10 @@ public class PrintYangToProp {
 								}
 							} catch (Exception e) {
 								LOG.error(
-										"Caught exception trying to convert value returned by "
+										CAUGHT_EXCEPTION_MSG
 												+ fromClass.getName() + "."
 												+ m.getName()
-												+ "() to Properties entry", e);
+												+ TO_PROPERTIES_STRING, e);
 							}
 						} else {
 							try {
@@ -308,7 +309,7 @@ public class PrintYangToProp {
 										"Caught exception trying to convert Yang-generated class returned by"
 												+ fromClass.getName() + "."
 												+ m.getName()
-												+ "() to Properties entry", e);
+												+ TO_PROPERTIES_STRING, e);
 							}
 						}
 					} else if (returnType.equals(Class.class)) {
@@ -339,7 +340,7 @@ public class PrintYangToProp {
 									"Caught exception trying to convert List returned by "
 											+ fromClass.getName() + "."
 											+ m.getName()
-											+ "() to Properties entry", e);
+											+ TO_PROPERTIES_STRING, e);
 						}
 
 					} else {
@@ -367,10 +368,10 @@ public class PrintYangToProp {
 							}
 						} catch (Exception e) {
 							LOG.error(
-									"Caught exception trying to convert value returned by "
+									CAUGHT_EXCEPTION_MSG
 											+ fromClass.getName() + "."
 											+ m.getName()
-											+ "() to Properties entry", e);
+											+ TO_PROPERTIES_STRING, e);
 						}
 					}
 
@@ -783,7 +784,7 @@ public class PrintYangToProp {
 														+ toClass.getName()
 														+ "."
 														+ m.getName()
-														+ "() to Properties entry",
+														+ TO_PROPERTIES_STRING,
 												e);
 									}
 								}
@@ -835,7 +836,7 @@ public class PrintYangToProp {
 											"Caught exception trying to convert List returned by"
 													+ toClass.getName() + "."
 													+ m.getName()
-													+ "() to Properties entry",
+													+ TO_PROPERTIES_STRING,
 											e);
 								}
 							}
@@ -925,7 +926,7 @@ public class PrintYangToProp {
 															+ toClass.getName()
 															+ "."
 															+ m.getName()
-															+ "() to Properties entry",
+															+ TO_PROPERTIES_STRING,
 													e);
 										}
 									}
