@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,6 +36,7 @@ public class CallNodeExecutor extends AbstractSvcLogicNodeExecutor {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(CallNodeExecutor.class);
+	private static final String CURRENT_GRAPH="currentGraph";
 
 	@Override
 	public SvcLogicNode execute(SvcLogicServiceBase svc, SvcLogicNode node, SvcLogicContext ctx)
@@ -114,7 +117,7 @@ public class CallNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			version  = SvcLogicExpressionResolver.evaluate(moduleExpr, node, ctx);
 		}
 
-		String parentGraph = ctx.getAttribute("currentGraph");
+		String parentGraph = ctx.getAttribute(CURRENT_GRAPH);
         ctx.setAttribute("parentGraph", parentGraph);
 
 		SvcLogicStore store = svc.getStore();
@@ -124,7 +127,7 @@ public class CallNodeExecutor extends AbstractSvcLogicNodeExecutor {
             SvcLogicGraph calledGraph = store.fetch(module, rpc, version, mode);
             if (calledGraph != null) {
                 LOG.debug("Parent " + parentGraph + " is calling child " + calledGraph.toString());
-                ctx.setAttribute("currentGraph", calledGraph.toString());
+                ctx.setAttribute(CURRENT_GRAPH, calledGraph.toString());
                 svc.execute(calledGraph, ctx);
                 outValue = ctx.getStatus();
                 graphWasCalled = true;
@@ -140,7 +143,7 @@ public class CallNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("about to execute " + outValue + " branch");
 			}
-            ctx.setAttribute("currentGraph", parentGraph);
+            ctx.setAttribute(CURRENT_GRAPH, parentGraph);
 			return (nextNode);
 		}
 
@@ -165,7 +168,7 @@ public class CallNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			}
 		}
 
-		ctx.setAttribute("currentGraph", parentGraph);
+		ctx.setAttribute(CURRENT_GRAPH, parentGraph);
         ctx.setAttribute("parentGraph", null);
 
 		return (nextNode);
