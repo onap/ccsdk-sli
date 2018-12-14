@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -39,6 +41,7 @@ import org.slf4j.LoggerFactory;
 public class ExecuteNodeExecutor extends AbstractSvcLogicNodeExecutor {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ExecuteNodeExecutor.class);
+	private static final String FAILURE="failure";
 
 	private static final String pluginErrorMessage = "Could not execute plugin. SvcLogic status will be set to failure.";
 	public SvcLogicNode execute(SvcLogicServiceBase svc, SvcLogicNode node,
@@ -46,7 +49,7 @@ public class ExecuteNodeExecutor extends AbstractSvcLogicNodeExecutor {
 
 		String pluginName = SvcLogicExpressionResolver.evaluate(
 				node.getAttribute("plugin"), node, ctx);
-		String outValue = "failure";
+		String outValue = FAILURE;
 
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("execute node encountered - looking for plugin "
@@ -76,7 +79,7 @@ public class ExecuteNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			} else {
 				try {
 
-					Map<String, String> parmMap = new HashMap<String, String>();
+					Map<String, String> parmMap = new HashMap<>();
 
 					Set<Map.Entry<String, SvcLogicExpression>> parmSet = node
 							.getParameterSet();
@@ -104,16 +107,16 @@ public class ExecuteNodeExecutor extends AbstractSvcLogicNodeExecutor {
 				    }else{
 					LOG.error(pluginErrorMessage, e);
 				    }
-					outValue = "failure";
-					ctx.setStatus("failure");
+					outValue = FAILURE;
+					ctx.setStatus(FAILURE);
 				} catch (IllegalAccessException e) {
                     LOG.error(pluginErrorMessage, e);
-                    outValue = "failure";
-                    ctx.setStatus("failure");
+                    outValue = FAILURE;
+                    ctx.setStatus(FAILURE);
                 } catch (IllegalArgumentException e) {
                     LOG.error(pluginErrorMessage, e);
-                    outValue = "failure";
-                    ctx.setStatus("failure");
+                    outValue = FAILURE;
+                    ctx.setStatus(FAILURE);
                 }
 			}
 
