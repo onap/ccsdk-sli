@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -36,6 +38,7 @@ import org.slf4j.LoggerFactory;
 public class SaveNodeExecutor extends AbstractSvcLogicNodeExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SaveNodeExecutor.class);
+    private static final String FAILURE= "failure";
 
     @Override
     public SvcLogicNode execute(SvcLogicServiceBase svc, SvcLogicNode node, SvcLogicContext ctx)
@@ -51,7 +54,7 @@ public class SaveNodeExecutor extends AbstractSvcLogicNodeExecutor {
         boolean force = "true".equalsIgnoreCase(forceStr);
         boolean localOnly = "true".equalsIgnoreCase(localOnlyStr);
 
-        Map<String, String> parmMap = new HashMap<String, String>();
+        Map<String, String> parmMap = new HashMap<>();
 
         Set<Map.Entry<String, SvcLogicExpression>> parmSet = node.getParameterSet();
         boolean hasParms = false;
@@ -70,7 +73,7 @@ public class SaveNodeExecutor extends AbstractSvcLogicNodeExecutor {
             }
         }
 
-        String outValue = "failure";
+        String outValue = FAILURE;
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("save node encountered - looking for resource class " + plugin);
@@ -92,11 +95,11 @@ public class SaveNodeExecutor extends AbstractSvcLogicNodeExecutor {
                         break;
                     case FAILURE:
                     default:
-                        outValue = "failure";
+                        outValue = FAILURE;
                 }
             } catch (SvcLogicException e) {
                 LOG.error("Caught exception from resource plugin", e);
-                outValue = "failure";
+                outValue = FAILURE;
             }
         } else {
             LOG.warn("Could not find SvcLogicResource object for plugin " + plugin);
