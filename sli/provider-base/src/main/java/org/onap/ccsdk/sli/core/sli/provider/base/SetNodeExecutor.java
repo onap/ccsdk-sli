@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *                      reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -111,7 +113,7 @@ public class SetNodeExecutor extends AbstractSvcLogicNodeExecutor {
                             lhsPrefix = lhsPrefix.substring(0, lhsPrefix.length() - 1);
                         }
 
-                        HashMap<String, String> parmsToAdd = new HashMap<String, String>();
+                        HashMap<String, String> parmsToAdd = new HashMap<>();
 
                         for (String sourceVarName : ctx.getAttributeKeySet()) {
                             if (sourceVarName.startsWith(rhsRoot)) {
@@ -125,7 +127,7 @@ public class SetNodeExecutor extends AbstractSvcLogicNodeExecutor {
                         }
                     } else {
                         // If RHS is empty, unset attributes in LHS
-                        LinkedList<String> parmsToRemove = new LinkedList<String>();
+                        LinkedList<String> parmsToRemove = new LinkedList<>();
                         String prefix = lhsVarName + ".";
                         String arrayPrefix = lhsVarName + "[";
                         //Clear length value in case an array exists with this prefix
@@ -143,10 +145,10 @@ public class SetNodeExecutor extends AbstractSvcLogicNodeExecutor {
                                 LOG.debug("Unsetting {} because matching value {} starts with the prefix {}", curCtxVarname, curCtxVarnameMatchingValue, prefix);
                                 parmsToRemove.add(curCtxVarname);
                             }else if (curCtxVarnameMatchingValue.startsWith(lengthParamName)) {
-                            	LOG.debug("Unsetting {} because matching value {} starts with the lengthParamName {}", curCtxVarname, curCtxVarnameMatchingValue, lengthParamName);
+                                LOG.debug("Unsetting {} because matching value {} starts with the lengthParamName {}", curCtxVarname, curCtxVarnameMatchingValue, lengthParamName);
                                 parmsToRemove.add(curCtxVarname);
                             }else if (curCtxVarnameMatchingValue.startsWith(arrayPrefix)) {
-                            	LOG.debug("Unsetting {} because matching value {} starts with the arrayPrefix {}", curCtxVarname, curCtxVarnameMatchingValue, arrayPrefix);
+                                LOG.debug("Unsetting {} because matching value {} starts with the arrayPrefix {}", curCtxVarname, curCtxVarnameMatchingValue, arrayPrefix);
                                 parmsToRemove.add(curCtxVarname);
                             }
                         }
