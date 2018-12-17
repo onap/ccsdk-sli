@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -41,6 +43,7 @@ public class SvcLogicExpressionResolver {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(SvcLogicExpressionResolver.class);
+	private static final String INVALID_EXPRESSION_MSG= "Invalid expression (";
 
 	public static String evaluate(SvcLogicExpression expr, SvcLogicNode node,
 			SvcLogicContext ctx) throws SvcLogicException {
@@ -150,7 +153,7 @@ public class SvcLogicExpressionResolver {
 		List<OperatorType> operators = binExpr.getOperators();
 		if (operands.size() != (operators.size()+1))
 		{
-			throw new SvcLogicException("Invalid expression ("+binExpr+")");
+			throw new SvcLogicException(INVALID_EXPRESSION_MSG+binExpr+")");
 		}	
 		String retval = evaluate(operands.get(0), node, ctx);
 		String retsval = retval;
@@ -303,7 +306,7 @@ public class SvcLogicExpressionResolver {
 		
 		if (operands.size() != (operators.size()+1))
 		{
-			throw new SvcLogicException("Invalid expression ("+expr+")");
+			throw new SvcLogicException(INVALID_EXPRESSION_MSG+expr+")");
 		}
 		
 		try
@@ -326,7 +329,7 @@ public class SvcLogicExpressionResolver {
 		}
 		catch (Exception e)
 		{
-			throw new SvcLogicException("Invalid expression ("+expr+")");
+			throw new SvcLogicException(INVALID_EXPRESSION_MSG+expr+")");
 		}
 		
 		
