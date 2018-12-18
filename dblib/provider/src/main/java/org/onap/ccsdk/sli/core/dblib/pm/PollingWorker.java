@@ -4,6 +4,8 @@
  * ================================================================================
  * Copyright (C) 2016 - 2017 ONAP
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,12 +28,11 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeSet;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class PollingWorker implements Runnable {
 
@@ -47,71 +48,72 @@ public class PollingWorker implements Runnable {
 	private static boolean enabled = false;
 	private Timer timer = null;
 
-	private PollingWorker(Properties ctxprops){
-		if(ctxprops==null ||  ctxprops.getProperty("org.onap.ccsdk.dblib.pm") == null){
+	private PollingWorker(Properties ctxprops) {
+		if (ctxprops == null || ctxprops.getProperty("org.onap.ccsdk.dblib.pm") == null) {
 			enabled = false;
 		} else {
-			if("true".equalsIgnoreCase((String)ctxprops.getProperty("org.onap.ccsdk.dblib.pm"))){
+			if ("true".equalsIgnoreCase((String) ctxprops.getProperty("org.onap.ccsdk.dblib.pm"))) {
 				enabled = true;
 			} else {
 				enabled = false;
 			}
 		}
 
-		interval = Long.parseLong(( ctxprops == null || ctxprops.getProperty("org.onap.ccsdk.dblib.pm.interval") == null) ? "60" : (String)ctxprops.getProperty("org.onap.ccsdk.dblib.pm.interval"));
+		interval = Long.parseLong((ctxprops == null || ctxprops.getProperty("org.onap.ccsdk.dblib.pm.interval") == null)
+				? "60" : (String) ctxprops.getProperty("org.onap.ccsdk.dblib.pm.interval"));
 		// '0' bucket is to count exceptions
-		String sampling[] = ((ctxprops == null || ctxprops.getProperty("org.onap.ccsdk.dblib.pm.sampling")==null) ? "0,2,5,10,20,50,100" :	(String)ctxprops.getProperty("org.onap.ccsdk.dblib.pm.sampling")).split(",");
+		String sampling[] = ((ctxprops == null || ctxprops.getProperty("org.onap.ccsdk.dblib.pm.sampling") == null)
+				? "0,2,5,10,20,50,100" : (String) ctxprops.getProperty("org.onap.ccsdk.dblib.pm.sampling")).split(",");
 
-		if(enabled){
+		if (enabled) {
 			bucketUnit = new int[sampling.length];
-			for(int i=0, max = bucketUnit.length; i<max; i++){
+			for (int i = 0, max = bucketUnit.length; i < max; i++) {
 				bucketUnit[i] = Integer.parseInt(sampling[i].trim());
 			}
-			counters = new AtomicLong[bucketUnit.length+1];
-			for(int i=0, max = counters.length; i<max; i++){
+			counters = new AtomicLong[bucketUnit.length + 1];
+			for (int i = 0, max = counters.length; i < max; i++) {
 				counters[i] = new AtomicLong();
 			}
 			worker = new Thread(this);
 			worker.setDaemon(true);
 			worker.start();
 			timer = new Timer(true);
-			timer.schedule(new MyTimerTask(), interval*1000L, interval*1000L);
+			timer.schedule(new MyTimerTask(), interval * 1000L, interval * 1000L);
 		}
 	}
-	public static void post(long starttime){
+
+	public static void post(long starttime) {
 		PollingWorker temp = self;
-		if(temp != null && enabled) {
+		if (temp != null && enabled) {
 			temp.register(new TestSample(starttime));
 		}
 	}
 
-	public static void createInistance(Properties props){
+	public static void createInistance(Properties props) {
 		self = new PollingWorker(props);
 	}
 
-
-
-	private void register(TestSample object){
+	private void register(TestSample object) {
 		try {
 			tasks.add(object);
-		} catch(Throwable exc) {
+		} catch (Throwable exc) {
 			// if cannot add an object to the queue, do nothing
 		}
 	}
 
-	private void deRegister(TestSample object){
+	private void deRegister(TestSample object) {
 		tasks.remove(object);
 	}
 
 	@Override
 	public void run() {
-		for(;;){
+		for (;;) {
 			Set data = new TreeSet();
 			tasks.drainTo(data);
-			for(Iterator it = data.iterator(); it.hasNext(); ){
+			for (Iterator it = data.iterator(); it.hasNext();) {
 				Object next = it.next();
-				if(next instanceof TestSample){
-					consume((TestSample)next);
+				if (next instanceof TestSample) {
+					consume((TestSample) next);
 				} else {
 					System.out.println(next.getClass().getName());
 					logger.error(next.getClass().getName());
@@ -126,22 +128,23 @@ public class PollingWorker implements Runnable {
 		}
 
 	}
-	public void clearReqister(){
+
+	public void clearReqister() {
 		AtomicLong[] tmp = new AtomicLong[counters.length];
-		for(int i=0, max = tmp.length; i<max; i++){
+		for (int i = 0, max = tmp.length; i < max; i++) {
 			tmp[i] = new AtomicLong();
 		}
 		AtomicLong[] tmp2 = counters;
-		synchronized(tmp2){
+		synchronized (tmp2) {
 			counters = tmp;
 		}
 		StringBuffer sb = new StringBuffer("CPM: ");
-		for(int i=0, max = tmp2.length; i < max; i++){
-			if(i==0 && bucketUnit[0]==0){
+		for (int i = 0, max = tmp2.length; i < max; i++) {
+			if (i == 0 && bucketUnit[0] == 0) {
 				sb.append("[Exc]=");
 			} else {
 				sb.append("[");
-				if(i==bucketUnit.length){
+				if (i == bucketUnit.length) {
 					sb.append("Other]=");
 				} else {
 					sb.append(bucketUnit[i]).append(" ms]=");
@@ -152,7 +155,7 @@ public class PollingWorker implements Runnable {
 		logger.info(sb.toString());
 	}
 
-	class MyTimerTask extends TimerTask{
+	class MyTimerTask extends TimerTask {
 
 		@Override
 		public void run() {
@@ -164,19 +167,19 @@ public class PollingWorker implements Runnable {
 
 	private void consume(TestSample probe) {
 		AtomicLong[] tmp = counters;
-		synchronized(tmp){
+		synchronized (tmp) {
 			counters[getBucket(probe.getDuration())].incrementAndGet();
 		}
 	}
 
 	/*
-	 * This method is used to find the offset of the bucket in
-	 * counters. 'counters' array is 1 size longer than bucketUnit,
-	 * hence by default it returns 'bucketUnit.length'
+	 * This method is used to find the offset of the bucket in counters.
+	 * 'counters' array is 1 size longer than bucketUnit, hence by default it
+	 * returns 'bucketUnit.length'
 	 */
-	private int getBucket(long difftime){
-		for(int i=0; i<bucketUnit.length; i++){
-			if(difftime < bucketUnit[i]){
+	private int getBucket(long difftime) {
+		for (int i = 0; i < bucketUnit.length; i++) {
+			if (difftime < bucketUnit[i]) {
 				return i;
 			}
 		}
@@ -186,11 +189,12 @@ public class PollingWorker implements Runnable {
 	private static boolean isEnabled() {
 		return enabled;
 	}
+
 	/**
-	 * @author Rich Tabedzki
-	 *  A helper class to pass measured parameter to the counter.
+	 * @author Rich Tabedzki A helper class to pass measured parameter to the
+	 *         counter.
 	 */
-	static class TestSample implements Comparable{
+	static class TestSample implements Comparable {
 		private long starttime;
 		private long endtime;
 
@@ -199,25 +203,50 @@ public class PollingWorker implements Runnable {
 			this.starttime = starttime;
 		}
 
-		public long getDuration(){
+		public long getDuration() {
 			return endtime - starttime;
 		}
 
 		@Override
 		public int compareTo(Object o) {
-			if(o instanceof TestSample){
-				TestSample x = (TestSample)o;
-				if(starttime < x.starttime)
+			if (o instanceof TestSample) {
+				TestSample x = (TestSample) o;
+				if (starttime < x.starttime)
 					return 1;
-				if(endtime < x.endtime)
+				if (endtime < x.endtime)
 					return 1;
-				if(starttime > x.starttime)
+				if (starttime > x.starttime)
 					return -1;
-				if(endtime > x.endtime)
+				if (endtime > x.endtime)
 					return -1;
 				return 0;
 			}
 			return 1;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (int) (endtime ^ (endtime >>> 32));
+			result = prime * result + (int) (starttime ^ (starttime >>> 32));
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			TestSample other = (TestSample) obj;
+			if (endtime != other.endtime)
+				return false;
+			if (starttime != other.starttime)
+				return false;
+			return true;
 		}
 	}
 }
