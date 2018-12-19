@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *                      reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -132,7 +134,7 @@ public class DME2 implements SvcLogicJavaPlugin {
         // Support optional parameters in a flexible way
         for (Entry<String, String> param : parameters.entrySet()) {
             if (!incompleteUrl.contains(param.getKey() + "=") && param.getValue() != null
-                    && param.getValue().length() > 0 && !OUTPUT_PATH_KEY.equals(param.getKey()) && !"partner".equals(param.getKey())) {
+                    && param.getValue().length() > 0 && !OUTPUT_PATH_KEY.equals(param.getKey()) && !PARTNER_KEY.equals(param.getKey())) {
                 sb.append("&" + param.getKey() + "=" + param.getValue());
             }
         }
@@ -157,7 +159,7 @@ public class DME2 implements SvcLogicJavaPlugin {
 
     // Support legacy direct java call
     public String constructUrl(String service, String version, String subContext) {
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<>();
         parameters.put(SERVICE_KEY, service);
         if (version != null) {
             parameters.put(VERSION_KEY, version);
