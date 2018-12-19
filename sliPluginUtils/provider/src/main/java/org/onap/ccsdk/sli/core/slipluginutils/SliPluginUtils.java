@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,6 +63,8 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(SliPluginUtils.class);
+	private static final String LOG_MSG="extracting list from context memory";
+	private static final String LOG_MSG1="removing elements from list";
 
 
 	// ========== CONSTRUCTORS ==========
@@ -116,9 +120,9 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 				}
 
 				// Extract list from context memory & remove object @ index
-				LOG.trace("extracting list from context memory");
+				LOG.trace(LOG_MSG);
 				list = SvcLogicContextList.extract(ctx, list_pfx);
-				LOG.trace("removing elements from list");
+				LOG.trace(LOG_MSG1);
 				list.remove(index);
 			}
 			else if( param_value != null ) {
@@ -127,9 +131,9 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 				// Extract list from context memory & remove objects with
 				// key-value pair
 				LOG.trace("executing remove by key-value pair logic");
-				LOG.trace("extracting list from context memory");
+				LOG.trace(LOG_MSG);
 				list = SvcLogicContextList.extract(ctx, list_pfx);
-				LOG.trace("removing elements from list");
+				LOG.trace(LOG_MSG1);
 				list.remove( param_key, param_value );
 			}
 			else if( param_keys_length != null ) {
@@ -152,9 +156,9 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 
 				// Extract list from context memory & remove objects with all
 				// key-value pairs matching
-				LOG.trace("extracting list from context memory");
+				LOG.trace(LOG_MSG);
 				list = SvcLogicContextList.extract(ctx, list_pfx);
-				LOG.trace("removing elements from list");
+				LOG.trace(LOG_MSG1);
 				list.remove(keys_values);
 			}
 			else {
