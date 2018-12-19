@@ -40,7 +40,6 @@ import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFaile
 import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
 import org.opendaylight.controller.md.sal.dom.api.DOMDataWriteTransaction;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
-import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput.Mode;
@@ -135,6 +134,7 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 	private static QName TEST_RESULT_QNAME = null;
 	private static QName TEST_ID_QNAME = null;
 	private static QName RESULTS_QNAME = null;
+	private static final String NON_NULL= "non-null";
 
 	static {
 
@@ -195,7 +195,7 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 			domDataBroker = ((AbstractForwardedDataBroker) dataBroker).getDelegate();
 		}
         if( LOG.isDebugEnabled() ){
-            LOG.debug( "DataBroker set to " + (dataBroker==null?"null":"non-null") + "." );
+            LOG.debug( "DataBroker set to " + (dataBroker==null?"null":NON_NULL) + "." );
         }
     }
 
@@ -203,14 +203,14 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
             NotificationPublishService notificationService) {
         this.notificationService = notificationService;
         if( LOG.isDebugEnabled() ){
-            LOG.debug( "Notification Service set to " + (notificationService==null?"null":"non-null") + "." );
+            LOG.debug( "Notification Service set to " + (notificationService==null?"null":NON_NULL) + "." );
         }
     }
 
     public void setRpcRegistry(RpcProviderRegistry rpcRegistry) {
         this.rpcRegistry = rpcRegistry;
         if( LOG.isDebugEnabled() ){
-            LOG.debug( "RpcRegistry set to " + (rpcRegistry==null?"null":"non-null") + "." );
+            LOG.debug( "RpcRegistry set to " + (rpcRegistry==null?"null":NON_NULL) + "." );
         }
     }
 
