@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -38,8 +40,8 @@ import org.slf4j.LoggerFactory;
 public class SliStringUtils implements SvcLogicJavaPlugin {
 	private static final Logger LOG = LoggerFactory.getLogger(SliStringUtils.class);
 
-	public static String INPUT_PARAM_SOURCE = "source";
-	public static String INPUT_PARAM_TARGET = "target";
+	public static final String INPUT_PARAM_SOURCE = "source";
+	public static final String INPUT_PARAM_TARGET = "target";
 	
 	public SliStringUtils() {}
 
@@ -123,8 +125,8 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
      * @since 11.0.2
      */
     public static String equalsIgnoreCase(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
-        SliPluginUtils.checkParameters(parameters, new String[]{"source","target"}, LOG);
-        if(parameters.get("source").equalsIgnoreCase(parameters.get("target"))){
+        SliPluginUtils.checkParameters(parameters, new String[]{INPUT_PARAM_SOURCE,"target"}, LOG);
+        if(parameters.get(INPUT_PARAM_SOURCE).equalsIgnoreCase(parameters.get("target"))){
             return "true";
         }
         return "false";
@@ -146,8 +148,8 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
      * @since 11.0.2
      */
     public static void toUpper(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
-        SliPluginUtils.checkParameters(parameters, new String[]{"source","outputPath"}, LOG);
-        ctx.setAttribute(parameters.get("outputPath"), parameters.get("source").toUpperCase());
+        SliPluginUtils.checkParameters(parameters, new String[]{INPUT_PARAM_SOURCE,"outputPath"}, LOG);
+        ctx.setAttribute(parameters.get("outputPath"), parameters.get(INPUT_PARAM_SOURCE).toUpperCase());
     }
 
     /**
@@ -166,8 +168,8 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
      * @since 11.0.2
      */
     public static void toLower(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
-        SliPluginUtils.checkParameters(parameters, new String[]{"source","outputPath"}, LOG);
-        ctx.setAttribute(parameters.get("outputPath"), parameters.get("source").toLowerCase());
+        SliPluginUtils.checkParameters(parameters, new String[]{INPUT_PARAM_SOURCE,"outputPath"}, LOG);
+        ctx.setAttribute(parameters.get("outputPath"), parameters.get(INPUT_PARAM_SOURCE).toLowerCase());
     }
 
     /**
@@ -187,8 +189,8 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
      * @since 11.0.2
      */
     public static String contains(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
-        SliPluginUtils.checkParameters(parameters, new String[]{"source","target"}, LOG);
-        if(parameters.get("source").contains(parameters.get("target"))){
+        SliPluginUtils.checkParameters(parameters, new String[]{INPUT_PARAM_SOURCE,"target"}, LOG);
+        if(parameters.get(INPUT_PARAM_SOURCE).contains(parameters.get("target"))){
             return "true";
         }
         return "false";
@@ -211,8 +213,8 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
      * @since 11.0.2
      */
     public static String endsWith(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
-        SliPluginUtils.checkParameters(parameters, new String[]{"source","target"}, LOG);
-        if(parameters.get("source").endsWith(parameters.get("target"))){
+        SliPluginUtils.checkParameters(parameters, new String[]{INPUT_PARAM_SOURCE,"target"}, LOG);
+        if(parameters.get(INPUT_PARAM_SOURCE).endsWith(parameters.get("target"))){
             return "true";
         }
         return "false";
@@ -235,8 +237,8 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
      * @since 11.0.2
      */
     public static String startsWith(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
-        SliPluginUtils.checkParameters(parameters, new String[]{"source","target"}, LOG);
-        if(parameters.get("source").startsWith(parameters.get("target"))){
+        SliPluginUtils.checkParameters(parameters, new String[]{INPUT_PARAM_SOURCE,"target"}, LOG);
+        if(parameters.get(INPUT_PARAM_SOURCE).startsWith(parameters.get("target"))){
             return "true";
         }
         return "false";
@@ -258,8 +260,8 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
      * @since 11.0.2
      */
     public static void trim(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
-        SliPluginUtils.checkParameters(parameters, new String[]{"source","outputPath"}, LOG);
-        ctx.setAttribute(parameters.get("outputPath"), parameters.get("source").trim());
+        SliPluginUtils.checkParameters(parameters, new String[]{INPUT_PARAM_SOURCE,"outputPath"}, LOG);
+        ctx.setAttribute(parameters.get("outputPath"), parameters.get(INPUT_PARAM_SOURCE).trim());
     }
 
     /**
@@ -278,8 +280,8 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
      * @since 11.0.2
      */
     public static void getLength(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
-        SliPluginUtils.checkParameters(parameters, new String[]{"source","outputPath"}, LOG);
-        ctx.setAttribute(parameters.get("outputPath"), String.valueOf(parameters.get("source").length()));
+        SliPluginUtils.checkParameters(parameters, new String[]{INPUT_PARAM_SOURCE,"outputPath"}, LOG);
+        ctx.setAttribute(parameters.get("outputPath"), String.valueOf(parameters.get(INPUT_PARAM_SOURCE).length()));
     }
 
     /**
@@ -300,8 +302,8 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
      * @since 11.0.2
      */
     public static void replace(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
-        SliPluginUtils.checkParameters(parameters, new String[]{"source","outputPath","target","replacement"}, LOG);
-        ctx.setAttribute(parameters.get("outputPath"), (parameters.get("source").replace(parameters.get("target"), parameters.get("replacement"))));
+        SliPluginUtils.checkParameters(parameters, new String[]{INPUT_PARAM_SOURCE,"outputPath","target","replacement"}, LOG);
+        ctx.setAttribute(parameters.get("outputPath"), (parameters.get(INPUT_PARAM_SOURCE).replace(parameters.get("target"), parameters.get("replacement"))));
     }
 
     /**
@@ -322,8 +324,8 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
      * @since 11.0.2
      */
     public static void replaceAll(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
-        SliPluginUtils.checkParameters(parameters, new String[]{"source","outputPath","target","replacement"}, LOG);
-        ctx.setAttribute(parameters.get("outputPath"), parameters.get("source").replaceAll(parameters.get("target"), parameters.get("replacement")));
+        SliPluginUtils.checkParameters(parameters, new String[]{INPUT_PARAM_SOURCE,"outputPath","target","replacement"}, LOG);
+        ctx.setAttribute(parameters.get("outputPath"), parameters.get(INPUT_PARAM_SOURCE).replaceAll(parameters.get("target"), parameters.get("replacement")));
     }
     
     /**
@@ -383,8 +385,8 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
      * @since 11.0.2
      */
     public static void concat( Map<String, String> parameters, SvcLogicContext ctx ) throws SvcLogicException {
-            SliPluginUtils.checkParameters( parameters, new String[]{"source","target","outputPath"}, LOG );
-            String result = parameters.get("source").concat(parameters.get("target"));
+            SliPluginUtils.checkParameters( parameters, new String[]{INPUT_PARAM_SOURCE,"target","outputPath"}, LOG );
+            String result = parameters.get(INPUT_PARAM_SOURCE).concat(parameters.get("target"));
             ctx.setAttribute(parameters.get("outputPath"), result);
     }
 
@@ -405,13 +407,13 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
      * @throws SvcLogicException
      */
     public static void urlEncode(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
-        SliPluginUtils.checkParameters(parameters, new String[] { "source", "outputPath" }, LOG);
+        SliPluginUtils.checkParameters(parameters, new String[] { INPUT_PARAM_SOURCE, "outputPath" }, LOG);
         String encoding = parameters.get("encoding");
         if (encoding == null) {
             encoding = "UTF-8";
         }
         try {
-            String result = URLEncoder.encode(parameters.get("source"), encoding);
+            String result = URLEncoder.encode(parameters.get(INPUT_PARAM_SOURCE), encoding);
             ctx.setAttribute(parameters.get("outputPath"), result);
         } catch (UnsupportedEncodingException e) {
             throw new SvcLogicException("Url encode failed.", e);
