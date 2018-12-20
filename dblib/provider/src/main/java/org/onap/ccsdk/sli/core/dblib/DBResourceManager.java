@@ -83,6 +83,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
     protected final long expectedCompletionTime;
     protected final long unprocessedFailoverThreshold;
     private static final String LOGGER_ALARM_MSG="Generated alarm: DBResourceManager.getData - No active DB connection pools are available.";
+    private static final String EXCEPTION_MSG= "No active DB connection pools are available in RequestDataNoRecovery call.";
 
     public DBResourceManager(final DBLIBResourceProvider configuration) {
         this(configuration.getProperties());
@@ -461,7 +462,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
     private CachedRowSet requestDataNoRecovery(String statement, ArrayList<Object> arguments, String preferredDS) throws SQLException {
         if(dsQueue.isEmpty()){
             LOGGER.error(LOGGER_ALARM_MSG);
-            throw new DBLibException("No active DB connection pools are available in RequestDataNoRecovery call.");
+            throw new DBLibException(EXCEPTION_MSG);
         }
         CachedDataSource active = this.dsQueue.first();
         long time = System.currentTimeMillis();
@@ -475,8 +476,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
                 }
             }
             return active.getData(statement, arguments);
-//        } catch(SQLDataException exc){
-//            throw exc;
+
         } catch(Throwable exc){
             String message = exc.getMessage();
             if(message == null)
@@ -537,7 +537,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
     private boolean writeDataNoRecovery(String statement, ArrayList<Object> arguments, String preferredDS) throws SQLException {
         if(dsQueue.isEmpty()){
             LOGGER.error(LOGGER_ALARM_MSG);
-            throw new DBLibException("No active DB connection pools are available in RequestDataNoRecovery call.");
+            throw new DBLibException(EXCEPTION_MSG);
         }
 
         boolean initialRequest = true;
@@ -665,7 +665,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
             SQLException exception = new DBLibException(lastException.getMessage());
             exception.setStackTrace(lastException.getStackTrace());
             if(lastException.getCause() instanceof SQLException) {
-//                exception.setNextException((SQLException)lastException.getCause());
+
                 throw (SQLException)lastException.getCause();
             }
             throw exception;
