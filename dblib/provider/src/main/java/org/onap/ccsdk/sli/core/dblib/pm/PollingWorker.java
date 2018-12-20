@@ -62,7 +62,7 @@ public class PollingWorker implements Runnable {
 		interval = Long.parseLong((ctxprops == null || ctxprops.getProperty("org.onap.ccsdk.dblib.pm.interval") == null)
 				? "60" : (String) ctxprops.getProperty("org.onap.ccsdk.dblib.pm.interval"));
 		// '0' bucket is to count exceptions
-		String sampling[] = ((ctxprops == null || ctxprops.getProperty("org.onap.ccsdk.dblib.pm.sampling") == null)
+		String[] sampling = ((ctxprops == null || ctxprops.getProperty("org.onap.ccsdk.dblib.pm.sampling") == null)
 				? "0,2,5,10,20,50,100" : (String) ctxprops.getProperty("org.onap.ccsdk.dblib.pm.sampling")).split(",");
 
 		if (enabled) {
