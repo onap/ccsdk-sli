@@ -3,7 +3,7 @@
  * ONAP : CCSDK
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 						reserved.
+ *                         reserved.
  * ================================================================================
  *  Modifications Copyright (C) 2018 IBM.
  * ================================================================================
@@ -27,7 +27,6 @@ import java.util.Properties;
 
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
-import org.onap.ccsdk.sli.core.sli.MetricLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicDblibStore;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -44,7 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcLogicService  {
+public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcLogicService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SvcLogicServiceImpl.class);
     protected BundleContext bctx = null;
@@ -113,7 +112,7 @@ public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcL
         execute(graph, ctx);
         return (ctx.toProperties());
     }
-    
+
     @Override
     public SvcLogicStore getStore() throws SvcLogicException {
         // Create and initialize SvcLogicStore object - used to access
