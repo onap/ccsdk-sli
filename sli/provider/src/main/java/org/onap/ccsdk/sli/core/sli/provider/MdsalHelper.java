@@ -56,7 +56,9 @@ public class MdsalHelper {
     private static final String IPV6_ADDRESS="Ipv6Address";
     
     private static final String IP_PREFIX="IpPrefix";
-
+    private static final String SETTING_PROPERTY="Setting property ";
+    private static final String BUILDER="-builder";
+    
     @Deprecated
     public static void setProperties(Properties input) {
         setYangMappingProperties(input);
@@ -146,7 +148,7 @@ public class MdsalHelper {
                     } else if ("PortNumber".equals(simpleTypeName)) {
                         propVal = String.valueOf((Integer) retValue);
                     }
-                    LOG.debug("Setting property " + pfx + " to " + propVal);
+                    LOG.debug(SETTING_PROPERTY + pfx + " to " + propVal);
                     props.setProperty(pfx, propVal);
                 }
             } catch (Exception e) {
@@ -182,8 +184,8 @@ public class MdsalHelper {
                     propNamePfx = toLowerHyphen(fromClass.getSimpleName());
                 }
 
-                if (propNamePfx.endsWith("-builder")) {
-                    propNamePfx = propNamePfx.substring(0, propNamePfx.length() - "-builder".length());
+                if (propNamePfx.endsWith(BUILDER)) {
+                    propNamePfx = propNamePfx.substring(0, propNamePfx.length() - BUILDER.length());
                 }
 
                 if (propNamePfx.endsWith("-impl")) {
@@ -332,7 +334,7 @@ public class MdsalHelper {
                                 } else {
                                     propVal = propValObj.toString();
                                 }
-                                LOG.debug("Setting property " + propName + " to " + propVal);
+                                LOG.debug(SETTING_PROPERTY + propName + " to " + propVal);
                                 props.setProperty(propName, propVal);
 
                             }
@@ -379,7 +381,7 @@ public class MdsalHelper {
             } else {
                 fromVal = fromObj.toString();
             }
-            LOG.debug("Setting property " + pfx + " to " + fromVal);
+            LOG.debug(SETTING_PROPERTY + pfx + " to " + fromVal);
             props.setProperty(pfx, fromVal);
         }
 
@@ -559,8 +561,8 @@ public class MdsalHelper {
                     propNamePfx = toLowerHyphen(toClass.getSimpleName());
                 }
 
-                if (propNamePfx.endsWith("-builder")) {
-                    propNamePfx = propNamePfx.substring(0, propNamePfx.length() - "-builder".length());
+                if (propNamePfx.endsWith(BUILDER)) {
+                    propNamePfx = propNamePfx.substring(0, propNamePfx.length() - BUILDER.length());
                 }
 
                 if (propNamePfx.endsWith("-impl")) {
@@ -1035,8 +1037,8 @@ public class MdsalHelper {
                     propNamePfx = toLowerHyphen(toClass.getSimpleName());
                 }
 
-                if (propNamePfx.endsWith("-builder")) {
-                    propNamePfx = propNamePfx.substring(0, propNamePfx.length() - "-builder".length());
+                if (propNamePfx.endsWith(BUILDER)) {
+                    propNamePfx = propNamePfx.substring(0, propNamePfx.length() - BUILDER.length());
                 }
 
                 if (propNamePfx.endsWith("-impl")) {
