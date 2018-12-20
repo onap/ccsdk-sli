@@ -35,14 +35,14 @@ import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Dscp;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddress;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpPrefix;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpPrefixBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.PortNumber;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Dscp;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,9 +129,11 @@ public class MdsalHelper {
         String simpleTypeName = fromObj.getClass().getTypeName();
         simpleTypeName = simpleTypeName.substring(simpleTypeName.lastIndexOf(".") + 1);
         LOG.trace("Extracting properties from " + fromClass.getName() + " class");
+        
         if (classHasSpecialHandling(simpleTypeName)) {
             try {
-                Method m = fromClass.getMethod("getValue", null);
+
+                Method m = fromClass.getMethod(getStringValueMethod(simpleTypeName), null);
                 boolean isAccessible = m.isAccessible();
                 if (!isAccessible) {
                     m.setAccessible(true);
@@ -139,9 +141,8 @@ public class MdsalHelper {
                 Object retValue = m.invoke(fromObj);
                 if (retValue != null) {
                     String propVal = null;
-                    if (IP_ADDRESS.equals(simpleTypeName) || IP_PREFIX.equals(simpleTypeName)) {
-                        propVal = String.valueOf((char[]) retValue);
-                    } else if (IPV4_ADDRESS.equals(simpleTypeName) || IPV6_ADDRESS.equals(simpleTypeName)) {
+                    if (IP_ADDRESS.equals(simpleTypeName) || IP_PREFIX.equals(simpleTypeName)
+                    		|| IPV4_ADDRESS.equals(simpleTypeName) || IPV6_ADDRESS.equals(simpleTypeName)) {
                         propVal = (String) retValue;
                     } else if ("Dscp".equals(simpleTypeName)) {
                         propVal = String.valueOf((short) retValue);
@@ -641,6 +642,7 @@ public class MdsalHelper {
 
                             if (IPV4_ADDRESS.equals(simpleName) || IPV6_ADDRESS.equals(simpleName)
                                     || IP_ADDRESS.equals(simpleName)) {
+                            	
 
                                 if ((paramValue != null) && (paramValue.length() > 0)) {
                                     try {
@@ -1006,6 +1008,14 @@ public class MdsalHelper {
             return true;
         }
         return false;
+    }
+    
+    private static String getStringValueMethod(String simpleName){
+    	if (IP_ADDRESS.equals(simpleName) || IP_PREFIX.equals(simpleName)) {
+    		return("stringValue");
+    	} else {
+    		return("getValue");
+    	}
     }
 
     public static void printPropertyList(PrintStream pstr, String pfx, Class toClass) {

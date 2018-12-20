@@ -5,21 +5,16 @@
    <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
    <groupId>org.onap.ccsdk.sli.core</groupId>
    <artifactId>filters</artifactId>
-   <version>0.4.0-SNAPSHOT</version>
+   <version>0.4.1-SNAPSHOT</version>
    <packaging>pom</packaging>
 
    <name>ccsdk-sli-core :: filters</name>
-
-    
-    <properties>
-    	<ccsdk.sli.core.version>${project.version}</ccsdk.sli.core.version>
-    </properties>
    <description>Servlet filter to implement ONAP logging spec</description>
    <organization>
         <name>ONAP</name>

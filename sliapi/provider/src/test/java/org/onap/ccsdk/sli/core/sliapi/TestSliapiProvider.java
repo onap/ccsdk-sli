@@ -53,7 +53,9 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.HealthcheckInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.SLIAPIService;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterBuilder;
 
@@ -161,7 +163,7 @@ public class TestSliapiProvider {
         inputBuilder.setSliParameter(pList);
 
         provider.executeGraph(inputBuilder.build());
-        assertTrue(provider.vlbcheck() instanceof Future<?>);
+        assertTrue(provider.vlbcheck(mock(VlbcheckInput.class)) instanceof Future<?>);
     }
 
     /**
@@ -170,7 +172,7 @@ public class TestSliapiProvider {
      */
     @Test
     public void testHealthcheck() {
-        provider.healthcheck();
+        provider.healthcheck(mock(HealthcheckInput.class));
     }
 
 }

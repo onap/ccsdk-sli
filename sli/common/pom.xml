@@ -5,22 +5,22 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.core</groupId>
     <artifactId>sli-common</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.4.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-core :: sli :: ${project.artifactId}</name>
     <description>The SLI Common package includes common classes used by the various SLI subcomponents, as well as classes used by clients to interface with the service logic interpreter</description>
 
     <properties>
-        <!--  Ignore deprecated classes in coverage counts -->
-        <sonar.coverage.exclusions>**/MessageWriter.java</sonar.coverage.exclusions>
-        <ccsdk.sli.core.version>${project.version}</ccsdk.sli.core.version>
+       <!--  Ignore deprecated classes in coverage counts -->
+       <sonar.coverage.exclusions>**/MessageWriter.java</sonar.coverage.exclusions>
+
     </properties>
 
 
@@ -73,11 +73,11 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-inet-types</artifactId>
+            <artifactId>ietf-inet-types-2013-07-15</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-yang-types</artifactId>
+            <artifactId>ietf-yang-types-20130715</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>

@@ -29,6 +29,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.concurrent.Future;
+
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
@@ -46,10 +47,12 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.Exe
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphOutputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.HealthcheckInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.HealthcheckOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.HealthcheckOutputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.SLIAPIService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.TestResults;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckOutputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
@@ -75,7 +78,9 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 
 
 /**
@@ -215,7 +220,7 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
     }
 
 	@Override
-	public Future<RpcResult<ExecuteGraphOutput>> executeGraph(ExecuteGraphInput input) {
+	public ListenableFuture<RpcResult<ExecuteGraphOutput>> executeGraph(ExecuteGraphInput input) {
 		RpcResult<ExecuteGraphOutput> rpcResult = null;
 
 		SvcLogicService svcLogic = getSvcLogicService();
@@ -395,7 +400,7 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 	}
 
 	@Override
-	public Future<RpcResult<HealthcheckOutput>> healthcheck() {
+	public ListenableFuture<RpcResult<HealthcheckOutput>> healthcheck(HealthcheckInput healthcheckInput) {
 
 		RpcResult<HealthcheckOutput> rpcResult = null;
 		SvcLogicService svcLogic = getSvcLogicService();
@@ -469,6 +474,80 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 		return (Futures.immediateFuture(rpcResult));
 	}
 
+	public ListenableFuture<RpcResult<VlbcheckOutput>> vlbcheck(VlbcheckInput vlbInput) {
+
+		RpcResult<VlbcheckOutput> rpcResult = null;
+		SvcLogicService svcLogic = getSvcLogicService();
+
+		VlbcheckOutputBuilder respBuilder = new VlbcheckOutputBuilder();
+
+		String calledModule = "sli";
+		String calledRpc = "vlbcheck";
+		String modeStr = "sync";
+
+		if (svcLogic == null) {
+			respBuilder.setResponseCode("500");
+			respBuilder.setResponseMessage("Could not locate OSGi SvcLogicService service");
+			respBuilder.setAckFinalIndicator("Y");
+
+		    rpcResult = RpcResultBuilder.<VlbcheckOutput> failed().withResult(respBuilder.build()).build();
+		    return(Futures.immediateFuture(rpcResult));
+		}
+
+		try {
+			if (!svcLogic.hasGraph(calledModule, calledRpc, null, modeStr)) {
+				respBuilder.setResponseCode("404");
+				respBuilder.setResponseMessage("Directed graph for "+calledModule+"/"+calledRpc+"/"+modeStr+" not found");
+
+				respBuilder.setAckFinalIndicator("Y");
+
+			    rpcResult = RpcResultBuilder.<VlbcheckOutput> status(true).withResult(respBuilder.build()).build();
+			    return(Futures.immediateFuture(rpcResult));
+			}
+		} catch (Exception e) {
+			LOG.error("Caught exception looking for directed graph for "+calledModule+"/"+calledRpc+"/"+modeStr, e);
+
+			respBuilder.setResponseCode("500");
+			respBuilder.setResponseMessage("Internal error : could not determine if target graph exists");
+			respBuilder.setAckFinalIndicator("Y");
+
+		    rpcResult = RpcResultBuilder.<VlbcheckOutput> failed().withResult(respBuilder.build()).build();
+		    return(Futures.immediateFuture(rpcResult));
+		}
+
+		try {
+			LOG.info("Calling directed graph for "+calledModule+"/"+calledRpc+"/"+modeStr);
+
+			Properties parms = new Properties();
+
+			Properties respProps = svcLogic.execute(calledModule, calledRpc,
+					null, modeStr, parms);
+
+			respBuilder.setResponseCode(respProps.getProperty("error-code", "0"));
+			respBuilder.setResponseMessage(respProps.getProperty("error-message", ""));
+			respBuilder.setAckFinalIndicator(respProps.getProperty("ack-final", "Y"));
+
+		} catch (Exception e) {
+			LOG.error("Caught exception executing directed graph for"
+					+ calledModule + ":" + calledRpc + "," + modeStr + ">", e);
+
+			respBuilder.setResponseCode("500");
+			respBuilder
+					.setResponseMessage("Internal error : caught exception executing directed graph "
+							+ calledModule
+							+ "/"
+							+ calledRpc
+							+ "/"
+							+ modeStr);
+			respBuilder.setAckFinalIndicator("Y");
+
+		}
+
+		rpcResult = RpcResultBuilder.<VlbcheckOutput> status(true)
+				.withResult(respBuilder.build()).build();
+		return (Futures.immediateFuture(rpcResult));
+	}
+
 	private void DomSaveTestResult(final TestResult entry, boolean merge, LogicalDatastoreType storeType) {
 
 
@@ -529,10 +608,11 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 		private void SaveTestResult(final TestResult entry, boolean merge, LogicalDatastoreType storeType) throws IllegalStateException
 		{
 			// Each entry will be identifiable by a unique key, we have to create that identifier
+			
 			InstanceIdentifier.InstanceIdentifierBuilder<TestResult> testResultIdBuilder =
 					InstanceIdentifier.<TestResults>builder(TestResults.class)
-					.child(TestResult.class, entry.getKey());
-			InstanceIdentifier<TestResult> path = testResultIdBuilder.toInstance();
+					.child(TestResult.class, entry.key());
+			InstanceIdentifier<TestResult> path = testResultIdBuilder.build();
 			int tries = 2;
 			while(true) {
 				try {
@@ -590,50 +670,5 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 
 		}
 
-		@Override
-		public Future<RpcResult<VlbcheckOutput>> vlbcheck() {
-			RpcResult<VlbcheckOutput> rpcResult = null;
-			VlbcheckOutputBuilder respBuilder = new VlbcheckOutputBuilder();
-			boolean suspended = false;
-			BufferedReader br = null;
-			String line = "";
 
-			// check the state based on the config file
-
-			if (sdncStatusFile != null) {
-				try	{
-					br = new BufferedReader(new FileReader(sdncStatusFile));
-					while((line = br.readLine()) != null)
-					{
-						if ("ODL_STATE=SUSPENDED".equals(line)) {
-							suspended = true;
-							LOG.debug("vlbcheck: server is suspended");
-						}
-					}
-					br.close();
-				} catch (FileNotFoundException e) {
-					LOG.trace("Caught File not found exception " + sdncStatusFile +"\n",e);
-				} catch (Exception e) {
-					LOG.trace("Failed to read status file " + sdncStatusFile +"\n",e);
-				} finally {
-					if (br != null) {
-						try {
-							br.close();
-						} catch (IOException e) {
-							LOG.warn("Failed to close status file " + sdncStatusFile +"\n",e);
-						}
-					}
-				}
-			}
-
-			if (suspended) {
-				rpcResult = RpcResultBuilder.<VlbcheckOutput>failed().withError(ErrorType.APPLICATION,
-						"resource-denied", "Server Suspended").build();
-			} else {
-				respBuilder.setResponseMessage("server is normal");
-				rpcResult = RpcResultBuilder.<VlbcheckOutput> status(true)
-						.withResult(respBuilder.build()).build();
-			}
-			return (Futures.immediateFuture(rpcResult));
-		}
 }
