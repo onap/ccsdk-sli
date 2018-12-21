@@ -566,7 +566,7 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 			YangInstanceIdentifier testResultId = YangInstanceIdentifier.builder().node(TEST_RESULTS_QNAME).node(TEST_RESULT_QNAME).build();
 
 			// Construct results list
-			LinkedList<LeafSetEntryNode<Object>> entryList = new LinkedList<LeafSetEntryNode<Object>>();
+			LinkedList<LeafSetEntryNode<Object>> entryList = new LinkedList<>();
 			for (String result : testResult.getResults()) {
 				LeafSetEntryNode<Object> leafSetEntryNode = ImmutableLeafSetEntryNodeBuilder.create()
 																				.withNodeIdentifier(new NodeWithValue(RESULTS_QNAME, result))
