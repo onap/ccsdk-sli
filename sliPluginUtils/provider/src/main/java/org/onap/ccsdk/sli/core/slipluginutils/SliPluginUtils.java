@@ -65,6 +65,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 	private static final Logger LOG = LoggerFactory.getLogger(SliPluginUtils.class);
 	private static final String LOG_MSG="extracting list from context memory";
 	private static final String LOG_MSG1="removing elements from list";
+	private static final String LENGTH="_length";
 
 
 	// ========== CONSTRUCTORS ==========
@@ -216,7 +217,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 			i++;
 		}
 		// Reset list length (removed by ctxBulkErase above)
-		ctx.setAttribute(ctx_list_str+"_length", Integer.toString(listSz));
+		ctx.setAttribute(ctx_list_str+LENGTH, Integer.toString(listSz));
 	}
 
     /**
@@ -492,7 +493,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 	 * @since 1.0
 	 */
 	public static final int getArrayLength( SvcLogicContext ctx, String key, Logger log, LogLevel logLevel, String log_message ) {
-		String ctxKey = key.endsWith("_length") ? key : key + "_length";
+		String ctxKey = key.endsWith(LENGTH) ? key : key + LENGTH;
 		try {
 			return Integer.parseInt(ctx.getAttribute(ctxKey));
 		}
@@ -829,7 +830,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
                 writeJsonObject(entry.getValue().getAsJsonObject(), ctx, root + entry.getKey() + ".");
             } else if (entry.getValue().isJsonArray()) {
                 JsonArray array = entry.getValue().getAsJsonArray();
-                ctx.setAttribute(root + entry.getKey() + "_length", String.valueOf(array.size()));
+                ctx.setAttribute(root + entry.getKey() + LENGTH, String.valueOf(array.size()));
                 Integer arrayIdx = 0;
                 for (JsonElement element : array) {
                     if (element.isJsonObject()) {
@@ -873,7 +874,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 
 		try {
 			String ctxList = parameters.get("list");
-			ctxList = (ctxList.endsWith("_length")) ? ctxList : ctxList + "_length";
+			ctxList = (ctxList.endsWith(LENGTH)) ? ctxList : ctxList + LENGTH;
 			int listLength = getArrayLength(ctx, ctxList);
 
 			if (listLength == 0) {
@@ -1063,9 +1064,9 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 		setParametersToCtxList(parameters, ctx, prefixKeyWithIndex, valuePrefixKey);
 
 		// set length of list
-		String ListLengthKeyName = prefixKey + "_length";
+		String ListLengthKeyName = prefixKey + LENGTH;
 
-		ctxSetAttribute(ctx, prefixKey + "_length", listLength + 1);
+		ctxSetAttribute(ctx, prefixKey + LENGTH, listLength + 1);
 		LOG.debug("Updated _length: " + prefixKey + "_length is now " + ctx.getAttribute(ListLengthKeyName));
 	}
 
