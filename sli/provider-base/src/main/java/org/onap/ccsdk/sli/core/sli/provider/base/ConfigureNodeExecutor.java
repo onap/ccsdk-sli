@@ -40,6 +40,8 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ConfigureNodeExecutor.class);
 	private static final String CAUGHT_EXCEPTION_MSG="Caught exception from ";
+	private static final String ALREADY_ACTIVE= "already-active";
+	private static final String NOT_FOUND= "not-found";
 
 	public SvcLogicNode execute(SvcLogicServiceBase svc, SvcLogicNode node,
 			SvcLogicContext ctx) throws SvcLogicException {
@@ -108,10 +110,10 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 							case SUCCESS:
 								break;
 							case ALREADY_ACTIVE:
-								outValue = "already-active";
+								outValue = ALREADY_ACTIVE;
 								break;
 							case NOT_FOUND:
-								outValue = "not-found";
+								outValue = NOT_FOUND;
 								break;
 							case NOT_READY:
 								outValue = "not-ready";
@@ -134,10 +136,10 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 							case SUCCESS:
 								break;
 							case ALREADY_ACTIVE:
-								outValue = "already-active";
+								outValue = ALREADY_ACTIVE;
 								break;
 							case NOT_FOUND:
-								outValue = "not-found";
+								outValue = NOT_FOUND;
 								break;
 							case NOT_READY:
 								outValue = "not-ready";
@@ -150,10 +152,10 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 					}
 					break;
 				case ALREADY_ACTIVE:
-					outValue = "already-active";
+					outValue = ALREADY_ACTIVE;
 					break;
 				case NOT_FOUND:
-					outValue = "not-found";
+					outValue = NOT_FOUND;
 					break;
 				case NOT_READY:
 					outValue = "not-ready";
@@ -177,10 +179,10 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 							outValue = "success";
 							break;
 						case ALREADY_ACTIVE:
-							outValue = "already-active";
+							outValue = ALREADY_ACTIVE;
 							break;
 						case NOT_FOUND:
-							outValue = "not-found";
+							outValue = NOT_FOUND;
 							break;
 						case NOT_READY:
 							outValue = "not-ready";
@@ -203,10 +205,10 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 							outValue = "success";
 							break;
 						case ALREADY_ACTIVE:
-							outValue = "already-active";
+							outValue = ALREADY_ACTIVE;
 							break;
 						case NOT_FOUND:
-							outValue = "not-found";
+							outValue = NOT_FOUND;
 							break;
 						case NOT_READY:
 							outValue = "not-ready";
