@@ -28,19 +28,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DbConfigPool {
-	private static Logger LOGGER = LoggerFactory.getLogger(DbConfigPool.class);
-
+	private static Logger log = LoggerFactory.getLogger(DbConfigPool.class);
 	private final String type;
-
+	private static final int timeOut=0;
 	private ArrayList<BaseDBConfiguration> configurations = new ArrayList<>();
 
 	public DbConfigPool(Properties properties) {
-		LOGGER.debug("Initializing DbConfigType");
+		log.debug("Initializing DbConfigType");
 		type = properties.getProperty(BaseDBConfiguration.DATABASE_TYPE, "JDBC").toUpperCase();
 	}
 
 	public int getTimeout() {
-		return 0;
+		return timeOut;
 	}
 
 	public String getType() {
