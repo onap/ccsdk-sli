@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BaseDBConfiguration {
 
-    private Logger logger = LoggerFactory.getLogger(BaseDBConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseDBConfiguration.class);
     /**
      * Property key within a properties configuration File for db type
      */
@@ -134,7 +134,7 @@ public abstract class BaseDBConfiguration {
             String value = properties.getProperty(CONNECTION_TIMEOUT, DEFAULT_REJECT_CHANGE_VALUE);
             return Integer.parseInt(value);
         } catch (Exception exc) {
-            logger.error("Exception",exc);
+            LOGGER.error("Exception",exc);
             return Integer.parseInt(DEFAULT_REJECT_CHANGE_VALUE);
         }
     }
@@ -150,7 +150,7 @@ public abstract class BaseDBConfiguration {
             String value = properties.getProperty(REQUEST_TIMEOUT, DEFAULT_REJECT_CHANGE_VALUE);
             return Integer.parseInt(value);
         } catch (Exception exc) {
-            logger.error("Exception",exc);
+            LOGGER.error("Exception",exc);
             return Integer.parseInt(DEFAULT_REJECT_CHANGE_VALUE);
         }
     }
@@ -246,5 +246,13 @@ public abstract class BaseDBConfiguration {
      */
     public String getDbUrl() {
         return properties.getProperty(DATABASE_URL);
+    }
+    
+    public boolean containsKey(String propertyname) {
+        return properties.containsKey(propertyname);
+    }
+    
+    public String getProperty(String propertyname) {
+        return properties.getProperty(propertyname);
     }
 }

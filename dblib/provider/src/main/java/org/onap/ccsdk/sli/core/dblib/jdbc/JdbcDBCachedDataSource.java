@@ -193,4 +193,9 @@ public class JdbcDBCachedDataSource extends CachedDataSource {
         dataSource.close(true);
         super.cleanUp();
     }
+
+    @Override
+    protected int getAvailableConnections() {
+        return org.apache.tomcat.jdbc.pool.DataSource.class.cast(ds).getSize();
+    }
 }

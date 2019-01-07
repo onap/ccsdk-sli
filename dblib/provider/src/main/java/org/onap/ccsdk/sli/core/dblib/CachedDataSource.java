@@ -94,6 +94,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
     }
 
     protected abstract DataSource configure(BaseDBConfiguration jdbcElem) throws DBConfigException;
+    protected abstract int getAvailableConnections();
 
     /*
      * (non-Javadoc)
@@ -488,9 +489,9 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
             isSlave = true;
         }
         if (isSlave) {
-            LOGGER.debug("SQL SLAVE : {} on server {}", connectionName, hostname);
+            LOGGER.debug("SQL SLAVE : {} on server {}, pool {}", connectionName, getDbConnectionName(), getAvailableConnections());
         } else {
-            LOGGER.debug("SQL MASTER : {} on server {}", connectionName, hostname);
+            LOGGER.debug("SQL MASTER : {} on server {}, pool {}", connectionName, getDbConnectionName(), getAvailableConnections());
         }
         return isSlave;
     }
