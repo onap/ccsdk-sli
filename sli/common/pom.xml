@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
-        <relativePath />
+        <version>1.2.0</version>
+        <relativePath/>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.core</groupId>
@@ -19,9 +18,9 @@
     <description>The SLI Common package includes common classes used by the various SLI subcomponents, as well as classes used by clients to interface with the service logic interpreter</description>
 
     <properties>
-       <!--  Ignore deprecated classes in coverage counts -->
-       <sonar.coverage.exclusions>**/MessageWriter.java</sonar.coverage.exclusions>
-
+        <!--  Ignore deprecated classes in coverage counts -->
+        <sonar.coverage.exclusions>**/MessageWriter.java</sonar.coverage.exclusions>
+        <ccsdk.sli.core.version>${project.version}</ccsdk.sli.core.version>
     </properties>
 
 

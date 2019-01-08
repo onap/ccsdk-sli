@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>feature-repo-parent</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0</version>
         <relativePath/>
     </parent>
 
@@ -15,6 +15,10 @@
     <packaging>feature</packaging>
 
     <name>ccsdk-sli-core :: filters :: ${project.artifactId}</name>
+    
+    <properties>
+    	<ccsdk.sli.core.version>${project.version}</ccsdk.sli.core.version>
+    </properties>
 
     <dependencies>
         <dependency>

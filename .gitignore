@@ -46,3 +46,6 @@ blackDuckHubProjectVersionName.txt
 
 # Derby log
 derby.log
+
+# Generated file
+sliPluginUtils/provider/testFileName
