@@ -59,10 +59,11 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
     private static final Logger LOGGER = LoggerFactory.getLogger(CachedDataSource.class);
 
     private static final String SQL_FAILURE = "SQL FAILURE. time(ms): ";
-    private static final String FAILED_TO_EXECUTE = "> Failed to execute: ";
+    private static final String FAILED_TO_EXECUTE = "> failed to execute: ";
     private static final String WITH_ARGUMENTS = " with arguments: ";
     private static final String WITH_NO_ARGUMENTS = " with no arguments. ";
-    private static final String SQL_DATA_SOURCE = "SQL DataSource <";
+    private static final String DATA_SOURCE_CONNECT_SUCCESS = "SQL DataSource < {} > connected to {}, read-only is {}, tested successfully";
+    private static final String DATA_SOURCE_CONNECT_FAILURE = "SQL DataSource < {} > test failed. Cause : {}> test failed. Cause : {}";
 
     protected long connReqTimeout = 30L;
     protected long dataReqTimeout = 100L;
@@ -356,17 +357,14 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
                 hostname = rs.getString(2);
 
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(SQL_DATA_SOURCE + getDbConnectionName() + "> connected to " + hostname
-                            + ", read-only is " + readOnly + ", tested successfully ");
+                    LOGGER.debug(DATA_SOURCE_CONNECT_SUCCESS,getDbConnectionName(),hostname,readOnly);
                 }
             }
         } catch (Exception exc) {
             if (errorLevel) {
-                LOGGER.error(
-                        SQL_DATA_SOURCE + this.getDbConnectionName() + "> test failed. Cause : " + exc.getMessage());
+                LOGGER.error(DATA_SOURCE_CONNECT_FAILURE, this.getDbConnectionName(),exc.getMessage());
             } else {
-                LOGGER.info(
-                        SQL_DATA_SOURCE + this.getDbConnectionName() + "> test failed. Cause : " + exc.getMessage());
+                LOGGER.info(DATA_SOURCE_CONNECT_FAILURE, this.getDbConnectionName(),exc.getMessage());
             }
             return false;
         } finally {
@@ -489,9 +487,9 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
             isSlave = true;
         }
         if (isSlave) {
-            LOGGER.debug("SQL SLAVE : {} on server {}, pool {}", connectionName, getDbConnectionName(), getAvailableConnections());
+            LOGGER.debug("SQL SLAVE : {} on server {}, pool {}", connectionName, hostname, getAvailableConnections());
         } else {
-            LOGGER.debug("SQL MASTER : {} on server {}, pool {}", connectionName, getDbConnectionName(), getAvailableConnections());
+            LOGGER.debug("SQL MASTER : {} on server {}, pool {}", connectionName, hostname, getAvailableConnections());
         }
         return isSlave;
     }

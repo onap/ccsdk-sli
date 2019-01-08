@@ -50,6 +50,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.apache.tomcat.jdbc.pool.PoolExhaustedException;
 import org.onap.ccsdk.sli.core.dblib.config.DbConfigPool;
 import org.onap.ccsdk.sli.core.dblib.config.JDBCConfiguration;
+import org.onap.ccsdk.sli.core.dblib.config.TerminatingConfiguration;
 import org.onap.ccsdk.sli.core.dblib.factory.DBConfigFactory;
 import org.onap.ccsdk.sli.core.dblib.pm.PollingWorker;
 import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitor;
@@ -755,7 +756,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
             if(broken != null)
             {
                 try {
-                    broken.add( new TerminatingCachedDataSource(null));
+                    broken.add( new TerminatingCachedDataSource(new TerminatingConfiguration()));
                 } catch(Exception exc){
                     LOGGER.error("Waiting for Worker to stop", exc);
                 }
