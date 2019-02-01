@@ -24,6 +24,7 @@ package org.onap.ccsdk.sli.core.dblib;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -92,6 +93,12 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
     public DBResourceManager(final Properties properties) {
         this.configProps = properties;
+        
+        // TODO : hack to force classloader to cache mariadb driver.  This shouldnt be necessary,
+        // but for some reason it is (without this, dblib throws ClassNotFound on mariadb driver
+        // and fails to load).
+        Driver dvr = new org.mariadb.jdbc.Driver();
+        dvr = null;
 
         // get retry interval value
         retryInterval = getLongFromProperties(properties, "org.onap.dblib.connection.retry", 10000L);
