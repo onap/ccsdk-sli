@@ -97,6 +97,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
         // TODO : hack to force classloader to cache mariadb driver.  This shouldnt be necessary,
         // but for some reason it is (without this, dblib throws ClassNotFound on mariadb driver
         // and fails to load).
+        LOGGER.info("Creating dummy instance of org.mariadb.jdbc.Driver");
         Driver dvr = new org.mariadb.jdbc.Driver();
         dvr = null;
 
