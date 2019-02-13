@@ -82,51 +82,51 @@ import org.slf4j.LoggerFactory;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
-
 /**
- * Defines a base implementation for your provider. This class extends from a helper class
- * which provides storage for the most commonly used components of the MD-SAL. Additionally the
- * base class provides some basic logging and initialization / clean up methods.
+ * Defines a base implementation for your provider. This class extends from a
+ * helper class which provides storage for the most commonly used components of
+ * the MD-SAL. Additionally the base class provides some basic logging and
+ * initialization / clean up methods.
  *
- * To use this, copy and paste (overwrite) the following method into the TestApplicationProviderModule
- * class which is auto generated under src/main/java in this project
- * (created only once during first compilation):
+ * To use this, copy and paste (overwrite) the following method into the
+ * TestApplicationProviderModule class which is auto generated under
+ * src/main/java in this project (created only once during first compilation):
  *
  * <pre>
-
-    @Override
-    public java.lang.AutoCloseable createInstance() {
-
-         final sliapiProvider provider = new sliapiProvider();
-         provider.setDataBroker( getDataBrokerDependency() );
-         provider.setNotificationService( getNotificationServiceDependency() );
-         provider.setRpcRegistry( getRpcRegistryDependency() );
-         provider.initialize();
-         return new AutoCloseable() {
-
-            @Override
-            public void close() throws Exception {
-                //TODO: CLOSE ANY REGISTRATION OBJECTS CREATED USING ABOVE BROKER/NOTIFICATION
-                //SERVIE/RPC REGISTRY
-                provider.close();
-            }
-        };
-    }
-
-
-    </pre>
+ * 
+ * &#64;Override
+ * public java.lang.AutoCloseable createInstance() {
+ * 
+ * 	final sliapiProvider provider = new sliapiProvider();
+ * 	provider.setDataBroker(getDataBrokerDependency());
+ * 	provider.setNotificationService(getNotificationServiceDependency());
+ * 	provider.setRpcRegistry(getRpcRegistryDependency());
+ * 	provider.initialize();
+ * 	return new AutoCloseable() {
+ * 
+ * 		&#64;Override
+ * 		public void close() throws Exception {
+ * 			// TODO: CLOSE ANY REGISTRATION OBJECTS CREATED USING ABOVE
+ * 			// BROKER/NOTIFICATION
+ * 			// SERVIE/RPC REGISTRY
+ * 			provider.close();
+ * 		}
+ * 	};
+ * }
+ * 
+ * </pre>
  */
-public class sliapiProvider implements AutoCloseable, SLIAPIService{
+public class sliapiProvider implements AutoCloseable, SLIAPIService {
 
-    private static final Logger LOG = LoggerFactory.getLogger( sliapiProvider.class );
-    private static final String appName = "slitester";
+	private static final Logger LOG = LoggerFactory.getLogger(sliapiProvider.class);
+	private static final String appName = "slitester";
 
-    protected DataBroker dataBroker;
-    protected DOMDataBroker domDataBroker;
-    protected NotificationPublishService notificationService;
-    protected RpcProviderRegistry rpcRegistry;
+	protected DataBroker dataBroker;
+	protected DOMDataBroker domDataBroker;
+	protected NotificationPublishService notificationService;
+	protected RpcProviderRegistry rpcRegistry;
 
-    private SvcLogicService svcLogic;
+	private SvcLogicService svcLogic;
 
 	protected BindingAwareBroker.RpcRegistration<SLIAPIService> rpcRegistration;
 
@@ -139,7 +139,7 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 	private static QName TEST_RESULT_QNAME = null;
 	private static QName TEST_ID_QNAME = null;
 	private static QName RESULTS_QNAME = null;
-	private static final String NON_NULL= "non-null";
+	private static final String NON_NULL = "non-null";
 
 	static {
 
@@ -149,75 +149,67 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 		RESULTS_QNAME = QName.create(TEST_RESULT_QNAME, "results");
 	}
 
-    public sliapiProvider(
-            DataBroker dataBroker,
-            NotificationPublishService notificationPublishService,
-            RpcProviderRegistry rpcProviderRegistry) {
-        this(dataBroker, notificationPublishService, rpcProviderRegistry, findSvcLogicService());
-    }
+	public sliapiProvider(DataBroker dataBroker, NotificationPublishService notificationPublishService,
+			RpcProviderRegistry rpcProviderRegistry) {
+		this(dataBroker, notificationPublishService, rpcProviderRegistry, findSvcLogicService());
+	}
 
-    public sliapiProvider(
-			DataBroker dataBroker,
-			NotificationPublishService notificationPublishService,
-			RpcProviderRegistry rpcProviderRegistry,
-			SvcLogicService svcLogic) {
-        this.LOG.info( "Creating provider for " + appName );
-        this.dataBroker = dataBroker;
-        this.notificationService = notificationPublishService;
-        this.rpcRegistry = rpcProviderRegistry;
-        this.svcLogic = svcLogic;
-        initialize();
-    }
+	public sliapiProvider(DataBroker dataBroker, NotificationPublishService notificationPublishService,
+			RpcProviderRegistry rpcProviderRegistry, SvcLogicService svcLogic) {
+		this.LOG.info("Creating provider for " + appName);
+		this.dataBroker = dataBroker;
+		this.notificationService = notificationPublishService;
+		this.rpcRegistry = rpcProviderRegistry;
+		this.svcLogic = svcLogic;
+		initialize();
+	}
 
+	public void initialize() {
+		LOG.info("Initializing provider for " + appName);
+		// initialization code goes here.
+		rpcRegistration = rpcRegistry.addRpcImplementation(SLIAPIService.class, this);
 
+		sdncStatusFile = System.getenv(SDNC_STATUS_FILE);
+		LOG.info("SDNC STATUS FILE = " + sdncStatusFile);
+		LOG.info("Initialization complete for " + appName);
+	}
 
-    public void initialize(){
-        LOG.info( "Initializing provider for " + appName );
-        //initialization code goes here.
-        rpcRegistration = rpcRegistry.addRpcImplementation(SLIAPIService.class, this);
+	protected void initializeChild() {
+		// Override if you have custom initialization intelligence
+	}
 
-        sdncStatusFile = System.getenv(SDNC_STATUS_FILE);
-        LOG.info( "SDNC STATUS FILE = " + sdncStatusFile );
-        LOG.info( "Initialization complete for " + appName );
-    }
+	@Override
+	public void close() throws Exception {
+		LOG.info("Closing provider for " + appName);
+		// closing code goes here
 
-    protected void initializeChild() {
-        //Override if you have custom initialization intelligence
-    }
+		rpcRegistration.close();
+		LOG.info("Successfully closed provider for " + appName);
+	}
 
-    @Override
-    public void close() throws Exception {
-        LOG.info( "Closing provider for " + appName );
-        //closing code goes here
-
-	    rpcRegistration.close();
-        LOG.info( "Successfully closed provider for " + appName );
-    }
-
-    public void setDataBroker(DataBroker dataBroker) {
-        this.dataBroker = dataBroker;
+	public void setDataBroker(DataBroker dataBroker) {
+		this.dataBroker = dataBroker;
 		if (dataBroker instanceof AbstractForwardedDataBroker) {
 			domDataBroker = ((AbstractForwardedDataBroker) dataBroker).getDelegate();
 		}
-        if( LOG.isDebugEnabled() ){
-            LOG.debug( "DataBroker set to " + (dataBroker==null?"null":NON_NULL) + "." );
-        }
-    }
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("DataBroker set to " + (dataBroker == null ? "null" : NON_NULL) + ".");
+		}
+	}
 
-    public void setNotificationService(
-            NotificationPublishService notificationService) {
-        this.notificationService = notificationService;
-        if( LOG.isDebugEnabled() ){
-            LOG.debug( "Notification Service set to " + (notificationService==null?"null":NON_NULL) + "." );
-        }
-    }
+	public void setNotificationService(NotificationPublishService notificationService) {
+		this.notificationService = notificationService;
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Notification Service set to " + (notificationService == null ? "null" : NON_NULL) + ".");
+		}
+	}
 
-    public void setRpcRegistry(RpcProviderRegistry rpcRegistry) {
-        this.rpcRegistry = rpcRegistry;
-        if( LOG.isDebugEnabled() ){
-            LOG.debug( "RpcRegistry set to " + (rpcRegistry==null?"null":NON_NULL) + "." );
-        }
-    }
+	public void setRpcRegistry(RpcProviderRegistry rpcRegistry) {
+		this.rpcRegistry = rpcRegistry;
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("RpcRegistry set to " + (rpcRegistry == null ? "null" : NON_NULL) + ".");
+		}
+	}
 
 	@Override
 	public ListenableFuture<RpcResult<ExecuteGraphOutput>> executeGraph(ExecuteGraphInput input) {
@@ -240,29 +232,31 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 			respBuilder.setResponseMessage("Could not locate OSGi SvcLogicService service");
 			respBuilder.setAckFinalIndicator("Y");
 
-		    rpcResult = RpcResultBuilder.<ExecuteGraphOutput> status(true).withResult(respBuilder.build()).build();
-		    return(Futures.immediateFuture(rpcResult));
+			rpcResult = RpcResultBuilder.<ExecuteGraphOutput>status(true).withResult(respBuilder.build()).build();
+			return (Futures.immediateFuture(rpcResult));
 		}
-
 
 		try {
 			if (!svcLogic.hasGraph(calledModule, calledRpc, null, modeStr)) {
 				respBuilder.setResponseCode("404");
-				respBuilder.setResponseMessage("Directed graph for "+calledModule+"/"+calledRpc+"/"+modeStr+" not found");
+				respBuilder.setResponseMessage(
+						"Directed graph for " + calledModule + "/" + calledRpc + "/" + modeStr + " not found");
 				respBuilder.setAckFinalIndicator("Y");
 
-			    rpcResult = RpcResultBuilder.<ExecuteGraphOutput> status(true).withResult(respBuilder.build()).build();
-			    return(Futures.immediateFuture(rpcResult));
+				rpcResult = RpcResultBuilder.<ExecuteGraphOutput>status(true).withResult(respBuilder.build()).build();
+				return (Futures.immediateFuture(rpcResult));
 			}
 		} catch (Exception e) {
-			LOG.error("Caught exception looking for directed graph for "+calledModule+"/"+calledRpc+"/"+modeStr, e);
+			LOG.error(
+					"Caught exception looking for directed graph for " + calledModule + "/" + calledRpc + "/" + modeStr,
+					e);
 
 			respBuilder.setResponseCode("500");
 			respBuilder.setResponseMessage("Internal error : could not determine if target graph exists");
 			respBuilder.setAckFinalIndicator("Y");
 
-		    rpcResult = RpcResultBuilder.<ExecuteGraphOutput> status(true).withResult(respBuilder.build()).build();
-		    return(Futures.immediateFuture(rpcResult));
+			rpcResult = RpcResultBuilder.<ExecuteGraphOutput>status(true).withResult(respBuilder.build()).build();
+			return (Futures.immediateFuture(rpcResult));
 		}
 
 		// Load properties
@@ -297,7 +291,7 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 		SliapiHelper.toProperties(parms, "input", inputBuilder);
 
 		try {
-			LOG.info("Calling directed graph for "+calledModule+"/"+calledRpc+"/"+modeStr);
+			LOG.info("Calling directed graph for " + calledModule + "/" + calledRpc + "/" + modeStr);
 
 			if (LOG.isTraceEnabled()) {
 				StringBuffer argList = new StringBuffer();
@@ -305,24 +299,22 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 				Enumeration e = parms.propertyNames();
 				while (e.hasMoreElements()) {
 					String propName = (String) e.nextElement();
-					argList.append(" ("+propName+","+parms.getProperty(propName)+") ");
+					argList.append(" (" + propName + "," + parms.getProperty(propName) + ") ");
 				}
 				argList.append("}");
 				LOG.trace(argList.toString());
 				argList = null;
 			}
 
-
-
-			Properties respProps = svcLogic.execute(calledModule, calledRpc,
-					null, modeStr, parms, domDataBroker);
+			Properties respProps = svcLogic.execute(calledModule, calledRpc, null, modeStr, parms, domDataBroker);
 
 			StringBuilder sb = new StringBuilder("{");
 
 			for (Object key : respProps.keySet()) {
 				String keyValue = (String) key;
 				if (keyValue != null && !"".equals(keyValue) && !keyValue.contains("input.sli-parameter")) {
-					sb.append("\"").append(keyValue).append("\": \"").append(respProps.getProperty(keyValue)).append("\",");
+					sb.append("\"").append(keyValue).append("\": \"").append(respProps.getProperty(keyValue))
+							.append("\",");
 				}
 			}
 
@@ -330,7 +322,9 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 			sb.append("}");
 
 			respBuilder.setResponseCode(respProps.getProperty("error-code", "0"));
-			respBuilder.setResponseMessage(respProps.getProperty("error-message", ""));// TODO change response-text to response-message to match other BVC APIs
+			respBuilder.setResponseMessage(respProps.getProperty("error-message", ""));// TODO change response-text to
+																						// response-message to match
+																						// other BVC APIs
 			respBuilder.setAckFinalIndicator(respProps.getProperty("ack-final", "Y"));
 			respBuilder.setContextMemoryJson(sb.toString());
 
@@ -343,60 +337,51 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 			if ((testIdentifier != null) && (testIdentifier.length() > 0)) {
 
 				// Add test results to config tree
-				LOG.debug("Saving test results for test id "+testIdentifier);
+				LOG.debug("Saving test results for test id " + testIdentifier);
 
 				DomSaveTestResult(testResultBuilder.build(), true, LogicalDatastoreType.CONFIGURATION);
 
 			}
 
 		} catch (Exception e) {
-			LOG.error("Caught exception executing directed graph for"
-					+ calledModule + ":" + calledRpc + "," + modeStr + ">", e);
+			LOG.error("Caught exception executing directed graph for" + calledModule + ":" + calledRpc + "," + modeStr
+					+ ">", e);
 
 			respBuilder.setResponseCode("500");
-			respBuilder
-					.setResponseMessage("Internal error : caught exception executing directed graph "
-							+ calledModule
-							+ "/"
-							+ calledRpc
-							+ "/"
-							+ modeStr);
+			respBuilder.setResponseMessage("Internal error : caught exception executing directed graph " + calledModule
+					+ "/" + calledRpc + "/" + modeStr);
 			respBuilder.setAckFinalIndicator("Y");
 
 		}
 
-		rpcResult = RpcResultBuilder.<ExecuteGraphOutput> status(true)
-				.withResult(respBuilder.build()).build();
+		rpcResult = RpcResultBuilder.<ExecuteGraphOutput>status(true).withResult(respBuilder.build()).build();
 		return (Futures.immediateFuture(rpcResult));
 	}
 
-
 	private SvcLogicService getSvcLogicService() {
-	    if (svcLogic == null) {
-	        svcLogic = findSvcLogicService();
-	    }
+		if (svcLogic == null) {
+			svcLogic = findSvcLogicService();
+		}
 
-	    return(svcLogic);
+		return (svcLogic);
 	}
+
 	private static SvcLogicService findSvcLogicService() {
 		BundleContext bctx = FrameworkUtil.getBundle(SvcLogicService.class).getBundleContext();
 
 		SvcLogicService svcLogic = null;
 
-    	// Get SvcLogicService reference
+		// Get SvcLogicService reference
 		ServiceReference sref = bctx.getServiceReference(SvcLogicService.NAME);
-		if (sref  != null)
-		{
-			svcLogic =  (SvcLogicService) bctx.getService(sref);
+		if (sref != null) {
+			svcLogic = (SvcLogicService) bctx.getService(sref);
 
-		}
-		else
-		{
-			LOG.warn("Cannot find service reference for "+SvcLogicService.NAME);
+		} else {
+			LOG.warn("Cannot find service reference for " + SvcLogicService.NAME);
 
 		}
 
-		return(svcLogic);
+		return (svcLogic);
 	}
 
 	@Override
@@ -416,61 +401,57 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 			respBuilder.setResponseMessage("Could not locate OSGi SvcLogicService service");
 			respBuilder.setAckFinalIndicator("Y");
 
-		    rpcResult = RpcResultBuilder.<HealthcheckOutput> failed().withResult(respBuilder.build()).build();
-		    return(Futures.immediateFuture(rpcResult));
+			rpcResult = RpcResultBuilder.<HealthcheckOutput>failed().withResult(respBuilder.build()).build();
+			return (Futures.immediateFuture(rpcResult));
 		}
 
 		try {
 			if (!svcLogic.hasGraph(calledModule, calledRpc, null, modeStr)) {
 				respBuilder.setResponseCode("404");
-				respBuilder.setResponseMessage("Directed graph for "+calledModule+"/"+calledRpc+"/"+modeStr+" not found");
+				respBuilder.setResponseMessage(
+						"Directed graph for " + calledModule + "/" + calledRpc + "/" + modeStr + " not found");
 
 				respBuilder.setAckFinalIndicator("Y");
 
-			    rpcResult = RpcResultBuilder.<HealthcheckOutput> status(true).withResult(respBuilder.build()).build();
-			    return(Futures.immediateFuture(rpcResult));
+				rpcResult = RpcResultBuilder.<HealthcheckOutput>status(true).withResult(respBuilder.build()).build();
+				return (Futures.immediateFuture(rpcResult));
 			}
 		} catch (Exception e) {
-			LOG.error("Caught exception looking for directed graph for "+calledModule+"/"+calledRpc+"/"+modeStr, e);
+			LOG.error(
+					"Caught exception looking for directed graph for " + calledModule + "/" + calledRpc + "/" + modeStr,
+					e);
 
 			respBuilder.setResponseCode("500");
 			respBuilder.setResponseMessage("Internal error : could not determine if target graph exists");
 			respBuilder.setAckFinalIndicator("Y");
 
-		    rpcResult = RpcResultBuilder.<HealthcheckOutput> failed().withResult(respBuilder.build()).build();
-		    return(Futures.immediateFuture(rpcResult));
+			rpcResult = RpcResultBuilder.<HealthcheckOutput>failed().withResult(respBuilder.build()).build();
+			return (Futures.immediateFuture(rpcResult));
 		}
 
 		try {
-			LOG.info("Calling directed graph for "+calledModule+"/"+calledRpc+"/"+modeStr);
+			LOG.info("Calling directed graph for " + calledModule + "/" + calledRpc + "/" + modeStr);
 
 			Properties parms = new Properties();
 
-			Properties respProps = svcLogic.execute(calledModule, calledRpc,
-					null, modeStr, parms);
+			Properties respProps = svcLogic.execute(calledModule, calledRpc, null, modeStr, parms);
 
 			respBuilder.setResponseCode(respProps.getProperty("error-code", "0"));
 			respBuilder.setResponseMessage(respProps.getProperty("error-message", ""));
 			respBuilder.setAckFinalIndicator(respProps.getProperty("ack-final", "Y"));
 
 		} catch (Exception e) {
-			LOG.error("Caught exception executing directed graph for"
-					+ calledModule + ":" + calledRpc + "," + modeStr + ">", e);
+			LOG.error("Caught exception executing directed graph for" + calledModule + ":" + calledRpc + "," + modeStr
+					+ ">", e);
 
 			respBuilder.setResponseCode("500");
-			respBuilder
-					.setResponseMessage("Internal error : caught exception executing directed graph "
-							+ calledModule
-							+ "/"
-							+ calledRpc
-							+ "/"
-							+ modeStr);
+			respBuilder.setResponseMessage("Internal error : caught exception executing directed graph " + calledModule
+					+ "/" + calledRpc + "/" + modeStr);
 			respBuilder.setAckFinalIndicator("Y");
 
 		}
 
-		rpcResult = RpcResultBuilder.<HealthcheckOutput> status(true)
-				.withResult(respBuilder.build()).build();
+		rpcResult = RpcResultBuilder.<HealthcheckOutput>status(true).withResult(respBuilder.build()).build();
 		return (Futures.immediateFuture(rpcResult));
 	}
 
@@ -490,66 +471,92 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 			respBuilder.setResponseMessage("Could not locate OSGi SvcLogicService service");
 			respBuilder.setAckFinalIndicator("Y");
 
-		    rpcResult = RpcResultBuilder.<VlbcheckOutput> failed().withResult(respBuilder.build()).build();
-		    return(Futures.immediateFuture(rpcResult));
+			rpcResult = RpcResultBuilder.<VlbcheckOutput>failed().withResult(respBuilder.build()).build();
+			return (Futures.immediateFuture(rpcResult));
 		}
 
+		boolean dgExists = true;
 		try {
 			if (!svcLogic.hasGraph(calledModule, calledRpc, null, modeStr)) {
-				respBuilder.setResponseCode("404");
-				respBuilder.setResponseMessage("Directed graph for "+calledModule+"/"+calledRpc+"/"+modeStr+" not found");
-
-				respBuilder.setAckFinalIndicator("Y");
-
-			    rpcResult = RpcResultBuilder.<VlbcheckOutput> status(true).withResult(respBuilder.build()).build();
-			    return(Futures.immediateFuture(rpcResult));
+				dgExists = false;
 			}
 		} catch (Exception e) {
-			LOG.error("Caught exception looking for directed graph for "+calledModule+"/"+calledRpc+"/"+modeStr, e);
+			LOG.warn(
+					"Caught exception looking for directed graph for " + calledModule + "/" + calledRpc + "/" + modeStr,
+					e);
 
-			respBuilder.setResponseCode("500");
-			respBuilder.setResponseMessage("Internal error : could not determine if target graph exists");
-			respBuilder.setAckFinalIndicator("Y");
-
-		    rpcResult = RpcResultBuilder.<VlbcheckOutput> failed().withResult(respBuilder.build()).build();
-		    return(Futures.immediateFuture(rpcResult));
+			dgExists = false;
 		}
 
-		try {
-			LOG.info("Calling directed graph for "+calledModule+"/"+calledRpc+"/"+modeStr);
+		if (dgExists) {
+			try {
+				LOG.info("Calling directed graph for " + calledModule + "/" + calledRpc + "/" + modeStr);
 
-			Properties parms = new Properties();
+				Properties parms = new Properties();
 
-			Properties respProps = svcLogic.execute(calledModule, calledRpc,
-					null, modeStr, parms);
+				Properties respProps = svcLogic.execute(calledModule, calledRpc, null, modeStr, parms);
 
-			respBuilder.setResponseCode(respProps.getProperty("error-code", "0"));
-			respBuilder.setResponseMessage(respProps.getProperty("error-message", ""));
-			respBuilder.setAckFinalIndicator(respProps.getProperty("ack-final", "Y"));
+				respBuilder.setResponseCode(respProps.getProperty("error-code", "0"));
+				respBuilder.setResponseMessage(respProps.getProperty("error-message", ""));
+				respBuilder.setAckFinalIndicator(respProps.getProperty("ack-final", "Y"));
 
-		} catch (Exception e) {
-			LOG.error("Caught exception executing directed graph for"
-					+ calledModule + ":" + calledRpc + "," + modeStr + ">", e);
+			} catch (Exception e) {
+				LOG.error("Caught exception executing directed graph for" + calledModule + ":" + calledRpc + ","
+						+ modeStr + ">", e);
 
-			respBuilder.setResponseCode("500");
-			respBuilder
-					.setResponseMessage("Internal error : caught exception executing directed graph "
-							+ calledModule
-							+ "/"
-							+ calledRpc
-							+ "/"
-							+ modeStr);
-			respBuilder.setAckFinalIndicator("Y");
+				respBuilder.setResponseCode("500");
+				respBuilder.setResponseMessage("Internal error : caught exception executing directed graph "
+						+ calledModule + "/" + calledRpc + "/" + modeStr);
+				respBuilder.setAckFinalIndicator("Y");
 
+			}
+
+			rpcResult = RpcResultBuilder.<VlbcheckOutput>status(true).withResult(respBuilder.build()).build();
+			return (Futures.immediateFuture(rpcResult));
+		} else {
+			// check the state based on the config file
+
+			boolean suspended = false;
+			BufferedReader br = null;
+			String line = "";
+
+			if (sdncStatusFile != null) {
+				try {
+					br = new BufferedReader(new FileReader(sdncStatusFile));
+					while ((line = br.readLine()) != null) {
+						if ("ODL_STATE=SUSPENDED".equals(line)) {
+							suspended = true;
+							LOG.debug("vlbcheck: server is suspended");
+						}
+					}
+					br.close();
+				} catch (FileNotFoundException e) {
+					LOG.trace("Caught File not found exception " + sdncStatusFile + "\n", e);
+				} catch (Exception e) {
+					LOG.trace("Failed to read status file " + sdncStatusFile + "\n", e);
+				} finally {
+					if (br != null) {
+						try {
+							br.close();
+						} catch (IOException e) {
+							LOG.warn("Failed to close status file " + sdncStatusFile + "\n", e);
+						}
+					}
+				}
+			}
+
+			if (suspended) {
+				rpcResult = RpcResultBuilder.<VlbcheckOutput>failed()
+						.withError(ErrorType.APPLICATION, "resource-denied", "Server Suspended").build();
+			} else {
+				respBuilder.setResponseMessage("server is normal");
+				rpcResult = RpcResultBuilder.<VlbcheckOutput>status(true).withResult(respBuilder.build()).build();
+			}
+			return (Futures.immediateFuture(rpcResult));
 		}
-
-		rpcResult = RpcResultBuilder.<VlbcheckOutput> status(true)
-				.withResult(respBuilder.build()).build();
-		return (Futures.immediateFuture(rpcResult));
 	}
 
 	private void DomSaveTestResult(final TestResult entry, boolean merge, LogicalDatastoreType storeType) {
-
 
 		if (domDataBroker == null) {
 			LOG.error("domDataBroker unset - cannot save test result using DOMDataBroker");
@@ -569,29 +576,28 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 			return;
 		}
 
-
-		YangInstanceIdentifier testResultsPid = YangInstanceIdentifier.builder().node(TEST_RESULTS_QNAME).node(QName.create(TEST_RESULTS_QNAME, "test-result")).build();
-		YangInstanceIdentifier testResultPid = testResultsPid.node(new NodeIdentifierWithPredicates(TEST_RESULT_QNAME, resultNode.getIdentifier().getKeyValues()));
-
-
+		YangInstanceIdentifier testResultsPid = YangInstanceIdentifier.builder().node(TEST_RESULTS_QNAME)
+				.node(QName.create(TEST_RESULTS_QNAME, "test-result")).build();
+		YangInstanceIdentifier testResultPid = testResultsPid
+				.node(new NodeIdentifierWithPredicates(TEST_RESULT_QNAME, resultNode.getIdentifier().getKeyValues()));
 
 		int tries = 2;
-		while(true) {
+		while (true) {
 			try {
 				DOMDataWriteTransaction wtx = domDataBroker.newWriteOnlyTransaction();
 				if (merge) {
-					LOG.info("Merging test identifier "+entry.getTestIdentifier());
+					LOG.info("Merging test identifier " + entry.getTestIdentifier());
 					wtx.merge(storeType, testResultPid, resultNode);
 				} else {
-					LOG.info("Putting test identifier "+entry.getTestIdentifier());
-					wtx.put(storeType,  testResultPid, resultNode);
+					LOG.info("Putting test identifier " + entry.getTestIdentifier());
+					wtx.put(storeType, testResultPid, resultNode);
 				}
 				wtx.submit().checkedGet();
 				LOG.trace("Update DataStore succeeded");
 				break;
 			} catch (final TransactionCommitFailedException e) {
-				if(e instanceof OptimisticLockFailedException) {
-					if(--tries <= 0) {
+				if (e instanceof OptimisticLockFailedException) {
+					if (--tries <= 0) {
 						LOG.trace("Got OptimisticLockFailedException on last try - failing ");
 						throw new IllegalStateException(e);
 					}
@@ -605,70 +611,67 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService{
 
 	}
 
-		private void SaveTestResult(final TestResult entry, boolean merge, LogicalDatastoreType storeType) throws IllegalStateException
-		{
-			// Each entry will be identifiable by a unique key, we have to create that identifier
-			
-			InstanceIdentifier.InstanceIdentifierBuilder<TestResult> testResultIdBuilder =
-					InstanceIdentifier.<TestResults>builder(TestResults.class)
-					.child(TestResult.class, entry.key());
-			InstanceIdentifier<TestResult> path = testResultIdBuilder.build();
-			int tries = 2;
-			while(true) {
-				try {
-					WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-					if (merge) {
-						tx.merge(storeType, path, entry);
-					} else {
-						tx.put(storeType, path, entry);
-					}
-					tx.submit().checkedGet();
-					LOG.trace("Update DataStore succeeded");
-					break;
-				} catch (final TransactionCommitFailedException e) {
-					if(e instanceof OptimisticLockFailedException) {
-						if(--tries <= 0) {
-							LOG.trace("Got OptimisticLockFailedException on last try - failing ");
-							throw new IllegalStateException(e);
-						}
-						LOG.trace("Got OptimisticLockFailedException - trying again ");
-					} else {
-						LOG.trace("Update DataStore failed");
+	private void SaveTestResult(final TestResult entry, boolean merge, LogicalDatastoreType storeType)
+			throws IllegalStateException {
+		// Each entry will be identifiable by a unique key, we have to create that
+		// identifier
+
+		InstanceIdentifier.InstanceIdentifierBuilder<TestResult> testResultIdBuilder = InstanceIdentifier
+				.<TestResults>builder(TestResults.class).child(TestResult.class, entry.key());
+		InstanceIdentifier<TestResult> path = testResultIdBuilder.build();
+		int tries = 2;
+		while (true) {
+			try {
+				WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+				if (merge) {
+					tx.merge(storeType, path, entry);
+				} else {
+					tx.put(storeType, path, entry);
+				}
+				tx.submit().checkedGet();
+				LOG.trace("Update DataStore succeeded");
+				break;
+			} catch (final TransactionCommitFailedException e) {
+				if (e instanceof OptimisticLockFailedException) {
+					if (--tries <= 0) {
+						LOG.trace("Got OptimisticLockFailedException on last try - failing ");
 						throw new IllegalStateException(e);
 					}
+					LOG.trace("Got OptimisticLockFailedException - trying again ");
+				} else {
+					LOG.trace("Update DataStore failed");
+					throw new IllegalStateException(e);
 				}
 			}
 		}
+	}
 
-		private MapEntryNode toMapEntryNode(TestResult testResult) {
+	private MapEntryNode toMapEntryNode(TestResult testResult) {
 
+		YangInstanceIdentifier testResultId = YangInstanceIdentifier.builder().node(TEST_RESULTS_QNAME)
+				.node(TEST_RESULT_QNAME).build();
 
-			YangInstanceIdentifier testResultId = YangInstanceIdentifier.builder().node(TEST_RESULTS_QNAME).node(TEST_RESULT_QNAME).build();
-
-			// Construct results list
-			LinkedList<LeafSetEntryNode<Object>> entryList = new LinkedList<>();
-			for (String result : testResult.getResults()) {
-				LeafSetEntryNode<Object> leafSetEntryNode = ImmutableLeafSetEntryNodeBuilder.create()
-																				.withNodeIdentifier(new NodeWithValue(RESULTS_QNAME, result))
-																				.withValue(result)
-																				.build();
-				entryList.add(leafSetEntryNode);
-			}
-			// Construct results LeafSetNode
-			LeafSetNode<?> resultsNode = ImmutableLeafSetNodeBuilder.create().withNodeIdentifier(new NodeIdentifier(RESULTS_QNAME)).withValue(entryList).build();
-
-
-
-			// Construct test result ContainerNode with 2 children - test-identifier leaf and results leaf-set
-			MapEntryNode testResultNode = ImmutableNodes.mapEntryBuilder()
-					.withNodeIdentifier(new NodeIdentifierWithPredicates(TEST_RESULT_QNAME, TEST_ID_QNAME, testResult.getTestIdentifier()))
-					.withChild(ImmutableNodes.leafNode(TEST_ID_QNAME, testResult.getTestIdentifier()))
-					.withChild(resultsNode)
-					.build();
-
-			return(testResultNode);
-
+		// Construct results list
+		LinkedList<LeafSetEntryNode<Object>> entryList = new LinkedList<>();
+		for (String result : testResult.getResults()) {
+			LeafSetEntryNode<Object> leafSetEntryNode = ImmutableLeafSetEntryNodeBuilder.create()
+					.withNodeIdentifier(new NodeWithValue(RESULTS_QNAME, result)).withValue(result).build();
+			entryList.add(leafSetEntryNode);
 		}
+		// Construct results LeafSetNode
+		LeafSetNode<?> resultsNode = ImmutableLeafSetNodeBuilder.create()
+				.withNodeIdentifier(new NodeIdentifier(RESULTS_QNAME)).withValue(entryList).build();
 
+		// Construct test result ContainerNode with 2 children - test-identifier leaf
+		// and results leaf-set
+		MapEntryNode testResultNode = ImmutableNodes.mapEntryBuilder()
+				.withNodeIdentifier(new NodeIdentifierWithPredicates(TEST_RESULT_QNAME, TEST_ID_QNAME,
+						testResult.getTestIdentifier()))
+				.withChild(ImmutableNodes.leafNode(TEST_ID_QNAME, testResult.getTestIdentifier()))
+				.withChild(resultsNode).build();
+
+		return (testResultNode);
+
+	}
 
 }
