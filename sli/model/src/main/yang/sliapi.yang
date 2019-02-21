@@ -45,6 +45,12 @@ module SLI-API {
         leaf ipprefix-value {
             type inet:ip-prefix;
         }
+        leaf port-number {
+        	type inet:port-number;
+        }
+        leaf dscp {
+        	type inet:dscp;
+        }
     }
 
     grouping response-fields {

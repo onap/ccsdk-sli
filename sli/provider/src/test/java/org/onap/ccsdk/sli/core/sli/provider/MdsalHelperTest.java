@@ -94,6 +94,21 @@ public class MdsalHelperTest extends TestCase {
 		parmBuilder.setParameterName("ipaddress6-parm");
 		parmBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("ef::1"));
 		params.add(parmBuilder.build());
+		
+		parmBuilder.setParameterName("ipprefix-parm");
+		parmBuilder.setIpaddressValue(null);
+		parmBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("10.0.0.0/24"));
+		params.add(parmBuilder.build());
+		
+		parmBuilder.setParameterName("portnumber-parm");
+		parmBuilder.setIpprefixValue(null);
+		parmBuilder.setPortNumber(PortNumber.getDefaultInstance("8080"));
+		params.add(parmBuilder.build());
+		
+		parmBuilder.setParameterName("dcsp-parm");
+		parmBuilder.setPortNumber(null);
+		parmBuilder.setDscp(Dscp.getDefaultInstance("57"));
+		params.add(parmBuilder.build());
 
 		execBuilder.setMode(Mode.Sync);
 		execBuilder.setModuleName("my-module");
