@@ -112,6 +112,21 @@ public class ITCaseSvcLogicParser {
                     if (testCaseUrl == null) {
                         fail("Could not resolve test case file " + testCaseFile);
                     }
+                    
+                    // Test parsing and printing
+                    try {
+                        SvcLogicParser parser = new SvcLogicParser();
+                        
+                        for (SvcLogicGraph graph : parser.parse(testCaseUrl.getPath()))  {
+                            System.out.println("XML for graph "+graph.getModule()+":"+graph.getRpc());
+                            graph.printAsXml(System.out);
+                            System.out.println("GV for graph "+graph.getModule()+":"+graph.getRpc());
+                            graph.printAsGv(System.out); 
+                        }
+                    }  catch (Exception e) {
+
+                        fail("Validation failure [" + e.getMessage() + "]");
+                    }
 
                     try {
                         SvcLogicParser.load(testCaseUrl.getPath(), store);

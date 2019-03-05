@@ -152,6 +152,7 @@ public class TestSliapiProvider {
     public void testExecuteGraph() {
         ExecuteGraphInputBuilder inputBuilder = new ExecuteGraphInputBuilder();
 
+        // Valid test - graph exists
         inputBuilder.setMode(ExecuteGraphInput.Mode.Sync);
         inputBuilder.setModuleName("sli");
         inputBuilder.setRpcName("healthcheck");
@@ -160,9 +161,38 @@ public class TestSliapiProvider {
         pBuilder.setParameterName("int-parameter");
         pBuilder.setIntValue(1);
         pList.add(pBuilder.build());
+        pBuilder.setParameterName("bool-parameter");
+        pBuilder.setIntValue(null);
+        pBuilder.setBooleanValue(true);
+        pList.add(pBuilder.build());
+        pBuilder.setParameterName("str-parameter");
+        pBuilder.setBooleanValue(null);
+        pBuilder.setStringValue("value");
+        pList.add(pBuilder.build());
         inputBuilder.setSliParameter(pList);
-
         provider.executeGraph(inputBuilder.build());
+    
+        
+        // Invalid test - graph does not exist
+        inputBuilder.setMode(ExecuteGraphInput.Mode.Sync);
+        inputBuilder.setModuleName("sli");
+        inputBuilder.setRpcName("no-such-graph");
+        pList = new LinkedList<>();
+        pBuilder = new SliParameterBuilder();
+        pBuilder.setParameterName("int-parameter");
+        pBuilder.setIntValue(1);
+        pList.add(pBuilder.build());
+        pBuilder.setParameterName("bool-parameter");
+        pBuilder.setIntValue(null);
+        pBuilder.setBooleanValue(true);
+        pList.add(pBuilder.build());
+        pBuilder.setParameterName("str-parameter");
+        pBuilder.setBooleanValue(null);
+        pBuilder.setStringValue("value");
+        pList.add(pBuilder.build());
+        inputBuilder.setSliParameter(pList);
+        provider.executeGraph(inputBuilder.build());
+        
         assertTrue(provider.vlbcheck(mock(VlbcheckInput.class)) instanceof Future<?>);
     }
 
