@@ -30,6 +30,7 @@ import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitorObserver;
 public class TerminatingCachedDataSource extends CachedDataSource implements SQLExecutionMonitorObserver {
 
     private static final int DEFAULT_AVAILABLE_CONNECTIONS = 0;
+	private static final int DEFAULT_INDEX = -1;
 
     public TerminatingCachedDataSource(BaseDBConfiguration jdbcElem) throws DBConfigException {
         super(jdbcElem);
@@ -49,4 +50,10 @@ public class TerminatingCachedDataSource extends CachedDataSource implements SQL
     protected int getAvailableConnections() {
         return DEFAULT_AVAILABLE_CONNECTIONS;
     }
+
+    @Override
+    protected int initializeIndex(BaseDBConfiguration jdbcElem) {
+           return DEFAULT_INDEX;
+    }
+
 }

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Observable;
@@ -44,6 +45,7 @@ import java.util.SortedSet;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
@@ -66,7 +68,8 @@ import org.slf4j.LoggerFactory;
  * Rich Tabedzki
  */
 public class DBResourceManager implements DataSource, DataAccessor, DBResourceObserver, DbLibService {
-    private static Logger LOGGER = LoggerFactory.getLogger(DBResourceManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DBResourceManager.class);
+    private static final String DATABASE_URL = "org.onap.ccsdk.sli.jdbc.url";
 
     transient boolean terminating = false;
     transient protected long retryInterval = 10000L;
@@ -92,8 +95,8 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
     }
 
     public DBResourceManager(final Properties properties) {
-        this.configProps = properties;
-        
+        this.configProps = processSystemVariables(properties);
+
         // TODO : hack to force classloader to cache mariadb driver.  This shouldnt be necessary,
         // but for some reason it is (without this, dblib throws ClassNotFound on mariadb driver
         // and fails to load).
@@ -102,26 +105,26 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
         dvr = null;
 
         // get retry interval value
-        retryInterval = getLongFromProperties(properties, "org.onap.dblib.connection.retry", 10000L);
+        retryInterval = getLongFromProperties(configProps, "org.onap.dblib.connection.retry", 10000L);
 
         // get recovery mode flag
-        recoveryMode = getBooleanFromProperties(properties, "org.onap.dblib.connection.recovery", true);
+        recoveryMode = getBooleanFromProperties(configProps, "org.onap.dblib.connection.recovery", true);
         if(!recoveryMode)
         {
             recoveryMode = false;
             LOGGER.info("Recovery Mode disabled");
         }
         // get time out value for thread cleanup
-        terminationTimeOut = getLongFromProperties(properties, "org.onap.dblib.termination.timeout", 300000L);
+        terminationTimeOut = getLongFromProperties(configProps, "org.onap.dblib.termination.timeout", 300000L);
         // get properties for monitoring
-        monitorDbResponse = getBooleanFromProperties(properties, "org.onap.dblib.connection.monitor", false);
-        monitoringInterval = getLongFromProperties(properties, "org.onap.dblib.connection.monitor.interval", 1000L);
-        monitoringInitialDelay = getLongFromProperties(properties, "org.onap.dblib.connection.monitor.startdelay", 5000L);
-        expectedCompletionTime = getLongFromProperties(properties, "org.onap.dblib.connection.monitor.expectedcompletiontime", 5000L);
-        unprocessedFailoverThreshold = getLongFromProperties(properties, "org.onap.dblib.connection.monitor.unprocessedfailoverthreshold", 3L);
+        monitorDbResponse = getBooleanFromProperties(configProps, "org.onap.dblib.connection.monitor", false);
+        monitoringInterval = getLongFromProperties(configProps, "org.onap.dblib.connection.monitor.interval", 1000L);
+        monitoringInitialDelay = getLongFromProperties(configProps, "org.onap.dblib.connection.monitor.startdelay", 5000L);
+        expectedCompletionTime = getLongFromProperties(configProps, "org.onap.dblib.connection.monitor.expectedcompletiontime", 5000L);
+        unprocessedFailoverThreshold = getLongFromProperties(configProps, "org.onap.dblib.connection.monitor.unprocessedfailoverthreshold", 3L);
 
         // initialize performance monitor
-        PollingWorker.createInistance(properties);
+        PollingWorker.createInistance(configProps);
 
         // initialize recovery thread
         worker = new RecoveryMgr();
@@ -130,12 +133,48 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
         worker.start();
 
         try {
-            this.config(properties);
+            this.config(configProps);
         } catch (final Exception e) {
             // TODO: config throws <code>Exception</code> which is poor practice.  Eliminate this in a separate patch.
             LOGGER.error("Fatal Exception encountered while configuring DBResourceManager", e);
         }
     }
+
+    public static Properties processSystemVariables(Properties properties) {
+        Map<Object, Object> hmap = new Properties();
+        hmap.putAll(properties);
+
+        Map<Object, Object> result = hmap.entrySet().stream()
+            .filter(map -> map.getValue().toString().startsWith("${"))
+            .filter(map -> map.getValue().toString().endsWith("}"))
+            .collect(Collectors.toMap(map -> map.getKey(), map -> map.getValue()));
+
+        result.forEach((name, propEntries) -> {
+            hmap.put(name, replace(propEntries.toString()));
+        });
+
+        if(hmap.containsKey(DATABASE_URL) && hmap.get(DATABASE_URL).toString().contains("${")) {
+            String url = hmap.get(DATABASE_URL).toString();
+            String[] innerChunks = url.split("\\$\\{");
+            for(String chunk : innerChunks) {
+                if(chunk.contains("}")) {
+                    String subChunk = chunk.substring(0, chunk.indexOf("}"));
+                    String varValue = System.getenv(subChunk);
+                    url = url.replace("${"+subChunk+"}", varValue);
+                }
+            }
+            hmap.put(DATABASE_URL, url);
+        }
+        return Properties.class.cast(hmap);
+      }
+
+
+      private static String replace(String value) {
+          String globalVariable = value.substring(2, value.length() -1);
+          String varValue = System.getenv(globalVariable);
+          return  (varValue != null) ? varValue : value;
+      }
+
 
     private void config(Properties configProps) throws Exception {
         final ConcurrentLinkedQueue<CachedDataSource> semaphore = new ConcurrentLinkedQueue<>();
@@ -204,10 +243,32 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
                     return -1;
                 }
 
-                if(!left.isSlave())
+                boolean leftMaster = !left.isSlave();
+                if(leftMaster) {
+                    if(left.getIndex() <= right.getIndex())
+                        return -1;
+                    else {
+                        boolean rightMaster = !right.isSlave();
+                        if(rightMaster) {
+                            if(left.getIndex() <= right.getIndex())
+                                return -1;
+//                            if(left.getIndex() > right.getIndex())
+                            else {
+                                return 1;
+                            }
+                        } else {
                     return -1;
+                        }
+                    }
+                }
                 if(!right.isSlave())
                     return 1;
+
+                if(left.getIndex() <= right.getIndex())
+                    return -1;
+                if(left.getIndex() > right.getIndex())
+                    return 1;
+
 
             } catch (Throwable e) {
                 LOGGER.warn("", e);
@@ -440,12 +501,12 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
                     }
                 }
                 lastException = exc;
-                LOGGER.error("Generated alarm: "+active.getDbConnectionName(), exc);
+                LOGGER.error("Generated alarm: {}", active.getDbConnectionName(), exc);
                 handleGetConnectionException(active, exc);
             } finally {
                 if(LOGGER.isDebugEnabled()){
                     time = System.currentTimeMillis() - time;
-                    LOGGER.debug("getData processing time : "+ active.getDbConnectionName()+"  "+time+" miliseconds.");
+                    LOGGER.debug("getData processing time : {} {} miliseconds.", active.getDbConnectionName(), time);
                 }
             }
         }
@@ -490,7 +551,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
             String message = exc.getMessage();
             if(message == null)
                 message = exc.getClass().getName();
-            LOGGER.error("Generated alarm: "+active.getDbConnectionName()+" - "+message);
+            LOGGER.error("Generated alarm: {} - {}",active.getDbConnectionName(), message);
             if(exc instanceof SQLException)
                 throw (SQLException)exc;
             else {
@@ -501,7 +562,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
         } finally {
             if(LOGGER.isDebugEnabled()){
                 time = System.currentTimeMillis() - time;
-                LOGGER.debug(">> getData : "+ active.getDbConnectionName()+"  "+time+" miliseconds.");
+                LOGGER.debug(">> getData : {} {}  miliseconds.", active.getDbConnectionName(), time);
             }
         }
     }
@@ -570,12 +631,12 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
                 String message = exc.getMessage();
                 if(message == null)
                     message = exc.getClass().getName();
-                LOGGER.error("Generated alarm: "+active.getDbConnectionName()+" - "+message);
+                LOGGER.error("Generated alarm: {} - {}", active.getDbConnectionName(), message);
                 if(exc instanceof SQLException) {
                     SQLException sqlExc = SQLException.class.cast(exc);
                     // handle read-only exception
                     if(sqlExc.getErrorCode() == 1290 && "HY000".equals(sqlExc.getSQLState())) {
-                        LOGGER.warn("retrying due to: " + sqlExc.getMessage());
+                        LOGGER.warn("retrying due to: {}", sqlExc.getMessage());
                         this.findMaster();
                         if(retryAllowed){
                             retryAllowed = false;
@@ -592,7 +653,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
             } finally {
                 if(LOGGER.isDebugEnabled()){
                     time = System.currentTimeMillis() - time;
-                    LOGGER.debug("writeData processing time : "+ active.getDbConnectionName()+"  "+time+" miliseconds.");
+                    LOGGER.debug("writeData processing time : {} {} miliseconds.", active.getDbConnectionName(), time);
                 }
             }
         }
@@ -626,6 +687,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
 
             if(!active.isFabric()) {
                 if(this.dsQueue.size() > 1 && active.isSlave()) {
+                LOGGER.debug("Forcing reorder on: {}", dsQueue.toString());
                     CachedDataSource master = findMaster();
                     if(master != null) {
                         active = master;

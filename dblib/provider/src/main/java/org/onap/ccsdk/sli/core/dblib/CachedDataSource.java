@@ -33,6 +33,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Observer;
 import javax.sql.DataSource;
@@ -59,7 +60,7 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
     private static final Logger LOGGER = LoggerFactory.getLogger(CachedDataSource.class);
 
     private static final String SQL_FAILURE = "SQL FAILURE. time(ms): ";
-    private static final String FAILED_TO_EXECUTE = "> failed to execute: ";
+    private static final String FAILED_TO_EXECUTE = "> Failed to execute: ";
     private static final String WITH_ARGUMENTS = " with arguments: ";
     private static final String WITH_NO_ARGUMENTS = " with no arguments. ";
     private static final String DATA_SOURCE_CONNECT_SUCCESS = "SQL DataSource < {} > connected to {}, read-only is {}, tested successfully";
@@ -82,12 +83,13 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
     private long nextErrorReportTime = 0L;
 
     private String globalHostName = null;
+    private final int index;
 
     private boolean isDerby = false;
 
     public CachedDataSource(BaseDBConfiguration jdbcElem) throws DBConfigException {
         ds = configure(jdbcElem);
-
+        index = initializeIndex(jdbcElem);
         if ("org.apache.derby.jdbc.EmbeddedDriver".equals(jdbcElem.getDriverName())) {
             isDerby = true;
         }
@@ -97,6 +99,16 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
     protected abstract DataSource configure(BaseDBConfiguration jdbcElem) throws DBConfigException;
     protected abstract int getAvailableConnections();
 
+    protected int initializeIndex(BaseDBConfiguration jdbcElem) {
+        if(jdbcElem.containsKey(BaseDBConfiguration.DATABASE_HOSTS)) {
+            String hosts = jdbcElem.getProperty(BaseDBConfiguration.DATABASE_HOSTS);
+            String name = jdbcElem.getProperty(BaseDBConfiguration.CONNECTION_NAME);
+            List<String> numbers = Arrays.asList(hosts.split(","));
+            return numbers.indexOf(name);
+        } else
+            return -1;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -104,7 +116,14 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
      */
     @Override
     public Connection getConnection() throws SQLException {
+        LapsedTimer lt = new LapsedTimer();
+        try {
         return ds.getConnection();
+        } finally {
+            if(LOGGER.isTraceEnabled()) {
+                LOGGER.trace(String.format("SQL Connection aquisition time : %s", lt.lapsedTime()));
+            }
+        }
     }
 
     public CachedRowSet getData(String statement, List<Object> arguments) throws SQLException {
@@ -397,6 +416,10 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
         monitor.deleteObserver(observer);
     }
 
+    public int getIndex() {
+        return index;
+    }
+
     @Override
     public long getInterval() {
         return interval;
@@ -487,9 +510,9 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
             isSlave = true;
         }
         if (isSlave) {
-            LOGGER.debug("SQL SLAVE : {} on server {}, pool {}", connectionName, hostname, getAvailableConnections());
+            LOGGER.debug("SQL SLAVE : {} on server {}, pool {}", connectionName, getDbConnectionName(), getAvailableConnections());
         } else {
-            LOGGER.debug("SQL MASTER : {} on server {}, pool {}", connectionName, hostname, getAvailableConnections());
+            LOGGER.debug("SQL MASTER : {} on server {}, pool {}", connectionName, getDbConnectionName(), getAvailableConnections());
         }
         return isSlave;
     }
@@ -556,5 +579,15 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
 
     public String getGlobalHostName() {
         return globalHostName;
+    }
+
+    static class LapsedTimer {
+        private final long msTime = System.currentTimeMillis();
+ 
+        public String lapsedTime() {
+            double timediff = System.currentTimeMillis() - msTime;
+            timediff = timediff/1000;
+            return String.valueOf( timediff)+"s";
+        }
     }
 }
