@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.onap.ccsdk.sli.core</groupId>
+	<artifactId>ccsdk-lighty-dependency-versions</artifactId>
+	<version>0.6.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<lighty.version>10.1.0</lighty.version>
+		<odl.aaa.version>0.9.0</odl.aaa.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.lighty.core</groupId>
+				<artifactId>lighty-controller</artifactId>
+				<version>${lighty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.lighty.modules</groupId>
+				<artifactId>lighty-restconf-nb-community</artifactId>
+				<version>${lighty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.lighty.modules</groupId>
+				<artifactId>lighty-netconf-sb</artifactId>
+				<version>${lighty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.lighty.resources</groupId>
+				<artifactId>singlenode-configuration</artifactId>
+				<version>${lighty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.opendaylight.aaa</groupId>
+				<artifactId>aaa-artifacts</artifactId>
+				<version>${odl.aaa.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.opendaylight.aaa</groupId>
+				<artifactId>aaa-encrypt-service</artifactId>
+				<version>${odl.aaa.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>
