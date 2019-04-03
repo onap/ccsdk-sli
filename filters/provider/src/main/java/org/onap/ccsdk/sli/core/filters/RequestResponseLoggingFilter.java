@@ -3,7 +3,7 @@
  * ONAP : CCSDK
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 						reserved.
+ *                      reserved.
  * ================================================================================
  * Modifications Copyright (C) 2018 IBM.
  * ================================================================================
@@ -32,7 +32,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -50,272 +49,264 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 public class RequestResponseLoggingFilter implements Filter {
 
-	private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger("org.onap.ccsdk.sli.core.filters.request.response");
+    private static org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger("org.onap.ccsdk.sli.core.filters.request.response");
 
-	private static class ByteArrayServletStream extends ServletOutputStream {
+    private static class ByteArrayServletStream extends ServletOutputStream {
 
-		ByteArrayOutputStream baos;
+        ByteArrayOutputStream baos;
 
-		ByteArrayServletStream(ByteArrayOutputStream baos) {
-			this.baos = baos;
-		}
+        ByteArrayServletStream(ByteArrayOutputStream baos) {
+            this.baos = baos;
+        }
 
-		@Override
-		public void write(int param) throws IOException {
-			baos.write(param);
-		}
+        @Override
+        public void write(int param) throws IOException {
+            baos.write(param);
+        }
 
-		@Override
-		public boolean isReady() {
-			return true;
-		}
+        @Override
+        public boolean isReady() {
+            return true;
+        }
 
-		@Override
-		public void setWriteListener(WriteListener arg0) {
-			//this method does nothing
-			
-		}
-	}
+        @Override
+        public void setWriteListener(WriteListener arg0) {
+            // this method does nothing
 
-	private static class ByteArrayPrintWriter {
+        }
+    }
 
-		private ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    private static class ByteArrayPrintWriter extends PrintWriter {
+        private ByteArrayOutputStream baos;
 
-		private PrintWriter pw = new PrintWriter(baos);
+        public ByteArrayPrintWriter(ByteArrayOutputStream out) {
+            super(out);
+            this.baos = out;
+        }
 
-		private ServletOutputStream sos = new ByteArrayServletStream(baos);
+        public ServletOutputStream getStream() {
+            return new ByteArrayServletStream(baos);
+        }
 
-		public PrintWriter getWriter() {
-			return pw;
-		}
+    }
 
-		public ServletOutputStream getStream() {
-			return sos;
-		}
+    private class BufferedServletInputStream extends ServletInputStream {
 
-		byte[] toByteArray() {
-			return baos.toByteArray();
-		}
-	}
+        ByteArrayInputStream bais;
 
-	private class BufferedServletInputStream extends ServletInputStream {
+        public BufferedServletInputStream(ByteArrayInputStream bais) {
+            this.bais = bais;
+        }
 
-		ByteArrayInputStream bais;
+        @Override
+        public int available() {
+            return bais.available();
+        }
 
-		public BufferedServletInputStream(ByteArrayInputStream bais) {
-			this.bais = bais;
-		}
+        @Override
+        public int read() {
+            return bais.read();
+        }
 
-		@Override
-		public int available() {
-			return bais.available();
-		}
+        @Override
+        public int read(byte[] buf, int off, int len) {
+            return bais.read(buf, off, len);
+        }
 
-		@Override
-		public int read() {
-			return bais.read();
-		}
+        @Override
+        public boolean isFinished() {
+            return available() < 1;
+        }
 
-		@Override
-		public int read(byte[] buf, int off, int len) {
-			return bais.read(buf, off, len);
-		}
+        @Override
+        public boolean isReady() {
+            return true;
+        }
 
-		@Override
-		public boolean isFinished() {
-			return available() < 1;
-		}
+        @Override
+        public void setReadListener(ReadListener arg0) {
+            // this method does nothing
+        }
 
-		@Override
-		public boolean isReady() {
-			return true;
-		}
+    }
 
-		@Override
-		public void setReadListener(ReadListener arg0) {
-			// this method does nothing
-		}
+    private class BufferedRequestWrapper extends HttpServletRequestWrapper {
 
-	}
+        ByteArrayInputStream bais;
 
-	private class BufferedRequestWrapper extends HttpServletRequestWrapper {
+        ByteArrayOutputStream baos;
 
-		ByteArrayInputStream bais;
+        BufferedServletInputStream bsis;
 
-		ByteArrayOutputStream baos;
+        byte[] buffer;
 
-		BufferedServletInputStream bsis;
+        public BufferedRequestWrapper(HttpServletRequest req) throws IOException {
+            super(req);
 
-		byte[] buffer;
+            InputStream is = req.getInputStream();
+            baos = new ByteArrayOutputStream();
+            byte[] buf = new byte[1024];
+            int letti;
+            while ((letti = is.read(buf)) > 0) {
+                baos.write(buf, 0, letti);
+            }
+            buffer = baos.toByteArray();
 
-		public BufferedRequestWrapper(HttpServletRequest req) throws IOException {
-			super(req);
+        }
 
-			InputStream is = req.getInputStream();
-			baos = new ByteArrayOutputStream();
-			byte[] buf = new byte[1024];
-			int letti;
-			while ((letti = is.read(buf)) > 0) {
-				baos.write(buf, 0, letti);
-			}
-			buffer = baos.toByteArray();
+        @Override
+        public ServletInputStream getInputStream() {
+            try {
+                bais = new ByteArrayInputStream(buffer);
+                bsis = new BufferedServletInputStream(bais);
+            } catch (Exception ex) {
+                log.error("Exception in getInputStream", ex);
+            }
 
-		}
+            return bsis;
+        }
 
-		@Override
-		public ServletInputStream getInputStream() {
-			try {
-				bais = new ByteArrayInputStream(buffer);
-				bsis = new BufferedServletInputStream(bais);
-			} catch (Exception ex) {
-				log.error("Exception in getInputStream",ex);
-			}
+        public byte[] getBuffer() {
+            return buffer;
+        }
 
-			return bsis;
-		}
+    }
 
-		public byte[] getBuffer() {
-			return buffer;
-		}
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // this method does nothing
+    }
 
-	}
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
 
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		//this method does nothing
-	}
+        final HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
+        BufferedRequestWrapper bufferedRequest = new BufferedRequestWrapper(httpRequest);
 
-	@Override
-	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-			throws IOException, ServletException {
+        StringBuilder requestHeaders = new StringBuilder("REQUEST|");
+        requestHeaders.append(httpRequest.getMethod());
+        requestHeaders.append(":");
+        requestHeaders.append(httpRequest.getRequestURL().toString());
+        requestHeaders.append("|");
+        String header;
+        for (Enumeration<String> e = httpRequest.getHeaderNames(); e.hasMoreElements();) {
+            header = e.nextElement();
+            requestHeaders.append(header);
+            requestHeaders.append(":");
+            requestHeaders.append(httpRequest.getHeader(header));
+            requestHeaders.append(";");
 
-		final HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
-		BufferedRequestWrapper bufferedRequest = new BufferedRequestWrapper(httpRequest);
+        }
+        log.info(requestHeaders.toString());
 
-		StringBuilder requestHeaders = new StringBuilder("REQUEST|");
-		requestHeaders.append(httpRequest.getMethod());
-		requestHeaders.append(":");
-		requestHeaders.append(httpRequest.getRequestURL().toString());
-		requestHeaders.append("|");
-		String header;
-		for (Enumeration<String> e = httpRequest.getHeaderNames(); e.hasMoreElements();) {
-			header = e.nextElement();
-			requestHeaders.append(header);
-			requestHeaders.append(":");
-			requestHeaders.append(httpRequest.getHeader(header));
-			requestHeaders.append(";");
+        log.info("REQUEST BODY|" + new String(bufferedRequest.getBuffer()));
 
-		}
-		log.info(requestHeaders.toString());
+        final HttpServletResponse response = (HttpServletResponse) servletResponse;
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ByteArrayPrintWriter pw = new ByteArrayPrintWriter(baos);
 
-		log.info("REQUEST BODY|" + new String(bufferedRequest.getBuffer()));
+        HttpServletResponse wrappedResp = new HttpServletResponseWrapper(response) {
+            @Override
+            public PrintWriter getWriter() {
+                return pw;
+            }
 
-		final HttpServletResponse response = (HttpServletResponse) servletResponse;
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return pw.getStream();
+            }
+        };
 
-		final ByteArrayPrintWriter pw = new ByteArrayPrintWriter();
-		HttpServletResponse wrappedResp = new HttpServletResponseWrapper(response) {
-			@Override
-			public PrintWriter getWriter() {
-				return pw.getWriter();
-			}
+        try {
+            filterChain.doFilter(bufferedRequest, wrappedResp);
+        } catch (Exception e) {
+            log.error("Chain Exception", e);
+            throw e;
+        } finally {
+            byte[] bytes = baos.toByteArray();
+            response.getOutputStream().write(bytes);
+            response.getOutputStream().flush();
 
-			@Override
-			public ServletOutputStream getOutputStream() {
-				return pw.getStream();
-			}
+            StringBuilder responseHeaders = new StringBuilder("RESPONSE HEADERS|");
 
-		};
+            for (String headerName : response.getHeaderNames()) {
+                responseHeaders.append(headerName);
+                responseHeaders.append(":");
+                responseHeaders.append(response.getHeader(headerName));
+                responseHeaders.append(";");
 
-		try {
+            }
+            log.info(responseHeaders.toString());
 
-		filterChain.doFilter(bufferedRequest, wrappedResp);
+            if ("gzip".equals(response.getHeader("Content-Encoding"))) {
 
-		}catch (Exception e){
-			log.error("Chain Exception",e);
-			throw e;
-		} finally {
-		byte[] bytes = pw.toByteArray();
-		response.getOutputStream().write(bytes);
-		response.getOutputStream().flush();
+                log.info("UNGZIPED RESPONSE BODY|" + decompressGZIPByteArray(bytes));
 
-		StringBuilder responseHeaders = new StringBuilder("RESPONSE HEADERS|");
+            } else {
 
-		for (String headerName : response.getHeaderNames()) {
-			responseHeaders.append(headerName);
-			responseHeaders.append(":");
-			responseHeaders.append(response.getHeader(headerName));
-			responseHeaders.append(";");
+                log.info("RESPONSE BODY|" + new String(bytes));
+            }
+        }
+    }
 
-		}
-		log.info(responseHeaders.toString());
+    @Override
+    public void destroy() {
+        // this method does nothing
+    }
 
-		if ("gzip".equals(response.getHeader("Content-Encoding"))) {
+    private String decompressGZIPByteArray(byte[] bytes) {
 
-			log.info("UNGZIPED RESPONSE BODY|" + decompressGZIPByteArray(bytes));
+        BufferedReader in = null;
+        InputStreamReader inR = null;
+        ByteArrayInputStream byteS = null;
+        GZIPInputStream gzS = null;
+        StringBuilder str = new StringBuilder();
+        try {
+            byteS = new ByteArrayInputStream(bytes);
+            gzS = new GZIPInputStream(byteS);
+            inR = new InputStreamReader(gzS);
+            in = new BufferedReader(inR);
 
-		} else {
+            if (in != null) {
 
-			log.info("RESPONSE BODY|" + new String(bytes));
-		}
-		}
-	}
+                String content;
 
-	@Override
-	public void destroy() {
-		//this method does nothing
-	}
+                while ((content = in.readLine()) != null) {
+                    str.append(content);
+                }
+            }
 
-	private String decompressGZIPByteArray(byte[] bytes) {
+        } catch (Exception e) {
+            log.error("Failed get read GZIPInputStream", e);
+        } finally {
 
-		BufferedReader in = null;
-		InputStreamReader inR = null;
-		ByteArrayInputStream byteS = null;
-		GZIPInputStream gzS = null;
-		StringBuilder str = new StringBuilder();
-		try {
-			byteS = new ByteArrayInputStream(bytes);
-			gzS = new GZIPInputStream(byteS);
-			inR = new InputStreamReader(gzS);
-			in = new BufferedReader(inR);
-
-			if (in != null) {
-
-				String content;
-
-				while ((content = in.readLine()) != null) {
-					str.append(content);
-				}
-			}
-
-		} catch (Exception e) {
-			log.error("Failed get read GZIPInputStream", e);
-		} finally {
-
-			if (byteS != null)
-				try {
-					byteS.close();
-				} catch (IOException e1) {
-					log.error("Failed to close ByteStream", e1);
-				}
-			if (gzS != null)
-				try {
-					gzS.close();
-				} catch (IOException e2) {
-					log.error("Failed to close GZStream", e2);
-				}
-			if (inR != null)
-				try {
-					inR.close();
-				} catch (IOException e3) {
-					log.error("Failed to close InputReader", e3);
-				}
-			if (in != null)
-				try {
-					in.close();
-				} catch (IOException e) {
-					log.error("Failed to close BufferedReader", e);
-				}
-		}
-		return str.toString();
-	}
+            if (byteS != null)
+                try {
+                    byteS.close();
+                } catch (IOException e1) {
+                    log.error("Failed to close ByteStream", e1);
+                }
+            if (gzS != null)
+                try {
+                    gzS.close();
+                } catch (IOException e2) {
+                    log.error("Failed to close GZStream", e2);
+                }
+            if (inR != null)
+                try {
+                    inR.close();
+                } catch (IOException e3) {
+                    log.error("Failed to close InputReader", e3);
+                }
+            if (in != null)
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    log.error("Failed to close BufferedReader", e);
+                }
+        }
+        return str.toString();
+    }
 }
