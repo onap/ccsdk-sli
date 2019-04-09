@@ -79,6 +79,9 @@ public class RequestResponseLoggingFilter implements Filter {
 
     private static class ByteArrayPrintWriter extends PrintWriter {
         private ByteArrayOutputStream baos;
+        private int errorCode = -1;
+        private String errorMsg = "";
+        private boolean errored = false;
 
         public ByteArrayPrintWriter(ByteArrayOutputStream out) {
             super(out);
@@ -87,6 +90,27 @@ public class RequestResponseLoggingFilter implements Filter {
 
         public ServletOutputStream getStream() {
             return new ByteArrayServletStream(baos);
+        }
+        
+        public Boolean hasErrored() {
+            return errored;
+        }
+        public int getErrorCode() {
+            return errorCode;
+        }
+        public String getErrorMsg() {
+            return errorMsg;
+        }
+        
+        public void setError(int code) {
+            errorCode = code;
+            errored = true;
+        }
+        
+        public void setError(int code, String msg) {
+             errorMsg = msg;
+             errorCode = code;
+             errored = true;
         }
 
     }
@@ -217,6 +241,18 @@ public class RequestResponseLoggingFilter implements Filter {
             public ServletOutputStream getOutputStream() {
                 return pw.getStream();
             }
+            
+            @Override
+            public void sendError(int sc) throws IOException {
+                super.sendError(sc);
+                pw.setError(sc);
+                
+            }
+            @Override
+            public void sendError(int sc, String msg) throws IOException {
+                super.sendError(sc, msg);
+                pw.setError(sc, msg);
+            }
         };
 
         try {
@@ -225,29 +261,44 @@ public class RequestResponseLoggingFilter implements Filter {
             log.error("Chain Exception", e);
             throw e;
         } finally {
-            byte[] bytes = baos.toByteArray();
-            response.getOutputStream().write(bytes);
-            response.getOutputStream().flush();
+            try {
+                byte[] bytes = baos.toByteArray();
+                StringBuilder responseHeaders = new StringBuilder("RESPONSE HEADERS|");
 
-            StringBuilder responseHeaders = new StringBuilder("RESPONSE HEADERS|");
+                for (String headerName : response.getHeaderNames()) {
+                    responseHeaders.append(headerName);
+                    responseHeaders.append(":");
+                    responseHeaders.append(response.getHeader(headerName));
+                    responseHeaders.append(";");
+                }
+                responseHeaders.append("Status:");
+                responseHeaders.append(response.getStatus());
+                responseHeaders.append(";IsCommited:" + wrappedResp.isCommitted());
+                
+                log.info(responseHeaders.toString());
+                
+                if ("gzip".equals(response.getHeader("Content-Encoding"))) {
 
-            for (String headerName : response.getHeaderNames()) {
-                responseHeaders.append(headerName);
-                responseHeaders.append(":");
-                responseHeaders.append(response.getHeader(headerName));
-                responseHeaders.append(";");
+                    log.info("UNGZIPED RESPONSE BODY|" + decompressGZIPByteArray(bytes));
 
+                } else {
+
+                    log.info("RESPONSE BODY|" + new String(bytes));
+                }
+
+                if (pw.hasErrored()) {
+                    log.info("ERROR RESPONSE|" + pw.getErrorCode() + ":" + pw.getErrorMsg());
+                } else {
+                    if (!wrappedResp.isCommitted()){
+                        response.getOutputStream().write(bytes);
+                        response.getOutputStream().flush();
+                    }
+                }
+
+            } catch (Exception e) {
+                log.error("Exception in response filter", e);
             }
-            log.info(responseHeaders.toString());
 
-            if ("gzip".equals(response.getHeader("Content-Encoding"))) {
-
-                log.info("UNGZIPED RESPONSE BODY|" + decompressGZIPByteArray(bytes));
-
-            } else {
-
-                log.info("RESPONSE BODY|" + new String(bytes));
-            }
         }
     }
 
