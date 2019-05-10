@@ -10,11 +10,4 @@
 	<bean id="sliStringUtils" class="org.onap.ccsdk.sli.core.slipluginutils.SliStringUtils" />
 	<service ref="sliStringUtils"
 		interface="org.onap.ccsdk.sli.core.slipluginutils.SliStringUtils" />
-
-	<bean id="dme2Factory" class="org.onap.ccsdk.sli.core.slipluginutils.Dme2Factory" />
-	<bean id="dme2" class="org.onap.ccsdk.sli.core.slipluginutils.DME2"
-		factory-ref="dme2Factory" factory-method="createDme2" />
-
-	<service ref="dme2" interface="org.onap.ccsdk.sli.core.slipluginutils.DME2" />
-
 </blueprint>
