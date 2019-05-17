@@ -349,4 +349,15 @@ public class MdsalHelperTest extends TestCase {
 		MdsalHelper.toProperties(props, address);
 		assertEquals("/cafe:0:0:0:0:0:0:8888", props.getProperty(""));
 	}
+
+	public void testGetFullPropertiesPath() {
+	    String propertiesName = "l3ucpe.properties";
+	    String path = MdsalHelper.getFullPropertiesPath(propertiesName);
+	    //verify the default works
+	    assertEquals("/opt/lsc/controller/configuration/l3ucpe.properties",path);
+	    System.setProperty("karaf.home", "/opt/opendaylight/current");
+	    path = MdsalHelper.getFullPropertiesPath(propertiesName);
+	    //verify the system property is read
+	    assertEquals("/opt/opendaylight/current/configuration/l3ucpe.properties",path);
+	}
 }

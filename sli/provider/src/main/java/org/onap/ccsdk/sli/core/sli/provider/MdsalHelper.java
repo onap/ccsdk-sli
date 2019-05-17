@@ -1325,7 +1325,8 @@ public class MdsalHelper {
 
     @Deprecated
     public static String getFullPropertiesPath(String propertiesFileName) {
-        return "/opt/bvc/controller/configuration/" + propertiesFileName;
+	String karafHome = System.getProperty("karaf.home","/opt/lsc/controller");
+        return karafHome + "/configuration/" + propertiesFileName;
     }
 
     // This is called when mapping a valid java enumeration back to the yang model value
