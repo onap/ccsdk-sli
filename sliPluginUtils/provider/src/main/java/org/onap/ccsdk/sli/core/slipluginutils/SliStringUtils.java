@@ -437,4 +437,42 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
 		source = StringEscapeUtils.escapeXml(source);
 		ctx.setAttribute(target, source);
 	}
+
+	/**
+	* unescapeJsonString takes an escaped json string stored as a single property in context memory and unescapes it storing it as a single property
+	* @param parameters - requires source and outputPath to not be null.
+	* @param ctx Reference to context memory
+	* @throws SvcLogicException if a required parameter is missing an exception is thrown
+	*/
+    public static void unescapeJsonString(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
+	SliPluginUtils.checkParameters(parameters, new String[] { INPUT_PARAM_SOURCE, INPUT_PARAM_TARGET }, LOG);
+	try {
+	    String source = parameters.get(INPUT_PARAM_SOURCE);
+	    String target = parameters.get(INPUT_PARAM_TARGET);
+	    String unescapedJson = StringEscapeUtils.unescapeJson(source);
+	    ctx.setAttribute(target, unescapedJson);
+	} catch (Exception ex) {
+	    ex.printStackTrace();
+	    throw new SvcLogicException("problem with unescapeJsonString", ex);
+	}
+    }
+
+	/**
+	* escapeJsonString takes json stored as a single string in context memory and escapes it storing it as a single property
+	* @param parameters - requires source and outputPath to not be null.
+	* @param ctx Reference to context memory
+	* @throws SvcLogicException if a required parameter is missing an exception is thrown
+	*/
+    public static void escapeJsonString(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
+	SliPluginUtils.checkParameters(parameters, new String[] { INPUT_PARAM_SOURCE, INPUT_PARAM_TARGET }, LOG);
+	try {
+	    String source = parameters.get(INPUT_PARAM_SOURCE);
+	    String target = parameters.get(INPUT_PARAM_TARGET);
+	    String unescapedJson = StringEscapeUtils.escapeJson(source);
+	    ctx.setAttribute(target, unescapedJson);
+	} catch (Exception ex) {
+	    ex.printStackTrace();
+	    throw new SvcLogicException("problem with escapeJsonString", ex);
+	}
+    }
 }

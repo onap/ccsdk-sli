@@ -297,4 +297,24 @@ public class SliStringUtilsTest {
 		utils.substring(param, ctx);
 	}
 
+	@Test
+	public void testUnescapeJsonString() throws Exception {
+		String source = "{\\\"image_name\\\":\\\"Ubuntu 14.04\\\",\\\"service-instance-id\\\":\\\"1\\\",\\\"vnf-model-customization-uuid\\\":\\\"2f\\\",\\\"vnf-id\\\":\\\"3b\\\"}";
+		param.put(SliStringUtils.INPUT_PARAM_SOURCE, source);
+		String outputPath = "unescaped";
+		param.put(SliStringUtils.INPUT_PARAM_TARGET, outputPath);
+		SliStringUtils.unescapeJsonString(param, ctx);
+		assertEquals("{\"image_name\":\"Ubuntu 14.04\",\"service-instance-id\":\"1\",\"vnf-model-customization-uuid\":\"2f\",\"vnf-id\":\"3b\"}", ctx.getAttribute(outputPath));
+	}
+
+	@Test
+	public void testEscapeJsonString() throws Exception {
+		String source = "{\"image_name\":\"Ubuntu 14.04\",\"service-instance-id\":\"1\",\"vnf-model-customization-uuid\":\"2f\",\"vnf-id\":\"3b\"}";
+		param.put(SliStringUtils.INPUT_PARAM_SOURCE, source);
+		String outputPath = "unescaped";
+		param.put(SliStringUtils.INPUT_PARAM_TARGET, outputPath);
+		SliStringUtils.escapeJsonString(param, ctx);
+		assertEquals("{\\\"image_name\\\":\\\"Ubuntu 14.04\\\",\\\"service-instance-id\\\":\\\"1\\\",\\\"vnf-model-customization-uuid\\\":\\\"2f\\\",\\\"vnf-id\\\":\\\"3b\\\"}", ctx.getAttribute(outputPath));
+	}
+
 }
