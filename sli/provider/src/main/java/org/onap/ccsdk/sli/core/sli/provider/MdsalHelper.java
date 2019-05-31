@@ -401,7 +401,7 @@ public class MdsalHelper {
 
         LOG.trace("Saving properties to List<" + elemType.getName() + ">  from " + pfx);
 
-        if (props.contains(pfx + "_length")) {
+        if (props.containsKey(pfx + "_length")) {
             try {
                 int listLength = Integer.parseInt(props.getProperty(pfx + "_length"));
 
@@ -413,18 +413,19 @@ public class MdsalHelper {
             }
         }
 
+        String arrayKey = pfx + "[";
+        int arrayKeyLength = arrayKey.length();
         if (maxIdx == -1) {
             // Figure out array size
             for (Object pNameObj : props.keySet()) {
                 String key = (String) pNameObj;
 
-                if (key.startsWith(pfx + "[")) {
-                    String idxStr = key.substring(pfx.length() + 1);
+                if (key.startsWith(arrayKey)) {
+                    String idxStr = key.substring(arrayKeyLength);
                     int endloc = idxStr.indexOf("]");
                     if (endloc != -1) {
                         idxStr = idxStr.substring(0, endloc);
                     }
-
                     try {
                         int curIdx = Integer.parseInt(idxStr);
                         if (curIdx > maxIdx) {
