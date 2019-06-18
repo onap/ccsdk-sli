@@ -28,12 +28,10 @@
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
-			<version>${mariadb.connector.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>${tomcat-jdbc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.onap.ccsdk.sli.core</groupId>

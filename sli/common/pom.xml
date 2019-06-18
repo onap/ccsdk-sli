@@ -50,13 +50,11 @@
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
-			<version>${osgi.core.version}</version>
 			<scope>provided</scope>
 		</dependency>
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <version>${mariadb.connector.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
