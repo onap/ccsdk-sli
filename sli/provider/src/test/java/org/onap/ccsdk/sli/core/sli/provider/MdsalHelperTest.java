@@ -151,6 +151,7 @@ public class MdsalHelperTest extends TestCase {
 	}
 
 	public void testToJavaEnum() throws Exception {
+		assertEquals("VENDOR6500MODEL", MdsalHelper.toJavaEnum("VENDOR_6500_MODEL"));
 		assertEquals("_2018HelloWorld", MdsalHelper.toJavaEnum("2018Hello World"));
 		assertEquals("SomethingElse", MdsalHelper.toJavaEnum("Something.Else"));
 		assertEquals("MyTestString", MdsalHelper.toJavaEnum("my-test-string"));

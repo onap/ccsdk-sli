@@ -1255,6 +1255,9 @@ public class MdsalHelper {
             return (inStr);
         }
 
+        // This is needed for enums containing under scores
+        inStr = inStr.replaceAll("_", "");
+
         // This will strip out all periods, which cannot be in a java enum
         inStr = inStr.replaceAll("\\.", "");
 
