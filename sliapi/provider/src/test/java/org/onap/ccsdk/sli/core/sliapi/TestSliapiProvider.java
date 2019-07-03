@@ -65,7 +65,7 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.exe
  */
 public class TestSliapiProvider {
 
-    private sliapiProvider provider;
+    private SliapiProvider provider;
 
     private static final String HEALTHCHECK_DG = "sli_healthcheck.xml";
 
@@ -129,8 +129,8 @@ public class TestSliapiProvider {
             svc.registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
         }
 
-        // Finally ready to create sliapiProvider
-        provider = new sliapiProvider(dataBroker, notifyService, rpcRegistry, svc);
+        // Finally ready to create SliapiProvider
+        provider = new SliapiProvider(dataBroker, notifyService, rpcRegistry, svc);
         provider.setDataBroker(dataBroker);
         provider.setNotificationService(notifyService);
         provider.setRpcRegistry(rpcRegistry);
@@ -146,7 +146,7 @@ public class TestSliapiProvider {
 
     /**
      * Test method for
-     * {@link org.onap.ccsdk.sli.core.sliapi.sliapiProvider#executeGraph(org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput)}.
+     * {@link SliapiProvider#executeGraph(org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput)}.
      */
     @Test
     public void testExecuteGraph() {
@@ -198,7 +198,7 @@ public class TestSliapiProvider {
 
     /**
      * Test method for
-     * {@link org.onap.ccsdk.sli.core.sliapi.sliapiProvider#healthcheck()}.
+     * {@link SliapiProvider#healthcheck()}.
      */
     @Test
     public void testHealthcheck() {

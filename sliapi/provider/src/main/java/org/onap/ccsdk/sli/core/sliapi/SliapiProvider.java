@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.Properties;
-import java.util.concurrent.Future;
 
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -97,7 +96,7 @@ import com.google.common.util.concurrent.ListenableFuture;
  * &#64;Override
  * public java.lang.AutoCloseable createInstance() {
  * 
- * 	final sliapiProvider provider = new sliapiProvider();
+ * 	final SliapiProvider provider = new SliapiProvider();
  * 	provider.setDataBroker(getDataBrokerDependency());
  * 	provider.setNotificationService(getNotificationServiceDependency());
  * 	provider.setRpcRegistry(getRpcRegistryDependency());
@@ -116,9 +115,9 @@ import com.google.common.util.concurrent.ListenableFuture;
  * 
  * </pre>
  */
-public class sliapiProvider implements AutoCloseable, SLIAPIService {
+public class SliapiProvider implements AutoCloseable, SLIAPIService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(sliapiProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SliapiProvider.class);
 	private static final String appName = "slitester";
 
 	protected DataBroker dataBroker;
@@ -149,13 +148,13 @@ public class sliapiProvider implements AutoCloseable, SLIAPIService {
 		RESULTS_QNAME = QName.create(TEST_RESULT_QNAME, "results");
 	}
 
-	public sliapiProvider(DataBroker dataBroker, NotificationPublishService notificationPublishService,
-			RpcProviderRegistry rpcProviderRegistry) {
+	public SliapiProvider(DataBroker dataBroker, NotificationPublishService notificationPublishService,
+						  RpcProviderRegistry rpcProviderRegistry) {
 		this(dataBroker, notificationPublishService, rpcProviderRegistry, findSvcLogicService());
 	}
 
-	public sliapiProvider(DataBroker dataBroker, NotificationPublishService notificationPublishService,
-			RpcProviderRegistry rpcProviderRegistry, SvcLogicService svcLogic) {
+	public SliapiProvider(DataBroker dataBroker, NotificationPublishService notificationPublishService,
+						  RpcProviderRegistry rpcProviderRegistry, SvcLogicService svcLogic) {
 		this.LOG.info("Creating provider for " + appName);
 		this.dataBroker = dataBroker;
 		this.notificationService = notificationPublishService;

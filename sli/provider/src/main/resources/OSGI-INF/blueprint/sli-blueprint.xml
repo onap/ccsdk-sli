@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
+           odl:use-default-for-reference-types="true">
+
+    <bean id="propProvider" class="org.onap.ccsdk.sli.core.sli.provider.SvcLogicPropertiesProviderImpl" />
+    <reference id="dblibService" interface="org.onap.ccsdk.sli.core.dblib.DbLibService" />
+
+    <bean id="svcLogicService" class="org.onap.ccsdk.sli.core.sli.provider.SvcLogicServiceImpl">
+        <argument ref="propProvider" />
+        <argument ref="dblibService"/>
+    </bean>
+
+
+    <service ref="svcLogicService">
+        <interfaces>
+            <value>org.onap.ccsdk.sli.core.sli.provider.SvcLogicService</value>
+        </interfaces>
+    </service>
+
+</blueprint>
