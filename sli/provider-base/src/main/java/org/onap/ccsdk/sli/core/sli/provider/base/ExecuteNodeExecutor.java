@@ -91,7 +91,7 @@ public class ExecuteNodeExecutor extends AbstractSvcLogicNodeExecutor {
 						SvcLogicExpression curExpr = curEnt.getValue();
 						String curExprValue = SvcLogicExpressionResolver.evaluate(curExpr, node, ctx);
 
-						LOG.debug("Parameter "+curName+" = "+curExpr.asParsedExpr()+" resolves to "+curExprValue);
+						LOG.trace("Parameter "+curName+" = "+curExpr.asParsedExpr()+" resolves to "+curExprValue);
 
 						parmMap.put(curName,curExprValue);
 					}
