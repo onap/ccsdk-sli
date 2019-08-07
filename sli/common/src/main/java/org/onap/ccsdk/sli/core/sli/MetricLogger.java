@@ -41,7 +41,7 @@ import org.slf4j.MDC;
 public class MetricLogger {
 
     private static final Logger KARAF = LoggerFactory.getLogger(MetricLogger.class);
-    private static final Logger METRIC = LoggerFactory.getLogger("org.onap.ccsdk.sli.filters.metric");
+    private static final Logger METRIC = LoggerFactory.getLogger("org.onap.ccsdk.sli.core.filters.metric");
 
     public static final String BEGIN_TIMESTAMP = "X-ECOMP-BeginTimestamp";
     public static final String END_TIMESTAMP = "X-ECOMP-EndTimestamp";
