@@ -24,7 +24,6 @@
  */
 package org.onap.ccsdk.sli.core.sli;
 
-import java.net.InetAddress;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,6 +32,8 @@ import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  * @author dt5972
@@ -40,208 +41,33 @@ import org.slf4j.MDC;
  */
 public class MetricLogger {
 
-    private static final Logger KARAF = LoggerFactory.getLogger(MetricLogger.class);
     private static final Logger METRIC = LoggerFactory.getLogger("org.onap.ccsdk.sli.core.filters.metric");
+    
+    //TODO use ONAPLogConstants
+    public static final String BEGIN_TIMESTAMP = "InvokeTimestamp";
+    public static final String LOG_TIMESTAMP = "LogTimestamp";
+    public static final String REQUEST_ID = "RequestID";
+    public static final String SERVICE_INSTANCE_ID = "ServiceInstanceID";
+    public static final String TARGET_ENTITY = "TargetEntity";
+    public static final String TARGET_SERVICE_NAME = "TargetServiceName";
+    public static final String STATUS_CODE = "StatusCode";
+    public static final String RESPONSE_CODE = "ResponseCode";
+    public static final String RESPONSE_DESCRIPTION = "ResponseDesc";
+    public static final String INSTANCE_UUID = "InstanceID";
+    public static final String ELAPSED_TIME = "ElapsedTime";
+    public static final String CLIENT_IP = "ClientIPaddress";
+    public static final String TARGET_VIRTUAL_ENTITY = "TargetElement";
+    private static final Marker INVOKE_RETURN = MarkerFactory.getMarker("INVOKE-RETURN");
+    private static final Marker INVOKE = MarkerFactory.getMarker("INVOKE");
 
-    public static final String BEGIN_TIMESTAMP = "X-ECOMP-BeginTimestamp";
-    public static final String END_TIMESTAMP = "X-ECOMP-EndTimestamp";
-    public static final String REQUEST_ID = "X-ECOMP-RequestID";
-    public static final String SERVICE_INSTANCE_ID = "X-ECOMP-ServiceInstanceID";
-    public static final String SERVICE_NAME = "X-ECOMP-ServiceName";
-    public static final String PARTNER_NAME = "X-ECOMP-PartnerName";
-    public static final String TARGET_ENTITY = "X-ECOMP-TargetEntity";
-    public static final String TARGET_SERVICE_NAME = "X-ECOMP-TargetServiceName";
-    public static final String STATUS_CODE = "X-ECOMP-StatusCode";
-    public static final String RESPONSE_CODE = "X-ECOMP-ResponseCode";
-    public static final String RESPONSE_DESCRIPTION = "X-ECOMP-ResponseDescription";
-    public static final String INSTANCE_UUID = "X-ECOMP-InstanceUUID";
-    public static final String CATEGORY_LOG_LEVEL = "X-ECOMP-CategoryLogLevel";
-    public static final String SEVERITY = "X-ECOMP-Severity";
-    public static final String SERVER_IP_ADDRESS = "X-ECOMP-ServerIpAddress";
-    public static final String ELAPSED_TIME = "X-ECOMP-ElapsedTime";
-    public static final String SERVER = "X-ECOMP-Server";
-    public static final String CLIENT_IP = "X-ECOMP-ClientIp";
-    public static final String CLASS_NAME = "X-ECOMP-ClassName";
-    public static final String TARGET_VIRTUAL_ENTITY =  "X-ECOMP-TargetVirtualEntity";
-
-    private long beginTimestamp;
     private String lastMsg = null;
-
-    public MetricLogger() {
-        beginTimestamp = System.currentTimeMillis();
-
-        try {
-            InetAddress localhost = InetAddress.getLocalHost();
-            setServerIpAddress(localhost.getHostAddress());
-            setServer(localhost.getCanonicalHostName());
-        } catch (Exception e) {
-            KARAF.error("Could not get localhost", e);
-        }
-
-    }
-
-
-    public String getBeginTimestamp() {
-        return MDC.get(BEGIN_TIMESTAMP);
-    }
-
-    private void setBeginTimestamp(long beginTimestamp) {
-        this.beginTimestamp = beginTimestamp;
-        MDC.put(BEGIN_TIMESTAMP, MetricLogger.asIso8601(beginTimestamp));
-    }
-
-    public String getEndTimestamp() {
-        return MDC.get(END_TIMESTAMP);
-    }
-
-    private void setEndTimestamp(long endTimestamp) {
-        // Set MDC with formatted time stamp
-        MDC.put(END_TIMESTAMP, MetricLogger.asIso8601(endTimestamp));
-
-        // Set elapsed time
-        setElapsedTime(endTimestamp - beginTimestamp);
-
-    }
 
     public String getRequestID() {
         return MDC.get(REQUEST_ID);
     }
+    
+    public MetricLogger() {
 
-
-    public String getServiceInstanceID() {
-        return MDC.get(SERVICE_INSTANCE_ID);
-    }
-
-    private void setServiceInstanceID(String svcInstanceId) {
-        MDC.put(SERVICE_INSTANCE_ID, svcInstanceId);
-    }
-
-    public String getServiceName() {
-        return MDC.get(SERVICE_NAME);
-    }
-
-    private void setServiceName(String svcName) {
-        MDC.put(SERVICE_NAME, svcName);
-    }
-
-    public String getPartnerName() {
-        return MDC.get(PARTNER_NAME);
-    }
-
-    private void setPartnerName(String partnerName) {
-        MDC.put(PARTNER_NAME, partnerName);
-    }
-
-    public String getTargetEntity() {
-        return MDC.get(TARGET_ENTITY);
-    }
-
-    private void setTargetEntity(String targetEntity) {
-        MDC.put(TARGET_ENTITY, targetEntity);
-    }
-
-    public String getTargetServiceName() {
-        return MDC.get(TARGET_SERVICE_NAME);
-    }
-
-    private void setTargetServiceName(String targetServiceName) {
-        MDC.put(TARGET_SERVICE_NAME, targetServiceName);
-    }
-
-    public String getStatusCode() {
-        return MDC.get(STATUS_CODE);
-    }
-
-    private void setStatusCode(String statusCode) {
-        MDC.put(STATUS_CODE, statusCode);
-    }
-
-    public String getResponseCode() {
-        return MDC.get(RESPONSE_CODE);
-    }
-
-    private void setResponseCode(String responseCode) {
-        MDC.put(RESPONSE_CODE, responseCode);
-    }
-
-    public String getResponseDescription() {
-        return MDC.get(RESPONSE_DESCRIPTION);
-    }
-
-    private void setResponseDescription(String responseDesc) {
-        MDC.put(RESPONSE_DESCRIPTION, formatString(responseDesc));
-    }
-
-    public String getInstanceUUID() {
-	return MDC.get(INSTANCE_UUID);
-    }
-
-    private void setInstanceUUID(String instanceUUID) {
-	MDC.put(INSTANCE_UUID, instanceUUID);
-    }
-
-    public String getCategoryLogLevel() {
-	return MDC.get(CATEGORY_LOG_LEVEL);
-    }
-
-    private void setCategoryLogLevel(String categoryLogLevel) {
-	MDC.put(CATEGORY_LOG_LEVEL, categoryLogLevel);
-    }
-
-    public String getSeverity() {
-        return MDC.get(SEVERITY);
-    }
-
-    private void setSeverity(String severity) {
-        MDC.put(SEVERITY, severity);
-    }
-
-    public String getServerIpAddress() {
-        return MDC.get(SERVER_IP_ADDRESS);
-    }
-
-    private void setServerIpAddress(String serverIpAddress) {
-        MDC.put(SERVER_IP_ADDRESS, serverIpAddress);
-    }
-
-    public String getElapsedTime() {
-        return MDC.get(ELAPSED_TIME);
-    }
-
-    private void setElapsedTime(long elapsedTime) {
-        MDC.put(ELAPSED_TIME, Long.toString(elapsedTime));
-    }
-
-    public String getServer() {
-        return MDC.get(SERVER);
-    }
-
-    private void setServer(String server) {
-        MDC.put(SERVER, server);
-    }
-
-    public String getClientIp() {
-        return MDC.get(CLIENT_IP);
-    }
-
-    private void setClientIp(String clientIp) {
-        MDC.put(CLIENT_IP, clientIp);
-    }
-
-    public String getClassName() {
-        return MDC.get(CLASS_NAME);
-    }
-
-    private void setClassName(String className) {
-        MDC.put(CLASS_NAME, className);
-    }
-
-    public String getTargetVirtualEntity() {
-        return MDC.get(TARGET_VIRTUAL_ENTITY);
-    }
-
-    private void setTargetVirtualEntity(String targetVirtualEntity) {
-        MDC.put(TARGET_VIRTUAL_ENTITY, targetVirtualEntity);
     }
 
     public static String asIso8601(Date date) {
@@ -255,50 +81,53 @@ public class MetricLogger {
         return MetricLogger.asIso8601(new Date(tsInMillis));
     }
 
-    public void logRequest(String svcInstanceId, String svcName, String partnerName, String targetEntity, String targetServiceName,  String targetVirtualEntity, String msg) {
+    @Deprecated
+    public void logRequest(String svcInstanceId, String svcName, String partnerName, String targetEntity, String targetServiceName, String targetVirtualEntity, String msg) {
+        logRequest(svcInstanceId,targetEntity,targetServiceName,targetVirtualEntity,msg);
+    }
 
-        setBeginTimestamp(System.currentTimeMillis());
+    public void logRequest(String svcInstanceId, String targetEntity, String targetServiceName, String targetVirtualEntity, String msg) {
+        long start = System.currentTimeMillis();
+        MDC.put(BEGIN_TIMESTAMP, MetricLogger.asIso8601(start));
 
         if (svcInstanceId != null) {
-            setServiceInstanceID(svcInstanceId);
+            MDC.put(SERVICE_INSTANCE_ID, svcInstanceId);
         }
-
-        if (svcName != null) {
-            setServiceName(svcName);
-        }
-
-        if (partnerName != null) {
-            setPartnerName(partnerName);
-        }
-
         if (targetEntity != null) {
-            setTargetEntity(targetEntity);
+            MDC.put(TARGET_ENTITY, targetEntity);
         }
 
         if (targetServiceName != null) {
-            setTargetServiceName(targetServiceName);
+            MDC.put(TARGET_SERVICE_NAME, targetServiceName);
         }
 
         if (targetVirtualEntity != null) {
-            setTargetVirtualEntity(targetVirtualEntity);
+            MDC.put(TARGET_VIRTUAL_ENTITY, targetVirtualEntity);
         }
-
         this.lastMsg = msg;
-
-
-    }
-
-    public void logResponse(String statusCode, String responseCode, String responseDescription) {
-        setEndTimestamp(System.currentTimeMillis());
-
-        setStatusCode(statusCode);
-        setResponseCode(responseCode);
-        setResponseDescription(responseDescription);
-
-        METRIC.info(formatString(lastMsg));
-
+        METRIC.info(INVOKE, "Invoke");
     }
     
+    public void logResponse(String statusCode, String responseCode, String responseDescription) {
+        long start = System.currentTimeMillis();
+        MDC.put(BEGIN_TIMESTAMP, MetricLogger.asIso8601(start));
+
+        if (statusCode != null) {
+            MDC.put(STATUS_CODE, statusCode);
+        }
+        if (responseCode != null) {
+            MDC.put(RESPONSE_CODE, responseCode);
+        }
+        if (responseDescription != null) {
+            MDC.put(RESPONSE_DESCRIPTION, formatString(responseDescription));
+        }
+        long end = System.currentTimeMillis();
+        MDC.put(LOG_TIMESTAMP, MetricLogger.asIso8601(end));
+        MDC.put(ELAPSED_TIME, Long.toString(end-start));
+        METRIC.info(INVOKE_RETURN, formatString(lastMsg));
+        resetContext();
+    }
+
     protected String formatString(String str) {
         if (str != null) {
             str = str.replaceAll("\\R", ""); // this will strip all new line characters
@@ -306,7 +135,7 @@ public class MetricLogger {
         }
         return str;
     }
-    
+
     public static void resetContext() {
         MDC.remove(TARGET_ENTITY);
         MDC.remove(TARGET_SERVICE_NAME);

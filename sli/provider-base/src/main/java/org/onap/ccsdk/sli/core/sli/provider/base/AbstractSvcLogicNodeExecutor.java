@@ -21,7 +21,6 @@
 
 package org.onap.ccsdk.sli.core.sli.provider.base;
 
-import org.onap.ccsdk.sli.core.sli.MetricLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicAdaptor;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -70,7 +69,6 @@ public abstract class AbstractSvcLogicNodeExecutor {
     }
 
     protected SvcLogicNode getNextNode(SvcLogicNode node, String outValue) {
-        MetricLogger.resetContext();
         SvcLogicNode nextNode = node.getOutcomeValue(outValue);
         if (nextNode != null) {
             if (LOG.isDebugEnabled()) {

@@ -105,9 +105,6 @@ public class SvcLogicServiceImplBase implements SvcLogicServiceBase {
             registerExecutors();
         }
 
-        // Set service name in MDC to reference current working directed graph
-        MDC.put(MetricLogger.SERVICE_NAME, graph.getModule() + ":" + graph.getRpc() + "/v" + graph.getVersion());
-
         MDC.put(CURRENT_GRAPH, graph.toString());
 
         SvcLogicNode curNode = graph.getRootNode();
