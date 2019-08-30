@@ -118,7 +118,6 @@ public class ITCaseSvcLogicGraphExecutor {
         SvcLogicServiceImpl svc = new SvcLogicServiceImpl(resourceProvider);
 
         for (String nodeType : BUILTIN_NODES.keySet()) {
-            LOG.info("SLI - registering node executor for node type " + nodeType);
             svc.registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
         }
 
@@ -171,7 +170,6 @@ public class ITCaseSvcLogicGraphExecutor {
             assertNotNull(store);
             for (String nodeType : BUILTIN_NODES.keySet()) {
 
-                LOG.info("SLI - registering node executor for node type {}", nodeType);
 
                 svc.registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
 

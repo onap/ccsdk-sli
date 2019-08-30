@@ -54,16 +54,10 @@ public class BlockNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			
 			SvcLogicNode nextNode = node.getOutcomeValue("" + (i + 1));
 			if (nextNode != null) {
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Block - executing outcome " + (i + 1));
-				}
+
 				while (nextNode != null)
 				{
 				       nextNode = svc.executeNode(nextNode, ctx);
-				}
-			} else {
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Block - done: no outcome " + (i + 1));
 				}
 			}
 		}

@@ -77,26 +77,20 @@ public class SvcLogicServiceImplBase implements SvcLogicServiceBase {
     }
 
     protected void registerExecutors() {
-
-        LOG.info("Entered register executors");
         for (String nodeType : BUILTIN_NODES.keySet()) {
-            LOG.info("SLI - registering node executor for node type " + nodeType);
             registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
         }
-        LOG.info("Done registerExecutors");
     }
 
     public void registerExecutor(String nodeName, AbstractSvcLogicNodeExecutor executor) {
         if (nodeExecutors == null) {
             nodeExecutors = new HashMap<>();
         }
-        LOG.info("SLI - registering executor for node type {}", nodeName);
         executor.setResolver(resolver);
         nodeExecutors.put(nodeName, executor);
     }
 
     public void unregisterExecutor(String nodeName) {
-        LOG.info("SLI - unregistering executor for node type {}", nodeName);
         nodeExecutors.remove(nodeName);
     }
 
@@ -137,9 +131,6 @@ public class SvcLogicServiceImplBase implements SvcLogicServiceBase {
         AbstractSvcLogicNodeExecutor executor = nodeExecutors.get(node.getNodeType());
 
         if (executor != null) {
-            LOG.debug("Executing node executor for node type {} - {}", node.getNodeType(),
-                    executor.getClass().getName());
-
     		MDC.put("nodeId", node.getNodeId() + " (" + node.getNodeType() + ")");
             return (executor.execute(this, node, ctx));
         } else {

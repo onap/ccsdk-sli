@@ -68,7 +68,6 @@ public class SvcLogicExpressionResolver {
 				
 				if (atomType == AtomType.CONTEXT_VAR)
 				{
-					LOG.trace("Evaluating context variable $"+varName);
 					
 					String varValue = ctx.getAttribute(varName);
 					
@@ -80,9 +79,7 @@ public class SvcLogicExpressionResolver {
 					return (varValue);
 				}
 				SvcLogicExpression parm = node.getParameter(varName);
-				if (parm != null) {
-					LOG.trace("Evaluating value of parameter "+varName+": "+parm.asParsedExpr());
-					
+				if (parm != null) {				
 					return (evaluate(parm, node, ctx));
 				}
 				else
@@ -491,7 +488,6 @@ public class SvcLogicExpressionResolver {
                 }
 
 				String varName = varNameBuff.toString();
-				LOG.debug("Evaluating context variable $"+varName);
 				String ctxValue = ctx.getAttribute(varName);
 				if (ctxValue == null)
 				{

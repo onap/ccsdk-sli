@@ -128,7 +128,6 @@ public class MdsalHelper {
         }
         String simpleTypeName = fromObj.getClass().getTypeName();
         simpleTypeName = simpleTypeName.substring(simpleTypeName.lastIndexOf(".") + 1);
-        LOG.trace("Extracting properties from " + fromClass.getName() + " class");
         
         if (classHasSpecialHandling(simpleTypeName)) {
             try {
@@ -157,10 +156,6 @@ public class MdsalHelper {
                         + ".getValue() to Properties entry", e);
             }
         } else if (fromObj instanceof List) {
-
-            // Class is a List. List should contain yang-generated classes.
-            LOG.trace(fromClass.getName() + " is a List");
-
             List fromList = (List) fromObj;
 
             for (int i = 0; i < fromList.size(); i++) {
@@ -170,7 +165,6 @@ public class MdsalHelper {
 
         } else if (isYangGenerated(fromClass)) {
             // Class is yang generated.
-            LOG.trace(fromClass.getName() + " is a Yang-generated class");
 
             String propNamePfx = null;
 
@@ -261,10 +255,7 @@ public class MdsalHelper {
                                 Object retValue = m.invoke(fromObj);
 
                                 if (retValue instanceof byte[]) {
-                                    LOG.trace(m.getName() + " returns a byte[]");
                                     retValue = new String((byte[]) retValue, "UTF-8");
-                                    LOG.trace("Converted byte array " + propNamePfx + "." + fieldName + "to string "
-                                            + retValue);
                                 }
                                 if (!isAccessible) {
                                     m.setAccessible(isAccessible);
@@ -284,8 +275,6 @@ public class MdsalHelper {
                             }
                         }
                     } else if (returnType.equals(Class.class)) {
-
-                        LOG.trace(m.getName() + " returns a Class object - not interested");
 
                     } else if (List.class.isAssignableFrom(returnType)) {
 
@@ -327,11 +316,7 @@ public class MdsalHelper {
 
                             if (propValObj != null) {
                                 if (propValObj instanceof byte[]) {
-                                    LOG.trace(m.getName() + " returns a byte[]");
                                     propVal = new String((byte[]) propValObj, "UTF-8");
-                                    LOG.trace("Converted byte array " + propNamePfx + "." + fieldName + "to string "
-                                            + propVal);
-
                                 } else {
                                     propVal = propValObj.toString();
                                 }
@@ -373,7 +358,6 @@ public class MdsalHelper {
             if (fromObj instanceof byte[]) {
                 try {
                     fromVal = new String((byte[]) fromObj, "UTF-8");
-                    LOG.trace("Converted byte array " + pfx + "to string " + fromVal);
                 } catch (Exception e) {
                     LOG.warn("Caught exception trying to convert " + pfx + " from byte[] to String", e);
                     fromVal = fromObj.toString();
@@ -398,8 +382,6 @@ public class MdsalHelper {
 
         int maxIdx = -1;
         boolean foundValue = false;
-
-        LOG.trace("Saving properties to List<" + elemType.getName() + ">  from " + pfx);
 
         if (props.containsKey(pfx + "_length")) {
             try {
@@ -439,7 +421,6 @@ public class MdsalHelper {
             }
         }
 
-        LOG.trace(pfx + " has max index of " + maxIdx);
         for (int i = 0; i <= maxIdx; i++) {
 
             String curBase = pfx + "[" + i + "]";
@@ -501,8 +482,6 @@ public class MdsalHelper {
                         Method buildMethod = builderClass.getMethod("build");
                         builderObj = toBuilder(props, curBase, builderObj, true);
                         if (builderObj != null) {
-                            LOG.trace(
-                                    "Calling " + builderObj.getClass().getName() + "." + buildMethod.getName() + "()");
                             Object builtObj = buildMethod.invoke(builderObj);
                             toObj.add(builtObj);
                             foundValue = true;
@@ -544,14 +523,10 @@ public class MdsalHelper {
         Class toClass = toObj.getClass();
         boolean foundValue = false;
 
-        LOG.trace("Saving properties to " + toClass.getName() + " class from " + pfx);
-
         Ipv4Address addr;
 
         if (isYangGenerated(toClass)) {
             // Class is yang generated.
-            LOG.trace(toClass.getName() + " is a Yang-generated class");
-
             String propNamePfx = null;
             if (preservePfx) {
                 propNamePfx = pfx;
@@ -573,7 +548,6 @@ public class MdsalHelper {
             }
 
             if (toObj instanceof Identifier) {
-                LOG.trace(toClass.getName() + " is a Key - skipping");
                 return (toObj);
             }
 
@@ -592,12 +566,12 @@ public class MdsalHelper {
 
                     String paramValue = props.getProperty(propName);
                     if (paramValue == null) {
-                        LOG.trace(propName + " is unset");
+
                     } else if ("".equals(paramValue)) {
                         LOG.trace(propName + " was set to the empty string, setting it to null");
                         paramValue = null;
                     } else {
-                        LOG.trace(propName + " = " + paramValue);
+
                     }
 
                     // Is the return type a yang generated class?
@@ -605,7 +579,6 @@ public class MdsalHelper {
                         // Is it an enum?
                         if (paramClass.isEnum()) {
 
-                            LOG.trace(m.getName() + " expects an Enum");
                             // Param type is a typedef.
                             if ((paramValue != null) && (paramValue.length() > 0)) {
                                 Object paramObj = null;
@@ -623,8 +596,6 @@ public class MdsalHelper {
                                         m.setAccessible(true);
                                     }
 
-                                    LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
-                                            + paramValue + ")");
                                     m.invoke(toObj, paramObj);
 
                                     if (!isAccessible) {
@@ -669,8 +640,7 @@ public class MdsalHelper {
                                         if (!isAccessible) {
                                             m.setAccessible(true);
                                         }
-                                        LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
-                                                + paramValue + ")");
+
                                         m.invoke(toObj, paramValue);
                                         if (!isAccessible) {
                                             m.setAccessible(isAccessible);
@@ -727,8 +697,6 @@ public class MdsalHelper {
 
                                 Object constObj = null;
 
-                                LOG.trace(m.getName() + " expects a yang-generated class - looking for builder "
-                                        + builderName);
                                 try {
                                     builderClass = Class.forName(builderName);
                                     builderObj = builderClass.newInstance();
@@ -741,8 +709,7 @@ public class MdsalHelper {
                                             if (!isAccessible) {
                                                 m.setAccessible(true);
                                             }
-                                            LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName()
-                                                    + "(null)");
+
                                             m.invoke(toObj, new Object[] { null });
                                             if (!isAccessible) {
                                                 m.setAccessible(isAccessible);
@@ -826,8 +793,7 @@ public class MdsalHelper {
 
                                     try {
                                         Method buildMethod = builderClass.getMethod("build");
-                                        LOG.trace("Calling " + paramObj.getClass().getName() + "."
-                                                + buildMethod.getName() + "()");
+
                                         Object builtObj = buildMethod.invoke(paramObj);
 
                                         boolean isAccessible = m.isAccessible();
@@ -835,7 +801,6 @@ public class MdsalHelper {
                                             m.setAccessible(true);
                                         }
 
-                                        LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "()");
                                         m.invoke(toObj, builtObj);
                                         if (!isAccessible) {
                                             m.setAccessible(isAccessible);
@@ -855,15 +820,9 @@ public class MdsalHelper {
                                         }
 
                                         if (constObj != null) {
-
-                                            LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
-                                                    + constObj.toString() + ")");
                                             m.invoke(toObj, constObj);
                                         } else {
-                                            LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
-                                                    + paramValue + ")");
                                             m.invoke(toObj, paramValue);
-
                                         }
                                         if (!isAccessible) {
                                             m.setAccessible(isAccessible);
@@ -883,9 +842,6 @@ public class MdsalHelper {
                         // if it is a List.
 
                         if (List.class.isAssignableFrom(paramClass)) {
-
-                            LOG.trace("Parameter class " + paramClass.getName() + " is a List");
-
                             // Figure out what type of args are in List and pass
                             // that to toList().
 
@@ -905,8 +861,6 @@ public class MdsalHelper {
                                     if (!isAccessible) {
                                         m.setAccessible(true);
                                     }
-                                    LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
-                                            + paramValue + ")");
                                     m.invoke(toObj, paramObj);
                                     if (!isAccessible) {
                                         m.setAccessible(isAccessible);
@@ -922,10 +876,6 @@ public class MdsalHelper {
 
                             // Setter expects something that is not a List and
                             // not yang-generated. Just pass the parameter value
-
-                            LOG.trace("Parameter class " + paramClass.getName()
-                                    + " is not a yang-generated class or a List");
-
                             if ((paramValue != null) && (paramValue.length() > 0)) {
 
                                 Object constObj = null;
@@ -958,8 +908,6 @@ public class MdsalHelper {
 
                                     if (constObj != null) {
                                         try {
-                                            LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
-                                                    + constObj + ")");
                                             m.invoke(toObj, constObj);
                                             foundValue = true;
                                         } catch (Exception e2) {
@@ -971,8 +919,6 @@ public class MdsalHelper {
                                             if (!isAccessible) {
                                                 m.setAccessible(true);
                                             }
-                                            LOG.trace("Calling " + toObj.getClass().getName() + "." + m.getName() + "("
-                                                    + paramValue + ")");
                                             m.invoke(toObj, paramValue);
                                             if (!isAccessible) {
                                                 m.setAccessible(isAccessible);
@@ -1022,21 +968,8 @@ public class MdsalHelper {
     public static void printPropertyList(PrintStream pstr, String pfx, Class toClass) {
         boolean foundValue = false;
 
-        LOG.trace("Analyzing " + toClass.getName() + " class : pfx " + pfx);
-
         if (isYangGenerated(toClass) && (!Identifier.class.isAssignableFrom(toClass))) {
             // Class is yang generated.
-            LOG.trace(toClass.getName() + " is a Yang-generated class");
-
-            if (toClass.getName().endsWith("Key")) {
-                if (Identifier.class.isAssignableFrom(toClass)) {
-                    LOG.trace(Identifier.class.getName() + " is assignable from " + toClass.getName());
-                } else {
-
-                    LOG.trace(Identifier.class.getName() + " is NOT assignable from " + toClass.getName());
-                }
-            }
-
             String propNamePfx = null;
             if (pfx.endsWith("]")) {
                 propNamePfx = pfx;
@@ -1061,9 +994,7 @@ public class MdsalHelper {
             // set
 
             for (Method m : toClass.getMethods()) {
-                LOG.trace("Is " + m.getName() + " method a getter?");
                 if (isGetter(m)) {
-                    LOG.trace(m.getName() + " is a getter");
                     Class returnClass = m.getReturnType();
 
                     String fieldName = toLowerHyphen(m.getName().substring(3));
@@ -1078,10 +1009,7 @@ public class MdsalHelper {
                     if (isYangGenerated(returnClass)) {
                         // Is it an enum?
                         if (returnClass.isEnum()) {
-
-                            LOG.trace(m.getName() + " is an Enum");
                             pstr.print("\n\n     * " + propName);
-
                         } else {
 
                             String simpleName = returnClass.getSimpleName();
@@ -1089,7 +1017,6 @@ public class MdsalHelper {
                             if (IPV4_ADDRESS.equals(simpleName) || IPV6_ADDRESS.equals(simpleName)
                                     || IP_ADDRESS.equals(simpleName) || IP_PREFIX.equals(simpleName)
                                     || "PortNumber".equals(simpleName) || "Dscp".equals(simpleName)) {
-                                LOG.trace(m.getName() + " is an " + simpleName);
                                 pstr.print("\n\n     * " + propName);
                             } else {
                                 printPropertyList(pstr, propNamePfx, returnClass);
@@ -1102,17 +1029,12 @@ public class MdsalHelper {
                         // if it is a List.
 
                         if (List.class.isAssignableFrom(returnClass)) {
-
-                            LOG.trace("Parameter class " + returnClass.getName() + " is a List");
-
                             // Figure out what type of args are in List and pass
                             // that to toList().
 
                             Type returnType = m.getGenericReturnType();
                             Type elementType = ((ParameterizedType) returnType).getActualTypeArguments()[0];
                             Class elementClass = (Class) elementType;
-                            LOG.trace("Calling printPropertyList on list type (" + elementClass.getName()
-                                    + "), pfx is (" + pfx + "), toClass is (" + toClass.getName() + ")");
                             printPropertyList(pstr,
                                     propNamePfx + "." + toLowerHyphen(elementClass.getSimpleName()) + "[]",
                                     elementClass);
@@ -1121,10 +1043,6 @@ public class MdsalHelper {
 
                             // Setter expects something that is not a List and
                             // not yang-generated. Just pass the parameter value
-
-                            LOG.trace("Parameter class " + returnClass.getName()
-                                    + " is not a yang-generated class or a List");
-
                             pstr.print("\n\n     * " + propName);
                         }
                     }
@@ -1243,7 +1161,6 @@ public class MdsalHelper {
 
         String retval = str.replaceAll(regex, replacement).toLowerCase();
 
-        LOG.trace("Converting " + inStr + " => " + str + " => " + retval);
         return (retval);
     }
 

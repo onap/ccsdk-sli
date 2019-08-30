@@ -50,10 +50,6 @@ public class CallNodeExecutor extends AbstractSvcLogicNodeExecutor {
 		{
 			LOG.debug("execute: getGraph returned null");
 		}
-		else
-		{
-			LOG.debug("execute: got SvcLogicGraph");
-		}
 
 		SvcLogicExpression moduleExpr = null;
 
@@ -70,7 +66,6 @@ public class CallNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			if (myGraph != null)
 			{
 				module = myGraph.getModule();
-				LOG.debug("myGraph.getModule() returned "+module);
 			}
 		}
 
@@ -87,7 +82,6 @@ public class CallNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			if (myGraph != null)
 			{
 				rpc = myGraph.getRpc();
-				LOG.debug("myGraph.getRpc() returned "+rpc);
 			}
 		}
 
@@ -104,8 +98,6 @@ public class CallNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			if (myGraph != null)
 			{
 				mode = myGraph.getMode();
-
-				LOG.debug("myGraph.getMode() returned "+mode);
 			}
 		}
 
