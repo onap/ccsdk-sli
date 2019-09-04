@@ -32,13 +32,11 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
-import org.onap.ccsdk.sli.core.sli.provider.base.AbstractSvcLogicNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicPropertiesProvider;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicResolver;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceImplBase;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -46,43 +44,21 @@ import org.slf4j.MDC;
 public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcLogicService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SvcLogicServiceImpl.class);
-    protected BundleContext bctx = null;
 
-    public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider) throws SvcLogicException {
+    public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider, SvcLogicResolver resolver)
+            throws SvcLogicException {
         super(null);
-        this.resolver = SvcLogicClassResolver.getInstance();
+        this.resolver = resolver;
         properties = resourceProvider.getProperties();
         this.store = getStore();
     }
 
-    public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider, DbLibService dbSvc)
-            throws SvcLogicException {
+    public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider, DbLibService dbSvc,
+            SvcLogicResolver resolver) throws SvcLogicException {
         super(null);
-        this.resolver = SvcLogicClassResolver.getInstance();
+        this.resolver = resolver;
         properties = resourceProvider.getProperties();
         this.store = new SvcLogicDblibStore(dbSvc);
-    }
-
-    public void registerExecutor(ServiceReference sr) {
-        String nodeName = (String) sr.getProperty("nodeType");
-        if (nodeName != null) {
-            AbstractSvcLogicNodeExecutor executor;
-            try {
-                executor = (AbstractSvcLogicNodeExecutor) bctx.getService(sr);
-            } catch (Exception e) {
-                LOG.error("Cannot get service executor for {}", nodeName, e);
-                return;
-            }
-            registerExecutor(nodeName, executor);
-        }
-    }
-
-    public void unregisterExecutor(ServiceReference sr) {
-        String nodeName = (String) sr.getProperty("nodeType");
-
-        if (nodeName != null) {
-            unregisterExecutor(nodeName);
-        }
     }
 
     @Override

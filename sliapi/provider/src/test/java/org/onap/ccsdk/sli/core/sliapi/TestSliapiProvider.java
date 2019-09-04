@@ -18,13 +18,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Future;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicParser;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
+import org.onap.ccsdk.sli.core.sli.provider.SvcLogicClassResolver;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicPropertiesProviderImpl;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicServiceImpl;
 import org.onap.ccsdk.sli.core.sli.provider.base.AbstractSvcLogicNodeExecutor;
@@ -124,7 +124,8 @@ public class TestSliapiProvider {
         SvcLogicParser.activate("sli", "healthcheck", "1.0.0", "sync", store);
 
         // Create a ServiceLogicService and initialize it
-        SvcLogicServiceImpl svc = new SvcLogicServiceImpl(new SvcLogicPropertiesProviderImpl());
+        SvcLogicServiceImpl svc = new SvcLogicServiceImpl(new SvcLogicPropertiesProviderImpl(),
+                new SvcLogicClassResolver());
         for (String nodeType : BUILTIN_NODES.keySet()) {
             svc.registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
         }

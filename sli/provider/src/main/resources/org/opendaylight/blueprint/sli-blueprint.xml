@@ -5,12 +5,13 @@
 
     <bean id="propProvider" class="org.onap.ccsdk.sli.core.sli.provider.SvcLogicPropertiesProviderImpl" />
     <reference id="dblibService" interface="org.onap.ccsdk.sli.core.dblib.DbLibService" />
+    <bean id="svcLogicClassResolver" class="org.onap.ccsdk.sli.core.sli.provider.SvcLogicClassResolver" />
 
     <bean id="svcLogicService" class="org.onap.ccsdk.sli.core.sli.provider.SvcLogicServiceImpl">
         <argument ref="propProvider" />
-        <argument ref="dblibService"/>
+        <argument ref="dblibService" />
+        <argument ref="svcLogicClassResolver" />
     </bean>
-
 
     <service ref="svcLogicService">
         <interfaces>

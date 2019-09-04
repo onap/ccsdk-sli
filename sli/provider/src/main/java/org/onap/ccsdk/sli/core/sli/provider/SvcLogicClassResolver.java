@@ -1,5 +1,6 @@
 package org.onap.ccsdk.sli.core.sli.provider;
 
+import java.util.HashMap;
 import org.onap.ccsdk.sli.core.sli.SvcLogicAdaptor;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.sli.SvcLogicRecorder;
@@ -13,17 +14,40 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SvcLogicClassResolver implements SvcLogicResolver {
+
 	private static final Logger LOG = LoggerFactory.getLogger(SvcLogicClassResolver.class);
-	private static SvcLogicClassResolver instance = new SvcLogicClassResolver();
+	private static HashMap<String, SvcLogicAdaptor> adaptorMap = new HashMap<>();
 
-	private SvcLogicClassResolver() {
+	public void registerAdaptor(SvcLogicAdaptor adaptor) {
+		String name = adaptor.getClass().getName();
+		LOG.info("Registering adaptor " + name);
+		adaptorMap.put(name, adaptor);
+
 	}
 
-	public static SvcLogicClassResolver getInstance() {
-		return instance;
+	public void unregisterAdaptor(String name) {
+		if (adaptorMap.containsKey(name)) {
+			LOG.info("Unregistering " + name);
+			adaptorMap.remove(name);
+		}
 	}
 
-	public Object resolve(String className) {
+	private SvcLogicAdaptor getAdaptorInstance(String name) {
+		if (adaptorMap.containsKey(name)) {
+			return adaptorMap.get(name);
+		} else {
+
+			SvcLogicAdaptor adaptor = (SvcLogicAdaptor) resolve(name);
+
+			if (adaptor != null) {
+				registerAdaptor(adaptor);
+			}
+
+			return adaptor;
+		}
+	}
+
+	private Object resolve(String className) {
 
 		Bundle bundle = FrameworkUtil.getBundle(SvcLogicClassResolver.class);
 
@@ -68,7 +92,7 @@ public class SvcLogicClassResolver implements SvcLogicResolver {
 
 	@Override
 	public SvcLogicAdaptor getSvcLogicAdaptor(String adaptorName) {
-		return SvcLogicAdaptorFactory.getInstance(adaptorName);
+		return getAdaptorInstance(adaptorName);
 	}
 
 }

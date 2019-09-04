@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -44,6 +43,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.onap.ccsdk.sli.core.sli.SvcLogicParser;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
+import org.onap.ccsdk.sli.core.sli.provider.base.AbstractSvcLogicNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.BlockNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.BreakNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.CallNodeExecutor;
@@ -61,7 +61,6 @@ import org.onap.ccsdk.sli.core.sli.provider.base.ReserveNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.ReturnNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.SaveNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.SetNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.base.AbstractSvcLogicNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicPropertiesProvider;
 import org.onap.ccsdk.sli.core.sli.provider.base.SwitchNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.UpdateNodeExecutor;
@@ -98,6 +97,8 @@ public class ITCaseSvcLogicGraphExecutor {
         }
     };
 
+    private static SvcLogicClassResolver svcLogicClassResolver;
+
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
 
@@ -115,7 +116,8 @@ public class ITCaseSvcLogicGraphExecutor {
         SvcLogicParser parser = new SvcLogicParser();
 
         SvcLogicPropertiesProvider resourceProvider = new SvcLogicPropertiesProviderImpl();
-        SvcLogicServiceImpl svc = new SvcLogicServiceImpl(resourceProvider);
+        svcLogicClassResolver = new SvcLogicClassResolver();
+        SvcLogicServiceImpl svc = new SvcLogicServiceImpl(resourceProvider, svcLogicClassResolver);
 
         for (String nodeType : BUILTIN_NODES.keySet()) {
             svc.registerExecutor(nodeType, BUILTIN_NODES.get(nodeType));
@@ -165,7 +167,7 @@ public class ITCaseSvcLogicGraphExecutor {
                     return svcprops;
                 }
             };
-            SvcLogicServiceImpl svc = new SvcLogicServiceImpl(resourceProvider);
+            SvcLogicServiceImpl svc = new SvcLogicServiceImpl(resourceProvider, svcLogicClassResolver);
             SvcLogicStore store = svc.getStore();
             assertNotNull(store);
             for (String nodeType : BUILTIN_NODES.keySet()) {
