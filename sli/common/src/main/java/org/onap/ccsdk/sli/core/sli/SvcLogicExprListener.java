@@ -79,7 +79,6 @@ public class SvcLogicExprListener extends ExprGrammarBaseListener
 	
 	private void pushExpr(SvcLogicExpression expr)
 	{
-		LOG.trace("Pushing expression ["+expr.getClass().getName()+"]");
 		if (curExpr != null)
 		{
 			exprStack.push(curExpr);

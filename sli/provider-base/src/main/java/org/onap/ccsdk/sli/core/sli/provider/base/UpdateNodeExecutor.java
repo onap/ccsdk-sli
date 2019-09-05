@@ -49,24 +49,7 @@ public class UpdateNodeExecutor extends AbstractSvcLogicNodeExecutor {
         String pfx = SvcLogicExpressionResolver.evaluate(node.getAttribute("pfx"), node, ctx);
 
 
-        Map<String, String> parmMap = new HashMap<>();
-
-        Set<Map.Entry<String, SvcLogicExpression>> parmSet = node.getParameterSet();
-        boolean hasParms = false;
-
-        for (Iterator<Map.Entry<String, SvcLogicExpression>> iter = parmSet.iterator(); iter.hasNext();) {
-            hasParms = true;
-            Map.Entry<String, SvcLogicExpression> curEnt = iter.next();
-            String curName = curEnt.getKey();
-            SvcLogicExpression curExpr = curEnt.getValue();
-            if (curExpr != null) {
-                String curExprValue = SvcLogicExpressionResolver.evaluate(curExpr, node, ctx);
-
-                LOG.debug("Parameter " + curName + " = " + curExpr.asParsedExpr() + " resolves to " + curExprValue);
-
-                parmMap.put(curName, curExprValue);
-            }
-        }
+        Map<String, String> parmMap = getResolvedParameters(node,ctx);
 
         String outValue = "failure";
 

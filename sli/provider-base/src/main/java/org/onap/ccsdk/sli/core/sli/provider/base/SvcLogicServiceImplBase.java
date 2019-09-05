@@ -122,11 +122,7 @@ public class SvcLogicServiceImplBase implements SvcLogicServiceBase {
             return (null);
         }
 
-		LOG.info("About to execute node # {} ({})", node.getNodeId(), node.getNodeType());
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Executing node " + node.getNodeId() + " of " + node.getGraph().getRpc());
-        }
+		LOG.info("About to execute node #{} {} node in graph {}", node.getNodeId(), node.getNodeType(), node.getGraph().toString());
 
         AbstractSvcLogicNodeExecutor executor = nodeExecutors.get(node.getNodeType());
 

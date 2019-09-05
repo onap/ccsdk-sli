@@ -94,7 +94,6 @@ public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcL
     @Override
     public Properties execute(String module, String rpc, String version, String mode, Properties props,
             DOMDataBroker domDataBroker) throws SvcLogicException {
-        LOG.info("Fetching service logic from data store");
         SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
 
         if (graph == null) {

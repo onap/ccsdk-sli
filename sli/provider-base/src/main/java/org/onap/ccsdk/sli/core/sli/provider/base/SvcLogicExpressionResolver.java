@@ -44,14 +44,13 @@ public class SvcLogicExpressionResolver {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(SvcLogicExpressionResolver.class);
 	private static final String INVALID_EXPRESSION_MSG= "Invalid expression (";
+    private static final String EXPRESSION_DEBUG_PATTERN = "Expression: {} resolves to {}: which has the value {}";
 
 	public static String evaluate(SvcLogicExpression expr, SvcLogicNode node,
 			SvcLogicContext ctx) throws SvcLogicException {
 		if (expr == null) {
 			return (null);
 		}
-
-	
 
 		if (expr instanceof SvcLogicAtom) {
 			SvcLogicAtom atom = (SvcLogicAtom) expr;
@@ -75,15 +74,18 @@ public class SvcLogicExpressionResolver {
 						LOG.trace("Context variable $"+varName+" unset - treating as empty string");
 						varValue = "";
 					}
-						
+					LOG.trace(EXPRESSION_DEBUG_PATTERN,expr.toString(),varName,varValue);
 					return (varValue);
 				}
 				SvcLogicExpression parm = node.getParameter(varName);
 				if (parm != null) {				
-					return (evaluate(parm, node, ctx));
+					String value = evaluate(parm, node, ctx);
+                    LOG.trace(EXPRESSION_DEBUG_PATTERN,expr.toString(),varName,value);
+					return value;
 				}
 				else
 				{
+                    LOG.trace(EXPRESSION_DEBUG_PATTERN,expr.toString(),varName,varName);
 					return(varName);
 				}
 			default:
@@ -98,7 +100,6 @@ public class SvcLogicExpressionResolver {
 				List<SvcLogicExpression> operands = binExpr.getOperands();
 				if (operands.size() == 1)
 				{
-					LOG.trace("SvcLogicBinaryExpression as no operator and one operand - evaluating its operand");
 					return(evaluate(operands.get(0), node, ctx));
 				}
 				else

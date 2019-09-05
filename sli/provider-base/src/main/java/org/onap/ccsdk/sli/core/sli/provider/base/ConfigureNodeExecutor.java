@@ -63,24 +63,12 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			String key = SvcLogicExpressionResolver.evaluate(
 					node.getAttribute("key"), node, ctx);
 
-			Map<String, String> parmMap = new HashMap<>();
-
-			Set<Map.Entry<String, SvcLogicExpression>> parmSet = node
-					.getParameterSet();
 			boolean hasParms = false;
-
-			for (Iterator<Map.Entry<String, SvcLogicExpression>> iter = parmSet
-					.iterator(); iter.hasNext();) {
-				hasParms = true;
-				Map.Entry<String, SvcLogicExpression> curEnt = iter.next();
-				String curName = curEnt.getKey();
-				SvcLogicExpression curExpr = curEnt.getValue();
-				String curExprValue = SvcLogicExpressionResolver.evaluate(curExpr, node, ctx);
-				
-				LOG.debug("Parameter "+curName+" = "+curExpr.asParsedExpr()+" resolves to "+curExprValue);
-
-				parmMap.put(curName,curExprValue);
-			}
+			
+            Map<String, String> parmMap = getResolvedParameters(node,ctx);
+            if(!parmMap.isEmpty()) {
+                hasParms = true;
+            }
 
 			if (hasParms) {
 				SvcLogicAdaptor.ConfigStatus confStatus = SvcLogicAdaptor.ConfigStatus.FAILURE;

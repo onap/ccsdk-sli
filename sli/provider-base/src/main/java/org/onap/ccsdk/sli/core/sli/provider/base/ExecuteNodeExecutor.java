@@ -79,23 +79,8 @@ public class ExecuteNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			} else {
 				try {
 
-					Map<String, String> parmMap = new HashMap<>();
 
-					Set<Map.Entry<String, SvcLogicExpression>> parmSet = node
-							.getParameterSet();
-
-					for (Iterator<Map.Entry<String, SvcLogicExpression>> iter = parmSet
-							.iterator(); iter.hasNext();) {
-						Map.Entry<String, SvcLogicExpression> curEnt = iter.next();
-						String curName = curEnt.getKey();
-						SvcLogicExpression curExpr = curEnt.getValue();
-						String curExprValue = SvcLogicExpressionResolver.evaluate(curExpr, node, ctx);
-
-						LOG.trace("Parameter "+curName+" = "+curExpr.asParsedExpr()+" resolves to "+curExprValue);
-
-						parmMap.put(curName,curExprValue);
-					}
-
+				    Map<String, String> parmMap = getResolvedParameters(node,ctx);
 					Object o = pluginMethod.invoke(plugin, parmMap, ctx);
 			        String emitsOutcome = SvcLogicExpressionResolver.evaluate(node.getAttribute("emitsOutcome"),  node, ctx);
 

@@ -342,15 +342,8 @@ public class MdsalHelper {
             // "getValue", then
             // set value identified by "prefix" to that one value.
             if ((numGetters == 1) && ("getValue".equals(lastGetterName))) {
-                LOG.trace("getValueFIX : " + propNamePfx + " only has getValue() getter - setting " + propNamePfx
-                        + " = " + propVal);
                 props.setProperty(propNamePfx, propVal);
-            } else {
-                LOG.trace("getValueFIX : " + propNamePfx + " has " + numGetters + " getter(s), last one found was "
-                        + lastGetterName);
-
             }
-
         } else {
             // Class is not yang generated and not a list
             // It must be an element of a leaf list - set "prefix" to value

@@ -169,8 +169,7 @@ public class SetNodeExecutor extends AbstractSvcLogicNodeExecutor {
                     String curValue = SvcLogicExpressionResolver.evaluate(curEnt.getValue(), node, ctx);
 
                     if (LOG.isDebugEnabled()) {
-                        LOG.trace("Parameter value {} resolves to {}", curEnt.getValue().asParsedExpr(), curValue);
-                        LOG.debug("Setting context attribute {} to {}", lhsVarName, curValue);
+                        LOG.debug(SETTING_DEBUG_PATTERN, lhsVarName, curValue, curEnt.getValue().toString());
                     }
                     ctx.setAttribute(lhsVarName, curValue);
                 }
