@@ -15,43 +15,32 @@
 	<packaging>feature</packaging>
 
 	<name>ccsdk-sli-core :: filters :: ${project.artifactId}</name>
-	<dependencyManagement>
-		<dependencies>
-		
-			<dependency>
-				<groupId>org.onap.ccsdk.sli.core</groupId>
-				<artifactId>sli-common</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.onap.ccsdk.sli.core</groupId>
-				<artifactId>sli-provider</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.onap.ccsdk.sli.core</groupId>
-				<artifactId>dblib-provider</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-	
 
 	<dependencies>
-
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>ccsdk-sli</artifactId>
-			<version>${project.version}</version>
-			<type>xml</type>
-			<classifier>features</classifier>
-		</dependency>
-
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>filters-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.karaf.tooling</groupId>
+				<artifactId>karaf-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<excludedArtifactIds>
+						<!-- let opendaylight start these features/jars to avoid conflicts at runtime -->
+						<excludedArtifactId>slf4j-api</excludedArtifactId>
+						<excludedArtifactId>javax.annotation-api</excludedArtifactId>
+						<excludedArtifactId>javax.servlet-api</excludedArtifactId>
+						<excludedArtifactId>javax.ws.rs-api</excludedArtifactId>
+					</excludedArtifactIds>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

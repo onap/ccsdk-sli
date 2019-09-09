@@ -28,7 +28,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-
+import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -42,28 +42,13 @@ import org.slf4j.MarkerFactory;
 public class MetricLogger {
 
     private static final Logger METRIC = LoggerFactory.getLogger("org.onap.ccsdk.sli.core.filters.metric");
-    
-    //TODO use ONAPLogConstants
-    public static final String BEGIN_TIMESTAMP = "InvokeTimestamp";
-    public static final String LOG_TIMESTAMP = "LogTimestamp";
-    public static final String REQUEST_ID = "RequestID";
-    public static final String SERVICE_INSTANCE_ID = "ServiceInstanceID";
-    public static final String TARGET_ENTITY = "TargetEntity";
-    public static final String TARGET_SERVICE_NAME = "TargetServiceName";
-    public static final String STATUS_CODE = "StatusCode";
-    public static final String RESPONSE_CODE = "ResponseCode";
-    public static final String RESPONSE_DESCRIPTION = "ResponseDesc";
-    public static final String INSTANCE_UUID = "InstanceID";
-    public static final String ELAPSED_TIME = "ElapsedTime";
-    public static final String CLIENT_IP = "ClientIPaddress";
-    public static final String TARGET_VIRTUAL_ENTITY = "TargetElement";
     private static final Marker INVOKE_RETURN = MarkerFactory.getMarker("INVOKE-RETURN");
     private static final Marker INVOKE = MarkerFactory.getMarker("INVOKE");
 
     private String lastMsg = null;
 
     public String getRequestID() {
-        return MDC.get(REQUEST_ID);
+        return MDC.get(ONAPLogConstants.MDCs.REQUEST_ID);
     }
     
     public MetricLogger() {
@@ -82,27 +67,29 @@ public class MetricLogger {
     }
 
     @Deprecated
-    public void logRequest(String svcInstanceId, String svcName, String partnerName, String targetEntity, String targetServiceName, String targetVirtualEntity, String msg) {
-        logRequest(svcInstanceId,targetEntity,targetServiceName,targetVirtualEntity,msg);
+    public void logRequest(String svcInstanceId, String svcName, String partnerName, String targetEntity,
+            String targetServiceName, String targetElement, String msg) {
+        logRequest(svcInstanceId, targetEntity, targetServiceName, targetElement, msg);
     }
 
-    public void logRequest(String svcInstanceId, String targetEntity, String targetServiceName, String targetVirtualEntity, String msg) {
+    public void logRequest(String svcInstanceId, String targetEntity, String targetServiceName, String targetElement,
+            String msg) {
         long start = System.currentTimeMillis();
-        MDC.put(BEGIN_TIMESTAMP, MetricLogger.asIso8601(start));
+        MDC.put(ONAPLogConstants.MDCs.INVOKE_TIMESTAMP, MetricLogger.asIso8601(start));
 
         if (svcInstanceId != null) {
-            MDC.put(SERVICE_INSTANCE_ID, svcInstanceId);
+            MDC.put(ONAPLogConstants.MDCs.SERVICE_INSTANCE_ID, svcInstanceId);
         }
         if (targetEntity != null) {
-            MDC.put(TARGET_ENTITY, targetEntity);
+            MDC.put(ONAPLogConstants.MDCs.TARGET_ENTITY, targetEntity);
         }
 
         if (targetServiceName != null) {
-            MDC.put(TARGET_SERVICE_NAME, targetServiceName);
+            MDC.put(ONAPLogConstants.MDCs.TARGET_SERVICE_NAME, targetServiceName);
         }
 
-        if (targetVirtualEntity != null) {
-            MDC.put(TARGET_VIRTUAL_ENTITY, targetVirtualEntity);
+        if (targetElement != null) {
+            MDC.put(ONAPLogConstants.MDCs.TARGET_ELEMENT, targetElement);
         }
         this.lastMsg = msg;
         METRIC.info(INVOKE, "Invoke");
@@ -110,20 +97,20 @@ public class MetricLogger {
     
     public void logResponse(String statusCode, String responseCode, String responseDescription) {
         long start = System.currentTimeMillis();
-        MDC.put(BEGIN_TIMESTAMP, MetricLogger.asIso8601(start));
+        MDC.put(ONAPLogConstants.MDCs.INVOKE_TIMESTAMP, MetricLogger.asIso8601(start));
 
         if (statusCode != null) {
-            MDC.put(STATUS_CODE, statusCode);
+            MDC.put(ONAPLogConstants.MDCs.RESPONSE_STATUS_CODE, statusCode);
         }
         if (responseCode != null) {
-            MDC.put(RESPONSE_CODE, responseCode);
+            MDC.put(ONAPLogConstants.MDCs.RESPONSE_CODE, responseCode);
         }
         if (responseDescription != null) {
-            MDC.put(RESPONSE_DESCRIPTION, formatString(responseDescription));
+            MDC.put(ONAPLogConstants.MDCs.RESPONSE_DESCRIPTION, formatString(responseDescription));
         }
         long end = System.currentTimeMillis();
-        MDC.put(LOG_TIMESTAMP, MetricLogger.asIso8601(end));
-        MDC.put(ELAPSED_TIME, Long.toString(end-start));
+        MDC.put(ONAPLogConstants.MDCs.LOG_TIMESTAMP, MetricLogger.asIso8601(end));
+        MDC.put(ONAPLogConstants.MDCs.ELAPSED_TIME, Long.toString(end - start));
         METRIC.info(INVOKE_RETURN, formatString(lastMsg));
         resetContext();
     }
@@ -137,11 +124,11 @@ public class MetricLogger {
     }
 
     public static void resetContext() {
-        MDC.remove(TARGET_ENTITY);
-        MDC.remove(TARGET_SERVICE_NAME);
-        MDC.remove(TARGET_VIRTUAL_ENTITY);
-        MDC.remove(STATUS_CODE);
-        MDC.remove(RESPONSE_CODE);
-        MDC.remove(RESPONSE_DESCRIPTION);
+        MDC.remove(ONAPLogConstants.MDCs.TARGET_ENTITY);
+        MDC.remove(ONAPLogConstants.MDCs.TARGET_SERVICE_NAME);
+        MDC.remove(ONAPLogConstants.MDCs.TARGET_ELEMENT);
+        MDC.remove(ONAPLogConstants.MDCs.RESPONSE_STATUS_CODE);
+        MDC.remove(ONAPLogConstants.MDCs.RESPONSE_CODE);
+        MDC.remove(ONAPLogConstants.MDCs.RESPONSE_DESCRIPTION);
     }
 }

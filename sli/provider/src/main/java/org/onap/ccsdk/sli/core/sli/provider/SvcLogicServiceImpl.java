@@ -24,7 +24,6 @@
 package org.onap.ccsdk.sli.core.sli.provider;
 
 import java.util.Properties;
-
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
@@ -36,6 +35,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
 import org.onap.ccsdk.sli.core.sli.provider.base.AbstractSvcLogicNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicPropertiesProvider;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceImplBase;
+import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -106,7 +106,8 @@ public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcL
 
         SvcLogicContext ctx = new SvcLogicContext(props);
         ctx.setAttribute(CURRENT_GRAPH, graph.toString());
-        ctx.setAttribute("X-ECOMP-RequestID", MDC.get("X-ECOMP-RequestID"));
+        // To support legacy code we should not stop populating X-ECOMP-RequestID
+        ctx.setAttribute("X-ECOMP-RequestID", MDC.get(ONAPLogConstants.MDCs.REQUEST_ID));
         ctx.setDomDataBroker(domDataBroker);
         execute(graph, ctx);
         return (ctx.toProperties());
