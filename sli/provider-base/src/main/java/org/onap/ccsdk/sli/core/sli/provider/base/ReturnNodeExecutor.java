@@ -66,7 +66,7 @@ public class ReturnNodeExecutor extends AbstractSvcLogicNodeExecutor {
 					curEnt.getValue(), node, ctx);
 
 			if (LOG.isDebugEnabled()) {
-				LOG.debug(SETTING_DEBUG_PATTERN, curName, curValue);
+				LOG.debug(SETTING_DEBUG_PATTERN, curName, curValue, curEnt.getValue());
 			}
 			ctx.setAttribute(curName, curValue);
 		}
