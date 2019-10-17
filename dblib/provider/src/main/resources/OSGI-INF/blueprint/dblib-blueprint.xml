@@ -15,10 +15,4 @@
         </interfaces>
     </service>
 
-    <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.0.0">
-        <command name="dblib/encode">
-            <action class="org.onap.ccsdk.sli.core.dblib.EncShellCommand"/>
-        </command>
-    </command-bundle>
-
 </blueprint>

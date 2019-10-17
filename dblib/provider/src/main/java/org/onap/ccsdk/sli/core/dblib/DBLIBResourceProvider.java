@@ -23,19 +23,14 @@ package org.onap.ccsdk.sli.core.dblib;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Vector;
-
 import org.onap.ccsdk.sli.core.utils.JREFileResolver;
 import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
 import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.CoreDefaultFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,55 +94,11 @@ public class DBLIBResourceProvider {
             try(FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
                 properties = new Properties();
                 properties.load(fileInputStream);
-
-                if(properties.containsKey(DBLIB_PROPERTY_NAME)) {
-                    String sensitive = properties.getProperty(DBLIB_PROPERTY_NAME);
-                    if(sensitive != null && sensitive.startsWith("ENC:")) {
-                        try {
-                            sensitive = sensitive.substring(4);
-                            String postsense = decrypt(sensitive);
-                            properties.setProperty(DBLIB_PROPERTY_NAME, postsense);
-                        } catch(Exception exc) {
-                            LOG.error("Failed to translate property", exc);
-                        }
-                    }
-                }
-
             } catch (final IOException e) {
                 LOG.error("Failed to load properties for file: {}", propertiesFile.toString(),
                         new DblibConfigurationException("Failed to load properties for file: "
                                 + propertiesFile.toString(), e));
             }
-        }
-    }
-
-    /**
-     *
-     * @param value
-     * @return decrypted string if successful or the original value if unsuccessful
-     */
-    private String decrypt(String value) {
-        try {
-            BundleContext bctx = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-
-            ServiceReference sref = bctx.getServiceReference("org.opendaylight.aaa.encrypt.AAAEncryptionService");
-            if(sref == null) {
-                LOG.warn("Could not acquire service reference for 'org.opendaylight.aaa.encrypt.AAAEncryptionService'");
-                return value;
-            }
-            Object encrSvc = bctx.getService(sref);
-            if(encrSvc == null) {
-                LOG.warn("Could not access service for 'org.opendaylight.aaa.encrypt.AAAEncryptionService'");
-                return value;
-            }
-
-            Method gs2Method = encrSvc.getClass().getMethod("decrypt", new Class[] { "".getClass() });
-            Object unmasked = gs2Method.invoke(encrSvc, new Object[] { value });
-            return unmasked.toString();
-
-        } catch (Exception exc) {
-            LOG.error("Failure", exc);
-            return value;
         }
     }
 
