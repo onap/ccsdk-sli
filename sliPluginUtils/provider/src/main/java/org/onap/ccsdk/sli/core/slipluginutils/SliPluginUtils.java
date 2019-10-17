@@ -39,8 +39,8 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
@@ -1109,5 +1109,14 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 
 		return changeFlag;
 	}
+
+    public static String containsKey(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
+        String key = parameters.get("key");
+        Boolean keyFound = ctx.getAttributeKeySet().contains(key);
+        if (keyFound) {
+            return "true";
+        }
+        return "false";
+    }
 
 }

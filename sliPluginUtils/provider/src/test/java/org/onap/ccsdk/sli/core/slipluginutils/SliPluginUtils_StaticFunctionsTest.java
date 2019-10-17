@@ -24,10 +24,8 @@ package org.onap.ccsdk.sli.core.slipluginutils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
@@ -247,4 +245,23 @@ public class SliPluginUtils_StaticFunctionsTest {
         SliPluginUtils.setTime(parameters, ctx);
         assertNotNull(ctx.getAttribute(outputPath));
     }
+
+    @Test
+    public void containsKey() throws Exception {
+        ctx = new SvcLogicContext();
+        parameters.put(SliStringUtils.INPUT_PARAM_KEY, "key_does_not_exist");
+        String result = SliPluginUtils.containsKey(parameters, ctx);
+        assertEquals(SliStringUtils.FALSE_CONSTANT, result);
+
+        ctx.setAttribute("a", null);
+        parameters.put(SliStringUtils.INPUT_PARAM_KEY, "a");
+        result = SliPluginUtils.containsKey(parameters, ctx);
+        assertEquals(SliStringUtils.FALSE_CONSTANT, result);
+
+        ctx.setAttribute("a", "hellworld");
+        parameters.put(SliStringUtils.INPUT_PARAM_KEY, "a");
+        result = SliPluginUtils.containsKey(parameters, ctx);
+        assertEquals(SliStringUtils.TRUE_CONSTANT, result);
+    }
+
 }

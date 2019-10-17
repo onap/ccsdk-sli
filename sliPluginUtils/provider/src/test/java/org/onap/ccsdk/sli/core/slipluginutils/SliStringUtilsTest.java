@@ -26,10 +26,8 @@ package org.onap.ccsdk.sli.core.slipluginutils;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
@@ -316,5 +314,71 @@ public class SliStringUtilsTest {
 		SliStringUtils.escapeJsonString(param, ctx);
 		assertEquals("{\\\"image_name\\\":\\\"Ubuntu 14.04\\\",\\\"service-instance-id\\\":\\\"1\\\",\\\"vnf-model-customization-uuid\\\":\\\"2f\\\",\\\"vnf-id\\\":\\\"3b\\\"}", ctx.getAttribute(outputPath));
 	}
+
+    @Test
+    public void isEmpty() throws Exception {
+        ctx = new SvcLogicContext();
+        param = new HashMap<>();
+        String result = SliStringUtils.isEmpty(param, ctx);
+        param.put(SliStringUtils.INPUT_PARAM_KEY, "key_does_not_exist");
+        assertEquals(SliStringUtils.TRUE_CONSTANT, result);
+
+        ctx.setAttribute("a", null);
+        param.put(SliStringUtils.INPUT_PARAM_KEY, "a");
+        result = SliStringUtils.isEmpty(param, ctx);
+        assertEquals(SliStringUtils.TRUE_CONSTANT, result);
+
+        ctx.setAttribute("a", "");
+        result = SliStringUtils.isEmpty(param, ctx);
+        assertEquals(SliStringUtils.TRUE_CONSTANT, result);
+
+        ctx.setAttribute("a", " ");
+        result = SliStringUtils.isEmpty(param, ctx);
+        assertEquals(SliStringUtils.FALSE_CONSTANT, result);
+    }
+
+    @Test
+    public void isBlank() throws Exception {
+        ctx = new SvcLogicContext();
+        param = new HashMap<>();
+        String result = SliStringUtils.isBlank(param, ctx);
+        param.put(SliStringUtils.INPUT_PARAM_KEY, "key_does_not_exist");
+        assertEquals(SliStringUtils.TRUE_CONSTANT, result);
+
+        ctx.setAttribute("a", null);
+        param.put(SliStringUtils.INPUT_PARAM_KEY, "a");
+        result = SliStringUtils.isBlank(param, ctx);
+        assertEquals(SliStringUtils.TRUE_CONSTANT, result);
+
+        ctx.setAttribute("a", "");
+        result = SliStringUtils.isBlank(param, ctx);
+        assertEquals(SliStringUtils.TRUE_CONSTANT, result);
+
+        ctx.setAttribute("a", " ");
+        result = SliStringUtils.isBlank(param, ctx);
+        assertEquals(SliStringUtils.TRUE_CONSTANT, result);
+    }
+
+    @Test
+    public void isNull() throws Exception {
+        ctx = new SvcLogicContext();
+        param = new HashMap<>();
+        String result = SliStringUtils.isNull(param, ctx);
+        param.put(SliStringUtils.INPUT_PARAM_KEY, "key_does_not_exist");
+        assertEquals(SliStringUtils.TRUE_CONSTANT, result);
+
+        ctx.setAttribute("a", null);
+        param.put(SliStringUtils.INPUT_PARAM_KEY, "a");
+        result = SliStringUtils.isNull(param, ctx);
+        assertEquals(SliStringUtils.TRUE_CONSTANT, result);
+
+        ctx.setAttribute("a", "");
+        result = SliStringUtils.isNull(param, ctx);
+        assertEquals(SliStringUtils.FALSE_CONSTANT, result);
+
+        ctx.setAttribute("a", " ");
+        result = SliStringUtils.isNull(param, ctx);
+        assertEquals(SliStringUtils.FALSE_CONSTANT, result);
+    }
 
 }
