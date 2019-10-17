@@ -42,6 +42,9 @@ public class TestMetricLogger {
         assertEquals("%7C",output);
         output = logger.formatString(null);
         assertEquals(null,output);
+        output = logger.formatString("\t");
+        assertEquals(" ", output);
+        output = logger.formatString("one,two,three,");
+        assertEquals("one\\,two\\,three\\,", output);
     }
-
 }

@@ -92,6 +92,8 @@ public class MetricLogger {
             MDC.put(ONAPLogConstants.MDCs.TARGET_ELEMENT, targetElement);
         }
         this.lastMsg = msg;
+        //During invoke status will always be INPROGRESS
+        MDC.put(ONAPLogConstants.MDCs.RESPONSE_STATUS_CODE, ONAPLogConstants.ResponseStatus.INPROGRESS.toString());
         METRIC.info(INVOKE, "Invoke");
     }
     
@@ -119,6 +121,8 @@ public class MetricLogger {
         if (str != null) {
             str = str.replaceAll("\\R", ""); // this will strip all new line characters
             str = str.replaceAll("\\|", "%7C"); // log records should not contain a pipe, encode the pipe character
+            str = str.replaceAll("\t", " "); // tabs are not allowed, replace with spaces
+            str = str.replace(",", "\\,"); // comma must be escaped
         }
         return str;
     }
