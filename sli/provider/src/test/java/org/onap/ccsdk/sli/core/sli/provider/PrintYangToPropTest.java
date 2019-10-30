@@ -20,7 +20,7 @@
   20  * ===================================================================
   21  *
   22  */
-package org.onap.ccsdk.sli.core.sli;
+package org.onap.ccsdk.sli.core.sli.provider;
 
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.junit.Test;
+import org.onap.ccsdk.sli.core.sli.provider.PrintYangToProp;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput.Mode;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.TestResultsBuilder;

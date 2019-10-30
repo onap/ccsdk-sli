@@ -23,8 +23,6 @@ package org.onap.ccsdk.sli.core.sli;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Blob;
@@ -35,42 +33,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 import javax.sql.rowset.CachedRowSet;
-import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SvcLogicDblibStore implements SvcLogicStore {
-
-	private static final String SDNC_CONFIG_DIR = "SDNC_CONFIG_DIR";
-
 	private static final Logger LOG = LoggerFactory.getLogger(SvcLogicDblibStore.class);
-
-	private static final String DBLIB_SERVICE = "org.onap.ccsdk.sli.core.dblib.DbLibService";
-
 	private DbLibService dbSvc;
-
-	public SvcLogicDblibStore()
-	{
-		// Does nothing, but needed so that argumentless constructor
-		// still works.
-	}
 
 	public SvcLogicDblibStore(DbLibService dbsvc) {
 		this.dbSvc = dbsvc;
-	}
-
-	public SvcLogicDblibStore(Properties props) {
-        try {
-            dbSvc = new DBResourceManager(props);
-            JavaSingleton.setInstance(dbSvc);
-        } catch (Exception e) {
-            LOG.warn("Caught exception trying to create DBResourceManager", e);
-        }
 	}
 
 	public Connection getConnection() throws SQLException {
@@ -79,8 +51,6 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 
 	@Override
 	public void init(Properties props) throws ConfigurationException {
-
-		dbSvc = getDbLibService();
 		if(dbSvc == null) {
 			LOG.error("SvcLogic cannot acquire DBLIB_SERVICE");
 			return;
@@ -333,101 +303,6 @@ public class SvcLogicDblibStore implements SvcLogicStore {
 			throw new SvcLogicException("Could not activate graph", e);
 		}
 	}
-
-	private DbLibService getDbLibService() {
-
-		if (dbSvc != null) {
-			return dbSvc;
-		}
-
-		// Get DbLibService interface object.
-		ServiceReference sref = null;
-		BundleContext bctx = null;
-
-		Bundle bundle = FrameworkUtil.getBundle(SvcLogicDblibStore.class);
-
-		if (bundle != null) {
-			bctx = bundle.getBundleContext();
-
-			if (bctx != null) {
-				sref = bctx.getServiceReference(DBLIB_SERVICE);
-			}
-
-			if (sref == null) {
-				LOG.warn("Could not find service reference for DBLIB service ({})", DBLIB_SERVICE);
-			} else {
-				dbSvc = (DbLibService) bctx.getService(sref);
-				if (dbSvc == null) {
-
-					LOG.warn("Could not find service reference for DBLIB service ({})", DBLIB_SERVICE);
-				}
-			}
-		}
-
-		// initialize a stand-alone instance of dblib resource
-		else {
-			// Try to create a DbLibService object from dblib properties
-			if(JavaSingleton.getInstance() == null){
-				Properties dblibProps = new Properties();
-
-				String propDir = System.getenv(SDNC_CONFIG_DIR);
-				if (propDir == null) {
-
-					propDir = "/opt/sdnc/data/properties";
-				}
-				String propPath = propDir + "/dblib.properties";
-
-				File propFile = new File(propPath);
-
-				if (!propFile.exists()) {
-
-					LOG.warn("Missing configuration properties file : {}", propFile);
-					return null;
-				}
-
-				try {
-
-					dblibProps.load(new FileInputStream(propFile));
-				} catch (Exception e) {
-					LOG.warn(
-							"Could not load properties file " + propPath, e);
-					return null;
-
-				}
-
-				try {
-					dbSvc = new DBResourceManager(dblibProps);
-					JavaSingleton.setInstance(dbSvc);
-				} catch (Exception e) {
-					LOG.warn("Caught exception trying to create DBResourceManager", e);
-				}
-			} else {
-				dbSvc = JavaSingleton.getInstance();
-			}
-		}
-		return dbSvc;
-	}
-
-
-	static class JavaSingleton {
-	     /* Private constructor     */
-	     private JavaSingleton() {
-	        /* the body of the constructor here */
-	     }
-
-	     /* instance of the singleton declaration */
-	     private static volatile  DbLibService INSTANCE ;
-
-	     /* Access point to the unique instance of the singleton */
-	     public static DbLibService getInstance() {
-	        return INSTANCE;
-	     }
-
-	     public static void setInstance(DbLibService dbresource) {
-		        INSTANCE = dbresource;
-		     }
-	}
-
 
     @Override
     public void activate(String module, String rpc, String version, String mode) throws SvcLogicException {

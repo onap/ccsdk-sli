@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
-
+import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +81,7 @@ public class SvcLogicStoreFactory {
 			retval = new SvcLogicJdbcStore();
 
 		} else if ("dblib".equalsIgnoreCase(storeType)) {
-			retval = new SvcLogicDblibStore();
+            retval = new SvcLogicDblibStore(new DBResourceManager(props));
         } else {
 			throw new ConfigurationException("unsupported dbtype (" + storeType
 					+ ")");

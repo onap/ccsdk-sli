@@ -24,7 +24,6 @@ package org.onap.ccsdk.sli.core.sli;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -72,27 +71,5 @@ public class SvcLogicExpressionFactory {
 		
 		return(listener.getParsedExpr());
 	}
-	
-	public static void main(String argv[]) {
 
-
-		System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "debug");
-
-		StringBuffer sbuff = new StringBuffer();
-		
-		for (int i = 0 ; i < argv.length ; i++)
-		{
-			if (sbuff.length() > 0)
-			{
-				sbuff.append(" ");
-			}
-			sbuff.append(argv[i]);
-		}
-		
-		try {
-			SvcLogicExpressionFactory.parse(sbuff.toString());
-		} catch (IOException e) {
-			LOG.error("Exception in SvcLogicExpressionFactory.parse",e);
-		}
-	}
 }

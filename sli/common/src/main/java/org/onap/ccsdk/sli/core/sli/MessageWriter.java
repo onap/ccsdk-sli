@@ -28,13 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
-
 import javax.sql.rowset.CachedRowSet;
-
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,22 +91,6 @@ public class MessageWriter {
 
 		LOG.info(INCOMING_PROPERTY_NAME + ": " + incomingEnabled);
 		LOG.info(OUTGOING_PROPERTY_NAME + ": " + outgoingEnabled);
-
-		if (dbLibService != null)
-			return;
-
-		BundleContext bctx = FrameworkUtil.getBundle(MessageWriter.class).getBundleContext();
-
-		ServiceReference sref = bctx.getServiceReference(DBLIB_SERVICE);
-
-		if (sref == null) {
-			LOG.warn("Could not find service reference for DBLIB service (" + DBLIB_SERVICE + ")");
-		} else {
-			dbLibService = (DbLibService) bctx.getService(sref);
-			if (dbLibService == null) {
-				LOG.warn("Could not find service reference for DBLIB service (" + DBLIB_SERVICE + ")");
-			}
-		}
 	}
 
 	public static void saveOutgoingRequest(

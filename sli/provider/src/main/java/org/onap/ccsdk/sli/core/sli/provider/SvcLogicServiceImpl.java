@@ -64,12 +64,6 @@ public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcL
     @Override
     public Properties execute(String module, String rpc, String version, String mode, Properties props)
             throws SvcLogicException {
-        return (execute(module, rpc, version, mode, props, null));
-    }
-
-    @Override
-    public Properties execute(String module, String rpc, String version, String mode, Properties props,
-            DOMDataBroker domDataBroker) throws SvcLogicException {
         SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
 
         if (graph == null) {
@@ -84,9 +78,16 @@ public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcL
         ctx.setAttribute(CURRENT_GRAPH, graph.toString());
         // To support legacy code we should not stop populating X-ECOMP-RequestID
         ctx.setAttribute("X-ECOMP-RequestID", MDC.get(ONAPLogConstants.MDCs.REQUEST_ID));
-        ctx.setDomDataBroker(domDataBroker);
         execute(graph, ctx);
         return (ctx.toProperties());
+    }
+
+    @Override
+    @Deprecated
+    // DomDataBroker is not being used, this should be removed eventually
+    public Properties execute(String module, String rpc, String version, String mode, Properties props,
+            DOMDataBroker domDataBroker) throws SvcLogicException {
+        return (execute(module, rpc, version, mode, props));
     }
 
     @Override

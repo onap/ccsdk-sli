@@ -26,7 +26,6 @@ package org.onap.ccsdk.sli.core.sli;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,12 +37,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,7 +154,7 @@ public class ITCaseSvcLogicParser {
 
         props.load(propStr);
 
-        SvcLogicDblibStore dblibStore = new SvcLogicDblibStore(props);
+        SvcLogicDblibStore dblibStore = new SvcLogicDblibStore(new DBResourceManager(props));
 
         Connection dbConn = dblibStore.getConnection();
 

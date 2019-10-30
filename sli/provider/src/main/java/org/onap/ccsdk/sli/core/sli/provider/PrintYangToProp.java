@@ -21,7 +21,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.sli.core.sli;
+package org.onap.ccsdk.sli.core.sli.provider;
 
 import java.io.PrintStream;
 import java.io.FileDescriptor;
