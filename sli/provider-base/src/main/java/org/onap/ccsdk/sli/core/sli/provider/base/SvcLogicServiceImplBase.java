@@ -26,14 +26,13 @@ package org.onap.ccsdk.sli.core.sli.provider.base;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
 import org.onap.ccsdk.sli.core.sli.ExitNodeException;
-import org.onap.ccsdk.sli.core.sli.MetricLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.onap.ccsdk.sli.core.sli.SvcLogicNode;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
+import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -72,8 +71,9 @@ public class SvcLogicServiceImplBase implements SvcLogicServiceBase {
     protected SvcLogicStore store;
     protected static final String CURRENT_GRAPH="currentGraph";
 
-    public SvcLogicServiceImplBase(SvcLogicStore store) {
+    public SvcLogicServiceImplBase(SvcLogicStore store, SvcLogicResolver resolver) {
     	this.store = store;
+        this.resolver = resolver;
     }
 
     protected void registerExecutors() {
@@ -140,25 +140,25 @@ public class SvcLogicServiceImplBase implements SvcLogicServiceBase {
     }
 
     @Override
-	public Properties execute(String module, String rpc, String version, String mode, Properties props)
-			throws SvcLogicException {
-		LOG.info("Fetching service logic from data store");
-		SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
+    public Properties execute(String module, String rpc, String version, String mode, Properties props)
+            throws SvcLogicException {
+        SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
 
-		if (graph == null) {
-			Properties retProps = new Properties();
-			retProps.setProperty("error-code", "401");
-			retProps.setProperty("error-message",
-					"No service logic found for [" + module + "," + rpc + "," + version + "," + mode + "]");
-			return (retProps);
-		}
+        if (graph == null) {
+            Properties retProps = new Properties();
+            retProps.setProperty("error-code", "401");
+            retProps.setProperty("error-message",
+                    "No service logic found for [" + module + "," + rpc + "," + version + "," + mode + "]");
+            return (retProps);
+        }
 
-		SvcLogicContext ctx = new SvcLogicContext(props);
-		ctx.setAttribute(CURRENT_GRAPH, graph.toString());
-		ctx.setAttribute("X-ECOMP-RequestID", MDC.get("X-ECOMP-RequestID"));
-		execute(graph, ctx);
-		return (ctx.toProperties());
-	}
+        SvcLogicContext ctx = new SvcLogicContext(props);
+        ctx.setAttribute(CURRENT_GRAPH, graph.toString());
+        // To support legacy code we should not stop populating X-ECOMP-RequestID
+        ctx.setAttribute("X-ECOMP-RequestID", MDC.get(ONAPLogConstants.MDCs.REQUEST_ID));
+        execute(graph, ctx);
+        return (ctx.toProperties());
+    }
 
 	@Override
 	public SvcLogicStore getStore() throws SvcLogicException {

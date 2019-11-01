@@ -21,9 +21,7 @@
 
 package org.onap.ccsdk.sli.core.sli.provider.base;
 
-import java.util.Map.Entry;
 import java.util.Properties;
-
 import org.onap.ccsdk.sli.core.sli.DuplicateValueException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -31,10 +29,6 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicExpression;
 import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.sli.SvcLogicNode;
-import org.onap.ccsdk.sli.core.sli.provider.base.ExecuteNodeExecutor;
-import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicPropertiesProvider;
-import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceImplBase;
-
 import junit.framework.TestCase;
 
 public class ExecuteNodeExecutorTest extends TestCase {
@@ -63,7 +57,8 @@ public class ExecuteNodeExecutorTest extends TestCase {
         };
         
         
-        execute.execute(new SvcLogicServiceImplBase(null), new SvcLogicNode(0, "", "", new SvcLogicGraph()), new SvcLogicContext());
+        execute.execute(new SvcLogicServiceImplBase(null, null), new SvcLogicNode(0, "", "", new SvcLogicGraph()),
+                new SvcLogicContext());
     }
 
 }

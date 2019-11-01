@@ -26,20 +26,16 @@ package org.onap.ccsdk.sli.core.sli.provider;
 import java.util.Properties;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicDblibStore;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicGraph;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
 import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicPropertiesProvider;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicResolver;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceImplBase;
-import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcLogicService {
 
@@ -47,39 +43,16 @@ public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcL
 
     public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider, SvcLogicResolver resolver)
             throws SvcLogicException {
-        super(null);
-        this.resolver = resolver;
+        super(null, resolver);
         properties = resourceProvider.getProperties();
         this.store = getStore();
     }
 
     public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider, DbLibService dbSvc,
             SvcLogicResolver resolver) throws SvcLogicException {
-        super(null);
-        this.resolver = resolver;
+        super(null, resolver);
         properties = resourceProvider.getProperties();
         this.store = new SvcLogicDblibStore(dbSvc);
-    }
-
-    @Override
-    public Properties execute(String module, String rpc, String version, String mode, Properties props)
-            throws SvcLogicException {
-        SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
-
-        if (graph == null) {
-            Properties retProps = new Properties();
-            retProps.setProperty("error-code", "401");
-            retProps.setProperty("error-message",
-                    "No service logic found for [" + module + "," + rpc + "," + version + "," + mode + "]");
-            return (retProps);
-        }
-
-        SvcLogicContext ctx = new SvcLogicContext(props);
-        ctx.setAttribute(CURRENT_GRAPH, graph.toString());
-        // To support legacy code we should not stop populating X-ECOMP-RequestID
-        ctx.setAttribute("X-ECOMP-RequestID", MDC.get(ONAPLogConstants.MDCs.REQUEST_ID));
-        execute(graph, ctx);
-        return (ctx.toProperties());
     }
 
     @Override

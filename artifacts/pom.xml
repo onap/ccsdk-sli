@@ -146,6 +146,11 @@
 				<artifactId>utils-installer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.onap.ccsdk.sli.core</groupId>
+				<artifactId>sli-recording</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
