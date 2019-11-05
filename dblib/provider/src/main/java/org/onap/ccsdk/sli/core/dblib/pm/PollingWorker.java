@@ -34,9 +34,16 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @version $Revision: 1.15 $
+ * Change Log
+ * Author         Date     Comments
+ * ============== ======== ====================================================
+ * Rich Tabedzki
+ */
 public class PollingWorker implements Runnable {
 
-	private Logger logger = LoggerFactory.getLogger(PollingWorker.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PollingWorker.class);
 
 	private static PollingWorker self = null;
 
@@ -116,7 +123,7 @@ public class PollingWorker implements Runnable {
 					consume((TestSample) next);
 				} else {
 					System.out.println(next.getClass().getName());
-					logger.error(next.getClass().getName());
+					LOGGER.error(next.getClass().getName());
 				}
 			}
 			try {
@@ -152,7 +159,7 @@ public class PollingWorker implements Runnable {
 			}
 			sb.append(tmp2[i].get()).append("\t");
 		}
-		logger.info(sb.toString());
+		LOGGER.info(sb.toString());
 	}
 
 	class MyTimerTask extends TimerTask {
@@ -191,8 +198,8 @@ public class PollingWorker implements Runnable {
 	}
 
 	/**
-	 * @author Rich Tabedzki A helper class to pass measured parameter to the
-	 *         counter.
+	 * @author Rich Tabedzki
+	 *  A helper class to pass measured parameter to the counter.
 	 */
 	static class TestSample implements Comparable {
 		private long starttime;

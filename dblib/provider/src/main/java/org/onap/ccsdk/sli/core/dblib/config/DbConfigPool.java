@@ -27,14 +27,21 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @version $Revision: 1.15 $
+ * Change Log
+ * Author         Date     Comments
+ * ============== ======== ====================================================
+ * Rich Tabedzki
+ */
 public class DbConfigPool {
-	private static Logger log = LoggerFactory.getLogger(DbConfigPool.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DbConfigPool.class);
 	private final String type;
 	private static final int timeOut=0;
 	private ArrayList<BaseDBConfiguration> configurations = new ArrayList<>();
 
 	public DbConfigPool(Properties properties) {
-		log.debug("Initializing DbConfigType");
+		LOGGER.debug("Initializing DbConfigType");
 		type = properties.getProperty(BaseDBConfiguration.DATABASE_TYPE, "JDBC").toUpperCase();
 	}
 
