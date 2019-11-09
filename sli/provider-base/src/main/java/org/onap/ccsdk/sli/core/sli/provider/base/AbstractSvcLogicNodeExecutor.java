@@ -42,8 +42,8 @@ public abstract class AbstractSvcLogicNodeExecutor {
 	public abstract SvcLogicNode execute(SvcLogicServiceBase svc, SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractSvcLogicNodeExecutor.class);
-	protected static final String PARAMETER_DEBUG_PATTERN = "Parameter: {} resolves to: {} which came from the expression: {}";
-    protected static final String SETTING_DEBUG_PATTERN = "Setting context attribute: {} to: {} which came from the expression: {}";
+	protected static final String PARAMETER_DEBUG_PATTERN = "Parameter: ({}) resolves to: ({}) which came from the expression: ({})";
+    protected static final String SETTING_DEBUG_PATTERN = "Setting context attribute: ({}) to: ({}) which came from the expression: ({})";
 
     protected String evaluateNodeTest(SvcLogicNode node, SvcLogicContext ctx)
 			throws SvcLogicException {
@@ -97,7 +97,7 @@ public abstract class AbstractSvcLogicNodeExecutor {
         }
         return (nextNode);
     }
-    
+
     protected Map<String, String> getResolvedParameters(SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException{
         Map<String, String> parmMap = new HashMap<>();
 
@@ -108,13 +108,14 @@ public abstract class AbstractSvcLogicNodeExecutor {
                 .iterator(); iter.hasNext();) {
             Map.Entry<String, SvcLogicExpression> curEnt = iter.next();
             String curName = curEnt.getKey();
+
             SvcLogicExpression curExpr = curEnt.getValue();
             String curExprValue = SvcLogicExpressionResolver.evaluate(curExpr, node, ctx);
-            LOG.trace(PARAMETER_DEBUG_PATTERN, curName, curExprValue, curExpr.toString());
-            parmMap.put(curName,curExprValue);
+            LOG.trace(PARAMETER_DEBUG_PATTERN, curName, curExprValue, curExpr);
+            parmMap.put(curName, curExprValue);
         }
-        
+
         return parmMap;
     }
-    
+
 }

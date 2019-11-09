@@ -10,9 +10,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,7 +44,7 @@ public class SvcLogicExpressionResolver {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(SvcLogicExpressionResolver.class);
 	private static final String INVALID_EXPRESSION_MSG= "Invalid expression (";
-    private static final String EXPRESSION_DEBUG_PATTERN = "Expression: {} resolves to {}: which has the value {}";
+    private static final String EXPRESSION_DEBUG_PATTERN = "Expression: ({}) resolves to: (${}) which has the value: ({})";
 
 	public static String evaluate(SvcLogicExpression expr, SvcLogicNode node,
 			SvcLogicContext ctx) throws SvcLogicException {
@@ -62,30 +62,28 @@ public class SvcLogicExpressionResolver {
 				return (atom.toString());
 			case CONTEXT_VAR:
 			case IDENTIFIER:
-	
+
 				String varName = resolveVariableName(atom, node, ctx);
-				
+
 				if (atomType == AtomType.CONTEXT_VAR)
 				{
-					
 					String varValue = ctx.getAttribute(varName);
-					
 					if (varValue == null) {
-						LOG.trace("Context variable $"+varName+" unset - treating as empty string");
+						LOG.trace("Context variable: ($"+varName+") unset - treating as empty string");
 						varValue = "";
 					}
-					LOG.trace(EXPRESSION_DEBUG_PATTERN,expr.toString(),varName,varValue);
+					LOG.trace(EXPRESSION_DEBUG_PATTERN, expr, varName, varValue);
 					return (varValue);
 				}
+
 				SvcLogicExpression parm = node.getParameter(varName);
-				if (parm != null) {				
+				if (parm != null) {
 					String value = evaluate(parm, node, ctx);
-                    LOG.trace(EXPRESSION_DEBUG_PATTERN,expr.toString(),varName,value);
+                    LOG.trace(EXPRESSION_DEBUG_PATTERN, expr, varName, value);
 					return value;
 				}
-				else
-				{
-                    LOG.trace(EXPRESSION_DEBUG_PATTERN,expr.toString(),varName,varName);
+				else {
+                    LOG.trace(EXPRESSION_DEBUG_PATTERN, expr, varName, varName);
 					return(varName);
 				}
 			default:
@@ -152,7 +150,7 @@ public class SvcLogicExpressionResolver {
 		if (operands.size() != (operators.size()+1))
 		{
 			throw new SvcLogicException(INVALID_EXPRESSION_MSG+binExpr+")");
-		}	
+		}
 		String retval = evaluate(operands.get(0), node, ctx);
 		String retsval = retval;
 		long retlval = 0;
@@ -161,7 +159,7 @@ public class SvcLogicExpressionResolver {
 		int i = 1;
 		try
 		{
-			
+
 			if ((retval.length() > 0) && StringUtils.isNumeric(retval))
 			{
 				retlval = Long.parseLong(retval);
@@ -202,7 +200,7 @@ public class SvcLogicExpressionResolver {
 		{
 			throw new SvcLogicException("Illegal value in arithmetic expression", e1);
 		}
-		
+
 		if (valueIsLong)
 		{
 			return("" + retlval);
@@ -211,33 +209,33 @@ public class SvcLogicExpressionResolver {
 		{
 			return(retsval);
 		}
-		
+
 	}
 
 
-	
+
 	private static String evalCompareExpression(SvcLogicBinaryExpression expr, SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException
 	{
 
 		List<OperatorType> operators = expr.getOperators();
 		List<SvcLogicExpression> operands = expr.getOperands();
-		
+
 		if ((operators.size() != 1) || (operands.size() != 2))
 		{
 			throw new SvcLogicException ("Invalid comparison expression : "+expr);
 		}
-		
+
 		OperatorType operator = operators.get(0);
 		String op1Value = evaluate(operands.get(0), node, ctx);
 		String op2Value = evaluate(operands.get(1), node, ctx);
-		
+
 		if ((StringUtils.isNotEmpty(op1Value) && StringUtils.isNumeric(op1Value) && StringUtils.isNotEmpty(op2Value) && StringUtils.isNumeric(op2Value)))
 		{
 			try
 			{
 				double op1dbl = Double.parseDouble(op1Value);
 				double op2dbl = Double.parseDouble(op2Value);
-				
+
 				switch(operator)
 				{
 				case equalOp:
@@ -263,9 +261,9 @@ public class SvcLogicExpressionResolver {
 		}
 		else
 		{
-			
+
 			int compResult = 0;
-			
+
 			if (op1Value == null) {
 				compResult = -1;
 			} else if (op2Value == null ) {
@@ -273,7 +271,7 @@ public class SvcLogicExpressionResolver {
 			} else {
 				compResult = op1Value.compareToIgnoreCase(op2Value);
 			}
-			
+
 			switch(operator)
 			{
 			case equalOp:
@@ -292,21 +290,21 @@ public class SvcLogicExpressionResolver {
 				return(null);
 			}
 		}
-		
+
 	}
-	
+
 	private static String evalLogicExpression(SvcLogicBinaryExpression expr, SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException
 	{
 		boolean retval;
-		
+
 		List<SvcLogicExpression> operands = expr.getOperands();
 		List<OperatorType> operators = expr.getOperators();
-		
+
 		if (operands.size() != (operators.size()+1))
 		{
 			throw new SvcLogicException(INVALID_EXPRESSION_MSG+expr+")");
 		}
-		
+
 		try
 		{
 			retval = Boolean.parseBoolean(evaluate(operands.get(0), node, ctx));
@@ -322,26 +320,26 @@ public class SvcLogicExpressionResolver {
 
 					retval = retval || Boolean.parseBoolean(evaluate(operands.get(i++), node, ctx));
 				}
-				
+
 			}
 		}
 		catch (Exception e)
 		{
 			throw new SvcLogicException(INVALID_EXPRESSION_MSG+expr+")");
 		}
-		
-		
+
+
 		return(Boolean.toString(retval));
 	}
-	
+
 	private static String evalFunctionCall(SvcLogicFunctionCall func, SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException
 	{
 		String funcName = func.getFunctionName();
 		List<SvcLogicExpression> operands = func.getOperands();
-		
+
 		if ("length".equalsIgnoreCase(funcName))
 		{
-			
+
 			if (operands.size() == 1)
 			{
 				String opValue = evaluate(operands.get(0), node, ctx);
@@ -359,12 +357,12 @@ public class SvcLogicExpressionResolver {
 				String op1Value = evaluate(operands.get(0), node, ctx);
 				String op2Value = evaluate(operands.get(1), node, ctx);
 				String op3Value = evaluate(operands.get(2), node, ctx);
-				
+
 				if (!StringUtils.isNumeric(op2Value) || !StringUtils.isNumeric(op3Value))
 				{
 					throw new SvcLogicException("Invalid arguments to substr() function");
 				}
-				
+
 				try
 				{
 					return(op1Value.substring(Integer.parseInt(op2Value), Integer.parseInt(op3Value)));
@@ -379,7 +377,7 @@ public class SvcLogicExpressionResolver {
 
 				throw new SvcLogicException("Invalid call to substr() function");
 			}
-			
+
 		}
 		else if ("toUpperCase".equalsIgnoreCase(funcName))
 		{
@@ -417,7 +415,7 @@ public class SvcLogicExpressionResolver {
 			int fromBase = 10;
 			int toBase = 10;
 			String srcString = "";
-			
+
 			if (operands.size() == 2)
 			{
 				fromBase = 10;
@@ -431,7 +429,7 @@ public class SvcLogicExpressionResolver {
 			} else {
 				throw new SvcLogicException("Invalid call to convertBase() function");
 			}
-			
+
 			long srcValue = Long.parseLong(srcString, fromBase);
 			return(Long.toString(srcValue, toBase));
 		}
@@ -439,16 +437,16 @@ public class SvcLogicExpressionResolver {
 		{
 			throw new SvcLogicException("Unrecognized function ("+funcName+")");
 		}
-		
+
 	}
-	
+
 	public static String evaluateAsKey(SvcLogicExpression expr, SvcLogicNode node,
 			SvcLogicContext ctx) throws SvcLogicException {
 		if (expr == null) {
 			return (null);
 		}
 
-	
+
 
 		if (expr instanceof SvcLogicAtom) {
 			SvcLogicAtom atom = (SvcLogicAtom) expr;
@@ -478,7 +476,7 @@ public class SvcLogicExpressionResolver {
                 			varNameBuff.append("[");
                 			varNameBuff.append(evaluate(vterm.getSubscript(), node, ctx));
                 			varNameBuff.append("]");
-                			
+
                 		}
                 	}
                 	else
@@ -502,7 +500,7 @@ public class SvcLogicExpressionResolver {
 				{
 					return("'"+ctxValue+"'");
 				}
-	
+
 			default:
 				return(null);
 			}
@@ -570,11 +568,11 @@ public class SvcLogicExpressionResolver {
 			throw new SvcLogicException("Unrecognized expression type ["+expr+"]");
 		}
 	}
-	
+
 	public static String resolveVariableName(SvcLogicExpression atom, SvcLogicNode node, SvcLogicContext ctx) throws SvcLogicException
 	{
 		StringBuffer varNameBuff = new StringBuffer();
-		
+
 		boolean needDot = false;
 		for (SvcLogicExpression term : atom.getOperands())
 		{
