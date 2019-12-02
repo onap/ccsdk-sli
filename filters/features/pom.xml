@@ -5,12 +5,13 @@
 	<parent>
 		<groupId>org.onap.ccsdk.parent</groupId>
 		<artifactId>odlparent-lite</artifactId>
-		<version>1.5.0</version>
+		<version>1.5.1-SNAPSHOT</version>
 		<relativePath/>
 	</parent>
 
 	<groupId>org.onap.ccsdk.sli.core</groupId>
 	<artifactId>filters-features-aggregator</artifactId>
+        <version>0.7.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>ccsdk-sli-core :: filters :: ${project.artifactId}</name>
