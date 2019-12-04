@@ -66,10 +66,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-        </dependency>
 	</dependencies>
 
 	<build>
@@ -128,7 +124,7 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-							<includeArtifactIds>sliPluginUtils-provider,ccsdk-sliPluginUtils,features-sliPluginUtils,commons-text</includeArtifactIds>
+							<includeArtifactIds>sliPluginUtils-provider,ccsdk-sliPluginUtils,features-sliPluginUtils</includeArtifactIds>
 							<scope>provided</scope>
 						</configuration>
 					</execution>

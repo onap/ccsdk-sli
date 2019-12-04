@@ -45,14 +45,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-jdbc</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -111,8 +103,8 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-                             <includeGroupIds>org.onap.ccsdk.sli.core,org.apache.tomcat,org.slf4j</includeGroupIds>
-							<excludeArtifactIds>utils-provider,slf4j-api</excludeArtifactIds>
+                             <includeGroupIds>org.onap.ccsdk.sli.core</includeGroupIds>
+							<excludeArtifactIds>utils-provider</excludeArtifactIds>
 							<scope>provided</scope>
 						</configuration>
 					</execution>

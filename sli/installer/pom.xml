@@ -66,18 +66,6 @@
 			<artifactId>sli-recording</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.att.eelf</groupId>
-			<artifactId>eelf-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>
 
 	</dependencies>
 
@@ -137,7 +125,7 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-							<includeGroupIds>org.onap.ccsdk.sli.core,com.att.eelf,ch.qos.logback</includeGroupIds>
+							<includeGroupIds>org.onap.ccsdk.sli.core</includeGroupIds>
 							<excludeArtifactIds>utils-provider,dblib-provider</excludeArtifactIds>
 							<scope>provided</scope>
 						</configuration>
