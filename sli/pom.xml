@@ -26,7 +26,6 @@
         <module>common</module>
         <module>provider</module>
         <module>recording</module>
-        <module>features</module>
         <module>installer</module>
     </modules>
 </project>

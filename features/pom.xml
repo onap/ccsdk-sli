@@ -17,6 +17,12 @@
 	<name>ccsdk-sli-core :: features</name>
 
 	<modules>
+		<module>ccsdk-slicore-utils</module>
+		<module>ccsdk-dblib</module>
+		<module>ccsdk-filters</module>
+		<module>ccsdk-sli</module>
+		<module>ccsdk-sliapi</module>
+		<module>ccsdk-sliPluginUtils</module>
         <module>ccsdk-sli-core-all</module>
         <module>features-sli-core</module>
         <module>installer</module>

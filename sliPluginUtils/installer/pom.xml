@@ -48,20 +48,6 @@
 
 		<dependency>
 			<groupId>org.onap.ccsdk.sli.core</groupId>
-			<artifactId>${application.name}</artifactId>
-			<version>${project.version}</version>
-			<type>xml</type>
-			<classifier>features</classifier>
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>sliPluginUtils-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>
