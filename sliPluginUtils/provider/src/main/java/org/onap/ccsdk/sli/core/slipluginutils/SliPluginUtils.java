@@ -821,32 +821,46 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
     protected static void writeJsonToCtx(String resp, SvcLogicContext ctx, String prefix){
         JsonParser jp = new JsonParser();
         JsonElement element = jp.parse(resp);
-        writeJsonObject(element.getAsJsonObject(), ctx, prefix + ".");
+        String root = prefix + ".";
+        if (element.isJsonObject()) {
+            writeJsonObject(element.getAsJsonObject(), ctx, root);
+        } else if (element.isJsonArray()) {
+            handleJsonArray("", element.getAsJsonArray(), ctx, root);
+        }
     }
 
     protected static void writeJsonObject(JsonObject obj, SvcLogicContext ctx, String root) {
         for (Entry<String, JsonElement> entry : obj.entrySet()) {
+            String key = entry.getKey();
             if (entry.getValue().isJsonObject()) {
-                writeJsonObject(entry.getValue().getAsJsonObject(), ctx, root + entry.getKey() + ".");
+                writeJsonObject(entry.getValue().getAsJsonObject(), ctx, root + key + ".");
             } else if (entry.getValue().isJsonArray()) {
                 JsonArray array = entry.getValue().getAsJsonArray();
-                ctx.setAttribute(root + entry.getKey() + LENGTH, String.valueOf(array.size()));
-                Integer arrayIdx = 0;
-                for (JsonElement element : array) {
-                    if (element.isJsonObject()) {
-                        writeJsonObject(element.getAsJsonObject(), ctx, root + entry.getKey() + "[" + arrayIdx + "].");
-                    } else if (element.isJsonPrimitive()) {
-                        ctx.setAttribute(root + entry.getKey() + "[" + arrayIdx + "]", element.getAsString());
-                    }
-                    arrayIdx++;
-                }
+                handleJsonArray(key, array, ctx, root);
             } else {
                 //Handles when a JSON obj is nested within a JSON obj
                 if(!root.endsWith(".")){
                     root = root + ".";
                 }
-                ctx.setAttribute(root + entry.getKey(), entry.getValue().getAsString());
+                ctx.setAttribute(root + key, entry.getValue().getAsString());
             }
+        }
+    }
+
+    protected static void handleJsonArray(String key, JsonArray array, SvcLogicContext ctx, String root) {
+        ctx.setAttribute(root + key + LENGTH, String.valueOf(array.size()));
+        Integer arrayIdx = 0;
+        for (JsonElement element : array) {
+            String prefix = root + key + "[" + arrayIdx + "]";
+
+            if (element.isJsonArray()) {
+                handleJsonArray(key, element.getAsJsonArray(), ctx, prefix);
+            } else if (element.isJsonObject()) {
+                writeJsonObject(element.getAsJsonObject(), ctx, prefix + ".");
+            } else if (element.isJsonPrimitive()) {
+                ctx.setAttribute(prefix, element.getAsString());
+            }
+            arrayIdx++;
         }
     }
 

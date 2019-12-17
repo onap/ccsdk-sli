@@ -24,6 +24,7 @@
 package org.onap.ccsdk.sli.core.slipluginutils;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Map;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -424,6 +425,20 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
             ctx.setAttribute(parameters.get("outputPath"), result);
         } catch (UnsupportedEncodingException e) {
             throw new SvcLogicException("Url encode failed.", e);
+        }
+    }
+
+    public static void urlDecode(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
+        SliPluginUtils.checkParameters(parameters, new String[] {INPUT_PARAM_SOURCE, "outputPath"}, LOG);
+        String encoding = parameters.get("encoding");
+        if (encoding == null) {
+            encoding = "UTF-8";
+        }
+        try {
+            String result = URLDecoder.decode(parameters.get(INPUT_PARAM_SOURCE), encoding);
+            ctx.setAttribute(parameters.get("outputPath"), result);
+        } catch (UnsupportedEncodingException e) {
+            throw new SvcLogicException("Url decode failed.", e);
         }
     }
 

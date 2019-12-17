@@ -271,6 +271,17 @@ public class SliStringUtilsTest {
 		assertEquals("102%2FGE100%2FSNJSCAMCJP8%2FSNJSCAMCJT4", ctx.getAttribute(outputPath));
 	}
 
+    @Test
+    public void urlDecode() throws SvcLogicException {
+        String sourceString = "102%2FGE100%2FSNJSCAMCJP8%2FSNJSCAMCJT4";
+        String outputPath = "out";
+
+        param.put("source", sourceString);
+        param.put("outputPath", outputPath);
+        SliStringUtils.urlDecode(param, ctx);
+        assertEquals("102/GE100/SNJSCAMCJP8/SNJSCAMCJT4", ctx.getAttribute(outputPath));
+    }
+
 	@Test
 	public void testXmlEscapeText() {
 		param.put("source", "102/GE100/SNJSCAMCJP8/SNJSCAMCJT4");
@@ -317,8 +328,6 @@ public class SliStringUtilsTest {
 
     @Test
     public void isEmpty() throws Exception {
-        ctx = new SvcLogicContext();
-        param = new HashMap<>();
         String result = SliStringUtils.isEmpty(param, ctx);
         param.put(SliStringUtils.INPUT_PARAM_KEY, "key_does_not_exist");
         assertEquals(SliStringUtils.TRUE_CONSTANT, result);
@@ -339,8 +348,6 @@ public class SliStringUtilsTest {
 
     @Test
     public void isBlank() throws Exception {
-        ctx = new SvcLogicContext();
-        param = new HashMap<>();
         String result = SliStringUtils.isBlank(param, ctx);
         param.put(SliStringUtils.INPUT_PARAM_KEY, "key_does_not_exist");
         assertEquals(SliStringUtils.TRUE_CONSTANT, result);
@@ -361,8 +368,6 @@ public class SliStringUtilsTest {
 
     @Test
     public void isNull() throws Exception {
-        ctx = new SvcLogicContext();
-        param = new HashMap<>();
         String result = SliStringUtils.isNull(param, ctx);
         param.put(SliStringUtils.INPUT_PARAM_KEY, "key_does_not_exist");
         assertEquals(SliStringUtils.TRUE_CONSTANT, result);

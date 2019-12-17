@@ -24,14 +24,20 @@ package org.onap.ccsdk.sli.core.slipluginutils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.slipluginutils.SliPluginUtils.LogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.google.gson.JsonObject;
 
 public class SliPluginUtils_StaticFunctionsTest {
     private static final Logger LOG = LoggerFactory.getLogger(SliPluginUtils_StaticFunctionsTest.class);
@@ -216,28 +222,6 @@ public class SliPluginUtils_StaticFunctionsTest {
         SliPluginUtils.ctxSetAttribute(ctx, "test", i, LOG, SliPluginUtils.LogLevel.TRACE);
     }
 
-    /*@Test
-    public void printContext() throws SvcLogicException, IOException {
-        String filePath = "/src/test/resources/printContext.txt";
-        parameters.put("filename", filePath);
-        File f = new File(filePath);
-        assert (f.exists());
-        assert (!f.isDirectory());
-        ctx.setAttribute("hello", "world");
-        ctx.setAttribute("name", "value");
-
-        SliPluginUtils.printContext(parameters, ctx);
-        BufferedReader br = new BufferedReader(new FileReader(f));
-        String line = br.readLine();
-        assertEquals("#######################################", line);
-        line = br.readLine();
-        assertEquals("hello = world", line);
-        line = br.readLine();
-        assertEquals("name = value", line);
-        br.close();
-        Files.delete(Paths.get(filePath));
-    }*/
-
     @Test
     public void setTime() throws SvcLogicException {
         String outputPath = "output";
@@ -262,6 +246,320 @@ public class SliPluginUtils_StaticFunctionsTest {
         parameters.put(SliStringUtils.INPUT_PARAM_KEY, "a");
         result = SliPluginUtils.containsKey(parameters, ctx);
         assertEquals(SliStringUtils.TRUE_CONSTANT, result);
+    }
+
+    @Test
+    public void testGetAttributeValue() throws Exception {
+        parameters.put("outputPath", "testPath");
+        parameters.put("source", "testSource");
+        SliPluginUtils.getAttributeValue(parameters, ctx);
+        assertNull(ctx.getAttribute(parameters.get("outputPath")));
+    }
+
+    @Test
+    public void testCtxListContains() throws Exception {
+        parameters.put("list", "10_length");
+        parameters.put("keyName", "testName");
+        parameters.put("keyValue", "testValue");
+        ctx.setAttribute("10_length", "10");
+        assertEquals("false", SliPluginUtils.ctxListContains(parameters, ctx));
+
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void testPrintContextForEmptyParameters() throws SvcLogicException {
+        SliPluginUtils.printContext(parameters, ctx);
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void testPrintContextForNullParameters() throws SvcLogicException {
+        SliPluginUtils.printContext(null, ctx);
+    }
+
+    @Test
+    public void testPrintContext() throws SvcLogicException {
+        parameters.put("filename", "testFileName");
+        SliPluginUtils.printContext(parameters, ctx);
+    }
+
+    @Test
+    public void testWriteJsonObject() throws SvcLogicException {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("name", "testName");
+        obj.addProperty("age", 27);
+        obj.addProperty("salary", 600000);
+        SvcLogicContext ctx = new SvcLogicContext();
+        SliPluginUtils.writeJsonObject(obj, ctx, "root");
+        assertEquals("testName", ctx.getAttribute("root.name"));
+        assertEquals("27", ctx.getAttribute("root.age"));
+        assertEquals("600000", ctx.getAttribute("root.salary"));
+    }
+
+    @Test
+    public void testCtxKeyEmpty() {
+        ctx.setAttribute("key", "");
+        assertTrue(SliPluginUtils.ctxKeyEmpty(ctx, "key"));
+    }
+
+    @Test
+    public void testGetArrayLength() {
+        ctx.setAttribute("key_length", "test");
+        Logger log = LoggerFactory.getLogger(getClass());
+        SliPluginUtils.getArrayLength(ctx, "key", log, LogLevel.INFO, "invalid input");
+    }
+
+    @Test
+    public void testSetPropertiesForRoot() {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("root", "RootVal");
+        parameters.put("valueRoot", "ValueRootVal");
+        assertEquals("success", SliPluginUtils.setPropertiesForRoot(parameters, ctx));
+    }
+
+    @Test
+    public void testJsonStringToCtxToplevelArray() throws Exception {
+        String path = "src/test/resources/ArrayMenu.json";
+        String content = new String(Files.readAllBytes(Paths.get(path)));
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("input", content);
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("outputPath", "testPath");
+        parameters.put("isEscaped", "false");
+        parameters.put("source", "input");
+
+        SliPluginUtils.jsonStringToCtx(parameters, ctx);
+
+        assertEquals("1000", ctx.getAttribute("testPath.[0].calories"));
+        assertEquals("1", ctx.getAttribute("testPath.[0].id"));
+        assertEquals("plain", ctx.getAttribute("testPath.[0].name"));
+        assertEquals("pizza", ctx.getAttribute("testPath.[0].type"));
+        assertEquals("true", ctx.getAttribute("testPath.[0].vegetarian"));
+        assertEquals("2000", ctx.getAttribute("testPath.[1].calories"));
+        assertEquals("2", ctx.getAttribute("testPath.[1].id"));
+        assertEquals("Tuesday Special", ctx.getAttribute("testPath.[1].name"));
+        assertEquals("1", ctx.getAttribute("testPath.[1].topping[0].id"));
+        assertEquals("onion", ctx.getAttribute("testPath.[1].topping[0].name"));
+        assertEquals("2", ctx.getAttribute("testPath.[1].topping[1].id"));
+        assertEquals("pepperoni", ctx.getAttribute("testPath.[1].topping[1].name"));
+        assertEquals("2", ctx.getAttribute("testPath.[1].topping_length"));
+        assertEquals("pizza", ctx.getAttribute("testPath.[1].type"));
+        assertEquals("false", ctx.getAttribute("testPath.[1].vegetarian"));
+        assertEquals("1500", ctx.getAttribute("testPath.[2].calories"));
+        assertEquals("3", ctx.getAttribute("testPath.[2].id"));
+        assertEquals("House Special", ctx.getAttribute("testPath.[2].name"));
+        assertEquals("3", ctx.getAttribute("testPath.[2].topping[0].id"));
+        assertEquals("basil", ctx.getAttribute("testPath.[2].topping[0].name"));
+        assertEquals("4", ctx.getAttribute("testPath.[2].topping[1].id"));
+        assertEquals("fresh mozzarella", ctx.getAttribute("testPath.[2].topping[1].name"));
+        assertEquals("5", ctx.getAttribute("testPath.[2].topping[2].id"));
+        assertEquals("tomato", ctx.getAttribute("testPath.[2].topping[2].name"));
+        assertEquals("3", ctx.getAttribute("testPath.[2].topping_length"));
+        assertEquals("pizza", ctx.getAttribute("testPath.[2].type"));
+        assertEquals("true", ctx.getAttribute("testPath.[2].vegetarian"));
+        assertEquals("3", ctx.getAttribute("testPath._length"));
+    }
+
+    @Test
+    public void testJsonStringToCtx() throws Exception {
+        String path = "src/test/resources/ObjectMenu.json";
+        String content = new String(Files.readAllBytes(Paths.get(path)));
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("input", content);
+
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("outputPath", "testPath");
+        parameters.put("isEscaped", "false");
+        parameters.put("source", "input");
+
+        SliPluginUtils.jsonStringToCtx(parameters, ctx);
+
+
+        assertEquals("1000", ctx.getAttribute("testPath.menu[0].calories"));
+        assertEquals("1", ctx.getAttribute("testPath.menu[0].id"));
+        assertEquals("plain", ctx.getAttribute("testPath.menu[0].name"));
+        assertEquals("pizza", ctx.getAttribute("testPath.menu[0].type"));
+        assertEquals("true", ctx.getAttribute("testPath.menu[0].vegetarian"));
+        assertEquals("2000", ctx.getAttribute("testPath.menu[1].calories"));
+        assertEquals("2", ctx.getAttribute("testPath.menu[1].id"));
+        assertEquals("Tuesday Special", ctx.getAttribute("testPath.menu[1].name"));
+        assertEquals("1", ctx.getAttribute("testPath.menu[1].topping[0].id"));
+        assertEquals("onion", ctx.getAttribute("testPath.menu[1].topping[0].name"));
+        assertEquals("2", ctx.getAttribute("testPath.menu[1].topping[1].id"));
+        assertEquals("pepperoni", ctx.getAttribute("testPath.menu[1].topping[1].name"));
+        assertEquals("2", ctx.getAttribute("testPath.menu[1].topping_length"));
+        assertEquals("pizza", ctx.getAttribute("testPath.menu[1].type"));
+        assertEquals("false", ctx.getAttribute("testPath.menu[1].vegetarian"));
+        assertEquals("1500", ctx.getAttribute("testPath.menu[2].calories"));
+        assertEquals("3", ctx.getAttribute("testPath.menu[2].id"));
+        assertEquals("House Special", ctx.getAttribute("testPath.menu[2].name"));
+        assertEquals("3", ctx.getAttribute("testPath.menu[2].topping[0].id"));
+        assertEquals("basil", ctx.getAttribute("testPath.menu[2].topping[0].name"));
+        assertEquals("4", ctx.getAttribute("testPath.menu[2].topping[1].id"));
+        assertEquals("fresh mozzarella", ctx.getAttribute("testPath.menu[2].topping[1].name"));
+        assertEquals("5", ctx.getAttribute("testPath.menu[2].topping[2].id"));
+        assertEquals("tomato", ctx.getAttribute("testPath.menu[2].topping[2].name"));
+        assertEquals("3", ctx.getAttribute("testPath.menu[2].topping_length"));
+        assertEquals("pizza", ctx.getAttribute("testPath.menu[2].type"));
+        assertEquals("true", ctx.getAttribute("testPath.menu[2].vegetarian"));
+        assertEquals("3", ctx.getAttribute("testPath.menu_length"));
+    }
+
+    @Test
+    public void test2dJsonStringToCtx() throws Exception {
+        String path = "src/test/resources/2dArray.json";
+        String content = new String(Files.readAllBytes(Paths.get(path)));
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("input", content);
+
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("outputPath", "testPath");
+        parameters.put("isEscaped", "false");
+        parameters.put("source", "input");
+
+        SliPluginUtils.jsonStringToCtx(parameters, ctx);
+        assertEquals("apple", ctx.getAttribute("testPath.[0][0]"));
+        assertEquals("orange", ctx.getAttribute("testPath.[0][1]"));
+        assertEquals("banana", ctx.getAttribute("testPath.[0][2]"));
+        assertEquals("3", ctx.getAttribute("testPath.[0]_length"));
+        assertEquals("squash", ctx.getAttribute("testPath.[1][0]"));
+        assertEquals("broccoli", ctx.getAttribute("testPath.[1][1]"));
+        assertEquals("cauliflower", ctx.getAttribute("testPath.[1][2]"));
+        assertEquals("3", ctx.getAttribute("testPath.[1]_length"));
+        assertEquals("2", ctx.getAttribute("testPath._length"));
+    }
+
+    @Test
+    public void test3dJsonStringToCtx() throws Exception {
+        String path = "src/test/resources/3dArray.json";
+        String content = new String(Files.readAllBytes(Paths.get(path)));
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("input", content);
+
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("outputPath", "testPath");
+        parameters.put("isEscaped", "false");
+        parameters.put("source", "input");
+
+        SliPluginUtils.jsonStringToCtx(parameters, ctx);
+        assertEquals("a", ctx.getAttribute("testPath.[0][0][0]"));
+        assertEquals("b", ctx.getAttribute("testPath.[0][0][1]"));
+        assertEquals("c", ctx.getAttribute("testPath.[0][0][2]"));
+        assertEquals("3", ctx.getAttribute("testPath.[0][0]_length"));
+        assertEquals("d", ctx.getAttribute("testPath.[0][1][0]"));
+        assertEquals("e", ctx.getAttribute("testPath.[0][1][1]"));
+        assertEquals("f", ctx.getAttribute("testPath.[0][1][2]"));
+        assertEquals("3", ctx.getAttribute("testPath.[0][1]_length"));
+        assertEquals("2", ctx.getAttribute("testPath.[0]_length"));
+        assertEquals("x", ctx.getAttribute("testPath.[1][0][0]"));
+        assertEquals("y", ctx.getAttribute("testPath.[1][0][1]"));
+        assertEquals("z", ctx.getAttribute("testPath.[1][0][2]"));
+        assertEquals("3", ctx.getAttribute("testPath.[1][0]_length"));
+        assertEquals("1", ctx.getAttribute("testPath.[1]_length"));
+        assertEquals("2", ctx.getAttribute("testPath._length"));
+    }
+
+    @Test
+    public void testJsonWidgetStringToCtx() throws Exception {
+        String path = "src/test/resources/Widget.json";
+        String content = new String(Files.readAllBytes(Paths.get(path)));
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("input", content);
+
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("outputPath", "testPath");
+        parameters.put("isEscaped", "false");
+        parameters.put("source", "input");
+
+        SliPluginUtils.jsonStringToCtx(parameters, ctx);
+        assertEquals("false", ctx.getAttribute("testPath.widget.debug"));
+        assertEquals("center", ctx.getAttribute("testPath.widget.image.alignment"));
+        assertEquals("150", ctx.getAttribute("testPath.widget.image.hOffset"));
+        assertEquals("moon", ctx.getAttribute("testPath.widget.image.name"));
+        assertEquals("images/moon.png", ctx.getAttribute("testPath.widget.image.src"));
+        assertEquals("150", ctx.getAttribute("testPath.widget.image.vOffset"));
+        assertEquals("center", ctx.getAttribute("testPath.widget.text.alignment"));
+        assertEquals("Click Me", ctx.getAttribute("testPath.widget.text.data"));
+        assertEquals("350", ctx.getAttribute("testPath.widget.text.hOffset"));
+        assertEquals("text1", ctx.getAttribute("testPath.widget.text.name"));
+        assertEquals("21", ctx.getAttribute("testPath.widget.text.size"));
+        assertEquals("bold", ctx.getAttribute("testPath.widget.text.style"));
+        assertEquals("200", ctx.getAttribute("testPath.widget.text.vOffset"));
+        assertEquals("300", ctx.getAttribute("testPath.widget.window.height"));
+        assertEquals("main_window", ctx.getAttribute("testPath.widget.window.name"));
+        assertEquals("ONAP Widget", ctx.getAttribute("testPath.widget.window.title"));
+        assertEquals("200", ctx.getAttribute("testPath.widget.window.width"));
+    }
+
+    @Test
+    public void testEmbeddedEscapedJsonJsonStringToCtx() throws Exception {
+        String path = "src/test/resources/EmbeddedEscapedJson.json";
+        String content = new String(Files.readAllBytes(Paths.get(path)));
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("input", content);
+
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("outputPath", "testPath");
+        parameters.put("isEscaped", "false");
+        parameters.put("source", "input");
+
+        SliPluginUtils.jsonStringToCtx(parameters, ctx);
+
+        assertEquals("escapedJsonObject", ctx.getAttribute("testPath.input.parameters[0].name"));
+        assertEquals("[{\"id\":\"0.2.0.0/16\"},{\"id\":\"ge04::/64\"}]",
+                ctx.getAttribute("testPath.input.parameters[0].value"));
+        assertEquals("Hello/World", ctx.getAttribute("testPath.input.parameters[1].value"));
+        assertEquals("resourceName", ctx.getAttribute("testPath.input.parameters[2].name"));
+        assertEquals("The\t\"Best\"\tName", ctx.getAttribute("testPath.input.parameters[2].value"));
+        assertEquals("3", ctx.getAttribute("testPath.input.parameters_length"));
+
+
+        // Break the embedded json object into properties
+        parameters.put("outputPath", "testPath.input.parameters[0].value");
+        parameters.put("source", "testPath.input.parameters[0].value");
+        SliPluginUtils.jsonStringToCtx(parameters, ctx);
+
+        assertEquals("0.2.0.0/16", ctx.getAttribute("testPath.input.parameters[0].value.[0].id"));
+        assertEquals("ge04::/64", ctx.getAttribute("testPath.input.parameters[0].value.[1].id"));
+        assertEquals("2", ctx.getAttribute("testPath.input.parameters[0].value._length"));
+    }
+
+    @Test
+    public void testEscapedJsonStringToCtx() throws Exception {
+        String path = "src/test/resources/EscapedJson.json";
+        String content = new String(Files.readAllBytes(Paths.get(path)));
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("input", content);
+
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("outputPath", "testPath");
+        parameters.put("isEscaped", "true"); // set to true because the entire json content has been escaped
+        parameters.put("source", "input");
+
+
+        SliPluginUtils.jsonStringToCtx(parameters, ctx);
+        assertEquals("false", ctx.getAttribute("testPath.widget.debug"));
+        assertEquals("center", ctx.getAttribute("testPath.widget.image.alignment"));
+        assertEquals("150", ctx.getAttribute("testPath.widget.image.hOffset"));
+        assertEquals("moon", ctx.getAttribute("testPath.widget.image.name"));
+        assertEquals("images/moon.png", ctx.getAttribute("testPath.widget.image.src"));
+        assertEquals("150", ctx.getAttribute("testPath.widget.image.vOffset"));
+        assertEquals("center", ctx.getAttribute("testPath.widget.text.alignment"));
+        assertEquals("Click Me", ctx.getAttribute("testPath.widget.text.data"));
+        assertEquals("350", ctx.getAttribute("testPath.widget.text.hOffset"));
+        assertEquals("text1", ctx.getAttribute("testPath.widget.text.name"));
+        assertEquals("21", ctx.getAttribute("testPath.widget.text.size"));
+        assertEquals("bold", ctx.getAttribute("testPath.widget.text.style"));
+        assertEquals("200", ctx.getAttribute("testPath.widget.text.vOffset"));
+        assertEquals("300", ctx.getAttribute("testPath.widget.window.height"));
+        assertEquals("main_window", ctx.getAttribute("testPath.widget.window.name"));
+        assertEquals("ONAP Widget", ctx.getAttribute("testPath.widget.window.title"));
+        assertEquals("200", ctx.getAttribute("testPath.widget.window.width"));
     }
 
 }

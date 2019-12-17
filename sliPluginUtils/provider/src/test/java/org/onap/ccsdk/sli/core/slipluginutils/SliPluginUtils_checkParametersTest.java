@@ -23,24 +23,15 @@
 
 package org.onap.ccsdk.sli.core.slipluginutils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.slipluginutils.SliPluginUtils.LogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 
-import com.google.gson.JsonObject;
-
-public class CheckParametersTest {
+public class SliPluginUtils_checkParametersTest {
 
     @Test
     public void nullRequiredParameters() throws Exception {
@@ -122,95 +113,5 @@ public class CheckParametersTest {
         Map<String, String> parameters = new HashMap<String, String>();
 
         SliPluginUtils.requiredParameters(parameters, ctx);
-    }
-
-    @Test(expected = SvcLogicException.class)
-    public void testJsonStringToCtx() throws Exception {
-        SvcLogicContext ctx = new SvcLogicContext();
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("outputPath", "testPath");
-        parameters.put("isEscaped", "true");
-        parameters.put("source", "//{/name1/:value1/}//");
-        SliPluginUtils.jsonStringToCtx(parameters, ctx);
-    }
-
-    @Test
-    public void testGetAttributeValue() throws Exception {
-        SvcLogicContext ctx = new SvcLogicContext();
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("outputPath", "testPath");
-        parameters.put("source", "testSource");
-        SliPluginUtils.getAttributeValue(parameters, ctx);
-        assertNull(ctx.getAttribute(parameters.get("outputPath")));
-    }
-
-    @Test
-    public void testCtxListContains() throws Exception {
-        SvcLogicContext ctx = new SvcLogicContext();
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("list", "10_length");
-        parameters.put("keyName", "testName");
-        parameters.put("keyValue", "testValue");
-        ctx.setAttribute("10_length", "10");
-        assertEquals("false", SliPluginUtils.ctxListContains(parameters, ctx));
-
-    }
-    
-    @Test(expected= SvcLogicException.class)
-    public void testPrintContextForNullParameters() throws SvcLogicException
-    {
-        SvcLogicContext ctx = new SvcLogicContext();
-        Map<String, String> parameters = new HashMap<String, String>();
-        SliPluginUtils.printContext(parameters, ctx);
-    }
-    
-    @Test
-    public void testPrintContext() throws SvcLogicException
-    {
-        SvcLogicContext ctx = new SvcLogicContext();
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("filename","testFileName");
-        SliPluginUtils.printContext(parameters, ctx);
-    }
-    
-    @Test
-    public void testWriteJsonObject() throws SvcLogicException
-    {
-        JsonObject obj=new JsonObject();
-        obj.addProperty("name","testName");
-        obj.addProperty("age",27);
-        obj.addProperty("salary",600000);
-        SvcLogicContext ctx = new SvcLogicContext();
-        SliPluginUtils.writeJsonObject(obj, ctx,"root");
-        assertEquals("testName", ctx.getAttribute("root.name"));
-        assertEquals("27", ctx.getAttribute("root.age"));
-        assertEquals("600000", ctx.getAttribute("root.salary"));
-    }
-    
-    @Test
-    public void testCtxKeyEmpty()
-    {
-        SvcLogicContext ctx = new SvcLogicContext();
-        ctx.setAttribute("key", "");
-        assertTrue(SliPluginUtils.ctxKeyEmpty(ctx, "key"));
-    }
-    
-    @Test
-    public void testGetArrayLength()
-    {
-        SvcLogicContext ctx = new SvcLogicContext();
-        ctx.setAttribute("key_length", "test");
-        Logger log = LoggerFactory.getLogger(getClass());
-        SliPluginUtils.getArrayLength(ctx, "key", log , LogLevel.INFO, "invalid input");
-    }
-    
-    @Test
-    public void testSetPropertiesForRoot()
-    {
-        SvcLogicContext ctx = new SvcLogicContext();
-        Map<String, String> parameters= new HashMap<>();
-        parameters.put("root","RootVal");
-        parameters.put("valueRoot", "ValueRootVal");
-        assertEquals("success",SliPluginUtils.setPropertiesForRoot(parameters,ctx));
     }
 }
