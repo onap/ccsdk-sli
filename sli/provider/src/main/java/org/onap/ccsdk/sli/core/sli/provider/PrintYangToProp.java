@@ -1259,8 +1259,8 @@ public class PrintYangToProp {
             str = str + inStr.substring(1);
         }
 
-        String regex = "(([a-z0-9])([A-Z]))";
-        String replacement = "$2-$3";
+        String regex = "([a-z0-9A-Z])(?=[A-Z])";
+        String replacement = "$1-";
 
         String retval = str.replaceAll(regex, replacement).toLowerCase();
 
