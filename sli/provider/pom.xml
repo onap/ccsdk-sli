@@ -110,7 +110,31 @@
 				</configuration>
 
 			</plugin>
+			<!-- Jacoco / Sonar -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<id>aggregate-report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report-aggregate</goal>
+						</goals>
+						<configuration>
+							<dataFileIncludes>
+								target/code-coverage/jacoco-ut.exec,
+								target/code-coverage/jacoco-it.exec,
+								../provider-base/target/code-coverage/jacoco-ut.exec,
+								../provider-base/target/code-coverage/jacoco-it.exec
+							</dataFileIncludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 
 	</build>
+
 </project>
