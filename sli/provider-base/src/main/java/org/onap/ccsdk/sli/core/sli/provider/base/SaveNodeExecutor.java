@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import org.onap.ccsdk.sli.core.sli.SvcLogicConstants;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicExpression;
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class SaveNodeExecutor extends AbstractSvcLogicNodeExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SaveNodeExecutor.class);
-    private static final String FAILURE= "failure";
+    private static final String FAILURE= SvcLogicConstants.FAILURE;
 
     @Override
     public SvcLogicNode execute(SvcLogicServiceBase svc, SvcLogicNode node, SvcLogicContext ctx)
@@ -71,7 +72,7 @@ public class SaveNodeExecutor extends AbstractSvcLogicNodeExecutor {
             try {
                 switch (resourcePlugin.save(resourceType, force, localOnly, key, parmMap, pfx, ctx)) {
                     case SUCCESS:
-                        outValue = "success";
+                        outValue = SvcLogicConstants.SUCCESS;
                         break;
                     case NOT_FOUND:
                         outValue = "not-found";

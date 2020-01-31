@@ -21,6 +21,7 @@
 
 package org.onap.ccsdk.sli.core.sli.provider.base;
 
+import org.onap.ccsdk.sli.core.sli.SvcLogicConstants;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicNode;
@@ -31,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class DeleteNodeExecutor extends AbstractSvcLogicNodeExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeleteNodeExecutor.class);
-    private static final String FAILURE="failure";
+    private static final String FAILURE=SvcLogicConstants.FAILURE;
 
     @Override
     public SvcLogicNode execute(SvcLogicServiceBase svc, SvcLogicNode node, SvcLogicContext ctx)
@@ -52,7 +53,7 @@ public class DeleteNodeExecutor extends AbstractSvcLogicNodeExecutor {
             try {
                 switch (resourcePlugin.delete(resourceType, key, ctx)) {
                     case SUCCESS:
-                        outValue = "success";
+                        outValue = SvcLogicConstants.SUCCESS;
                         break;
                     case NOT_FOUND:
                         outValue = "not-found";

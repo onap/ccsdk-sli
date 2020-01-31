@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.onap.ccsdk.sli.core.sli.SvcLogicAdaptor;
+import org.onap.ccsdk.sli.core.sli.SvcLogicConstants;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicExpression;
@@ -48,7 +49,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 
 		String adaptorName = SvcLogicExpressionResolver.evaluate(
 				node.getAttribute("adaptor"), node, ctx);
-		String outValue = "failure";
+		String outValue = SvcLogicConstants.FAILURE;
 
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("configure node encountered - looking for adaptor "
@@ -82,7 +83,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 				
 				switch (confStatus) {
 				case SUCCESS:
-					outValue = "success";
+					outValue = SvcLogicConstants.SUCCESS;
 					if ((activate != null) && (activate.length() > 0)) {
 						if ("true".equalsIgnoreCase(activate)) {
 							SvcLogicAdaptor.ConfigStatus activateStatus = SvcLogicAdaptor.ConfigStatus.FAILURE;
@@ -108,7 +109,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 								break;
 							case FAILURE:
 							default:
-								outValue = "failure";
+								outValue = SvcLogicConstants.FAILURE;
 							}
 						} else if ("false".equalsIgnoreCase(activate)) {
 							SvcLogicAdaptor.ConfigStatus deactivateStatus = SvcLogicAdaptor.ConfigStatus.FAILURE;
@@ -134,7 +135,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 								break;
 							case FAILURE:
 							default:
-								outValue = "failure";
+								outValue = SvcLogicConstants.FAILURE;
 							}
 						}
 					}
@@ -150,7 +151,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 					break;
 				case FAILURE:
 				default:
-					outValue = "failure";
+					outValue = SvcLogicConstants.FAILURE;
 				}
 			} else {
 				if ((activate != null) && (activate.length() > 0)) {
@@ -164,7 +165,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 						}
 						switch (activateStatus) {
 						case SUCCESS:
-							outValue = "success";
+							outValue = SvcLogicConstants.SUCCESS;
 							break;
 						case ALREADY_ACTIVE:
 							outValue = ALREADY_ACTIVE;
@@ -177,7 +178,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 							break;
 						case FAILURE:
 						default:
-							outValue = "failure";
+							outValue = SvcLogicConstants.FAILURE;
 						}
 					} else if ("false".equalsIgnoreCase(activate)) {
 						SvcLogicAdaptor.ConfigStatus deactivateStatus = SvcLogicAdaptor.ConfigStatus.FAILURE;
@@ -190,7 +191,7 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 						}
 						switch (deactivateStatus) {
 						case SUCCESS:
-							outValue = "success";
+							outValue = SvcLogicConstants.SUCCESS;
 							break;
 						case ALREADY_ACTIVE:
 							outValue = ALREADY_ACTIVE;
@@ -203,12 +204,12 @@ public class ConfigureNodeExecutor extends AbstractSvcLogicNodeExecutor {
 							break;
 						case FAILURE:
 						default:
-							outValue = "failure";
+							outValue = SvcLogicConstants.FAILURE;
 						}
 					}
 				} else {
 					LOG.warn("Nothing to configure - no parameters passed, and activate attribute is not set");
-					outValue = "success";
+					outValue = SvcLogicConstants.SUCCESS;
 				}
 			}
 		} else {

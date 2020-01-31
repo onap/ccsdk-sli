@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.onap.ccsdk.sli.core.sli.SvcLogicConstants;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
@@ -935,19 +936,19 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 		try {
 			checkParameters(parameters, new String[]{"root"}, LOG);
 		} catch (Exception ex) {
-			return "failure";
+			return SvcLogicConstants.FAILURE;
 		}
 
 		String root = parameters.get("root");
 
 		if (StringUtils.isEmpty(root)) {
-			return "failure";
+			return SvcLogicConstants.FAILURE;
 		}
 
 		// set context memory to the the properties passed with root as prefix
 		setParameterValuesToRoot(parameters, ctx, root);
 
-		return "success";
+		return SvcLogicConstants.SUCCESS;
 	}
 
 	private static boolean setParameterValuesToRoot(Map<String, String> parameters, SvcLogicContext ctx, String root) {
@@ -1003,7 +1004,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 			checkParameters(parameters, new String[]{"prefixKey", "keyName", "keyValue"}, LOG);
 		} catch (Exception e) {
 			LOG.error("a required parameter is missing");
-			return "failure";
+			return SvcLogicConstants.FAILURE;
 		}
 
 		String prefixKey = parameters.get("prefixKey");
@@ -1012,7 +1013,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 
 		if (StringUtils.isEmpty(keyName) || StringUtils.isEmpty(keyValue) || StringUtils.isEmpty(prefixKey)) {
 			LOG.error("a required parameters value is empty or null");
-			return "failure";
+			return SvcLogicConstants.FAILURE;
 		}
 
 		int listLength = getArrayLength(ctx, prefixKey);
@@ -1037,7 +1038,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 							+ "but " + map.size() + " entries were found in context memory "
 							+ "where the key begins with: " + prefixKey);
 
-					return "failure";
+					return SvcLogicConstants.FAILURE;
 				}
 			} else if (ctxListContains(containParams, ctx) == "false") {
 				setNewEntryInList(parameters, ctx, keyName, keyValue, prefixKey, valuePrefixKey, listLength);
@@ -1059,10 +1060,10 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 		} catch (SvcLogicException e) {
 			LOG.error("Call to ctxListContains failed: " + e.getMessage());
 
-			return "failure";
+			return SvcLogicConstants.FAILURE;
 		}
 
-		return "success";
+		return SvcLogicConstants.SUCCESS;
 	}
 
 	private static void setNewEntryInList(Map<String, String> parameters, SvcLogicContext ctx, String keyName,

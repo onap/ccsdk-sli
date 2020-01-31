@@ -25,12 +25,11 @@ package org.onap.ccsdk.sli.core.slipluginutils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 import java.util.Random;
-
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.ccsdk.sli.core.sli.SvcLogicConstants;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.slf4j.Logger;
@@ -144,7 +143,7 @@ public class SliPluginUtils_ctxSortList {
 		parameters.put("keyName", "testKey");
 		parameters.put("keyValue", "testValue");
 
-		assertEquals("success", SliPluginUtils.setPropertiesForList(parameters, ctx));
+		assertEquals(SvcLogicConstants.SUCCESS, SliPluginUtils.setPropertiesForList(parameters, ctx));
 
 	}
 }

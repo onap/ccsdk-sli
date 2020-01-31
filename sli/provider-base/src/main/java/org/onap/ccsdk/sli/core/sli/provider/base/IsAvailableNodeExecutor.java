@@ -21,6 +21,7 @@
 
 package org.onap.ccsdk.sli.core.sli.provider.base;
 
+import org.onap.ccsdk.sli.core.sli.SvcLogicConstants;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicNode;
@@ -41,7 +42,7 @@ public class IsAvailableNodeExecutor extends AbstractSvcLogicNodeExecutor {
         String key = SvcLogicExpressionResolver.evaluateAsKey(node.getAttribute("key"), node, ctx);
         String pfx = SvcLogicExpressionResolver.evaluate(node.getAttribute("pfx"), node, ctx);
 
-        String outValue = "failure";
+        String outValue = SvcLogicConstants.FAILURE;
 
         SvcLogicResource resourcePlugin = getSvcLogicResource(plugin);
 
@@ -60,7 +61,7 @@ public class IsAvailableNodeExecutor extends AbstractSvcLogicNodeExecutor {
                 }
             } catch (SvcLogicException e) {
                 LOG.error("Caught exception from resource plugin", e);
-                outValue = "failure";
+                outValue = SvcLogicConstants.FAILURE;
             }
         } else {
             LOG.warn("Could not find SvcLogicResource object for plugin " + plugin);

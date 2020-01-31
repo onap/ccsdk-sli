@@ -1,7 +1,6 @@
 package org.onap.ccsdk.sli.core.utils;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class KarafRootFileResolverTest {

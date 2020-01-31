@@ -40,7 +40,7 @@ public class SvcLogicContext {
 
 	private HashMap<String, String> attributes;
 
-	private String status = "success";
+    private String status = SvcLogicConstants.SUCCESS;
 
 	public SvcLogicContext()
 	{
@@ -91,14 +91,27 @@ public class SvcLogicContext {
 	{
 		return attributes.keySet();
 	}
+  public Boolean isSuccess() {
+        return status.equals(SvcLogicConstants.SUCCESS);
+  }
 
+    @Deprecated
 	public String getStatus() {
 		return status;
 	}
 
+    @Deprecated
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+    public void markFailed() {
+        this.status = SvcLogicConstants.FAILURE;
+    }
+
+    public void markSuccess() {
+        this.status = SvcLogicConstants.SUCCESS;
+    }
 
 	public Properties toProperties()
 	{

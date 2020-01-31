@@ -1,7 +1,7 @@
 package org.onap.ccsdk.sli.core.utils.dblib;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import java.io.File;
 import java.util.Optional;
 import org.junit.Test;

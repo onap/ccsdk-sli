@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import org.onap.ccsdk.sli.core.sli.SvcLogicConstants;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicExpression;
@@ -44,7 +45,7 @@ public class RecordNodeExecutor extends AbstractSvcLogicNodeExecutor {
             throws SvcLogicException {
 
         String plugin = SvcLogicExpressionResolver.evaluate(node.getAttribute("plugin"), node, ctx);
-        String outValue = "failure";
+        String outValue = SvcLogicConstants.FAILURE;
 
         Map<String, String> parmMap = getResolvedParameters(node,ctx);
 
@@ -54,7 +55,7 @@ public class RecordNodeExecutor extends AbstractSvcLogicNodeExecutor {
                 recorder.record(parmMap);
             } catch (SvcLogicException e) {
                 LOG.error("Caught exception from recorder plugin", e);
-                outValue = "failure";
+                outValue = SvcLogicConstants.FAILURE;
             }
         } else {
             LOG.warn("Could not find SvcLogicRecorder object for plugin " + plugin);

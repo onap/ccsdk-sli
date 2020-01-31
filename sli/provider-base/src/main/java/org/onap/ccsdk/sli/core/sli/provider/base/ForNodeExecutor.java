@@ -22,6 +22,7 @@
 package org.onap.ccsdk.sli.core.sli.provider.base;
 
 import org.onap.ccsdk.sli.core.sli.BreakNodeException;
+import org.onap.ccsdk.sli.core.sli.SvcLogicConstants;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicExpression;
@@ -79,7 +80,7 @@ public class ForNodeExecutor extends AbstractSvcLogicNodeExecutor {
 
 			for (int i = 0; i < numOutcomes; i++) {
 
-				if ("failure".equals(ctx.getStatus()) && isAtomic) {
+				if (SvcLogicConstants.FAILURE.equals(ctx.getStatus()) && isAtomic) {
 					LOG.info("For - stopped executing nodes due to failure status");
 					return(null);
 				}
@@ -101,7 +102,7 @@ public class ForNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			}
 		}
         } catch (BreakNodeException br) {
-            LOG.error("ForNodeExecutor caught break",br);
+            LOG.trace("ForNodeExecutor caught break" + br.getMessage());
         }
 		return (null);
 	}

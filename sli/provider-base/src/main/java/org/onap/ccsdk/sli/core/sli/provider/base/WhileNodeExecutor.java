@@ -67,7 +67,7 @@ public class WhileNodeExecutor extends AbstractSvcLogicNodeExecutor {
             }
             LOG.debug("testResult was " + testResult + " which is not equal to true, exiting while loop.");
         } catch (BreakNodeException e) {
-            LOG.debug("WhileNodeExecutor caught break");
+            LOG.debug("WhileNodeExecutor caught break" + e.getMessage());
         }
         return (null);
     }

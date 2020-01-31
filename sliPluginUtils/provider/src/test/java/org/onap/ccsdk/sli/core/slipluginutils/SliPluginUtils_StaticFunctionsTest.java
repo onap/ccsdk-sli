@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.ccsdk.sli.core.sli.SvcLogicConstants;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.slipluginutils.SliPluginUtils.LogLevel;
@@ -313,7 +314,7 @@ public class SliPluginUtils_StaticFunctionsTest {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("root", "RootVal");
         parameters.put("valueRoot", "ValueRootVal");
-        assertEquals("success", SliPluginUtils.setPropertiesForRoot(parameters, ctx));
+        assertEquals(SvcLogicConstants.SUCCESS, SliPluginUtils.setPropertiesForRoot(parameters, ctx));
     }
 
     @Test
