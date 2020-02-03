@@ -695,7 +695,8 @@ public class MdsalHelper {
                                     builderObj = builderClass.newInstance();
                                     paramObj = toBuilder(props, propNamePfx, builderObj);
                                 } catch (ClassNotFoundException e) {
-                                    LOG.info("Builder class {} not found ", builderName, e);
+                                  LOG.trace("Builder class {} not found catching ClassNotFoundException and trying other methods",
+                      builderName);
                                     if (paramValue == null) {
                                         try {
                                             boolean isAccessible = m.isAccessible();
