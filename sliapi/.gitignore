@@ -29,6 +29,10 @@ out/
 .DS_STORE
 .metadata
 
+## Derby files
+sdnctl
+derby.log
+
 ## Folders which contain auto generated source code ##
 yang-gen-config
 yang-gen-sal

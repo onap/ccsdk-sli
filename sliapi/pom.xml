@@ -19,6 +19,7 @@
 	<modules>
 		<module>model</module>
 		<module>provider</module>
+		<module>springboot</module>
 		<module>installer</module>
 	</modules>
 

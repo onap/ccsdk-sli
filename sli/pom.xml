@@ -25,7 +25,6 @@
         <module>model</module>
         <module>common</module>
         <module>provider</module>
-        <module>recording</module>
         <module>installer</module>
     </modules>
 </project>

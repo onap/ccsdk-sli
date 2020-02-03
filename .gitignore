@@ -18,6 +18,7 @@ target
 target-ide
 MANIFEST.MF
 **/yang-gen-sal
+*.interp
 sli/model/src/main/java
 
 ## Misc Ignores (OS specific etc) ##

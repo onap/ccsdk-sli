@@ -19,4 +19,18 @@
         </interfaces>
     </service>
 
+    <bean id="fileRecorder" class="org.onap.ccsdk.sli.core.sli.recording.FileRecorder" />
+    <!-- Implementation name was chosen over interface name due to the fact that this Service
+         was previously registered using the implementation name rather than the interface name.
+         To ensure backwards compatibility with abstractions polling the Service Registry for the
+         fileRecorder, the implementation name was chosen here. -->
+    <service ref="fileRecorder" interface="org.onap.ccsdk.sli.core.sli.recording.FileRecorder" />
+
+    <bean id="slf4jRecorder" class="org.onap.ccsdk.sli.core.sli.recording.Slf4jRecorder" />
+    <!-- Implementation name was chosen over interface name due to the fact that this Service
+         was previously registered using the implementation name rather than the interface name.
+         To ensure backwards compatibility with abstractions polling the Service Registry for the
+         slf4jRecorder, the implementation name was chosen here. -->
+    <service ref="slf4jRecorder" interface="org.onap.ccsdk.sli.core.sli.recording.Slf4jRecorder" />
+
 </blueprint>

@@ -55,7 +55,14 @@ public class JREFileResolver implements PropertiesFileResolver {
     @Override
     public Optional<File> resolveFile(final String filename) {
 
-        final Bundle bundle = FrameworkUtil.getBundle(this.clazz);
+        final Bundle bundle;
+
+        try {
+            bundle = FrameworkUtil.getBundle(this.clazz);
+        } catch (NoClassDefFoundError e) {
+            return Optional.empty();
+        }
+
         final File dataFile;
 
 
@@ -82,9 +89,13 @@ public class JREFileResolver implements PropertiesFileResolver {
             }
 
             return Optional.of(dataFile);
-        } catch(final Exception e) {
+        } catch (NoClassDefFoundError e) {
             return Optional.empty();
         }
+        catch(final Exception e) {
+            return Optional.empty();
+        }
+
     }
 
     @Override
