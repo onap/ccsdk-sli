@@ -27,7 +27,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Map;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -334,7 +334,7 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
         ctx.setAttribute(parameters.get("outputPath"), parameters.get(INPUT_PARAM_SOURCE)
                 .replaceAll(parameters.get(INPUT_PARAM_TARGET), parameters.get("replacement")));
     }
-    
+
     /**
      * Provides substring functionality to Directed Graphs.
      * <p>
@@ -456,7 +456,7 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
 	public static void xmlEscapeText(Map<String, String> inParams, SvcLogicContext ctx) {
 		String source = inParams.get(INPUT_PARAM_SOURCE);
 		String target = inParams.get(INPUT_PARAM_TARGET);
-		source = StringEscapeUtils.escapeXml(source);
+		source = StringEscapeUtils.escapeXml10(source);
 		ctx.setAttribute(target, source);
 	}
 
