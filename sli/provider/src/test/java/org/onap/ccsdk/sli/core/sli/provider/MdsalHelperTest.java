@@ -745,4 +745,18 @@ public class MdsalHelperTest extends TestCase {
     assertEquals(Uri.getDefaultInstance("http://wiki.onap.org:8080"), result.getUri());
   }
 
+  public void testToLowerHyphen() throws Exception {
+    String camelCase = "HelloWorld";
+    String hypenCase = MdsalHelper.toLowerHyphen(camelCase);
+    assertEquals("hello-world", hypenCase);
+
+    camelCase = "L2SwitchInterfaces";
+    hypenCase = MdsalHelper.toLowerHyphen(camelCase);
+    assertEquals("l2-switch-interfaces", hypenCase);
+
+    camelCase = "ABC";
+    hypenCase = MdsalHelper.toLowerHyphen(camelCase);
+    assertEquals("a-b-c", hypenCase);
+  }
+
 }
