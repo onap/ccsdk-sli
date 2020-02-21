@@ -496,6 +496,43 @@ public class SliPluginUtils_StaticFunctionsTest {
     }
 
     @Test
+    public void testUpdateJsonObjectString() throws Exception {
+        String path = "src/test/resources/JsonObject.json";
+        String content = new String(Files.readAllBytes(Paths.get(path)));
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("input", content);
+
+        Map<String, String> parametersUpdateJson = new HashMap<String, String>();
+        parametersUpdateJson.put("source", "input");
+        parametersUpdateJson.put("outputPath", "newJsonString");
+
+        // add key "ccc" and its value
+        parametersUpdateJson.put("add.ccc", "abcxyz");
+
+        // update keys and their values of "aaa" and "c.d"
+        parametersUpdateJson.put("add.aaa", "4567");
+        parametersUpdateJson.put("add.c.d", "defg");
+
+        // delete key "bbb"
+        parametersUpdateJson.put("delete.bbb", "");
+
+        SliPluginUtils.updateJsonObjectString(parametersUpdateJson, ctx);
+
+        Map<String, String> parametersJsonToCtx = new HashMap<String, String>();
+        parametersJsonToCtx.put("source", "newJsonString");
+        parametersJsonToCtx.put("outputPath", "testPath");
+        parametersJsonToCtx.put("isEscaped", "false");
+
+        SliPluginUtils.jsonStringToCtx(parametersJsonToCtx, ctx);
+
+        assertEquals("abcxyz", ctx.getAttribute("testPath.ccc"));
+        assertEquals("4567", ctx.getAttribute("testPath.aaa"));
+        assertEquals("defg", ctx.getAttribute("testPath.c.d"));
+        assertEquals(null, ctx.getAttribute("testPath.bbb"));
+    }
+
+    @Test
     public void testEmbeddedEscapedJsonJsonStringToCtx() throws Exception {
         String path = "src/test/resources/EmbeddedEscapedJson.json";
         String content = new String(Files.readAllBytes(Paths.get(path)));

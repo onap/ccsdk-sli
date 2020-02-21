@@ -33,12 +33,15 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.onap.ccsdk.sli.core.sli.SvcLogicConstants;
@@ -862,6 +865,58 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
                 ctx.setAttribute(prefix, element.getAsString());
             }
             arrayIdx++;
+        }
+    }
+
+    /**
+     * updateJsonObjectString takes a json object string, and adds or deletes the properties of it
+     * @param parameters - requires source, outputPath and keys to be added or deleted.
+     *                   The key of parameter starts with "add.", e.g. "add.A", and then "A" and its value will be added
+     *                   to the JSON object.
+     *                   The key of parameter starts with "delete.", e.g. "delete.B", and then "B" will be deleted from
+     *                   the JSON object.
+     * @param ctx Reference to context memory
+     * @throws SvcLogicException if a required parameter is missing an exception is thrown
+     */
+    public static void updateJsonObjectString(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
+        checkParameters(parameters, new String[] {"source", "outputPath"}, LOG);
+        try {
+            String source = ctx.getAttribute(parameters.get("source"));
+            JsonParser jp = new JsonParser();
+            JsonElement element = jp.parse(source);
+            if (element.isJsonObject()) {
+                JsonObject jsonObject = element.getAsJsonObject();
+                updateJsonObject(jsonObject, parameters);
+
+                String target = jsonObject.toString();
+                ctx.setAttribute(parameters.get("outputPath"), target);
+            } else {
+                throw new SvcLogicException("just update JSON object string");
+            }
+        } catch (Exception ex) {
+            throw new SvcLogicException("problem with updateJsonObjectString", ex);
+        }
+    }
+
+    protected static void updateJsonObject(JsonObject jsonObject, Map<String, String> parameters) throws SvcLogicException {
+        List<String> deleted_params = parameters.keySet().stream().filter(param -> param.startsWith("delete.")).
+                collect(Collectors.toList());
+        for (String param: deleted_params) {
+            String[] action_key = param.split("\\.", 2);
+            if (action_key.length < 2) {
+                throw new SvcLogicException("error parameter format: " + param + ", must be \"delete.<key>\"");
+            }
+            jsonObject.remove(action_key[1]);
+        }
+
+        List<String> added_params = parameters.keySet().stream().filter(param -> param.startsWith("add.")).
+                collect(Collectors.toList());
+        for (String param: added_params) {
+            String[] action_key = param.split("\\.", 2);
+            if (action_key.length < 2) {
+                throw new SvcLogicException("error parameter format: " + param + ", must be \"add.<key>\"");
+            }
+            jsonObject.addProperty(action_key[1], parameters.get(param));
         }
     }
 
