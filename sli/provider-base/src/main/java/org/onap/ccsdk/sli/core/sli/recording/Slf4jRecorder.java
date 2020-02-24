@@ -28,14 +28,16 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
+import org.onap.ccsdk.sli.core.sli.ErrorLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicRecorder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Slf4jRecorder implements SvcLogicRecorder {
-	
-	
+	protected DateFormat dateFmt;
+	protected static final String messageLogName = "message-log";
+
 	public enum Level {
 		ERROR,
 		WARN,
@@ -44,13 +46,17 @@ public class Slf4jRecorder implements SvcLogicRecorder {
 		TRACE
 	}
 
+	protected Logger defaultLogger = LoggerFactory.getLogger(Slf4jRecorder.class);
+	protected Logger messageLogger = LoggerFactory.getLogger(messageLogName);
+
+	public Slf4jRecorder() {
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+		dateFmt = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss:SS'+00:00'");
+		dateFmt.setTimeZone(tz);
+	}
+	
 	@Override
 	public void record(Map<String, String> parmMap) throws SvcLogicException {
-		String loggerName = parmMap.get("logger");
-		if (loggerName == null) {
-			loggerName = "Log4jRecorder";
-		}
-		
 		String lvl = parmMap.get("level");
 		if (lvl == null) {
 			lvl = "INFO";
@@ -98,12 +104,20 @@ public class Slf4jRecorder implements SvcLogicRecorder {
 			throw new ConfigurationException("No record/fields passed in record node");
 		}
 		
-		Logger logger = LoggerFactory.getLogger(loggerName);
+		String loggerName = parmMap.get("logger");
+		Logger logger = null;
+		if (loggerName == null) {
+			logger = defaultLogger;
+		}else {
+			if(loggerName.equals(messageLogName)){
+				logger = messageLogger;
+			}else {
+				logger = LoggerFactory.getLogger(loggerName);
+			}
+		}
 
 		Date now = new Date();
-		TimeZone tz = TimeZone.getTimeZone("UTC");
-		DateFormat dateFmt = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss:SS'+00:00'");
-		dateFmt.setTimeZone(tz);
+
 		if (record.indexOf("__TIMESTAMP__") != -1)
 		{
 			record = record.replaceFirst("__TIMESTAMP__", dateFmt.format(now));
@@ -111,7 +125,23 @@ public class Slf4jRecorder implements SvcLogicRecorder {
 		
 		switch (level) {
 		case ERROR:
-			logger.error(record);
+			String errorCode = parmMap.get("errorCode");
+			String errorDescription = parmMap.get("errorDescription");
+
+			if ((errorCode != null && !errorCode.isEmpty())
+					|| (errorDescription != null && !errorDescription.isEmpty())) {
+				ErrorLogger e = new ErrorLogger(logger);
+
+				Integer integerCode = 0;
+				try {
+					integerCode = Integer.valueOf(errorCode);
+				} catch (NumberFormatException nfe) {
+					// do nothing
+				}
+				e.createLogEntry(record, integerCode, errorDescription, null);
+			} else {
+				logger.error(record);
+			}
 			break;
 		case WARN:
 			logger.warn(record);
