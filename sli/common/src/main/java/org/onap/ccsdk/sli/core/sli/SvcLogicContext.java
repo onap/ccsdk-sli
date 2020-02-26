@@ -91,7 +91,7 @@ public class SvcLogicContext {
 	{
 		return attributes.keySet();
 	}
-  public Boolean isSuccess() {
+    public Boolean isSuccess() {
         return status.equals(SvcLogicConstants.SUCCESS);
   }
 

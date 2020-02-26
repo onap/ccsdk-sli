@@ -164,12 +164,6 @@ paths:
       produces:
         - application/json
         - application/xml
-#      parameters:
-#        - in: body
-#          name: healthcheckInput
-#          required: false
-#          schema:
-#            $ref: '#/definitions/healthcheck-input'
       responses:
         '200':
           description: No response was specified
@@ -184,12 +178,6 @@ paths:
       produces:
         - application/json
         - application/xml
-      parameters:
-        - in: body
-          name: vlbcheckInput
-          required: false
-          schema:
-            $ref: '#/definitions/vlbcheck-input'
       responses:
         '200':
           description: No response was specified
@@ -242,28 +230,23 @@ definitions:
 
   execute-graph-input:
     properties:
-      'mode':
-        type: string
-      'module-name':
-        type: string
-      'rpc-name':
-        type: string
-      'sli-parameter':
-        items:
-          $ref: '#/definitions/parameter-setting'
-        type: array
+      'input':
+        type: object
+        properties:
+          'mode':
+             type: string
+          'module-name':
+            type: string
+          'rpc-name':
+            type: string
+          'sli-parameter':
+            items:
+              $ref: '#/definitions/parameter-setting'
+            type: array
     type: object
 
-  healthcheck-input:
-    properties:
-      'dummy':
-        type: string
 
 
-  vlbcheck-input:
-    properties:
-      'dummy':
-        type: string
 
 
 
