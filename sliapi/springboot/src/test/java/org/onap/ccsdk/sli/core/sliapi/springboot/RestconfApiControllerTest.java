@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.onap.ccsdk.sli.core.sliapi.model.ExecuteGraphInput;
 import org.onap.ccsdk.sli.core.sliapi.model.ExecutegraphinputInput;
 import org.onap.ccsdk.sli.core.sliapi.model.ResponseFields;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -20,6 +22,9 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @WebMvcTest(RestconfApiController.class)
 public class RestconfApiControllerTest {
+
+
+    private static final Logger log = LoggerFactory.getLogger(RestconfApiControllerTest.class);
 
     @Autowired
     private MockMvc mvc;
@@ -56,6 +61,7 @@ public class RestconfApiControllerTest {
         executeGraphInput.setInput(executeGraphData);
 
         String jsonString = mapToJson(executeGraphInput);
+        log.error("jsonString is {}", jsonString);
 
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON_VALUE).content(jsonString)).andReturn();
 
@@ -76,6 +82,8 @@ public class RestconfApiControllerTest {
         executeGraphInput.setInput(executeGraphData);
 
         String jsonString = mapToJson(executeGraphInput);
+
+        log.error("jsonString is {}", jsonString);
 
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON_VALUE).content(jsonString)).andReturn();
 

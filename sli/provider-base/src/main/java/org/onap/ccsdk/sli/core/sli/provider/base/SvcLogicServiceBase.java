@@ -56,6 +56,20 @@ public interface SvcLogicServiceBase {
      *
      */
     Properties execute(String module, String rpc, String version, String mode, Properties parms) throws SvcLogicException;
+    /**
+     *  Execute a directed graph
+     *
+     * @param module - module name
+     * @param rpc - rpc name
+     * @param version - version.  If null, use active version
+     * @param mode - mode (sync/async)
+     * @param ctx - parameters, as a SvcLogicContext object
+     * @return final values of attributes from SvcLogicContext, as Properties
+     * @throws SvcLogicException
+     *
+     *
+     */
+    SvcLogicContext execute(String module, String rpc, String version, String mode, SvcLogicContext ctx) throws SvcLogicException;
 
     SvcLogicStore getStore() throws SvcLogicException;
 

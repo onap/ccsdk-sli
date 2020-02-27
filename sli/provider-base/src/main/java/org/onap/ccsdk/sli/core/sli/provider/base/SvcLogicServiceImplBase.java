@@ -142,25 +142,37 @@ public class SvcLogicServiceImplBase implements SvcLogicServiceBase {
     @Override
     public Properties execute(String module, String rpc, String version, String mode, Properties props)
             throws SvcLogicException {
-        SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
-
-        if (graph == null) {
-            Properties retProps = new Properties();
-            retProps.setProperty("error-code", "401");
-            retProps.setProperty("error-message",
-                    "No service logic found for [" + module + "," + rpc + "," + version + "," + mode + "]");
-            return (retProps);
-        }
 
         SvcLogicContext ctx = new SvcLogicContext(props);
+
+        return(execute(module, rpc, version, mode, ctx).toProperties());
+    }
+
+    @Override
+    public SvcLogicContext execute(String module, String rpc, String version, String mode, SvcLogicContext ctx) throws SvcLogicException {
+        SvcLogicGraph graph = store.fetch(module, rpc, version, mode);
+
+		if (ctx == null) {
+			ctx = new SvcLogicContext();
+		}
+
+        if (graph == null) {
+            ctx.setAttribute("error-code", "401");
+            ctx.setAttribute("error-message",
+                    "No service logic found for [" + module + "," + rpc + "," + version + "," + mode + "]");
+            return (ctx);
+        }
+
+
+
         ctx.setAttribute(CURRENT_GRAPH, graph.toString());
         // To support legacy code we should not stop populating X-ECOMP-RequestID
         ctx.setAttribute("X-ECOMP-RequestID", MDC.get(ONAPLogConstants.MDCs.REQUEST_ID));
         execute(graph, ctx);
-        return (ctx.toProperties());
+        return (ctx);
     }
 
-	@Override
+    @Override
 	public SvcLogicStore getStore() throws SvcLogicException {
 		return this.store;
 	}

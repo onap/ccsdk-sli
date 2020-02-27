@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import com.google.gson.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -205,6 +207,38 @@ public class SvcLogicContext {
 			}
 		}
 
+	}
+
+	public void mergeJson(String pfx, String jsonString) {
+		JsonParser jp = new JsonParser();
+		JsonElement element = jp.parse(jsonString);
+
+		mergeJsonObject(element.getAsJsonObject(), pfx+".");
+	}
+
+	public void mergeJsonObject(JsonObject jsonObject, String pfx) {
+		for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+			if (entry.getValue().isJsonObject()) {
+				mergeJsonObject(entry.getValue().getAsJsonObject(), pfx + entry.getKey() + ".");
+			} else if (entry.getValue().isJsonArray()) {
+				JsonArray array = entry.getValue().getAsJsonArray();
+				this.setAttribute(pfx + entry.getKey() + "_length", String.valueOf(array.size()));
+				Integer arrayIdx = 0;
+				for (JsonElement element : array) {
+					if (element.isJsonObject()) {
+						mergeJsonObject(element.getAsJsonObject(), pfx + entry.getKey() + "[" + arrayIdx + "].");
+					}
+					arrayIdx++;
+				}
+			} else {
+				if (entry.getValue() instanceof JsonNull) {
+					LOG.debug("Skipping parameter {} with null value",entry.getKey());
+
+				} else {
+					this.setAttribute(pfx + entry.getKey(), entry.getValue().getAsString());
+				}
+			}
+		}
 	}
 
 	public String resolve(String ctxVarName) {

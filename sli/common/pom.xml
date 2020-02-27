@@ -61,6 +61,10 @@
             <groupId>org.onap.logging-analytics</groupId>
             <artifactId>logging-slf4j</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
         <!-- Testing Dependencies -->
         <dependency>
             <groupId>junit</groupId>

@@ -85,8 +85,9 @@ public class RestconfApiController implements RestconfApi {
 
 		try {
 			log.info("Calling SLI-API:healthcheck DG");
-			Properties inputProps = new Properties();
-			Properties respProps = svc.execute("sli", "healthcheck", null, "sync", inputProps);
+			SvcLogicContext ctxIn = new SvcLogicContext();
+			SvcLogicContext ctxOut = svc.execute("sli", "healthcheck", null, "sync", ctxIn);
+			Properties respProps = ctxOut.toProperties();
 
 			resp.setAckFinalIndicator(respProps.getProperty("ack-final-indicator", "Y"));
 			resp.setResponseCode(respProps.getProperty("error-code", "200"));
@@ -110,9 +111,9 @@ public class RestconfApiController implements RestconfApi {
 
 		try {
 			log.info("Calling SLI-API:vlbcheck DG");
-			Properties inputProps = new Properties();
-			Properties respProps = svc.execute("sli", "vlbcheck", null, "sync", inputProps);
-
+			SvcLogicContext ctxIn = new SvcLogicContext();
+			SvcLogicContext ctxOut = svc.execute("sli", "vlbcheck", null, "sync", ctxIn);
+			Properties respProps = ctxOut.toProperties();
 			resp.setAckFinalIndicator(respProps.getProperty("ack-final-indicator", "Y"));
 			resp.setResponseCode(respProps.getProperty("error-code", "200"));
 			resp.setResponseMessage(respProps.getProperty("error-message", "Success"));
@@ -142,7 +143,7 @@ public class RestconfApiController implements RestconfApi {
 
 	@Override
 	public ResponseEntity<ResponseFields> executeGraph(@Valid ExecuteGraphInput executeGraphInput) {
-		Properties parms = new Properties();
+		SvcLogicContext ctxIn = new SvcLogicContext();
 		ResponseFields resp = new ResponseFields();
 		String executeGraphInputJson = null;
 
@@ -161,8 +162,7 @@ public class RestconfApiController implements RestconfApi {
 		JsonObject jsonInput = new Gson().fromJson(executeGraphInputJson, JsonObject.class);
 		JsonObject passthroughObj = jsonInput.get("input").getAsJsonObject();
 
-		writeResponseToCtx(passthroughObj.toString(), parms, "input");
-
+		ctxIn.mergeJson("input", passthroughObj.toString());
 
 		try {
 			// Any of these can throw a nullpointer exception
@@ -170,7 +170,8 @@ public class RestconfApiController implements RestconfApi {
 			String calledRpc = executeGraphInput.getInput().getRpcName();
 			String modeStr = executeGraphInput.getInput().getMode();
 			// execute should only throw a SvcLogicException
-			Properties respProps = svc.execute(calledModule, calledRpc, null, modeStr, parms);
+			SvcLogicContext ctxOut = svc.execute(calledModule, calledRpc, null, modeStr, ctxIn);
+			Properties respProps = ctxOut.toProperties();
 
 			resp.setAckFinalIndicator(respProps.getProperty("ack-final-indicator", "Y"));
 			resp.setResponseCode(respProps.getProperty("error-code", "200"));
@@ -190,37 +191,6 @@ public class RestconfApiController implements RestconfApi {
 			resp.setResponseMessage(e.getMessage());
 
 			return (new ResponseEntity<>(resp, HttpStatus.INTERNAL_SERVER_ERROR));
-		}
-	}
-
-	public static void writeResponseToCtx(String resp, Properties ctx, String prefix) {
-		JsonParser jp = new JsonParser();
-		JsonElement element = jp.parse(resp);
-		writeJsonObject(element.getAsJsonObject(), ctx, prefix + ".");
-	}
-
-	public static void writeJsonObject(JsonObject obj, Properties ctx, String root) {
-		for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
-			if (entry.getValue().isJsonObject()) {
-				writeJsonObject(entry.getValue().getAsJsonObject(), ctx, root + entry.getKey() + ".");
-			} else if (entry.getValue().isJsonArray()) {
-				JsonArray array = entry.getValue().getAsJsonArray();
-				ctx.put(root + entry.getKey() + "_length", String.valueOf(array.size()));
-				Integer arrayIdx = 0;
-				for (JsonElement element : array) {
-					if (element.isJsonObject()) {
-						writeJsonObject(element.getAsJsonObject(), ctx, root + entry.getKey() + "[" + arrayIdx + "].");
-					}
-					arrayIdx++;
-				}
-			} else {
-				if (entry.getValue() instanceof JsonNull) {
-					log.info("Skipping parameter "+entry.getKey()+" with null value");
-
-				} else {
-					ctx.put(root + entry.getKey(), entry.getValue().getAsString());
-				}
-			}
 		}
 	}
 
