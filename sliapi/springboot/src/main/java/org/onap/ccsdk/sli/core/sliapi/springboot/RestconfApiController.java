@@ -1,27 +1,10 @@
 package org.onap.ccsdk.sli.core.sliapi.springboot;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.*;
-import org.onap.ccsdk.sli.core.sli.ConfigurationException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicLoader;
-import org.onap.ccsdk.sli.core.sli.SvcLogicStore;
-import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
-import org.onap.ccsdk.sli.core.sli.provider.base.HashMapResolver;
-import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicPropertiesProvider;
-import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicResolver;
-import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceBase;
-import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceImplBase;
+import org.onap.ccsdk.sli.core.sli.*;
+import org.onap.ccsdk.sli.core.sli.provider.base.*;
 import org.onap.ccsdk.sli.core.sliapi.model.ExecuteGraphInput;
 import org.onap.ccsdk.sli.core.sliapi.model.ResponseFields;
 import org.slf4j.Logger;
@@ -30,7 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-02-20T12:50:11.207-05:00")
 
@@ -75,7 +64,7 @@ public class RestconfApiController implements RestconfApi {
 			return;
 		}
 
-		String serviceLogicDirectory = System.getProperty("serviceLogicDirectory");
+		String serviceLogicDirectory = System.getProperty("serviceLogicDirectory", "src/main/resources");
 		System.out.println("serviceLogicDirectory is " + serviceLogicDirectory);
 		SvcLogicLoader loader = new SvcLogicLoader(serviceLogicDirectory, store);
 

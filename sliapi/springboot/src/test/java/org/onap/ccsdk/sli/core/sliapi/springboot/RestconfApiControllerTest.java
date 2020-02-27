@@ -9,7 +9,6 @@ import org.onap.ccsdk.sli.core.sliapi.model.ExecutegraphinputInput;
 import org.onap.ccsdk.sli.core.sliapi.model.ResponseFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,8 +24,6 @@ public class RestconfApiControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @MockBean
-    private RestconfApiController restconfApiController;
 
     @Test
     public void testHealthcheck() throws Exception {
@@ -82,8 +79,7 @@ public class RestconfApiControllerTest {
 
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON_VALUE).content(jsonString)).andReturn();
 
-        // Note: this really should return 401 (and truly does), but mockito always returns a 200.
-        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertEquals(401, mvcResult.getResponse().getStatus());
 
     }
 
