@@ -13,6 +13,8 @@
 	<artifactId>sli-provider-base</artifactId>
 	<version>0.7.1-SNAPSHOT</version>
 
+	<name>ccsdk-sli-core :: sli :: ${project.artifactId}</name>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco-ut/jacoco.xml,${project.reporting.outputDirectory}/jacoco-it/jacoco.xml,../provider/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
@@ -27,7 +29,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.onap.ccsdk.sli.core</groupId>

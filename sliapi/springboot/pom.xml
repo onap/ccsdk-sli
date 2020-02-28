@@ -6,6 +6,7 @@
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>1.5.2-SNAPSHOT</version>
+        <relativePath/>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.core</groupId>
@@ -13,7 +14,7 @@
     <version>0.7.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>sliapi-springboot</name>
+    <name>ccsdk-sli-core :: sliapi :: ${project.artifactId}</name>
 
     <dependencies>
         <dependency>
