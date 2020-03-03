@@ -1,7 +1,6 @@
 package org.onap.ccsdk.sli.core.sliapi.springboot;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.ccsdk.sli.core.sliapi.model.ExecuteGraphInput;
@@ -10,94 +9,102 @@ import org.onap.ccsdk.sli.core.sliapi.model.ResponseFields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import static org.junit.Assert.assertEquals;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(RestconfApiController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class RestconfApiControllerTest {
 
+  private static final Logger log = LoggerFactory.getLogger(RestconfApiControllerTest.class);
 
-    private static final Logger log = LoggerFactory.getLogger(RestconfApiControllerTest.class);
+  @Autowired
+  private MockMvc mvc;
 
-    @Autowired
-    private MockMvc mvc;
+  @Test
+  public void testHealthcheck() throws Exception {
+    String url = "/restconf/operations/SLI-API:healthcheck";
 
+    MvcResult mvcResult =
+        mvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON_VALUE).content(""))
+            .andReturn();
 
-    @Test
-    public void testHealthcheck() throws Exception {
-        String url = "/restconf/operations/SLI-API:healthcheck";
+    assertEquals(200, mvcResult.getResponse().getStatus());
+  }
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON_VALUE).content("")).andReturn();
+  @Test
+  public void testVlbcheck() throws Exception {
+    String url = "/restconf/operations/SLI-API:vlbcheck";
 
-        assertEquals(200, mvcResult.getResponse().getStatus());
-    }
+    MvcResult mvcResult =
+        mvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON_VALUE).content(""))
+            .andReturn();
 
-    @Test
-    public void testVlbcheck() throws Exception {
-        String url = "/restconf/operations/SLI-API:vlbcheck";
+    assertEquals(200, mvcResult.getResponse().getStatus());
+  }
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON_VALUE).content("")).andReturn();
+  @Test
+  public void testExecuteHealthcheck() throws Exception {
+    String url = "/restconf/operations/SLI-API:execute-graph";
 
-        assertEquals(200, mvcResult.getResponse().getStatus());
-    }
+    ExecuteGraphInput executeGraphInput = new ExecuteGraphInput();
+    ExecutegraphinputInput executeGraphData = new ExecutegraphinputInput();
 
-    @Test
-    public void testExecuteHealthcheck() throws Exception {
-        String url = "/restconf/operations/SLI-API:execute-graph";
+    executeGraphData.setModuleName("sli");
+    executeGraphData.setRpcName("healthcheck");
+    executeGraphData.setMode("sync");
+    executeGraphInput.setInput(executeGraphData);
 
-        ExecuteGraphInput executeGraphInput = new ExecuteGraphInput();
-        ExecutegraphinputInput executeGraphData = new ExecutegraphinputInput();
+    String jsonString = mapToJson(executeGraphInput);
+    log.error("jsonString is {}", jsonString);
 
-        executeGraphData.setModuleName("sli");
-        executeGraphData.setRpcName("healthcheck");
-        executeGraphData.setMode("sync");
-        executeGraphInput.setInput(executeGraphData);
+    MvcResult mvcResult =
+        mvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON_VALUE).content(jsonString))
+            .andReturn();
 
-        String jsonString = mapToJson(executeGraphInput);
-        log.error("jsonString is {}", jsonString);
+    assertEquals(200, mvcResult.getResponse().getStatus());
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON_VALUE).content(jsonString)).andReturn();
+  }
 
-        assertEquals(200, mvcResult.getResponse().getStatus());
+  @Test
+  public void testExecuteMissingDg() throws Exception {
+    String url = "/restconf/operations/SLI-API:execute-graph";
 
-    }
+    ExecuteGraphInput executeGraphInput = new ExecuteGraphInput();
+    ExecutegraphinputInput executeGraphData = new ExecutegraphinputInput();
 
-    @Test
-    public void testExecuteMissingDg() throws Exception {
-        String url = "/restconf/operations/SLI-API:execute-graph";
+    executeGraphData.setModuleName("sli");
+    executeGraphData.setRpcName("noSuchRPC");
+    executeGraphData.setMode("sync");
+    executeGraphInput.setInput(executeGraphData);
 
-        ExecuteGraphInput executeGraphInput = new ExecuteGraphInput();
-        ExecutegraphinputInput executeGraphData = new ExecutegraphinputInput();
+    String jsonString = mapToJson(executeGraphInput);
 
-        executeGraphData.setModuleName("sli");
-        executeGraphData.setRpcName("noSuchRPC");
-        executeGraphData.setMode("sync");
-        executeGraphInput.setInput(executeGraphData);
+    log.error("jsonString is {}", jsonString);
 
-        String jsonString = mapToJson(executeGraphInput);
+    MvcResult mvcResult =
+        mvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON_VALUE).content(jsonString))
+            .andReturn();
 
-        log.error("jsonString is {}", jsonString);
+    assertEquals(401, mvcResult.getResponse().getStatus());
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON_VALUE).content(jsonString)).andReturn();
+  }
 
-        assertEquals(401, mvcResult.getResponse().getStatus());
+  private String mapToJson(Object obj) throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    return objectMapper.writeValueAsString(obj);
+  }
 
-    }
-
-    private String mapToJson(Object obj) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(obj);
-    }
-
-    private ResponseFields respFromJson(String jsonString) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return(objectMapper.readValue(jsonString, ResponseFields.class));
-    }
+  private ResponseFields respFromJson(String jsonString) throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    return (objectMapper.readValue(jsonString, ResponseFields.class));
+  }
 }

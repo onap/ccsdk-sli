@@ -1,26 +1,19 @@
-package org.onap.ccsdk.sli.core.sliapi.springboot;
+package org.onap.ccsdk.sli.core.sliapi.springboot.controllers;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Properties;
-
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicLoader;
-import org.onap.ccsdk.sli.core.sli.provider.base.HashMapResolver;
-import org.onap.ccsdk.sli.core.sli.provider.base.InMemorySvcLogicStore;
-import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicResolver;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceBase;
-import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceImplBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -30,7 +23,8 @@ import com.google.gson.JsonParser;
 @Controller
 @EnableAutoConfiguration
 public class ExecuteGraphController {
-	static SvcLogicServiceBase svc;
+  @Autowired
+  protected SvcLogicServiceBase svc;
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExecuteGraphController.class);
 
 	@RequestMapping(value = "/executeGraph", method = RequestMethod.POST)
@@ -98,12 +92,5 @@ public class ExecuteGraphController {
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
-		InMemorySvcLogicStore store = new InMemorySvcLogicStore();
-		SvcLogicLoader loader = new SvcLogicLoader(System.getProperty("serviceLogicDirectory"), store);
-		loader.loadAndActivate();
-		SvcLogicResolver resolver = new HashMapResolver();
-		svc = new SvcLogicServiceImplBase(store, resolver);
-		SpringApplication.run(ExecuteGraphController.class, args);
-	}
+
 }
