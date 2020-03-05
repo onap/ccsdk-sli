@@ -18,15 +18,25 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.sli.core.sliapi.springboot;
+package org.onap.ccsdk.sli.core.sliapi.springboot.core;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import javax.servlet.ServletException;
 
-@SpringBootApplication
-public class App {
+import org.onap.logging.filter.base.PayloadLoggingServletFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-  public static void main(String[] args) throws Exception {
-    SpringApplication.run(App.class, args);
-  }
+@Configuration
+public class ServletFilters {
+
+	@Bean
+	public FilterRegistrationBean<PayloadLoggingServletFilter> payloadFilterRegistration() throws ServletException {
+		FilterRegistrationBean<PayloadLoggingServletFilter> registration = new FilterRegistrationBean<PayloadLoggingServletFilter>();
+		registration.setFilter(new PayloadLoggingServletFilter());
+		registration.addUrlPatterns("/*");
+		registration.setName("payloadFilter");
+		registration.setOrder(0);
+		return registration;
+	}
 }

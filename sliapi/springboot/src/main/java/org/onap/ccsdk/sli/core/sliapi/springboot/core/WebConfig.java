@@ -18,15 +18,26 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.sli.core.sliapi.springboot;
+package org.onap.ccsdk.sli.core.sliapi.springboot.core;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.onap.logging.filter.spring.LoggingInterceptor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@SpringBootApplication
-public class App {
+@EnableWebMvc
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
 
-  public static void main(String[] args) throws Exception {
-    SpringApplication.run(App.class, args);
-  }
+	@Bean
+	LoggingInterceptor loggingInterceptor() {
+		return new LoggingInterceptor();
+	}
+
+	public void addInterceptors(InterceptorRegistry registry) {	
+		registry.addInterceptor(loggingInterceptor()); // handles audit log entries
+	}
+
 }
