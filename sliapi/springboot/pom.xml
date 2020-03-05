@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.2</version>
+        <version>2.0.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.core</groupId>
     <artifactId>sliapi-springboot</artifactId>
-    <version>0.7.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>ccsdk-sli-core :: sliapi :: ${project.artifactId}</name>
