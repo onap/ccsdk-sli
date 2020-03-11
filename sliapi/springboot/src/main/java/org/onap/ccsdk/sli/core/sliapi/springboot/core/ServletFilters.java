@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ServletFilters {
 
-	@Bean
+/*	@Bean
 	public FilterRegistrationBean<PayloadLoggingServletFilter> payloadFilterRegistration() throws ServletException {
 		FilterRegistrationBean<PayloadLoggingServletFilter> registration = new FilterRegistrationBean<PayloadLoggingServletFilter>();
 		registration.setFilter(new PayloadLoggingServletFilter());
@@ -38,5 +38,5 @@ public class ServletFilters {
 		registration.setName("payloadFilter");
 		registration.setOrder(0);
 		return registration;
-	}
+	}*/
 }

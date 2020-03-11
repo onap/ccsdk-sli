@@ -118,6 +118,34 @@ public class RestconfApiControllerTest {
 
   }
 
+  @Test
+  public void testTestResultAdd() throws Exception {
+    String url = "/restconf/config/SLI-API:test-results";
+
+    MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(url)).andReturn();
+
+    assertEquals(200, mvcResult.getResponse().getStatus());
+
+    String jsonString = "{\n" +
+            "  \"test-results\" : [\n" +
+            "        {\n" +
+            "           \"test-identifier\" : \"test-1\",\n" +
+            "           \"results\" : [\"test result 1\"]\n" +
+            "        }\n" +
+            "   ]\n" +
+            "}";
+
+    mvcResult =  mvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON_VALUE).content(jsonString))
+            .andReturn();
+
+    assertEquals(200, mvcResult.getResponse().getStatus());
+
+    mvcResult = mvc.perform(MockMvcRequestBuilders.get(url)).andReturn();
+
+    assertEquals(200, mvcResult.getResponse().getStatus());
+    assertEquals(jsonString.replaceAll("\\s+",""), mvcResult.getResponse().getContentAsString().replaceAll("\\s+",""));
+  }
+
   private String mapToJson(Object obj) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     return objectMapper.writeValueAsString(obj);

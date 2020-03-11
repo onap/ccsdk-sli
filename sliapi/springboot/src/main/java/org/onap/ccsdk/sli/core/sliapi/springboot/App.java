@@ -22,8 +22,13 @@ package org.onap.ccsdk.sli.core.sliapi.springboot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
+@EnableSwagger2
+@ComponentScan(basePackages = { "org.onap.ccsdk.sli.core.sliapi.springboot.*" })
+
 public class App {
 
   public static void main(String[] args) throws Exception {
