@@ -94,10 +94,30 @@
 			<artifactId>logging-filter-spring</artifactId>
 			<version>1.6.4</version>
 		</dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
+			<artifactId>sliPluginUtils-provider</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.onap.ccsdk.sli.plugins</groupId>
+			<artifactId>restapi-call-node-provider</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.onap.ccsdk.sli.plugins</groupId>
+			<artifactId>properties-node-provider</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- this jersey jar is needed for rest api call node to function properly -->
+		<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+		</dependency>
     </dependencies>
 
     <build>
