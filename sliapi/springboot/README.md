@@ -1,7 +1,11 @@
 This directory contains a demo springboot implementation of the SLI-API healthcheck method.
 
-To start this server, run:
+To start this server with out AAF authentication, run:
 mvn -DserviceLogicDirectory=src/main/resources spring-boot:run
+
+To start this server with AAF authentication, run:
+mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dcadi_prop_files=/opt/onap/sdnc/data/properties/org.onap.sdnc.props -DserviceLogicDirectory=src/main/resources"
+
 
 This will start a servlet on port 8080.  To test to that servlet, post a blank
 message to that port:
