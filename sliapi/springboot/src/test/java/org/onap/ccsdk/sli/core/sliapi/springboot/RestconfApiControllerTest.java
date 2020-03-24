@@ -126,6 +126,10 @@ public class RestconfApiControllerTest {
 
     assertEquals(200, mvcResult.getResponse().getStatus());
 
+    // Delete any existing content before testing insert
+    mvcResult = mvc.perform(MockMvcRequestBuilders.delete(url)).andReturn();
+    assertEquals(200, mvcResult.getResponse().getStatus());
+
     String jsonString = "{\n" +
             "  \"test-results\" : [\n" +
             "        {\n" +

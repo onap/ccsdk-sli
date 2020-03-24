@@ -18,6 +18,7 @@ public class AppTest {
     @Before
     public void setUp() throws Exception {
         app = new App();
+        System.setProperty("serviceLogicProperties", "src/test/resources/svclogic.properties");
     }
 
     @Test

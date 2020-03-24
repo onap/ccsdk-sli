@@ -64,11 +64,13 @@ public class SvcLogicFactory {
       public Properties getProperties() {
         Properties props = new Properties();
 
+
         String propPath = System.getProperty("serviceLogicProperties", "");
 
         if ("".equals(propPath)) {
           propPath = System.getenv("SVCLOGIC_PROPERTIES");
         }
+
 
         if ((propPath == null) || propPath.length() == 0) {
           propPath = "src/main/resources/svclogic.properties";

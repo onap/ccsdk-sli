@@ -106,7 +106,7 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
                 String crTableCmd = "CREATE TABLE " + dbName + ".SVC_LOGIC (" + "module varchar(80) NOT NULL,"
                         + "rpc varchar(80) NOT NULL," + "version varchar(40) NOT NULL," + "mode varchar(5) NOT NULL,"
                         + "active varchar(1) NOT NULL,graph BLOB,"
-                        + "modified_timestamp timestamp DEFAULT NULL,"
+                        + "modified_timestamp timestamp ,"
                         + "md5sum varchar(128) DEFAULT NULL,"
                         + "CONSTRAINT P_SVC_LOGIC PRIMARY KEY(module, rpc, version, mode))";
 
