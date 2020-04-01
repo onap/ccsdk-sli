@@ -20,7 +20,7 @@
 			"style": "bold",
 			"name": "text1",
 			"hOffset": 350,
-			"vOffset": 200,
+			"vOffset": null,
 			"alignment": "center"
 		}
 	}

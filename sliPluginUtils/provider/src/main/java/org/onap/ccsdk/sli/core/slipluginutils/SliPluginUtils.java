@@ -70,6 +70,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 	private static final String LOG_MSG="extracting list from context memory";
 	private static final String LOG_MSG1="removing elements from list";
 	private static final String LENGTH="_length";
+    public static final String CTX_NULL_VALUE="";
 
 
 	// ========== CONSTRUCTORS ==========
@@ -846,7 +847,11 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
                 if(!root.endsWith(".")){
                     root = root + ".";
                 }
-                ctx.setAttribute(root + key, entry.getValue().getAsString());
+                if(entry.getValue().isJsonNull()) {
+                    ctx.setAttribute(root + key, CTX_NULL_VALUE);
+                }else {
+                    ctx.setAttribute(root + key, entry.getValue().getAsString());
+                }
             }
         }
     }
@@ -861,6 +866,8 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
                 handleJsonArray(key, element.getAsJsonArray(), ctx, prefix);
             } else if (element.isJsonObject()) {
                 writeJsonObject(element.getAsJsonObject(), ctx, prefix + ".");
+            } else if (element.isJsonNull()) {
+                ctx.setAttribute(prefix, CTX_NULL_VALUE);
             } else if (element.isJsonPrimitive()) {
                 ctx.setAttribute(prefix, element.getAsString());
             }

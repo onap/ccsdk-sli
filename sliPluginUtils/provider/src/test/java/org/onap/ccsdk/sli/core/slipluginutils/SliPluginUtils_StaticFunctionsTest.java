@@ -335,7 +335,7 @@ public class SliPluginUtils_StaticFunctionsTest {
         assertEquals("plain", ctx.getAttribute("testPath.[0].name"));
         assertEquals("pizza", ctx.getAttribute("testPath.[0].type"));
         assertEquals("true", ctx.getAttribute("testPath.[0].vegetarian"));
-        assertEquals("2000", ctx.getAttribute("testPath.[1].calories"));
+        assertEquals(SliPluginUtils.CTX_NULL_VALUE, ctx.getAttribute("testPath.[1].calories"));
         assertEquals("2", ctx.getAttribute("testPath.[1].id"));
         assertEquals("Tuesday Special", ctx.getAttribute("testPath.[1].name"));
         assertEquals("1", ctx.getAttribute("testPath.[1].topping[0].id"));
@@ -423,7 +423,8 @@ public class SliPluginUtils_StaticFunctionsTest {
         assertEquals("apple", ctx.getAttribute("testPath.[0][0]"));
         assertEquals("orange", ctx.getAttribute("testPath.[0][1]"));
         assertEquals("banana", ctx.getAttribute("testPath.[0][2]"));
-        assertEquals("3", ctx.getAttribute("testPath.[0]_length"));
+        assertEquals(SliPluginUtils.CTX_NULL_VALUE, ctx.getAttribute("testPath.[0][3]"));
+        assertEquals("4", ctx.getAttribute("testPath.[0]_length"));
         assertEquals("squash", ctx.getAttribute("testPath.[1][0]"));
         assertEquals("broccoli", ctx.getAttribute("testPath.[1][1]"));
         assertEquals("cauliflower", ctx.getAttribute("testPath.[1][2]"));
@@ -488,7 +489,7 @@ public class SliPluginUtils_StaticFunctionsTest {
         assertEquals("text1", ctx.getAttribute("testPath.widget.text.name"));
         assertEquals("21", ctx.getAttribute("testPath.widget.text.size"));
         assertEquals("bold", ctx.getAttribute("testPath.widget.text.style"));
-        assertEquals("200", ctx.getAttribute("testPath.widget.text.vOffset"));
+        assertEquals(SliPluginUtils.CTX_NULL_VALUE, ctx.getAttribute("testPath.widget.text.vOffset"));
         assertEquals("300", ctx.getAttribute("testPath.widget.window.height"));
         assertEquals("main_window", ctx.getAttribute("testPath.widget.window.name"));
         assertEquals("ONAP Widget", ctx.getAttribute("testPath.widget.window.title"));
