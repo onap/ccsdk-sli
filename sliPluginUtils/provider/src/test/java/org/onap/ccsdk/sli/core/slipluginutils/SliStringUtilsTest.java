@@ -386,4 +386,13 @@ public class SliStringUtilsTest {
         assertEquals(SliStringUtils.FALSE_CONSTANT, result);
     }
 
+	@Test
+	public void testBase64DecodingAlgo() throws Exception{
+		String input = "MDUxMDAw";
+		String decodeVal = "decodedPath";
+		param.put("encodedValue",input);
+		param.put("decodedValue", decodeVal);
+		SliStringUtils.base64DecodingAlgo(param,ctx);
+		assertEquals("051000",ctx.getAttribute(decodeVal));
+	}
 }
