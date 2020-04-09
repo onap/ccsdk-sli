@@ -67,14 +67,22 @@
 		<dependency>
 			<groupId>org.opendaylight.controller</groupId>
 			<artifactId>sal-binding-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
             <artifactId>rfc6991</artifactId>
-        </dependency>       
+			<scope>provided</scope>
+        </dependency>
+		<dependency>
+			<groupId>org.opendaylight.bgpcep</groupId>
+			<artifactId>bgp-concepts</artifactId>
+			<scope>provided</scope>
+		</dependency>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-core-api</artifactId>
+			<scope>provided</scope>
         </dependency>
 		<!-- Testing Dependencies -->
 		<dependency>

@@ -43,6 +43,8 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev180329.RouteDistinguisher;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev180329.RouteDistinguisherBuilder;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -678,7 +680,19 @@ public class MdsalHelper {
                                                 + "(" + paramValue + ")", e);
                                     }
                                 }
-                            } else {
+                            } else if ("RouteDistinguisher".equals(simpleName)) {
+                                if ((paramValue != null) && (paramValue.length() > 0)) {
+                                    try {
+                                        RouteDistinguisher routeDistinguisher = RouteDistinguisherBuilder.getDefaultInstance(paramValue);
+                                        m.invoke(toObj, routeDistinguisher);
+                                        foundValue = true;
+                                    } catch (Exception e) {
+                                        LOG.error("Caught exception calling " + toClass.getName() + "." + m.getName()
+                                                + "(" + paramValue + ")", e);
+                                    }
+                                }
+                            }
+                            else {
                                 // setter expects a yang-generated class. Need
                                 // to
                                 // create a builder to set it.
