@@ -20,6 +20,8 @@
 
 package org.onap.ccsdk.sli.core.sliapi.springboot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -38,6 +40,8 @@ import org.onap.aaf.cadi.shiro.AAFRealm;
 
 public class App {
 
+  private static final Logger log = LoggerFactory.getLogger(App.class);
+
   public static void main(String[] args) throws Exception {
     SpringApplication.run(App.class, args);
   }
@@ -48,6 +52,7 @@ public class App {
     // If cadi prop files is not defined use local properties realm
     // src/main/resources/shiro-users.properties
     if ("none".equals(System.getProperty("cadi_prop_files", "none"))) {
+      log.info("cadi_prop_files undefined, AAF Realm will not be set");
       PropertiesRealm realm = new PropertiesRealm();
       return realm;
     } else {
@@ -65,7 +70,8 @@ public class App {
     if ("none".equals(System.getProperty("cadi_prop_files", "none"))) {
       chainDefinition.addPathDefinition("/**", "anon");
     } else {
-      chainDefinition.addPathDefinition("/**", "authcBasic, rest[org.onap.sdnc:odl-api]");
+      log.info("Loaded property cadi_prop_files, AAF REALM set");
+      chainDefinition.addPathDefinition("/**", "authcBasic, rest[org.onap.sdnc.odl:odl-api]");
     }
 
     return chainDefinition;
