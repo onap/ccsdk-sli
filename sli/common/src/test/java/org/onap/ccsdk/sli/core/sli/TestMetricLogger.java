@@ -2,8 +2,12 @@ package org.onap.ccsdk.sli.core.sli;
 
 import static org.junit.Assert.*;
 import java.util.Date;
+import java.util.UUID;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.logging.ref.slf4j.ONAPLogConstants;
+import org.slf4j.MDC;
 
 public class TestMetricLogger {
 
@@ -11,17 +15,24 @@ public class TestMetricLogger {
 
     @Before
     public void setUp() throws Exception {
-
         logger = new MetricLogger();
-        logger.resetContext();
-        logger.logRequest("svcInstance1", "svcName", "svcPartner", "targetEntity", "targetServiceName", "targetVirtualEntity", "hello-world");
-        logger.logResponse("200", "200", "SUCCESS");
-
+        MetricLogger.resetContext();
     }
 
     @Test
     public final void testGetRequestID() {
-        logger.getRequestID();
+        UUID uuid = UUID.randomUUID();
+        MDC.put(ONAPLogConstants.MDCs.REQUEST_ID, uuid.toString());
+        assertEquals(uuid.toString(),logger.getRequestID());
+    }
+    
+    @Test
+    public final void elapsedTime() {
+        logger.logRequest("svcInstance1", "svcName", "svcPartner", "targetEntity", "targetServiceName", "targetVirtualEntity", "hello-world");
+        logger.logResponse("200", "200", "SUCCESS");
+        Long elapsedTime = Long.valueOf(MDC.get(ONAPLogConstants.MDCs.ELAPSED_TIME));
+        assertNotNull(elapsedTime);
+        assertTrue(elapsedTime > 1);
     }
     
     @Test
