@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>oparent</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.onap.ccsdk.sli.core</groupId>
+    <artifactId>sliapi-model-swagger</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>ccsdk-sli-core :: sliapi :: ${project.artifactId}</name>
+    <description>Generates swagger model from yang model</description>
+    <url>http://wiki.onap.org</url>
+
+    <properties>
+        <api.name>sliapi</api.name>
+        <jackson.version>2.9.5</jackson.version>
+    </properties>
+
+    <dependencies>
+        <!-- This is where the yang comes from -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sliapi-model-yang</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- End this is where the yang comes from -->        
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>>bintray-yang2swagger-yang2swagge</id>
+            <name>bintray</name>
+            <url>https://dl.bintray.com/yang2swagger/yang2swagger</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                    <includes>**\/*.yang</includes>
+                    <includeGroupIds>org.opendaylight.mdsal.model,org.opendaylight.mdsal.binding.model.ietf,org.onap.ccsdk.sli.core</includeGroupIds>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>unpack-shared-resources</id>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <tasks>
+                        <!-- flatten out structure -->
+                        <move todir="${project.build.directory}/dependency" failonerror="false">
+                            <fileset dir="${project.build.directory}/dependency"/>
+                            <mapper type="flatten"/>
+                        </move>
+                        <!-- move to yang folder -->
+                        <copy todir="${project.build.directory}/yang" failonerror="false">
+                            <fileset dir="${project.build.directory}/dependency" includes="**/*.yang"/>
+                            <mapper type="flatten"/>
+                        </copy>
+                    </tasks>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.opendaylight.yangtools</groupId>
+                <artifactId>yang-maven-plugin</artifactId>
+                <version>1.2.3</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                        <version>${jackson.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                        <version>${jackson.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-annotations</artifactId>
+                        <version>${jackson.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.fasterxml.jackson.module</groupId>
+                        <artifactId>jackson-module-jaxb-annotations</artifactId>
+                        <version>${jackson.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                        <artifactId>jackson-jaxrs-base</artifactId>
+                        <version>${jackson.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                        <artifactId>jackson-jaxrs-json-provider</artifactId>
+                        <version>${jackson.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.mrv.yangtools</groupId>
+                        <artifactId>swagger-maven-plugin</artifactId>
+                        <version>1.1.12</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.github.romix</groupId>
+                        <artifactId>java-concurrent-hash-trie-map</artifactId>
+                        <version>0.2.23</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>yang2swagger-json</id>
+                        <goals>
+                            <goal>generate-sources</goal>
+                        </goals>
+                        <configuration>
+                            <codeGenerators>
+                                <generator>
+                                    <codeGeneratorClass>com.mrv.yangtools.maven.gen.swagger.MavenSwaggerGenerator</codeGeneratorClass>
+                                    <outputBaseDir>${project.basedir}/src/main/json</outputBaseDir>
+                                    <resourceBaseDir>${project.build.directory}/yang</resourceBaseDir>
+                                    <additionalConfiguration>
+                                        <api-version>${project.version}</api-version>
+                                        <base-module>${api.name}</base-module>
+                                        <swagger-format>json</swagger-format>
+                                        <path-format>odl</path-format>
+                                        <use-namespaces>true</use-namespaces>
+                                    </additionalConfiguration>
+                                </generator>
+                            </codeGenerators>
+                            <inspectDependencies>false</inspectDependencies>
+                            <yangFilesRootDir>${project.build.directory}/yang</yangFilesRootDir>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yang2swagger-yaml</id>
+                        <goals>
+                            <goal>generate-sources</goal>
+                        </goals>
+                        <configuration>
+                            <codeGenerators>
+                                <generator>
+                                    <codeGeneratorClass>com.mrv.yangtools.maven.gen.swagger.MavenSwaggerGenerator</codeGeneratorClass>
+                                    <outputBaseDir>${project.basedir}/src/main/yaml</outputBaseDir>
+                                    <resourceBaseDir>${project.build.directory}/yang</resourceBaseDir>
+                                    <additionalConfiguration>
+                                        <api-version>${project.version}</api-version>
+                                        <base-module>${api.name}</base-module>
+                                        <swagger-format>yaml</swagger-format>
+                                        <path-format>odl</path-format>
+                                        <use-namespaces>true</use-namespaces>
+                                    </additionalConfiguration>
+                                </generator>
+                            </codeGenerators>
+                            <inspectDependencies>false</inspectDependencies>
+                            <yangFilesRootDir>${project.build.directory}/yang</yangFilesRootDir>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.10</version>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>src/main/json/${api.name}.json</file>
+                                    <type>json</type>
+                                </artifact>
+                                <artifact>
+                                    <file>src/main/yaml/${api.name}.yaml</file>
+                                    <type>yaml</type>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

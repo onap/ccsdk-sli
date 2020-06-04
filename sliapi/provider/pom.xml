@@ -28,7 +28,7 @@
     <dependencies>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
-            <artifactId>sliapi-model</artifactId>
+            <artifactId>sliapi-model-yang</artifactId>
             <version>${project.version}</version>
         </dependency>
 

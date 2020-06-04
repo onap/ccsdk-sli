@@ -103,25 +103,12 @@ module SLI-API {
     }
 
     rpc healthcheck {
-    	// OpenDaylight Fluorine version of restconf cannot handle RPCs with no input
-    	input {
-    		leaf dummy {
-    			type string;
-    		}
-    	}
         output {
             uses response-fields;
         }
     }
 
     rpc vlbcheck {
-    	// OpenDaylight Fluorine version of restconf cannot handle RPCs with no input
-    	input {
-    		leaf dummy
-    		{
-    			type string;
-    		}
-    	}
         output {
             uses response-fields;
         }
