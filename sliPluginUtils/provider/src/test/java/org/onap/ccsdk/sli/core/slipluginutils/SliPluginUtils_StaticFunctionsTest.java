@@ -284,19 +284,6 @@ public class SliPluginUtils_StaticFunctionsTest {
     }
 
     @Test
-    public void testWriteJsonObject() throws SvcLogicException {
-        JsonObject obj = new JsonObject();
-        obj.addProperty("name", "testName");
-        obj.addProperty("age", 27);
-        obj.addProperty("salary", 600000);
-        SvcLogicContext ctx = new SvcLogicContext();
-        SliPluginUtils.writeJsonObject(obj, ctx, "root");
-        assertEquals("testName", ctx.getAttribute("root.name"));
-        assertEquals("27", ctx.getAttribute("root.age"));
-        assertEquals("600000", ctx.getAttribute("root.salary"));
-    }
-
-    @Test
     public void testCtxKeyEmpty() {
         ctx.setAttribute("key", "");
         assertTrue(SliPluginUtils.ctxKeyEmpty(ctx, "key"));

@@ -817,62 +817,17 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
             if("true".equals(parameters.get("isEscaped"))){
                 source = StringEscapeUtils.unescapeJson(source);
             }
-            writeJsonToCtx(source, ctx,parameters.get("outputPath"));
+            ctx.mergeJson(parameters.get("outputPath"), source);
+            // writeJsonToCtx(source, ctx,parameters.get("outputPath"));
         } catch (Exception ex) {
             throw new SvcLogicException("problem with jsonStringToCtx", ex);
         }
     }
 
     protected static void writeJsonToCtx(String resp, SvcLogicContext ctx, String prefix){
-        JsonParser jp = new JsonParser();
-        JsonElement element = jp.parse(resp);
-        String root = prefix + ".";
-        if (element.isJsonObject()) {
-            writeJsonObject(element.getAsJsonObject(), ctx, root);
-        } else if (element.isJsonArray()) {
-            handleJsonArray("", element.getAsJsonArray(), ctx, root);
-        }
-    }
-
-    protected static void writeJsonObject(JsonObject obj, SvcLogicContext ctx, String root) {
-        for (Entry<String, JsonElement> entry : obj.entrySet()) {
-            String key = entry.getKey();
-            if (entry.getValue().isJsonObject()) {
-                writeJsonObject(entry.getValue().getAsJsonObject(), ctx, root + key + ".");
-            } else if (entry.getValue().isJsonArray()) {
-                JsonArray array = entry.getValue().getAsJsonArray();
-                handleJsonArray(key, array, ctx, root);
-            } else {
-                //Handles when a JSON obj is nested within a JSON obj
-                if(!root.endsWith(".")){
-                    root = root + ".";
-                }
-                if(entry.getValue().isJsonNull()) {
-                    ctx.setAttribute(root + key, CTX_NULL_VALUE);
-                }else {
-                    ctx.setAttribute(root + key, entry.getValue().getAsString());
-                }
-            }
-        }
-    }
-
-    protected static void handleJsonArray(String key, JsonArray array, SvcLogicContext ctx, String root) {
-        ctx.setAttribute(root + key + LENGTH, String.valueOf(array.size()));
-        Integer arrayIdx = 0;
-        for (JsonElement element : array) {
-            String prefix = root + key + "[" + arrayIdx + "]";
-
-            if (element.isJsonArray()) {
-                handleJsonArray(key, element.getAsJsonArray(), ctx, prefix);
-            } else if (element.isJsonObject()) {
-                writeJsonObject(element.getAsJsonObject(), ctx, prefix + ".");
-            } else if (element.isJsonNull()) {
-                ctx.setAttribute(prefix, CTX_NULL_VALUE);
-            } else if (element.isJsonPrimitive()) {
-                ctx.setAttribute(prefix, element.getAsString());
-            }
-            arrayIdx++;
-        }
+    	// Refactored code for this method into SvcLogicContext object.  Leaving this
+		// method in place for backward compatibility.
+        ctx.mergeJson(prefix, resp);
     }
 
     /**
