@@ -32,6 +32,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.UUID;
+
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,8 +84,18 @@ public class MetricLogger {
             String msg) {
         String timeNow = ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
         MDC.put(ONAPLogConstants.MDCs.INVOKE_TIMESTAMP, timeNow);
-        MDC.put(ONAPLogConstants.MDCs.ENTRY_TIMESTAMP, timeNow);
         
+        // If transaction is initialized by an external client this will already be set by the audit servlet filter
+        // If the transaction is initialized by CCSDK this code will handle generating a new UUID      
+        String requestId = MDC.get(ONAPLogConstants.MDCs.REQUEST_ID);
+        if (requestId == null || requestId.isEmpty()) {
+            MDC.put(ONAPLogConstants.MDCs.REQUEST_ID, UUID.randomUUID().toString());
+        }
+        
+        String randomInvocationId = UUID.randomUUID().toString();
+        MDC.put(ONAPLogConstants.MDCs.INVOCATION_ID, randomInvocationId);
+        MDC.put(ONAPLogConstants.MDCs.CLIENT_INVOCATION_ID, randomInvocationId);
+                
         if (svcInstanceId != null) {
             MDC.put(ONAPLogConstants.MDCs.SERVICE_INSTANCE_ID, svcInstanceId);
         }
@@ -101,13 +113,11 @@ public class MetricLogger {
         this.lastMsg = msg;
         //During invoke status will always be INPROGRESS
         MDC.put(ONAPLogConstants.MDCs.RESPONSE_STATUS_CODE, ONAPLogConstants.ResponseStatus.INPROGRESS.toString());
+        MDC.put(ONAPLogConstants.MDCs.ELAPSED_TIME, "0");
         METRIC.info(INVOKE, "Invoke");
     }
     
     public void logResponse(String statusCode, String responseCode, String responseDescription) { 
-        String timeNow = ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
-        MDC.put(ONAPLogConstants.MDCs.INVOKE_TIMESTAMP, timeNow);
-
         if (statusCode != null) {
             MDC.put(ONAPLogConstants.MDCs.RESPONSE_STATUS_CODE, statusCode);
         }
@@ -122,7 +132,7 @@ public class MetricLogger {
         try {
             DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
             ZonedDateTime entryTimestamp =
-                    ZonedDateTime.parse(MDC.get(ONAPLogConstants.MDCs.ENTRY_TIMESTAMP), timeFormatter);
+                    ZonedDateTime.parse(MDC.get(ONAPLogConstants.MDCs.INVOKE_TIMESTAMP), timeFormatter);
             String elapedTime = Long.toString(ChronoUnit.MILLIS.between(entryTimestamp, endTime));
             MDC.put(ONAPLogConstants.MDCs.ELAPSED_TIME,elapedTime);
         } catch (Exception e) {
@@ -149,5 +159,7 @@ public class MetricLogger {
         MDC.remove(ONAPLogConstants.MDCs.RESPONSE_STATUS_CODE);
         MDC.remove(ONAPLogConstants.MDCs.RESPONSE_CODE);
         MDC.remove(ONAPLogConstants.MDCs.RESPONSE_DESCRIPTION);
+        MDC.remove(ONAPLogConstants.MDCs.ELAPSED_TIME);
     }
+
 }
