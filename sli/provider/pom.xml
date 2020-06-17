@@ -78,6 +78,7 @@
 			<groupId>org.opendaylight.bgpcep</groupId>
 			<artifactId>bgp-concepts</artifactId>
 			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
