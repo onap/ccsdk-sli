@@ -63,6 +63,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import junit.framework.TestCase;
@@ -433,7 +434,7 @@ public class MdsalHelperTest extends TestCase {
 
   public void testToPropertiesWithEmpty() throws Exception {
     SampleContainerBuilder sampleBuilder = new SampleContainerBuilder();
-    Boolean isEmpty = true;
+    Empty isEmpty = Empty.getInstance();
     sampleBuilder.setSampleEmpty(isEmpty);
     Properties props = new Properties();
     MdsalHelper.toProperties(props, sampleBuilder);
