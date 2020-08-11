@@ -66,6 +66,7 @@ public class ExecuteNodeExecutor extends AbstractSvcLogicNodeExecutor {
 			Method pluginMethod = null;
 
 			try {
+				LOG.debug("executing method {} on plugin {}", methodName, pluginName);
 				pluginMethod = pluginClass.getMethod(methodName, Map.class, SvcLogicContext.class);
 			} catch (NoSuchMethodException e) {
 				LOG.error(pluginErrorMessage, e);

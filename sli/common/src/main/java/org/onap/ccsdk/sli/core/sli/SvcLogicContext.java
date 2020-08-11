@@ -36,7 +36,7 @@ import org.w3c.dom.Text;
 public class SvcLogicContext {
 
     private static final Logger LOG = LoggerFactory.getLogger(SvcLogicContext.class);
-
+    private final SecurePrinter securePrinter = new SecurePrinter();
     public static final String CTX_NULL_VALUE="";
     private static final String LENGTH="_length";
 
@@ -414,5 +414,21 @@ public class SvcLogicContext {
         }
 
         return (root.toString());
+    }
+
+    public void printProperties(Properties props) {
+        securePrinter.printProperties(props);
+    }
+
+    public void printAttributes() {
+        securePrinter.printAttributes(attributes);
+    }
+
+    public void printProperties(Properties props, String subpath) {
+        securePrinter.printProperties(props, subpath);
+    }
+
+    public void printAttributes(String subpath) {
+        securePrinter.printAttributes(attributes, subpath);
     }
 }

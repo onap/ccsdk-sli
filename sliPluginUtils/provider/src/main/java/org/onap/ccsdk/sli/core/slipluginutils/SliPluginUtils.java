@@ -733,6 +733,30 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 
 	}
 
+    public static void logContextProperties(Map<String, String> parameters, SvcLogicContext ctx)
+            throws SvcLogicException {
+        if (LOG.isTraceEnabled()) {
+            String subpath = parameters.get("subpath");
+            if (subpath != null && !subpath.isEmpty()) {
+                ctx.printProperties(ctx.toProperties(), subpath);
+            } else {
+                ctx.printProperties(ctx.toProperties());
+            }
+        }
+    }
+
+    public static void logContextAttributes(Map<String, String> parameters, SvcLogicContext ctx)
+            throws SvcLogicException {
+        if (LOG.isTraceEnabled()) {
+            String subpath = parameters.get("subpath");
+            if (subpath != null && !subpath.isEmpty()) {
+                ctx.printAttributes(subpath);
+            } else {
+                ctx.printAttributes();
+            }
+        }
+    }
+
 	 /**
      * Checks context memory for a set of required parameters
      * Every parameter aside from prefix will be treated as mandatory
