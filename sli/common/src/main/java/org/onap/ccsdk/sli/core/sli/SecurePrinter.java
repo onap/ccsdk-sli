@@ -1,9 +1,13 @@
 
 package org.onap.ccsdk.sli.core.sli;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +17,9 @@ public class SecurePrinter {
     private static final String DEFAULT_FILTER = "password,pass,pswd";
     private static final String REDACTED = "***REDACTED***";
     private static final String FILTER_PROPERTY = "NODE_STRING_FILTER";
+    private static final String SEPERATOR = " = ";
+    private static final String COMMON_ERROR_MESSAGE = "Failed to print properties";
+
     private static String[] filterArray;
 
     public SecurePrinter() {
@@ -38,7 +45,7 @@ public class SecurePrinter {
         if (LOG.isDebugEnabled()) {
             for (Entry<String, String> attribute : attributes.entrySet()) {
                 String value = filterValue(attribute.getKey(), attribute.getValue());
-                LOG.debug(attribute.getKey() + " = " + value);
+                LOG.debug(attribute.getKey() + SEPERATOR + value);
             }
         }
     }
@@ -48,7 +55,7 @@ public class SecurePrinter {
             for (Entry<String, String> attribute : attributes.entrySet()) {
                 if (attribute.getKey().startsWith(subpath)) {
                     String value = filterValue(attribute.getKey(), attribute.getValue());
-                    LOG.debug(attribute.getKey() + " = " + value);
+                    LOG.debug(attribute.getKey() + SEPERATOR + value);
                 }
             }
         }
@@ -61,15 +68,15 @@ public class SecurePrinter {
                     String keyString = (String) property.getKey();
                     String valueString = (String) property.getValue();
                     String value = filterValue(keyString, valueString);
-                    LOG.debug(keyString + " = " + value);
+                    LOG.debug(keyString + SEPERATOR + value);
                 }
             } catch (Exception e) {
-                LOG.error("Failed to print properties", e);
+                LOG.error(COMMON_ERROR_MESSAGE, e);
             }
         }
     }
 
-    public void printProperties(Properties props, String subpath) {
+    public void printProperties(Properties props, String subpath) {       
         if (LOG.isDebugEnabled()) {
             try {
                 for (Entry<Object, Object> property : props.entrySet()) {
@@ -77,15 +84,40 @@ public class SecurePrinter {
                     if (keyString.startsWith(subpath)) {
                         String valueString = (String) property.getValue();
                         String value = filterValue(keyString, valueString);
-                        LOG.debug(keyString + " = " + value);
+                        LOG.debug(keyString + SEPERATOR + value);
                     }
                 }
             } catch (Exception e) {
-                LOG.error("Failed to print properties", e);
+                LOG.error(COMMON_ERROR_MESSAGE, e);
             }
         }
     }
     
+    public void printPropertiesAlphabetically(Properties props) {
+        if (LOG.isDebugEnabled()) {
+            TreeMap<String, String> sortedMap = new TreeMap(props);
+            try {
+                for (Entry<String, String> entry : sortedMap.entrySet()) {
+                    String value = filterValue(entry.getKey(), entry.getValue());
+                    LOG.debug(entry.getKey() + SEPERATOR + value);
+                }
+            } catch (Exception e) {
+                LOG.error(COMMON_ERROR_MESSAGE, e);
+            }
+        }
+    }
+
+    public void printAttributesToFile(HashMap<String, String> attributes, String fileName) {
+        try (FileOutputStream fstr = new FileOutputStream(new File(fileName));
+                PrintStream pstr = new PrintStream(fstr, true);) {
+            pstr.println("#######################################");
+            for (Entry<String, String> entry : attributes.entrySet()) {
+                String value = filterValue(entry.getKey(), entry.getValue());
+                pstr.println(entry.getKey() + SEPERATOR + value);
+            }
+        } catch (Exception e) {
+            LOG.error("Cannot write context to file.", e);
+        }
+    }
+    
 }
-
-
