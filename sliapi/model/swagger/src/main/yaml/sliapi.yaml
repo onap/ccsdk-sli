@@ -1,25 +1,25 @@
 ---
 swagger: "2.0"
 info:
-  description: "This module contains a collection of generally useful derived\nYANG\
-    \ data types.\n\nCopyright (c) 2013 IETF Trust and the persons identified as\n\
-    authors of the code.  All rights reserved.\n\nRedistribution and use in source\
-    \ and binary forms, with or\nwithout modification, is permitted pursuant to, and\
-    \ subject\nto the license terms contained in, the Simplified BSD License\nset\
-    \ forth in Section 4.c of the IETF Trust's Legal Provisions\nRelating to IETF\
-    \ Documents\n(http://trustee.ietf.org/license-info).\n\nThis version of this YANG\
-    \ module is part of RFC 6991; see\nthe RFC itself for full legal notices.,This\
-    \ module contains a collection of generally useful derived\nYANG data types for\
-    \ Internet addresses and related things.\n\nCopyright (c) 2013 IETF Trust and\
-    \ the persons identified as\nauthors of the code.  All rights reserved.\n\nRedistribution\
-    \ and use in source and binary forms, with or\nwithout modification, is permitted\
-    \ pursuant to, and subject\nto the license terms contained in, the Simplified\
-    \ BSD License\nset forth in Section 4.c of the IETF Trust's Legal Provisions\n\
+  description: "Defines API to service logic interpreter,This module contains a collection\
+    \ of generally useful derived\nYANG data types.\n\nCopyright (c) 2013 IETF Trust\
+    \ and the persons identified as\nauthors of the code.  All rights reserved.\n\n\
+    Redistribution and use in source and binary forms, with or\nwithout modification,\
+    \ is permitted pursuant to, and subject\nto the license terms contained in, the\
+    \ Simplified BSD License\nset forth in Section 4.c of the IETF Trust's Legal Provisions\n\
     Relating to IETF Documents\n(http://trustee.ietf.org/license-info).\n\nThis version\
     \ of this YANG module is part of RFC 6991; see\nthe RFC itself for full legal\
-    \ notices.,Defines API to service logic interpreter"
-  version: "1.0.1-SNAPSHOT"
-  title: "ietf-yang-types,ietf-inet-types,SLI-API API"
+    \ notices.,This module contains a collection of generally useful derived\nYANG\
+    \ data types for Internet addresses and related things.\n\nCopyright (c) 2013\
+    \ IETF Trust and the persons identified as\nauthors of the code.  All rights reserved.\n\
+    \nRedistribution and use in source and binary forms, with or\nwithout modification,\
+    \ is permitted pursuant to, and subject\nto the license terms contained in, the\
+    \ Simplified BSD License\nset forth in Section 4.c of the IETF Trust's Legal Provisions\n\
+    Relating to IETF Documents\n(http://trustee.ietf.org/license-info).\n\nThis version\
+    \ of this YANG module is part of RFC 6991; see\nthe RFC itself for full legal\
+    \ notices."
+  version: "1.1.0-SNAPSHOT"
+  title: "SLI-API,ietf-yang-types,ietf-inet-types API"
 consumes:
 - "application/json"
 - "application/xml"
@@ -38,10 +38,10 @@ paths:
           description: "Internal error"
         200:
           description: "sli.api.TestResults"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.TestResults"
             $ref: "#/definitions/sli.api.TestResults"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.TestResults"
             $ref: "#/definitions/sli.api.TestResults"
     post:
@@ -126,10 +126,10 @@ paths:
           description: "Internal error"
         200:
           description: "sli.api.testresults.TestResult"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.testresults.TestResult"
             $ref: "#/definitions/sli.api.testresults.TestResult"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.testresults.TestResult"
             $ref: "#/definitions/sli.api.testresults.TestResult"
     post:
@@ -206,10 +206,10 @@ paths:
           description: "Internal error"
         200:
           description: "sli.api.TestResults"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.TestResults"
             $ref: "#/definitions/sli.api.TestResults"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.TestResults"
             $ref: "#/definitions/sli.api.TestResults"
   /operational/SLI-API:test-results/SLI-API:test-result/{test-identifier}/:
@@ -228,10 +228,10 @@ paths:
           description: "Internal error"
         200:
           description: "sli.api.testresults.TestResult"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.testresults.TestResult"
             $ref: "#/definitions/sli.api.testresults.TestResult"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.testresults.TestResult"
             $ref: "#/definitions/sli.api.testresults.TestResult"
   /operations/SLI-API:execute-graph/:
@@ -252,10 +252,10 @@ paths:
           description: "Internal error"
         200:
           description: "Correct response"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.ExecuteGraph"
             $ref: "#/definitions/sli.api.ExecuteGraph"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.ExecuteGraph"
             $ref: "#/definitions/sli.api.ExecuteGraph"
         201:
@@ -270,10 +270,10 @@ paths:
           description: "Internal error"
         200:
           description: "Correct response"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.Healthcheck"
             $ref: "#/definitions/sli.api.Healthcheck"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.Healthcheck"
             $ref: "#/definitions/sli.api.Healthcheck"
         201:
@@ -288,10 +288,10 @@ paths:
           description: "Internal error"
         200:
           description: "Correct response"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.Vlbcheck"
             $ref: "#/definitions/sli.api.Vlbcheck"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.Vlbcheck"
             $ref: "#/definitions/sli.api.Vlbcheck"
         201:
