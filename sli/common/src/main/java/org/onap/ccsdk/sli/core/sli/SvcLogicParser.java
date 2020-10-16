@@ -33,10 +33,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -62,7 +59,7 @@ public class SvcLogicParser {
     private static final String SVCLOGIC_XSD = "/svclogic.xsd";
     private SAXParser saxParser;
 
-    private class SvcLogicHandler extends DefaultHandler {
+    private class SvcLogicHandler extends DefaultHandler  {
         private Locator locator = null;
         private String module = null;
         private String version = null;
@@ -82,7 +79,7 @@ public class SvcLogicParser {
             this.curNodeId = 1;
             this.outcomeValue = null;
         }
-
+        
         @Override
         public void setDocumentLocator(Locator locator) {
             this.locator = locator;
@@ -450,6 +447,9 @@ public class SvcLogicParser {
 
 
     public static void load(String xmlfile, SvcLogicStore store) throws SvcLogicException {
+        if (!PathValidator.isValidXmlPath(xmlfile)) {
+            throw new ConfigurationException("Invalid xml file name ("+ xmlfile + ")");
+        }
         File xmlFile = new File(xmlfile);
         if (!xmlFile.canRead()) {
             throw new ConfigurationException("Cannot read xml file (" + xmlfile + ")");
@@ -482,6 +482,9 @@ public class SvcLogicParser {
     }
 
     public static void validate(String xmlfile, SvcLogicStore store) throws SvcLogicException {
+        if (!PathValidator.isValidXmlPath(xmlfile)) {
+            throw new ConfigurationException("Invalid xml file name ("+ xmlfile + ")");
+        }
         File xmlFile = new File(xmlfile);
         if (!xmlFile.canRead()) {
             throw new ConfigurationException("Cannot read xml file (" + xmlfile + ")");
@@ -601,7 +604,7 @@ public class SvcLogicParser {
         }
 
         SAXParser saxParser = factory.newSAXParser();
-        if (saxParser.isValidating()) {
+         if (saxParser.isValidating()) {
             LOGGER.info("Parser configured to validate XML {}", (xsdUrl != null ? xsdUrl.getPath() : null));
         }
         return saxParser;

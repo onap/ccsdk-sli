@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
+import org.onap.ccsdk.sli.core.sli.PathValidator;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicRecorder;
 
@@ -46,6 +47,10 @@ public class FileRecorder implements SvcLogicRecorder {
 		if (fileName == null)
 		{
 			throw new ConfigurationException("No file parameter specified");
+		}
+
+		if (!PathValidator.isValidFilePath(fileName)) {
+			throw new ConfigurationException("Invalid file name ("+fileName+")");
 		}
 		
 		String record = parmMap.get("record");

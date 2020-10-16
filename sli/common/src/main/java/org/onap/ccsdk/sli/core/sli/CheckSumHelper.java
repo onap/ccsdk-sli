@@ -21,6 +21,7 @@
 
 package org.onap.ccsdk.sli.core.sli;
 
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,6 +33,9 @@ import javax.xml.bind.DatatypeConverter;
 public class CheckSumHelper {
 
   public static String md5SumFromFile(String pathToFile) throws NoSuchAlgorithmException, IOException {
+    if (!PathValidator.isValidXmlPath(pathToFile)) {
+      throw new IOException("Invalid XML file name");
+    }
     byte[] b = Files.readAllBytes(Paths.get(pathToFile));
     return md5SumFromByteArray(b);
   }

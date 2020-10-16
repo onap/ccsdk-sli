@@ -35,6 +35,9 @@ public class SvcLogicStoreFactory {
 
 	public static SvcLogicStore getSvcLogicStore(String propfile)
 			throws SvcLogicException {
+		if (!PathValidator.isValidPropertiesPath(propfile)) {
+			throw new ConfigurationException("Invalid property file name ("+propfile+")");
+		}
 		File propFile = new File(propfile);
 		if (!propFile.canRead()) {
 			throw new ConfigurationException("Cannot read property file "
