@@ -1,5 +1,4 @@
-package org.onap.ccsdk.sli.core.sli;
-
+package org.onap.ccsdk.sli.core.utils;
 import java.util.regex.Pattern;
 
 public class PathValidator {

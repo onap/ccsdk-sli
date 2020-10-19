@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
-import org.onap.ccsdk.sli.core.sli.PathValidator;
+import org.onap.ccsdk.sli.core.utils.PathValidator;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicRecorder;
 

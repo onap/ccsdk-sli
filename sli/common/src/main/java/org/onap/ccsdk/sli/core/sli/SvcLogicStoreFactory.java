@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
+import org.onap.ccsdk.sli.core.utils.PathValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
