@@ -62,7 +62,7 @@ public abstract class EnvVarFileResolver implements PropertiesFileResolver {
         final File fileFromEnvVariable;
         if (!Strings.isNullOrEmpty(propDirectoryFromEnvVariable)) {
             fileFromEnvVariable = Paths.get(propDirectoryFromEnvVariable).resolve(filename).toFile();
-            if(PathValidator.isValidFilePath(fileFromEnvVariable.getAbsolutePath()) && fileFromEnvVariable.exists()) {
+            if(PathValidator.isValidPropertiesPath(fileFromEnvVariable.getAbsolutePath()) && fileFromEnvVariable.exists()) {
                 return Optional.of(fileFromEnvVariable);
             }
         }
