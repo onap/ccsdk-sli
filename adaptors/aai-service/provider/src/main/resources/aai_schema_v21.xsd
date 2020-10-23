@@ -1,3 +1,5 @@
+<<<<<<< HEAD   (530dcf Roll to next Guilin snapshot)
+=======
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xs:schema elementFormDefault="qualified" version="1.0" targetNamespace="http://org.onap.aai.inventory/v21" xmlns:tns="http://org.onap.aai.inventory/v21" xmlns:xs="http://www.w3.org/2001/XMLSchema"
 xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
@@ -13205,6 +13207,11 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element ref="tns:devices" minOccurs="0"/>
         <xs:element ref="tns:wan-port-configs" minOccurs="0"/>
         <xs:element ref="tns:ext-aai-networks" minOccurs="0"/>
+        <xs:element ref="tns:label-restrictions" minOccurs="0"/>
+        <xs:element ref="tns:unis" minOccurs="0"/>
+        <xs:element ref="tns:te-link-attributes" minOccurs="0"/>
+        <xs:element ref="tns:interlayer-attachments" minOccurs="0"/>
+        <xs:element ref="tns:tunnel-termination-points" minOccurs="0"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -14830,3 +14837,4 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     </xs:complexType>
   </xs:element>
 </xs:schema>
+>>>>>>> CHANGE (3c5e96 - Adding the path for the newly introduced (i.e. in v21) net)
