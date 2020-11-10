@@ -23,11 +23,16 @@ package org.onap.ccsdk.sli.core.utils;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Resolves project properties files relative to the directory identified by the JRE property
@@ -39,6 +44,7 @@ public class JREFileResolver implements PropertiesFileResolver {
      * Key for JRE argument representing the configuration directory
      */
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JREFileResolver.class);
     private final String successMessage;
     private final Class<?> clazz;
 
@@ -55,18 +61,9 @@ public class JREFileResolver implements PropertiesFileResolver {
     @Override
     public Optional<File> resolveFile(final String filename) {
 
-        final Bundle bundle;
-
         try {
-            bundle = FrameworkUtil.getBundle(this.clazz);
-        } catch (NoClassDefFoundError e) {
-            return Optional.empty();
-        }
 
-        final File dataFile;
-
-
-        try {
+            final Bundle bundle = FrameworkUtil.getBundle(this.clazz);
             if (bundle == null) {
                 return Optional.empty();
             }
@@ -77,7 +74,7 @@ public class JREFileResolver implements PropertiesFileResolver {
             }
 
 
-            dataFile = bundle.getDataFile(filename);
+            final File dataFile = bundle.getDataFile(filename);
             if(dataFile.exists()) {
                 dataFile.delete();
             }
@@ -89,8 +86,17 @@ public class JREFileResolver implements PropertiesFileResolver {
             }
 
             return Optional.of(dataFile);
-        } catch (NoClassDefFoundError e) {
-            return Optional.empty();
+        } catch (final NoClassDefFoundError e) {
+            LOGGER.info("Getting /{} embedded with {}", filename, clazz.getCanonicalName());
+            try (InputStream input = clazz.getResourceAsStream("/"+filename)) {
+                File propFile = File.createTempFile("tmp", ".properties", null);
+                LOGGER.info("Copying /{} to {}", filename, propFile.getAbsolutePath());
+                Files.copy(input, propFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                return Optional.of(propFile);
+            } catch (Exception e1) {
+                LOGGER.info("Caught exception getting {} embedded in jar", filename, e1);
+                return Optional.empty();
+            }
         }
         catch(final Exception e) {
             return Optional.empty();
