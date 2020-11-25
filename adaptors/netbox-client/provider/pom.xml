@@ -19,10 +19,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.onap.ccsdk.parent</groupId>
-        <artifactId>binding-parent</artifactId>
-        <version>2.1.0</version>
-        <relativePath/>
+        <groupId>org.onap.ccsdk.sli.adaptors</groupId>
+        <artifactId>netbox-client</artifactId>
+        <version>1.2.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
@@ -48,17 +47,14 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>${gson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>${apache.httpcomponents.core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>${apache.httpcomponents.client.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
