@@ -1,0 +1,68 @@
+module ietf-l3vpn-svc-part {
+
+    namespace "urn:ietf:params:xml:ns:yang:ietf-l3vpn-svc-part";
+
+    prefix l3vpn-svc;
+
+    organization
+     "IETF L3SM Working Group";
+
+    contact
+        "WG List:   &lt;mailto:l3sm@ietf.org&gt;
+
+        Editor:
+
+        ";
+
+    description
+        "The YANG module defines a generic service configuration
+        model for Layer 3 VPN common across all of the vendor
+        implementations.";
+
+    revision 2017-09-21 {
+        description
+        "Part of draft-ietf-l3sm-l3vpn-service-yang-11";
+        reference
+            "draft-ietf-l3sm-l3vpn-service-yang-11";
+    }
+
+    /* Typedefs */
+
+    typedef svc-id {
+        type string;
+        description
+         "Defining a type of service component
+         identificators.";
+    }
+
+    /* Main blocks */
+
+    container l3vpn-svc {
+        container vpn-services {
+            list vpn-svc {
+                key vpn-id;
+
+                uses vpn-svc-cfg; /*Not used*/
+
+                description "
+                    List of VPN services.";
+            }
+            description
+             "top level container
+             for the VPN services.";
+        }
+    }
+
+    grouping vpn-svc-cfg {
+        leaf vpn-id {
+                type svc-id;
+                description
+                "VPN identifier. Local administration meaning.";
+            }
+        leaf customer-name {
+            type string;
+            description
+             "Name of the customer.";
+        }
+    }
+}

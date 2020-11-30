@@ -1,0 +1,16 @@
+{
+	"input": {
+		"parameters":
+		[{
+				"name": "escapedJsonObject",
+				"value": "[{\"id\":\"0.2.0.0\/16\"},{\"id\":\"ge04::\/64\"}]"
+			}, {
+				"name": "password",
+				"value": "Hello\/World"
+			}, {
+				"name": "resourceName",
+				"value": "The\t\"Best\"\tName"
+			}
+		]
+	}
+}
