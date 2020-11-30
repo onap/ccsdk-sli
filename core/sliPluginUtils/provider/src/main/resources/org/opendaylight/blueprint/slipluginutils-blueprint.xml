@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+	xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
+	odl:use-default-for-reference-types="true">
+
+	<bean id="sliPluginUtils" class="org.onap.ccsdk.sli.core.slipluginutils.SliPluginUtils" />
+	<service ref="sliPluginUtils"
+		interface="org.onap.ccsdk.sli.core.slipluginutils.SliPluginUtils" />
+
+	<bean id="sliStringUtils" class="org.onap.ccsdk.sli.core.slipluginutils.SliStringUtils" />
+	<service ref="sliStringUtils"
+		interface="org.onap.ccsdk.sli.core.slipluginutils.SliStringUtils" />
+</blueprint>
