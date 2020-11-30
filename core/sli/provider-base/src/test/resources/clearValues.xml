@@ -1,0 +1,22 @@
+<service-logic
+    xmlns='http://www.onap.org/sdnc/svclogic'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='TEST-DG' version='1.0.0'>
+    <method rpc='test-dg' mode='sync'>
+        <block>
+            <set>
+                <parameter name='si.field1' value='1' />
+                <parameter name='si.field2' value='2' />
+                <parameter name='si.field3' value='3' />
+                <parameter name='si.subarray[0]' value='a' />
+                <parameter name='si.subarray[1]' value='b' />
+                <parameter name='si.subarray[2]' value='c' />
+                <parameter name='si.subarray_length' value='3' />
+                <parameter name='search1' value='6' />
+                <parameter name='simonSays' value='KeepMe!' />
+            </set>
+            <set>
+                <parameter name='si.' value='' />
+            </set>
+        </block>
+    </method>
+</service-logic>

@@ -4,32 +4,39 @@
 
 	<parent>
 		<groupId>org.onap.ccsdk.parent</groupId>
-		<artifactId>oparent</artifactId>
+		<artifactId>odlparent-lite</artifactId>
 		<version>2.1.0-SNAPSHOT</version>
 		<relativePath/>
 	</parent>
 
-	<groupId>org.onap.ccsdk.sli</groupId>
-	<artifactId>ccsdk-sli</artifactId>
+	<groupId>org.onap.ccsdk.sli.core</groupId>
+	<artifactId>ccsdk-sli-core</artifactId>
 	<version>1.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>ccsdk-sli</name>
-	<description>Service Logic Interpreter</description>
+	<name>ccsdk-sli-core</name>
+	<description>CCSDK core components contains the SLI, dblib</description>
 	<url>https://wiki.onap.org</url>
 	<organization>
 		<name>ONAP</name>
 	</organization>
 
 	<modules>
-            <module>core</module>
+        <module>utils</module>
+		<module>dblib</module>
+		<module>sli</module>
+		<module>filters</module>
+		<module>sliPluginUtils</module>
+		<module>sliapi</module>
+		<module>features</module>
+		<module>artifacts</module>
 	</modules>
 
 	<scm>
 		<connection>scm:git:ssh://git@${onap.git.host}/sdnc-code.git</connection>
-		<developerConnection>scm:git:ssh://${onap.git.host}:${onap.git.port}/${onap.git.project}/sli.git</developerConnection>
-		<url>${onap.git.protocol}://${onap.git.host}/projects/${onap.git.project}/repos/sli/browse</url>
-		<tag>sli-1.1.0</tag>
+		<developerConnection>scm:git:ssh://${onap.git.host}:${onap.git.port}/${onap.git.project}/sdnc-core.git</developerConnection>
+		<url>${onap.git.protocol}://${onap.git.host}/projects/${onap.git.project}/repos/sdnc-core/browse</url>
+		<tag>sdnc-core-1.1.0</tag>
 	</scm>
 	<distributionManagement>
 		<site>
@@ -39,7 +46,7 @@
 	</distributionManagement>
 
 	<properties>
-		<sitePath>content/sites/site/org/onap/ccsdk/sli/${project.version}/</sitePath>
+		<sitePath>content/sites/site/org/onap/ccsdk/sli/core/${project.version}/</sitePath>
 	</properties>
 
 	<profiles>
