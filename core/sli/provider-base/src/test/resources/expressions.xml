@@ -1,0 +1,55 @@
+<service-logic xmlns='http://www.onap.org/sdnc/svclogic' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+	xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='TEST-DG' version='1.0.0'>
+	<method rpc='test-dg' mode='sync'>
+		<block>
+			<set>
+				<parameter name='add' value='`1 + 1`' />
+				<parameter name='sub' value='`2 - 1`' />
+				<parameter name='div' value='`6 / 2`' />
+				<parameter name='multi' value='`2 * 2`' />
+				<parameter name='addDoubleQuotes' value="`1 + 1`" />
+				<parameter name='subDoubleQuotes' value="`2 - 1`" />
+				<parameter name='divDoubleQuotes' value="`6 / 2`" />
+				<parameter name='multiDoubleQuotes' value="`2 * 2`" />
+			</set>
+			<set>
+				<parameter name='varA' value='`$a + $b`' />
+				<parameter name='varB' value='`$a + &apos;literal&apos; `' />
+				<parameter name='varC' value='`&apos;literal&apos; + $b `' />
+				<parameter name='varD' value='`&apos;too&apos; + &apos;literal&apos;`' />
+				<parameter name='varADoubleQuotes' value="`$a + $b`" />
+				<parameter name='varBDoubleQuotes' value="`$a +'literal' `" />
+				<parameter name='varCDoubleQuotes' value="`'literal' + $b `" />
+				<parameter name='varDDoubleQuotes' value="`'too' + 'literal'`" />
+			</set>
+			<set>
+				<parameter name='testOne' value='`1 + 1`' />
+				<parameter name='testThree' value='"1" +"1"' />
+				<parameter name='testFour' value='`$portNumber + $slot + $shelf`' />
+				<parameter name='testOneDoubleQuotes' value="`1 + 1`" />
+				<parameter name='testThreeDoubleQuotes' value="'1' +'1'" />
+				<parameter name='testFourDoubleQuotes' value="`$portNumber + $slot + $shelf`" />
+			</set>
+			<switch test="`'PIZZA' == 'NOTPIZZA' or $a != $b`" />
+			<switch test="`'PIZZA' == 'PIZZA' and $a != $b`" />
+			<switch test="`'PIZZA' == 'NOTPIZZA' or $a &gt;= $b`" />
+			<switch test="`'PIZZA' == 'PIZZA' and $b &lt; $a`" />
+			<switch test="`'PIZZA' == 'PIZZA'`" />
+			<switch test="`$a == $b`" />
+			<switch test="`'PIZZA' == 'NOTPIZZA'`" />
+			<switch test="`'PIZZA' != 'PIZZA'`" />
+			<switch test="`'PIZZA' != 'NOTPIZZA'`" />
+			<switch test='`$a != $b`' />
+			<switch test='`1 &lt; 2`' />
+			<switch test='`2 &lt;= 2`' />
+			<switch test='`3 &gt; 2`' />
+			<switch test='`2 &gt;= 2`' />
+			<switch test='$literalStartingWithDollarSign' />
+			<switch test='`$dollarSignFollowedByVariableSurroundedinBackticks`' />
+			<switch test='`$a == $b`' />
+			<switch test="`$a == $b`" />
+			<switch test='$a == $b' />
+			<switch test="$a == $b" />
+		</block>
+	</method>
+</service-logic>

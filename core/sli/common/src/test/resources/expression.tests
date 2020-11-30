@@ -1,0 +1,19 @@
+$uni-circuit-id
+$asePort
+length($uni-circuit-id) > 0
+$asePort.uni-circuit-id
+$uni-cir-units * 1000 * 100 / 100
+$uni-cir-units / 1000
+$uni-cir-units - 100
+$uni-cir-units + 100
+(value * 3 - $arg1 > 0) and (length($uni-circuit-id) == 0)
+'pg-'+$network.name
+$network.segment[0].provider-physical-network
+length($network_segment[0].provider-physical-network) >= 5
+substr($network_segment[0].provider-physical-network,0,5) == 'dvspg'
+length($network_segment[0].provider-physical-network) >= 5 and substr($network_segment[0].provider-physical-network,0,5) == 'dvspg'
+(length($network_segment[0].provider-physical-network) >= 5) and (substr($network_segment[0].provider-physical-network,0,5) == 'dvspg')
+4-2-2
+1+1
+1
+1+2*3-4
