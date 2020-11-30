@@ -1,0 +1,210 @@
+module test-model {
+
+    yang-version 1;
+
+    namespace "org:onap:ccsdk:sli:core:testmodel";
+
+    prefix sample;
+
+    import ietf-inet-types { prefix "inet"; revision-date 2013-07-15; }
+
+    organization "ONAP";
+
+    contact
+        "Test Author";
+
+    description
+        "A test model not used in business flows";
+
+    revision "2019-07-23" {
+        description
+                "First release of the test model";
+    }
+
+    identity sample-identity {
+             description
+                "Base identity";
+    }
+
+     typedef percentage {
+         type uint8 {
+             range "0 .. 100";
+         }
+         description "represents a percentage";
+     }
+
+    grouping builtin {
+        leaf sample-binary {
+            type binary;
+        }
+        leaf sample-bits {
+            type bits{
+             bit fan-running {
+                 position 0;
+             }
+             bit hd-led {
+                 position 1;
+             }
+             bit power-led {
+                 position 2;
+             }
+            }
+        }
+        leaf sample-boolean {
+            type boolean;
+        }
+        leaf sample-decimal64 {
+            type decimal64{
+                fraction-digits 1;
+            }
+        }
+        leaf sample-empty {
+            type empty;
+        }
+        leaf sample-enumeration {
+            type enumeration{
+                enum "shelf.slot.port";
+                enum "not available";
+                enum "CURRENTLY_AVAILABLE";
+                enum "200OK";
+                enum "hyphen-separated-value";
+            }
+        }
+        leaf sample-identityref {
+             type identityref {
+                 base "sample-identity";
+             }
+        }
+        leaf sample-int8 {
+            type int8;
+        }
+        leaf sample-int16 {
+            type int16;
+        }
+        leaf sample-int32 {
+            type int32;
+        }
+        leaf sample-int64 {
+            type int64;
+        }
+        leaf sample-leafref {
+             type leafref {
+                 path "../sample-boolean";
+             }
+        }
+        leaf sample-string {
+            type string;
+        }
+        leaf sample-uint8 {
+            type uint8;
+        }
+        leaf sample-uint16 {
+            type uint16;
+        }
+        leaf sample-uint32 {
+            type uint32;
+        }
+        leaf sample-uint64 {
+            type uint64;
+        }
+        leaf sample-union {
+	     type union {
+		 type int32;
+		 type enumeration {
+		     enum "unbounded";
+		 }
+	     }
+        }
+     leaf percent-completed {
+         type percentage;
+     }
+    }
+
+    grouping inet-types-grouping {
+        leaf ip-version {
+        	type inet:ip-version;
+        }
+        leaf dscp {
+        	type inet:dscp;
+        }
+        leaf port-number {
+        	type inet:port-number;
+        }
+        leaf ipv6-flow-label {
+        	type inet:ipv6-flow-label;
+        }
+        leaf as-number {
+        	type inet:as-number;
+        }
+        leaf ip-address {
+        	type inet:ip-address;
+        }
+        leaf ipv4-address {
+        	type inet:ipv4-address;
+        }
+        leaf ipv6-address {
+        	type inet:ipv6-address;
+        }
+        leaf ip-address-no-zone {
+        	type inet:ip-address-no-zone;
+        }
+        leaf ipv4-address-no-zone {
+        	type inet:ipv4-address-no-zone;
+        }
+        leaf ipv6-address-no-zone {
+        	type inet:ipv6-address-no-zone;
+        }
+        leaf ip-prefix {
+        	type inet:ip-prefix;
+        }
+        leaf ipv4-prefix {
+        	type inet:ipv4-prefix;
+        }
+        leaf ipv6-prefix {
+        	type inet:ipv6-prefix;
+        }
+        leaf domain-name {
+        	type inet:domain-name;
+        }
+        leaf host {
+        	type inet:host;
+        }
+        leaf uri {
+        	type inet:uri;
+        }
+     anyxml data;
+    }
+
+    container sample-container {
+             leaf customer-name {
+                 type string;
+             }
+
+             leaf-list customer-nicknames {
+                 type string;
+             }
+
+             container login {
+                 leaf message {
+                     type string;
+                     description
+                         "Message given at start of login session";
+                 }
+
+                 list customer-addresses {
+                     key "address-name";
+                     leaf address-name {
+                         type string;
+                     }
+                     leaf street-address {
+                         type string;
+                     }
+                     leaf state {
+                         type string;
+                     }
+                 }
+             }
+	 uses builtin;
+	 uses inet-types-grouping;
+         }
+}

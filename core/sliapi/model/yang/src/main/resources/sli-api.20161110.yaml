@@ -1,0 +1,254 @@
+---
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: "SLI API"
+basePath: '/restconf'
+schemes:
+  - http
+  - https
+paths:
+  '/restconf/config/SLI-API:test-results':
+    delete:
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        '200':
+          description: No response was specified
+      description: Test results
+      operationId: delete-test-results
+    get:
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        '200':
+          description: No response was specified
+          schema:
+            $ref: '#/definitions/test-results'
+      description: Test results
+      operationId: get-test-results
+    post:
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: body
+          name: testResults
+          required: false
+          schema:
+            $ref: '#/definitions/test-results'
+      responses:
+        '200':
+          description: No response was specified
+          schema:
+            $ref: '#/definitions/test-results'
+      description: Test results
+      operationId: post-test-results
+    put:
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: body
+          name: testResults
+          required: false
+          schema:
+            $ref: '#/definitions/test-results'
+      responses:
+        '200':
+          description: No response was specified
+          schema:
+            $ref: '#/definitions/test-results'
+      description: Test results
+      operationId: put-test-results
+
+  '/restconf/config/SLI-API:test-results/test-result/{test-identifier}':
+    delete:
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: test-identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: No response was specified
+      operationId: delete-test-result
+    get:
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: test-identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: No response was specified
+          schema:
+            $ref: '#/definitions/test-result'
+      operationId: get-test-result
+    put:
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: path
+          name: test-identifier
+          required: true
+          type: string
+        - in: body
+          name: testResult
+          required: false
+          schema:
+            $ref: '#/definitions/test-result'
+      responses:
+        '200':
+          description: No response was specified
+          schema:
+            $ref: '#/definitions/test-result'
+      operationId: PUT-test-result
+
+  '/restconf/operational/SLI-API:test-results':
+    get:
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        '200':
+          description: No response was specified
+          schema:
+            $ref: '#/definitions/test-results'
+      description: Test results
+      operationId: GET-test-results
+  '/restconf/operations/SLI-API:execute-graph':
+    post:
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: body
+          name: executeGraphInput
+          required: false
+          schema:
+            $ref: '#/definitions/execute-graph-input'
+      responses:
+        '200':
+          description: No response was specified
+          schema:
+            $ref: '#/definitions/response-fields'
+      description: ' Method to add a new parameter.'
+      operationId: execute-graph
+  '/restconf/operations/SLI-API:healthcheck':
+    post:
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        '200':
+          description: No response was specified
+          schema:
+            $ref: '#/definitions/response-fields'
+      operationId: healthcheck
+  '/restconf/operations/SLI-API:vlbcheck':
+    post:
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        '200':
+          description: No response was specified
+          schema:
+            $ref: '#/definitions/response-fields'
+      operationId: vlbcheck
+
+definitions:
+  parameter-setting:
+    type: object
+    properties:
+      parameter-name:
+        type: string
+      int-value:
+        type: integer
+      string-value:
+        type: string
+      boolean-value:
+        type: boolean
+
+  response-fields:
+    type: object
+    properties:
+      response-code:
+        type: string
+      ack-final-indicator:
+        type: string
+      response-message:
+        type: string
+      context-memory-json:
+        type: string
+
+  test-results:
+    type: object
+    properties:
+      test-results:
+        type: array
+        items:
+          $ref: '#/definitions/test-result'
+
+  test-result:
+    type: object
+    properties:
+      test-identifier:
+        type: string
+      results:
+        type: array
+        items:
+          type: string
+
+  execute-graph-input:
+    properties:
+      'input':
+        type: object
+        properties:
+          'mode':
+             type: string
+          'module-name':
+            type: string
+          'rpc-name':
+            type: string
+          'sli-parameter':
+            items:
+              $ref: '#/definitions/parameter-setting'
+            type: array
+    type: object
+
+
+
+
+
+
+  unique_empty_identifier: {}
+
