@@ -1,0 +1,554 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0"
+  },
+  "basePath": "/restconf",
+  "paths": {
+    "/config": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "**(config)test-results",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SLI-API(config)test-results-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)SLI-API_modulePOST"
+            }
+          }
+        },
+        "description": "Defines API to service logic interpreter",
+        "operationId": "POST-SLI-API_module"
+      }
+    },
+    "/config/SLI-API:test-results": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "Test results",
+        "operationId": "DELETE-test-results"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)test-results"
+            }
+          }
+        },
+        "description": "Test results",
+        "operationId": "GET-test-results"
+      },
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "**(config)test-result",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SLI-API/test-results(config)test-result-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)test-resultsPOST"
+            }
+          }
+        },
+        "description": "Test results",
+        "operationId": "POST-test-results"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "(config)test-results",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SLI-API(config)test-results-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/SLI-API(config)test-results-TOP"
+            }
+          }
+        },
+        "description": "Test results",
+        "operationId": "PUT-test-results"
+      }
+    },
+    "/config/SLI-API:test-results/test-result/{test-identifier}": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "test-identifier",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "operationId": "DELETE-test-result"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "test-identifier",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)test-result"
+            }
+          }
+        },
+        "operationId": "GET-test-result"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "test-identifier",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)test-result",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SLI-API/test-results(config)test-result-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/SLI-API/test-results(config)test-result-TOP"
+            }
+          }
+        },
+        "operationId": "PUT-test-result"
+      }
+    },
+    "/operational/SLI-API:test-results": {
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(operational)test-results"
+            }
+          }
+        },
+        "description": "Test results",
+        "operationId": "GET-test-results"
+      }
+    },
+    "/operations/SLI-API:execute-graph": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(execute-graph)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(execute-graph)output-TOP"
+            }
+          }
+        },
+        "description": " Method to add a new parameter.",
+        "operationId": "execute-graph"
+      }
+    },
+    "/operations/SLI-API:healthcheck": {
+      "post": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(healthcheck)output-TOP"
+            }
+          }
+        },
+        "operationId": "healthcheck"
+      }
+    },
+    "/operations/SLI-API:vlbcheck": {
+      "post": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(vlbcheck)output-TOP"
+            }
+          }
+        },
+        "operationId": "vlbcheck"
+      }
+    }
+  },
+  "definitions": {
+    "(config)SLI-API_modulePOST": {
+      "properties": {
+        "test-results": {
+          "items": {
+            "$ref": "#/definitions/SLI-API(config)test-results"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config)sli-parameterPOST": {
+      "properties": {
+        "boolean-value": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "int-value": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "parameter-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Parameter name"
+        },
+        "string-value": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "type": "object"
+    },
+    "(config)test-resultPOST": {
+      "properties": {
+        "test-identifier": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "type": "object"
+    },
+    "(config)test-resultsPOST": {
+      "properties": {
+        "test-result": {
+          "items": {
+            "$ref": "#/definitions/SLI-API/test-results(config)test-result"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "(execute-graph)input": {
+      "properties": {
+        "SLI-API:mode": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:module-name": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:rpc-name": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:sli-parameter": {
+          "items": {
+            "$ref": "#/definitions/SLI-API(config)sli-parameter"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "(execute-graph)input-TOP": {
+      "properties": {
+        "SLI-API:input": {
+          "items": {
+            "$ref": "#/definitions/(execute-graph)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(execute-graph)output": {
+      "properties": {
+        "SLI-API:ack-final-indicator": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:context-memory-json": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:response-code": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:response-message": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "type": "object"
+    },
+    "(execute-graph)output-TOP": {
+      "properties": {
+        "SLI-API:output": {
+          "items": {
+            "$ref": "#/definitions/(execute-graph)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(healthcheck)output": {
+      "properties": {
+        "SLI-API:ack-final-indicator": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:context-memory-json": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:response-code": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:response-message": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "type": "object"
+    },
+    "(healthcheck)output-TOP": {
+      "properties": {
+        "SLI-API:output": {
+          "items": {
+            "$ref": "#/definitions/(healthcheck)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(vlbcheck)output": {
+      "properties": {
+        "SLI-API:ack-final-indicator": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:context-memory-json": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:response-code": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:response-message": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "type": "object"
+    },
+    "(vlbcheck)output-TOP": {
+      "properties": {
+        "SLI-API:output": {
+          "items": {
+            "$ref": "#/definitions/(vlbcheck)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "SLI-API(config)sli-parameter": {
+      "properties": {
+        "SLI-API:boolean-value": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:int-value": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "SLI-API:parameter-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Parameter name"
+        },
+        "SLI-API:string-value": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "type": "object"
+    },
+    "SLI-API(config)sli-parameter-TOP": {
+      "properties": {
+        "SLI-API:sli-parameter": {
+          "items": {
+            "$ref": "#/definitions/SLI-API(config)sli-parameter"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "SLI-API(config)test-results": {
+      "properties": {
+        "SLI-API:test-result": {
+          "items": {
+            "$ref": "#/definitions/SLI-API/test-results(config)test-result"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "SLI-API(config)test-results-TOP": {
+      "properties": {
+        "SLI-API:test-results": {
+          "description": "Test results",
+          "items": {
+            "$ref": "#/definitions/SLI-API(config)test-results"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "SLI-API(operational)test-results": {
+      "type": "object"
+    },
+    "SLI-API(operational)test-results-TOP": {
+      "properties": {
+        "SLI-API:test-results": {
+          "description": "Test results",
+          "items": {
+            "$ref": "#/definitions/SLI-API(operational)test-results"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "SLI-API/test-results(config)test-result": {
+      "properties": {
+        "SLI-API:results": {
+          "items": {
+            "$ref": "#/definitions/Optional.empty"
+          },
+          "type": "array"
+        },
+        "SLI-API:test-identifier": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "type": "object"
+    },
+    "SLI-API/test-results(config)test-result-TOP": {
+      "properties": {
+        "SLI-API:test-result": {
+          "items": {
+            "$ref": "#/definitions/SLI-API/test-results(config)test-result"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "unique_empty_identifier": {}
+  }
+}

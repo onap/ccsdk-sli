@@ -1,0 +1,16 @@
+<service-logic
+    xmlns='http://www.onap.org/sdnc/svclogic'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='TEST-DG' version='1.0.0'>
+    <method rpc='test-dg' mode='sync'>
+        <block>
+            <set>
+                <parameter name='si.field1' value='1' />
+                <parameter name='si.field2' value='2' />
+                <parameter name='si.field3' value='3' />
+            </set>
+            <set>
+                <parameter name='rootTwo.' value='si.' />
+            </set>
+        </block>
+    </method>
+</service-logic>
