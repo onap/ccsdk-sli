@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>single-feature-parent</artifactId>
+        <version>2.1.0</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>org.onap.ccsdk.sli.adaptors</groupId>
+    <artifactId>ccsdk-sli-adaptors-all</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
+    <packaging>feature</packaging>
+
+    <name>ccsdk-sli-adaptors :: features :: ${project.artifactId}</name>
+
+    <properties>
+        <ccsdk.sli.adaptors.version>${project.version}</ccsdk.sli.adaptors.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-aai-service</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-ansible-adapter</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <!-- saltstack-adapter needs to be changed to remove dependency on app-c code 
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-saltstack-adapter</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        -->
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-netbox-client</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-mdsal-resource</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-resource-assignment</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-sql-resource</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}.messagerouter</groupId>
+            <artifactId>ccsdk-messagerouter-publisher</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+  </dependencies>
+</project>
