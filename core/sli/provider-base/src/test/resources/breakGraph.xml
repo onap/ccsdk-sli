@@ -1,0 +1,26 @@
+<service-logic
+    xmlns='http://www.onap.org/sdnc/svclogic'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='JUNIT' version='1'>
+    <method rpc='BREAK' mode='sync'>
+        <block>
+            <set>
+                <parameter name='a' value='0' />
+            </set>
+            <for index='idx' start='0' end='999' >
+                <record plugin="org.onap.ccsdk.sli.core.sli.recording.Slf4jRecorder">
+                    <parameter name="logger" value="message-log" />
+                    <parameter name="level" value="error" />
+                    <parameter name="field1" value="`$idx`" />
+                </record>
+                <set>
+                    <parameter name='a' value='`$a + 1`' />
+                </set>
+                <switch test="`$idx == 2`">
+                    <outcome value='true'>
+                        <break/>
+                    </outcome>
+                </switch>
+            </for>
+        </block>
+    </method>
+</service-logic>
