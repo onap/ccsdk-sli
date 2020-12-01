@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============LICENSE_START=======================================================
+  ONAP : CCSDK
+  ================================================================================
+  Copyright (C) 2017 AT&T Intellectual Property. All rights
+  						reserved.
+  ================================================================================
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  ============LICENSE_END=========================================================
+  -->
+
+
+<service-logic xmlns="http://www.onap.org/sdnc/svclogic"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.onap.org/sdnc/svclogic ./svclogic.xsd"
+    module="ase" version="1.0.1">
+
+    <!-- Updated release port logic : deactivate the released port on the EMT -->
+    <method rpc="ase-release-port-request" mode="sync">
+        <exists plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
+            resource="ase-evc" key="uni-circuit-id  == $uni-circuit-id">
+
+            <outcome value="true">
+                <return status="failure">
+                    <parameter name="error-code" value="1130" />
+                    <parameter name="error-message"
+                        value="Cannot release port - used in existing EVC" />
+                </return>
+            </outcome>
+            <outcome value="false">
+                <release plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
+                    resource="ase-port" key="uni-circuit-id == $uni-circuit-id">
+                    <outcome value="success">
+                        <configure adaptor="org.onap.ccsdk.sli.adaptors.emt.EmtAdaptor"
+                            key="$uni-circuit-id" activate="false">
+
+                            <outcome value="success">
+                                <block>
+                                    <record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
+                                        <parameter name="file" value="/tmp/sample_r1.log" />
+                                        <parameter name="field1" value="__TIMESTAMP__" />
+                                        <parameter name="field2" value="RELEASED" />
+                                        <parameter name="field3" value="$uni-circuit-id" />
+                                    </record>
+                                    <return status="success">
+                                        <parameter name="uni-circuit-id" value="$asePort.uni_circuit_id" />
+                                    </return>
+                                </block>
+                            </outcome>
+                            <outcome value="Other">
+                                <return status="failure">
+                                    <parameter name="error-code" value="1130" />
+                                    <parameter name="error-message"
+                                        value="Error encountered trying to de-activate port" />
+                                </return>
+                            </outcome>
+                        </configure>
+                    </outcome>
+
+                    <outcome value="not-found">
+                        <return status="failure">
+                            <parameter name="error-code" value="1110" />
+                            <parameter name="error-message" value="No port found for this uni-circuit-id" />
+                        </return>
+                    </outcome>
+
+                    <outcome value="Other">
+                        <return status="failure">
+                            <parameter name="error-code" value="1130" />
+                            <parameter name="error-message"
+                                value="Error encountered trying to release port" />
+                        </return>
+                    </outcome>
+                </release>
+            </outcome>
+        </exists>
+    </method>
+
+</service-logic>
+
