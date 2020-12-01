@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="ccsdk-daexim-offsite-backup">
+    <repository>mvn:org.onap.ccsdk.sli.core/ccsdk-sli/LATEST/xml/features</repository>
+    <feature name="ccsdk-daexim-offsite-backup">
+        <feature version="${ccsdk.sli.core.version}">ccsdk-sli</feature>
+    </feature>
+</features>

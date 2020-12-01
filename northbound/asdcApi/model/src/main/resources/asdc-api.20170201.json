@@ -1,0 +1,3254 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0"
+  },
+  "basePath": "/restconf",
+  "paths": {
+    "/config": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "**(config)artifacts",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API(config)artifacts-TOP"
+            }
+          },
+          {
+            "in": "body",
+            "name": "**(config)vf-license-model-versions",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API(config)vf-license-model-versions-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)ASDC-API_modulePOST"
+            }
+          }
+        },
+        "description": "SDC Interface",
+        "operationId": "POST-ASDC-API_module"
+      }
+    },
+    "/config/ASDC-API:artifacts": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "operationId": "DELETE-artifacts"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)artifacts"
+            }
+          }
+        },
+        "operationId": "GET-artifacts"
+      },
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "**(config)artifact",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/artifacts(config)artifact-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)artifactsPOST"
+            }
+          }
+        },
+        "operationId": "POST-artifacts"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "(config)artifacts",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API(config)artifacts-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API(config)artifacts-TOP"
+            }
+          }
+        },
+        "operationId": "PUT-artifacts"
+      }
+    },
+    "/config/ASDC-API:artifacts/artifact/{artifact-name}/{artifact-version}": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Name of artifact",
+            "in": "path",
+            "name": "artifact-name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "operationId": "DELETE-artifact"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Name of artifact",
+            "in": "path",
+            "name": "artifact-name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)artifact"
+            }
+          }
+        },
+        "operationId": "GET-artifact"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Name of artifact",
+            "in": "path",
+            "name": "artifact-name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)artifact",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/artifacts(config)artifact-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/artifacts(config)artifact-TOP"
+            }
+          }
+        },
+        "operationId": "PUT-artifact"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "operationId": "DELETE-vf-license-model-versions"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)vf-license-model-versions"
+            }
+          }
+        },
+        "operationId": "GET-vf-license-model-versions"
+      },
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "**(config)vf-license-model-version",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions(config)vf-license-model-version-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)vf-license-model-versionsPOST"
+            }
+          }
+        },
+        "operationId": "POST-vf-license-model-versions"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "(config)vf-license-model-versions",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API(config)vf-license-model-versions-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API(config)vf-license-model-versions-TOP"
+            }
+          }
+        },
+        "operationId": "PUT-vf-license-model-versions"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "operationId": "DELETE-vf-license-model-version"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)vf-license-model-version"
+            }
+          }
+        },
+        "operationId": "GET-vf-license-model-version"
+      },
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "**(config)vf-license-model",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version(config)vf-license-model-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)vf-license-model-versionPOST"
+            }
+          }
+        },
+        "operationId": "POST-vf-license-model-version"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)vf-license-model-version",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions(config)vf-license-model-version-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions(config)vf-license-model-version-TOP"
+            }
+          }
+        },
+        "operationId": "PUT-vf-license-model-version"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-vf-license-model"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)vf-license-model"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-vf-license-model"
+      },
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "**(config)feature-group-list",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model(config)feature-group-list-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)vf-license-modelPOST"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "POST-vf-license-model"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)vf-license-model",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version(config)vf-license-model-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version(config)vf-license-model-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-vf-license-model"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model/feature-group-list": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-feature-group-list"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)feature-group-list"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-feature-group-list"
+      },
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "**(config)feature-group",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list(config)feature-group-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)feature-group-listPOST"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "POST-feature-group-list"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)feature-group-list",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model(config)feature-group-list-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model(config)feature-group-list-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-feature-group-list"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model/feature-group-list/feature-group": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-feature-group"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)feature-group"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-feature-group"
+      },
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "**(config)license-key-group-list",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)license-key-group-list-TOP"
+            }
+          },
+          {
+            "in": "body",
+            "name": "**(config)entitlement-pool-list",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)entitlement-pool-list-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)feature-groupPOST"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "POST-feature-group"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)feature-group",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list(config)feature-group-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list(config)feature-group-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-feature-group"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model/feature-group-list/feature-group/entitlement-pool-list": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-entitlement-pool-list"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)entitlement-pool-list"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-entitlement-pool-list"
+      },
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "**(config)entitlement-pool",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list(config)entitlement-pool-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)entitlement-pool-listPOST"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "POST-entitlement-pool-list"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)entitlement-pool-list",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)entitlement-pool-list-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)entitlement-pool-list-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-entitlement-pool-list"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-entitlement-pool"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)entitlement-pool"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-entitlement-pool"
+      },
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "**(config)threshold-value",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)threshold-value-TOP"
+            }
+          },
+          {
+            "in": "body",
+            "name": "**(config)time",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)time-TOP"
+            }
+          },
+          {
+            "in": "body",
+            "name": "**(config)operational-scope",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)operational-scope-TOP"
+            }
+          },
+          {
+            "in": "body",
+            "name": "**(config)entitlement-metric",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)entitlement-metric-TOP"
+            }
+          },
+          {
+            "in": "body",
+            "name": "**(config)aggregation-function",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)aggregation-function-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)entitlement-poolPOST"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "POST-entitlement-pool"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)entitlement-pool",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list(config)entitlement-pool-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list(config)entitlement-pool-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-entitlement-pool"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool/aggregation-function": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-aggregation-function"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)aggregation-function"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-aggregation-function"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)aggregation-function",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)aggregation-function-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)aggregation-function-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-aggregation-function"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool/entitlement-metric": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-entitlement-metric"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)entitlement-metric"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-entitlement-metric"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)entitlement-metric",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)entitlement-metric-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)entitlement-metric-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-entitlement-metric"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool/operational-scope": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-operational-scope"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)operational-scope"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-operational-scope"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)operational-scope",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)operational-scope-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)operational-scope-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-operational-scope"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool/threshold-value": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-threshold-value"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)threshold-value"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-threshold-value"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)threshold-value",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)threshold-value-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)threshold-value-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-threshold-value"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool/time": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-time"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)time"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-time"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)time",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)time-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)time-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-time"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model/feature-group-list/feature-group/license-key-group-list": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-license-key-group-list"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)license-key-group-list"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-license-key-group-list"
+      },
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "**(config)license-key-group",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list(config)license-key-group-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)license-key-group-listPOST"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "POST-license-key-group-list"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)license-key-group-list",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)license-key-group-list-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)license-key-group-list-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-license-key-group-list"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-license-key-group"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)license-key-group"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-license-key-group"
+      },
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "**(config)operational-scope",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group(config)operational-scope-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)license-key-groupPOST"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "POST-license-key-group"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)license-key-group",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list(config)license-key-group-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list(config)license-key-group-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-license-key-group"
+      }
+    },
+    "/config/ASDC-API:vf-license-model-versions/vf-license-model-version/{artifact-version}/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group/operational-scope": {
+      "delete": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified"
+          }
+        },
+        "description": "xxxx",
+        "operationId": "DELETE-operational-scope"
+      },
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config)operational-scope"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "GET-operational-scope"
+      },
+      "put": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "description": "Version of artifact",
+            "in": "path",
+            "name": "artifact-version",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "(config)operational-scope",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group(config)operational-scope-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group(config)operational-scope-TOP"
+            }
+          }
+        },
+        "description": "xxxx",
+        "operationId": "PUT-operational-scope"
+      }
+    },
+    "/operational/ASDC-API:artifacts": {
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(operational)artifacts"
+            }
+          }
+        },
+        "operationId": "GET-artifacts"
+      }
+    },
+    "/operational/ASDC-API:vf-license-model-versions": {
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(operational)vf-license-model-versions"
+            }
+          }
+        },
+        "operationId": "GET-vf-license-model-versions"
+      }
+    },
+    "/operations/ASDC-API:vf-license-model-update": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(vf-license-model-update)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(vf-license-model-update)output-TOP"
+            }
+          }
+        },
+        "operationId": "vf-license-model-update"
+      }
+    }
+  },
+  "definitions": {
+    "(config)ASDC-API_modulePOST": {
+      "properties": {
+        "artifacts": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API(config)artifacts"
+          },
+          "type": "object"
+        },
+        "vf-license-model-versions": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API(config)vf-license-model-versions"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config)aggregation-functionPOST": {
+      "properties": {
+        "other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "(config)artifactPOST": {
+      "properties": {
+        "artifact-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Name of artifact"
+        },
+        "artifact-version": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Version of artifact"
+        }
+      },
+      "type": "object"
+    },
+    "(config)artifactsPOST": {
+      "properties": {
+        "artifact": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/artifacts(config)artifact"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "(config)entitlement-metricPOST": {
+      "properties": {
+        "other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "(config)entitlement-pool-listPOST": {
+      "properties": {
+        "entitlement-pool": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list(config)entitlement-pool"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "(config)entitlement-poolPOST": {
+      "properties": {
+        "aggregation-function": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)aggregation-function"
+          },
+          "type": "object"
+        },
+        "description": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "entitlement-metric": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)entitlement-metric"
+          },
+          "type": "object"
+        },
+        "entitlement-pool-uuid": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "increments": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "manufacturer-reference-number": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "operational-scope": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)operational-scope"
+          },
+          "type": "object"
+        },
+        "threshold-value": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)threshold-value"
+          },
+          "type": "object"
+        },
+        "time": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)time"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config)feature-group-listPOST": {
+      "properties": {
+        "feature-group": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list(config)feature-group"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "(config)feature-groupPOST": {
+      "properties": {
+        "att-part-number": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "description": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "entitlement-pool-list": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group(config)entitlement-pool-list"
+          },
+          "type": "object"
+        },
+        "feature-group-uuid": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "license-key-group-list": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group(config)license-key-group-list"
+          },
+          "type": "object"
+        },
+        "name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "(config)license-key-group-listPOST": {
+      "properties": {
+        "license-key-group": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/license-key-group-list(config)license-key-group"
+          },
+          "type": "array"
+        },
+        "name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "(config)license-key-groupPOST": {
+      "properties": {
+        "description": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "license-key-group-uuid": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "operational-scope": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group(config)operational-scope"
+          },
+          "type": "object"
+        },
+        "type": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "(config)operational-scopePOST": {
+      "properties": {
+        "other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "(config)threshold-valuePOST": {
+      "properties": {
+        "unit": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "(config)timePOST": {
+      "properties": {
+        "other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "(config)vf-license-model-versionPOST": {
+      "properties": {
+        "artifact-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Name of artifact"
+        },
+        "artifact-version": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Version of artifact"
+        },
+        "vf-license-model": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version(config)vf-license-model"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config)vf-license-model-versionsPOST": {
+      "properties": {
+        "vf-license-model-version": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions(config)vf-license-model-version"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "(config)vf-license-modelPOST": {
+      "properties": {
+        "feature-group-list": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model(config)feature-group-list"
+          },
+          "type": "object"
+        },
+        "vendor-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "vf-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "(vf-license-model-update)input": {
+      "properties": {
+        "ASDC-API:artifact-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Name of artifact"
+        },
+        "ASDC-API:artifact-version": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Version of artifact"
+        },
+        "ASDC-API:vf-license-model": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API(config)vf-license-model"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(vf-license-model-update)input-TOP": {
+      "properties": {
+        "ASDC-API:input": {
+          "items": {
+            "$ref": "#/definitions/(vf-license-model-update)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(vf-license-model-update)output": {
+      "properties": {
+        "ASDC-API:asdc-api-response-code": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Code indicating success/failure"
+        },
+        "ASDC-API:asdc-api-response-text": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Text indicating reason for failure"
+        }
+      },
+      "type": "object"
+    },
+    "(vf-license-model-update)output-TOP": {
+      "properties": {
+        "ASDC-API:output": {
+          "items": {
+            "$ref": "#/definitions/(vf-license-model-update)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API(config)artifacts": {
+      "properties": {
+        "ASDC-API:artifact": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/artifacts(config)artifact"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API(config)artifacts-TOP": {
+      "properties": {
+        "ASDC-API:artifacts": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API(config)artifacts"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API(config)vf-license-model": {
+      "properties": {
+        "ASDC-API:feature-group-list": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model(config)feature-group-list"
+          },
+          "type": "object"
+        },
+        "ASDC-API:vendor-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:vf-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API(config)vf-license-model-TOP": {
+      "properties": {
+        "ASDC-API:vf-license-model": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API(config)vf-license-model"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API(config)vf-license-model-versions": {
+      "properties": {
+        "ASDC-API:vf-license-model-version": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions(config)vf-license-model-version"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API(config)vf-license-model-versions-TOP": {
+      "properties": {
+        "ASDC-API:vf-license-model-versions": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API(config)vf-license-model-versions"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API(operational)artifacts": {
+      "type": "object"
+    },
+    "ASDC-API(operational)artifacts-TOP": {
+      "properties": {
+        "ASDC-API:artifacts": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API(operational)artifacts"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API(operational)vf-license-model-versions": {
+      "type": "object"
+    },
+    "ASDC-API(operational)vf-license-model-versions-TOP": {
+      "properties": {
+        "ASDC-API:vf-license-model-versions": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API(operational)vf-license-model-versions"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/artifacts(config)artifact": {
+      "properties": {
+        "ASDC-API:artifact-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Name of artifact"
+        },
+        "ASDC-API:artifact-version": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Version of artifact"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/artifacts(config)artifact-TOP": {
+      "properties": {
+        "ASDC-API:artifact": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/artifacts(config)artifact"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model(config)feature-group-list": {
+      "properties": {
+        "ASDC-API:feature-group": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list(config)feature-group"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model(config)feature-group-list-TOP": {
+      "properties": {
+        "ASDC-API:feature-group-list": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model(config)feature-group-list"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions(config)vf-license-model-version": {
+      "properties": {
+        "ASDC-API:artifact-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Name of artifact"
+        },
+        "ASDC-API:artifact-version": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Version of artifact"
+        },
+        "ASDC-API:vf-license-model": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version(config)vf-license-model"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions(config)vf-license-model-version-TOP": {
+      "properties": {
+        "ASDC-API:vf-license-model-version": {
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions(config)vf-license-model-version"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version(config)vf-license-model": {
+      "properties": {
+        "ASDC-API:feature-group-list": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model(config)feature-group-list"
+          },
+          "type": "object"
+        },
+        "ASDC-API:vendor-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:vf-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version(config)vf-license-model-TOP": {
+      "properties": {
+        "ASDC-API:vf-license-model": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version(config)vf-license-model"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model(config)feature-group-list": {
+      "properties": {
+        "ASDC-API:feature-group": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list(config)feature-group"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model(config)feature-group-list-TOP": {
+      "properties": {
+        "ASDC-API:feature-group-list": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model(config)feature-group-list"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list(config)feature-group": {
+      "properties": {
+        "ASDC-API:att-part-number": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:description": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:entitlement-pool-list": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)entitlement-pool-list"
+          },
+          "type": "object"
+        },
+        "ASDC-API:feature-group-uuid": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:license-key-group-list": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)license-key-group-list"
+          },
+          "type": "object"
+        },
+        "ASDC-API:name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list(config)feature-group-TOP": {
+      "properties": {
+        "ASDC-API:feature-group": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list(config)feature-group"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)entitlement-pool-list": {
+      "properties": {
+        "ASDC-API:entitlement-pool": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list(config)entitlement-pool"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)entitlement-pool-list-TOP": {
+      "properties": {
+        "ASDC-API:entitlement-pool-list": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)entitlement-pool-list"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)license-key-group-list": {
+      "properties": {
+        "ASDC-API:license-key-group": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list(config)license-key-group"
+          },
+          "type": "array"
+        },
+        "ASDC-API:name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)license-key-group-list-TOP": {
+      "properties": {
+        "ASDC-API:license-key-group-list": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group(config)license-key-group-list"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list(config)entitlement-pool": {
+      "properties": {
+        "ASDC-API:aggregation-function": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)aggregation-function"
+          },
+          "type": "object"
+        },
+        "ASDC-API:description": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:entitlement-metric": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)entitlement-metric"
+          },
+          "type": "object"
+        },
+        "ASDC-API:entitlement-pool-uuid": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:increments": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:manufacturer-reference-number": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:operational-scope": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)operational-scope"
+          },
+          "type": "object"
+        },
+        "ASDC-API:threshold-value": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)threshold-value"
+          },
+          "type": "object"
+        },
+        "ASDC-API:time": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)time"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list(config)entitlement-pool-TOP": {
+      "properties": {
+        "ASDC-API:entitlement-pool": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list(config)entitlement-pool"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)aggregation-function": {
+      "properties": {
+        "ASDC-API:other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)aggregation-function-TOP": {
+      "properties": {
+        "ASDC-API:aggregation-function": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)aggregation-function"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)entitlement-metric": {
+      "properties": {
+        "ASDC-API:other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)entitlement-metric-TOP": {
+      "properties": {
+        "ASDC-API:entitlement-metric": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)entitlement-metric"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)operational-scope": {
+      "properties": {
+        "ASDC-API:other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)operational-scope-TOP": {
+      "properties": {
+        "ASDC-API:operational-scope": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)operational-scope"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)threshold-value": {
+      "properties": {
+        "ASDC-API:unit": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)threshold-value-TOP": {
+      "properties": {
+        "ASDC-API:threshold-value": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)threshold-value"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)time": {
+      "properties": {
+        "ASDC-API:other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)time-TOP": {
+      "properties": {
+        "ASDC-API:time": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)time"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list(config)license-key-group": {
+      "properties": {
+        "ASDC-API:description": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:license-key-group-uuid": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:operational-scope": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group(config)operational-scope"
+          },
+          "type": "object"
+        },
+        "ASDC-API:type": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list(config)license-key-group-TOP": {
+      "properties": {
+        "ASDC-API:license-key-group": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list(config)license-key-group"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group(config)operational-scope": {
+      "properties": {
+        "ASDC-API:other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group(config)operational-scope-TOP": {
+      "properties": {
+        "ASDC-API:operational-scope": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model-versions/vf-license-model-version/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group(config)operational-scope"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list(config)feature-group": {
+      "properties": {
+        "ASDC-API:att-part-number": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:description": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:entitlement-pool-list": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group(config)entitlement-pool-list"
+          },
+          "type": "object"
+        },
+        "ASDC-API:feature-group-uuid": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:license-key-group-list": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group(config)license-key-group-list"
+          },
+          "type": "object"
+        },
+        "ASDC-API:name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list(config)feature-group-TOP": {
+      "properties": {
+        "ASDC-API:feature-group": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list(config)feature-group"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group(config)entitlement-pool-list": {
+      "properties": {
+        "ASDC-API:entitlement-pool": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list(config)entitlement-pool"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group(config)entitlement-pool-list-TOP": {
+      "properties": {
+        "ASDC-API:entitlement-pool-list": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group(config)entitlement-pool-list"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group(config)license-key-group-list": {
+      "properties": {
+        "ASDC-API:license-key-group": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/license-key-group-list(config)license-key-group"
+          },
+          "type": "array"
+        },
+        "ASDC-API:name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group(config)license-key-group-list-TOP": {
+      "properties": {
+        "ASDC-API:license-key-group-list": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group(config)license-key-group-list"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list(config)entitlement-pool": {
+      "properties": {
+        "ASDC-API:aggregation-function": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)aggregation-function"
+          },
+          "type": "object"
+        },
+        "ASDC-API:description": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:entitlement-metric": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)entitlement-metric"
+          },
+          "type": "object"
+        },
+        "ASDC-API:entitlement-pool-uuid": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:increments": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:manufacturer-reference-number": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:operational-scope": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)operational-scope"
+          },
+          "type": "object"
+        },
+        "ASDC-API:threshold-value": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)threshold-value"
+          },
+          "type": "object"
+        },
+        "ASDC-API:time": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)time"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list(config)entitlement-pool-TOP": {
+      "properties": {
+        "ASDC-API:entitlement-pool": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list(config)entitlement-pool"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)aggregation-function": {
+      "properties": {
+        "ASDC-API:other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)aggregation-function-TOP": {
+      "properties": {
+        "ASDC-API:aggregation-function": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)aggregation-function"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)entitlement-metric": {
+      "properties": {
+        "ASDC-API:other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)entitlement-metric-TOP": {
+      "properties": {
+        "ASDC-API:entitlement-metric": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)entitlement-metric"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)operational-scope": {
+      "properties": {
+        "ASDC-API:other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)operational-scope-TOP": {
+      "properties": {
+        "ASDC-API:operational-scope": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)operational-scope"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)threshold-value": {
+      "properties": {
+        "ASDC-API:unit": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)threshold-value-TOP": {
+      "properties": {
+        "ASDC-API:threshold-value": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)threshold-value"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)time": {
+      "properties": {
+        "ASDC-API:other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)time-TOP": {
+      "properties": {
+        "ASDC-API:time": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/entitlement-pool-list/entitlement-pool(config)time"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/license-key-group-list(config)license-key-group": {
+      "properties": {
+        "ASDC-API:description": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:license-key-group-uuid": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:operational-scope": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group(config)operational-scope"
+          },
+          "type": "object"
+        },
+        "ASDC-API:type": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/license-key-group-list(config)license-key-group-TOP": {
+      "properties": {
+        "ASDC-API:license-key-group": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/license-key-group-list(config)license-key-group"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group(config)operational-scope": {
+      "properties": {
+        "ASDC-API:other": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        },
+        "ASDC-API:value": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "xxxx"
+        }
+      },
+      "type": "object"
+    },
+    "ASDC-API/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group(config)operational-scope-TOP": {
+      "properties": {
+        "ASDC-API:operational-scope": {
+          "description": "xxxx",
+          "items": {
+            "$ref": "#/definitions/ASDC-API/vf-license-model/feature-group-list/feature-group/license-key-group-list/license-key-group(config)operational-scope"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "unique_empty_identifier": {}
+  }
+}

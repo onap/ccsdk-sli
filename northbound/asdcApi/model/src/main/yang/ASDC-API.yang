@@ -1,0 +1,63 @@
+
+module ASDC-API {
+    yang-version "1";
+
+    namespace "org:onap:ccsdk";
+
+    prefix asdc-api;
+
+    import asdc-api-common { prefix asdc-api-common; }
+
+
+    import asdc-license-model { prefix asdc-license-model; }
+
+    import ietf-inet-types {
+        prefix inet;
+        revision-date "2013-07-15";
+        }
+
+    organization
+        "ONAP";
+
+    contact
+        "Dan Timoney";
+
+    description
+        "SDC Interface";
+
+    revision 2017-02-01 {
+        description "database definitions";
+    }
+
+    // Containers
+    container artifacts {
+        list artifact {
+            key "artifact-name artifact-version";
+
+            uses asdc-api-common:artifact-fields;
+        }
+    }
+
+
+
+    container vf-license-model-versions {
+        list vf-license-model-version {
+            key artifact-version;
+            uses asdc-api-common:artifact-fields;
+            uses asdc-license-model:vf-license-model-grouping;
+        }
+    }
+
+
+    // RPCs
+
+    rpc vf-license-model-update {
+        input {
+            uses asdc-api-common:artifact-fields;
+            uses asdc-license-model:vf-license-model-grouping;
+        }
+        output {
+            uses asdc-api-common:asdc-api-response;
+        }
+    }
+}

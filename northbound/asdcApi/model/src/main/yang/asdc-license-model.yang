@@ -1,0 +1,369 @@
+module asdc-license-model {
+
+    namespace "http://xmlns.onap.org/asdc/license-model/1.0";
+    prefix le;
+    organization "onap";
+    contact "asdc";
+    description "schema for both vendor license and VF license models";
+    revision 2016-04-27 {
+        description "xxxx";
+        reference "xxxx";
+    }
+
+    container vendor-license-model {
+        description "xxxx";
+        leaf vendor-name {
+            type string{
+                length "1..200";
+            }
+            description "xxxx";
+        }
+        uses entitlement-pools;
+        uses license-key-groups;
+    }
+
+    grouping entitlement-pools {
+        description "xxxx";
+        container entitlement-pool-list {
+            description "xxxx";
+            uses entitlement-pool;
+        }
+    }
+
+    grouping entitlement-pool {
+        description "xxxx";
+      list entitlement-pool {
+            description "xxxx";
+            leaf entitlement-pool-uuid {
+                type string;
+                description "xxxx";
+            }
+            leaf name {
+                type string{
+                    length "1..120";
+                }
+                description "xxxx";
+            }
+            leaf description {
+                type string{
+                    length "1..1000";
+                }
+                description "xxxx";
+            }
+            leaf manufacturer-reference-number {
+                type string{
+                    length "1..100";
+                }
+                description "xxxx";
+            }
+            uses operational-scope;
+            uses threshold-value;
+            uses entitlement-metric;
+            leaf increments {
+                type string{
+                    length "1..120";
+                }
+                description "xxxx";
+            }
+            uses aggregation-function;
+            uses time;
+        }
+    }
+
+    grouping operational-scope {
+        description "xxxx";
+        container operational-scope {
+        description "xxxx";
+            leaf value {
+                type enumeration {
+                    enum "Network_Wide"{
+                        description "xxxx";
+                    }
+                    enum "Availability_Zone"{
+                        description "xxxx";
+                    }
+                    enum "Data_Center"{
+                        description "xxxx";
+                    }
+                    enum "Tenant"{
+                        description "xxxx";
+                    }
+                    enum "VM"{
+                        description "xxxx";
+                    }
+                    enum "CPU"{
+                        description "xxxx";
+                    }
+                    enum "Core"{
+                        description "xxxx";
+                    }
+                    enum "Other"{
+                        description "xxxx";
+                    }
+                }
+                description "xxxx";
+            }
+            leaf other {
+                type string{
+                    length "1..200";
+                }
+                description "xxxx";
+            }
+        }
+    }
+
+    grouping threshold-value {
+        description "xxxx";
+        container threshold-value {
+        description "xxxx";
+            leaf value {
+                type uint32{
+                    range "0..9999999";
+                } //TBD Change to type number
+                description "xxxx";
+            }
+            leaf unit {
+                type enumeration {
+                    enum "Absolute"{
+                        description "xxxx";
+                    }
+                    enum "Percentage"{
+                        description "xxxx";
+                    }
+                }
+                description "xxxx";
+            }
+        }
+    }
+
+    grouping entitlement-metric {
+        description "xxxx";
+        container entitlement-metric {
+        description "xxxx";
+            leaf value {
+                type enumeration {
+                    enum "Software_Instances_Count"{
+                        description "xxxx";
+                    }
+                    enum "CPU"{
+                        description "xxxx";
+                    }
+                    enum "Core"{
+                        description "xxxx";
+                    }
+                    enum "Trunks"{
+                        description "xxxx";
+                    }
+                    enum "User"{
+                        description "xxxx";
+                    }
+                    enum "Subscribers"{
+                        description "xxxx";
+                    }
+                    enum "Tenants"{
+                        description "xxxx";
+                    }
+                    enum "Tokens"{
+                        description "xxxx";
+                    }
+                    enum "Seats"{
+                        description "xxxx";
+                    }
+                    enum "Units_TB"{
+                        description "xxxx";
+                    }
+                    enum "Units_GB"{
+                        description "xxxx";
+                    }
+                    enum "Units_MB"{
+                        description "xxxx";
+                    }
+                    enum "Other"{
+                        description "xxxx";
+                    }
+                }
+                description "xxxx";
+            }
+            leaf other {
+                type string{
+                    length "1..200";
+                }
+                description "xxxx";
+            }
+        }
+    }
+
+    grouping aggregation-function {
+        description "xxxx";
+        container aggregation-function {
+        description "xxxx";
+            leaf value {
+                type enumeration {
+                    enum "Peak"{
+                        description "xxxx";
+                    }
+                    enum "Average"{
+                        description "xxxx";
+                    }
+                    enum "Other"{
+                        description "xxxx";
+                    }
+                }
+                description "xxxx";
+            }
+            leaf other {
+                type string{
+                    length "1..200";
+                }
+                description "xxxx";
+            }
+        }
+    }
+
+    grouping time {
+        description "xxxx";
+        container time {
+        description "xxxx";
+            leaf value {
+                type enumeration {
+                    enum "Hour"{
+                        description "xxxx";
+                    }
+                    enum "Day"{
+                        description "xxxx";
+                    }
+                    enum "Month"{
+                        description "xxxx";
+                    }
+                    enum "Quarter"{
+                        description "xxxx";
+                    }
+                    enum "Year"{
+                        description "xxxx";
+                    }
+                    enum "Other"{
+                        description "xxxx";
+                    }
+                }
+                description "xxxx";
+            }
+            leaf other {
+                type string{
+                    length "1..200";
+                }
+                description "xxxx";
+            }
+        }
+    }
+
+
+
+    grouping license-key-groups {
+        description "xxxx";
+        container license-key-group-list {
+            description "xxxx";
+            leaf name {
+                type string;
+                description "xxxx";
+            }
+            uses license-key-group;
+        }
+    }
+
+    grouping license-key-group {
+        description "xxxx";
+      list license-key-group {
+            description "xxxx";
+            leaf license-key-group-uuid {
+                type string;
+                description "xxxx";
+            }
+            leaf name {
+                type string{
+                    length "1..120";
+                }
+                description "xxxx";
+            }
+            leaf description {
+                type string{
+                    length "1..1000";
+                }
+                description "xxxx";
+            }
+            uses operational-scope;
+            leaf type {
+                type enumeration {
+                    enum "Universal"{
+                        description "xxxx";
+                    }
+                    enum "Unique"{
+                        description "xxxx";
+                    }
+                    enum "One_Time"{
+                        description "xxxx";
+                    }
+                }
+                description "xxxx";
+            }
+        }
+    }
+
+    grouping vf-license-model-grouping {
+        description "xxxx";
+      container vf-license-model {
+            description "xxxx";
+            leaf vf-id {
+                type string{
+                    length "1..200";
+                }
+                description "xxxx";
+            }
+            leaf vendor-name {
+                type string{
+                    length "1..200";
+                }
+                description "xxxx";
+            }
+            uses feature-groups;
+        }
+    }
+
+    grouping feature-groups {
+        description "xxxx";
+        container feature-group-list {
+            description "xxxx";
+            uses feature-group-grouping;
+        }
+    }
+
+    grouping feature-group-grouping {
+        description "xxxx";
+      list feature-group {
+            description "xxxx";
+            leaf name{
+                type string{
+                    length "1..120";
+                }
+                description "xxxx";
+            }
+            leaf feature-group-uuid{
+                type string;
+                description "xxxx";
+            }
+            leaf description {
+                type string{
+                    length "1..1000";
+                }
+                description "xxxx";
+            }
+            leaf att-part-number {
+                type string{
+                    length "1..100";
+                }
+                description "xxxx";
+            }
+            uses entitlement-pools;
+            uses license-key-groups;
+        }
+    }
+}

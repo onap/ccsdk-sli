@@ -1,0 +1,5 @@
+# SDN-C URL
+SDNC.endpoint => DataChange:data-change-notification
+
+# Field mapping
+SDNC.template => template-esr-thirdparty-sdnc.vt
