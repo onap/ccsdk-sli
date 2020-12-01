@@ -1,0 +1,73 @@
+module DataChange {
+
+  yang-version 1;
+
+  namespace "org:onap:ccsdk:sli:northbound:datachange";
+
+  prefix datachg;
+
+  organization "AT&T, Inc.";
+
+  contact
+    "Dan Timoney <dt5972@att.com>";
+
+  description
+    "Defines API interface for notification of data changes";
+
+  revision "2015-05-19" {
+    description
+      "Initial draft";
+  }
+
+  grouping data-change-request {
+
+  	leaf aai-event-id {
+  		type string;
+  	}
+
+  	leaf aai-node-type {
+  		type string;
+  	}
+
+  	leaf aai-event-trigger {
+  		type enumeration {
+  			enum "Update";
+  			enum "Delete";
+  		}
+  	}
+
+  	list key-data {
+  		key key-name;
+  		leaf key-name {
+  			type string;
+  		}
+  		leaf key-value {
+  			type string;
+  		}
+  	}
+
+  	leaf selflink {
+  		type string;
+  	}
+
+  }
+
+  grouping data-change-response {
+
+     leaf data-change-response-code {
+     	type string;
+     }
+  }
+
+  rpc data-change-notification {
+
+  	input {
+  		uses data-change-request;
+  		}
+
+  	output {
+  		uses data-change-response;
+  	}
+  }
+
+}

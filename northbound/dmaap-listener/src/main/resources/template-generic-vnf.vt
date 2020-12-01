@@ -1,0 +1,11 @@
+{
+	"input": {
+		"common-header": {
+			"request-id": "$req_id",
+			"timestamp": "$curr_time",
+			"originator-id": "AAI",
+			"api-ver": "2.00"
+		},
+		"payload": $full_message
+	}
+}

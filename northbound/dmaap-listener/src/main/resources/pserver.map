@@ -1,0 +1,5 @@
+# SDN-C URL
+SDNC.endpoint => config-selfservice-api:notification-callback
+
+# Field mapping 
+SDNC.template => template-pserver.vt

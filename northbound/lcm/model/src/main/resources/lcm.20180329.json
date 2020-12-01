@@ -1,0 +1,4523 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0"
+  },
+  "basePath": "/restconf",
+  "paths": {
+    "/operations/LCM:action-status": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(action-status)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(action-status)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to get the current state of the previously submitted LCM request",
+        "operationId": "action-status"
+      }
+    },
+    "/operations/LCM:attach-volume": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(attach-volume)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(attach-volume)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to attach a cinder volume to a VM",
+        "operationId": "attach-volume"
+      }
+    },
+    "/operations/LCM:audit": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(audit)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(audit)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to audit the configurations of a virtual network function (or VM)",
+        "operationId": "audit"
+      }
+    },
+    "/operations/LCM:check-lock": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(check-lock)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(check-lock)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to check VNF lock status",
+        "operationId": "check-lock"
+      }
+    },
+    "/operations/LCM:config-backup": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(config-backup)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config-backup)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to Backup configurations of a virtual network function\\n(or VM)",
+        "operationId": "config-backup"
+      }
+    },
+    "/operations/LCM:config-backup-delete": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(config-backup-delete)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config-backup-delete)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to Delete backup configurations of a virtual network\\nfunction (or VM)",
+        "operationId": "config-backup-delete"
+      }
+    },
+    "/operations/LCM:config-export": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(config-export)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config-export)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to Export configurations of a virtual network function\\n(or VM)",
+        "operationId": "config-export"
+      }
+    },
+    "/operations/LCM:config-modify": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(config-modify)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config-modify)output-TOP"
+            }
+          }
+        },
+        "description": "Use the ModifyConfig command when a full configuration cycle is either not required\\nor is considered too costly. The ModifyConfig LCM action affects only a subset of the\\ntotal configuration data of a VNF. The set of configuration parameters to be affected\\nis a subset of the total configuration data of the target VNF type. The payload Stop\\nApplication must contain the configuration parameters to be modified and their values.\\nA successful modify returns a success response. A failed modify returns a failure\\nresponse and the specific failure messages in the response payload Stop Application",
+        "operationId": "config-modify"
+      }
+    },
+    "/operations/LCM:config-restore": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(config-restore)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config-restore)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to restore the configurations of a virtual network\\nfunction (or VM)",
+        "operationId": "config-restore"
+      }
+    },
+    "/operations/LCM:config-scale-out": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(config-scale-out)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(config-scale-out)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to Modify the configuration or other action to support\\na ConfigScaleOut of a VNF.",
+        "operationId": "config-scale-out"
+      }
+    },
+    "/operations/LCM:configure": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(configure)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(configure)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to configure the configurations of a virtual network\\nfunction (or VM)",
+        "operationId": "configure"
+      }
+    },
+    "/operations/LCM:detach-volume": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(detach-volume)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(detach-volume)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to detach a cinder volume from a VM",
+        "operationId": "detach-volume"
+      }
+    },
+    "/operations/LCM:evacuate": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(evacuate)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(evacuate)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to evacuate a virtual network function (or VM)",
+        "operationId": "evacuate"
+      }
+    },
+    "/operations/LCM:health-check": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(health-check)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(health-check)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to perform health check of vSCP prior its upgrading",
+        "operationId": "health-check"
+      }
+    },
+    "/operations/LCM:live-upgrade": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(live-upgrade)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(live-upgrade)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to perform upgrade of vSCP",
+        "operationId": "live-upgrade"
+      }
+    },
+    "/operations/LCM:lock": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(lock)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(lock)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to perform VNF lock operation",
+        "operationId": "lock"
+      }
+    },
+    "/operations/LCM:migrate": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(migrate)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(migrate)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to migrate a virtual network function (or VM)",
+        "operationId": "migrate"
+      }
+    },
+    "/operations/LCM:query": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(query)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(query)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to query the status of a targe VNF.\\nReturns information on each VM, including state (active or standby)\\nand status (healthy or unhealthy)",
+        "operationId": "query"
+      }
+    },
+    "/operations/LCM:quiesce-traffic": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(quiesce-traffic)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(quiesce-traffic)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to stop traffic gracefully on the VF.\\nIt stops traffic gracefully without stopping the application",
+        "operationId": "quiesce-traffic"
+      }
+    },
+    "/operations/LCM:reboot": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(reboot)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(reboot)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to reboot a specified virtual machine (VM)",
+        "operationId": "reboot"
+      }
+    },
+    "/operations/LCM:rebuild": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(rebuild)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(rebuild)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to rebuild a virtual network function (or VM)",
+        "operationId": "rebuild"
+      }
+    },
+    "/operations/LCM:restart": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(restart)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(restart)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to restart a virtual network function (or VM)",
+        "operationId": "restart"
+      }
+    },
+    "/operations/LCM:resume-traffic": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(resume-traffic)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(resume-traffic)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to resume traffic gracefully on the VF.\\nIt resumes traffic gracefully without stopping the application",
+        "operationId": "resume-traffic"
+      }
+    },
+    "/operations/LCM:rollback": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(rollback)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(rollback)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to rollback to particular snapshot of a virtual network function (or VM)",
+        "operationId": "rollback"
+      }
+    },
+    "/operations/LCM:snapshot": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(snapshot)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(snapshot)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to create a snapshot of a virtual network function (or VM)",
+        "operationId": "snapshot"
+      }
+    },
+    "/operations/LCM:software-upload": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(software-upload)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(software-upload)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to upload a new version of vSCP image to vSCP for updating it",
+        "operationId": "software-upload"
+      }
+    },
+    "/operations/LCM:start": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(start)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(start)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to start a virtual network function (or VM)",
+        "operationId": "start"
+      }
+    },
+    "/operations/LCM:start-application": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(start-application)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(start-application)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to perform VNF Start Application operation",
+        "operationId": "start-application"
+      }
+    },
+    "/operations/LCM:stop": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(stop)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(stop)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to stop the configurations of a virtual network function (or VM)",
+        "operationId": "stop"
+      }
+    },
+    "/operations/LCM:stop-application": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(stop-application)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(stop-application)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to Stop Application traffic to a virtual network function",
+        "operationId": "stop-application"
+      }
+    },
+    "/operations/LCM:sync": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(sync)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(sync)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to sync the configurations of a virtual network function (or VM)",
+        "operationId": "sync"
+      }
+    },
+    "/operations/LCM:terminate": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(terminate)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(terminate)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to terminate the configurations of a virtual network function (or VM)",
+        "operationId": "terminate"
+      }
+    },
+    "/operations/LCM:test": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(test)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(test)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to test the configurations of a virtual network function (or VM)",
+        "operationId": "test"
+      }
+    },
+    "/operations/LCM:unlock": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(unlock)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(unlock)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to perform VNF unlock operation",
+        "operationId": "unlock"
+      }
+    },
+    "/operations/LCM:upgrade-backout": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(upgrade-backout)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(upgrade-backout)output-TOP"
+            }
+          }
+        },
+        "description": "An operation does a backout after an UpgradeSoftware is completed (either successfully or unsuccessfully).",
+        "operationId": "upgrade-backout"
+      }
+    },
+    "/operations/LCM:upgrade-backup": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(upgrade-backup)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(upgrade-backup)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to do full backup of the VNF data prior to an upgrade.",
+        "operationId": "upgrade-backup"
+      }
+    },
+    "/operations/LCM:upgrade-post-check": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(upgrade-post-check)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(upgrade-post-check)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to check the VNF upgrade has been successful completed and all processes are running properly.",
+        "operationId": "upgrade-post-check"
+      }
+    },
+    "/operations/LCM:upgrade-pre-check": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(upgrade-pre-check)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(upgrade-pre-check)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to check that the VNF has the correct software version needed for a software upgrade.",
+        "operationId": "upgrade-pre-check"
+      }
+    },
+    "/operations/LCM:upgrade-software": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(upgrade-software)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(upgrade-software)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to upgrade the target VNF to a new version and expected that the VNF is in a quiesced status .",
+        "operationId": "upgrade-software"
+      }
+    },
+    "/operations/LCM:download-n-e-sw": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(download-n-e-sw)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(download-n-e-sw)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to download NE software.",
+        "operationId": "download-n-e-sw"
+      }
+    },
+    "/operations/LCM:activate-n-e-sw": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(activate-n-e-sw)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(activate-n-e-sw)output-TOP"
+            }
+          }
+        },
+        "description": "An operation to activate NE software.",
+        "operationId": "activate-n-e-sw"
+      }
+    }
+  },
+  "definitions": {
+    "(action-status)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(action-status)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(action-status)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(action-status)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(action-status)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(action-status)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(attach-volume)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(attach-volume)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(attach-volume)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(attach-volume)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(attach-volume)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(attach-volume)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(audit)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(audit)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(audit)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(audit)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(audit)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(audit)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(check-lock)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(check-lock)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(check-lock)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(check-lock)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:locked": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "TRUE/FALSE - returns TRUE when the given VNF was locked, otherwise returns FALSE"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(check-lock)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(check-lock)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config)LCM_modulePOST": {
+      "type": "object"
+    },
+    "(config)action-identifiersPOST": {
+      "properties": {
+        "service-instance-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "identifies a specific service the command refers to. When multiple\\n   APP-C instances are used and applied to a subset of services,\\n   this will become significant . The field is mandatory when the\\n   vnf-id is empty"
+        },
+        "vf-module-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "identifies the VF module to which this action is to be applied."
+        },
+        "vnf-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "identifies the VNF to which this action is to be applied(vnf-id\\n   uniquely identifies the service-instance referred to). Note that\\n   some actions are applied to multiple VNFs in the same service.\\n   When this is the case, vnf-id may be left out, but service-instance-id\\n   must appear. The field is mandatory when service-instance-id is\\n   empty"
+        },
+        "vnfc-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "identifies the VNFC to which this action is to be applied. Some\\n   actions apply only to a component within a VNF (e.g. RESTART is\\n   sometimes applied to on VM only). In such a case, the name of\\n   the VNFC is used to search for the component within the VNF"
+        },
+        "vserver-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "identifies a specific VM within the given service/vnf to which\\n   this action is to be applied"
+        },
+        "pnf-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "identifies the PNF to which this action is to be applied."
+        }
+      },
+      "type": "object"
+    },
+    "(config)common-headerPOST": {
+      "properties": {
+        "api-ver": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "api-ver is the API version identifier. A given release of APPC\\n   should support all previous versions of APPC API (correlate with\\n   general requirements)"
+        },
+        "flags": {
+          "items": {
+            "$ref": "#/definitions/LCM/common-header(config)flags"
+          },
+          "type": "object"
+        },
+        "originator-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "originator-id an identifier of the calling system which can be\\n   used addressing purposes, i.e. returning asynchronous response\\n   to the proper destination over DMaaP (especially in case of multiple\\n   consumers of APP-C APIs)"
+        },
+        "request-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "UUID for the request ID. An OSS/BSS identifier for the request\\n   that caused the current action. Multiple API calls may be made\\n   with the same request-id The request-id shall be recorded throughout\\n   the operations on a single request"
+        },
+        "sub-request-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Uniquely identifies a specific LCM action. It is persistent over\\n   the life-cycle of a single request"
+        },
+        "timestamp": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "timestamp is in ISO 8601 timestamp format ZULU offset"
+        }
+      },
+      "required": [
+        "api-ver",
+        "originator-id",
+        "request-id",
+        "timestamp"
+      ],
+      "type": "object"
+    },
+    "(config)flagsPOST": {
+      "properties": {
+        "force": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "TRUE/FALSE - Execute action even if target is in unstable (i.e.\\n       locked, transiting, etc.) state"
+        },
+        "mode": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "EXCLUSIVE (accept no queued requests on this VNF while processing)\\n       or NORMAL (queue other requests until complete)"
+        },
+        "ttl": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "<0....N> - The timeout value (expressed in seconds) for action\\n       execution, between action being received by APPC and action initiation"
+        }
+      },
+      "type": "object"
+    },
+    "(config)query-resultsPOST": {
+      "properties": {
+        "vm-state": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "The state of the VM"
+        },
+        "vm-status": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "the status of the VM"
+        },
+        "vserver-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Identifier of a VM"
+        }
+      },
+      "required": [
+        "vm-state",
+        "vm-status",
+        "vserver-id"
+      ],
+      "type": "object"
+    },
+    "(config)statusPOST": {
+      "properties": {
+        "code": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Response code"
+        },
+        "message": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Response message"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "(config-backup)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(config-backup)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(config-backup)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-backup)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-backup)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(config-backup)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-backup-delete)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(config-backup-delete)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(config-backup-delete)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-backup-delete)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-backup-delete)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(config-backup-delete)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-export)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(config-export)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(config-export)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-export)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-export)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(config-export)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-modify)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(config-modify)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(config-modify)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-modify)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-modify)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(config-modify)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-restore)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(config-restore)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(config-restore)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-restore)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-restore)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(config-restore)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-scale-out)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(config-scale-out)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(config-scale-out)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-scale-out)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(config-scale-out)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(config-scale-out)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(configure)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(configure)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(configure)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(configure)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(configure)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(configure)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(detach-volume)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(detach-volume)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(detach-volume)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(detach-volume)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(detach-volume)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(detach-volume)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(evacuate)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(evacuate)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(evacuate)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(evacuate)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(evacuate)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(evacuate)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(health-check)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(health-check)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(health-check)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(health-check)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(health-check)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(health-check)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(live-upgrade)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(live-upgrade)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(live-upgrade)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(live-upgrade)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(live-upgrade)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(live-upgrade)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(lock)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(lock)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(lock)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(lock)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(lock)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(lock)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(migrate)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(migrate)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(migrate)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(migrate)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(migrate)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(migrate)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(query)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(query)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(query)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(query)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:query-results": {
+          "items": {
+            "$ref": "#/definitions/LCM(config)query-results"
+          },
+          "type": "array"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(query)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(query)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(quiesce-traffic)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(quiesce-traffic)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(quiesce-traffic)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(quiesce-traffic)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(quiesce-traffic)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(quiesce-traffic)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(reboot)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(reboot)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(reboot)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(reboot)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(reboot)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(reboot)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(rebuild)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(rebuild)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(rebuild)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(rebuild)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(rebuild)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(rebuild)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(restart)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(restart)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(restart)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(restart)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(restart)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(restart)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(resume-traffic)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(resume-traffic)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(resume-traffic)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(resume-traffic)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(resume-traffic)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(resume-traffic)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(rollback)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:identity-url": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:snapshot-id": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:identity-url",
+        "LCM:snapshot-id"
+      ],
+      "type": "object"
+    },
+    "(rollback)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(rollback)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(rollback)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(rollback)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(rollback)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(snapshot)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:identity-url": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:identity-url"
+      ],
+      "type": "object"
+    },
+    "(snapshot)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(snapshot)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(snapshot)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:snapshot-id": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(snapshot)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(snapshot)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(software-upload)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(software-upload)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(software-upload)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(software-upload)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(software-upload)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(software-upload)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(start)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(start)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(start)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(start)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(start)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(start)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(start-application)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(start-application)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(start-application)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(start-application)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(start-application)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(start-application)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(stop)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(stop)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(stop)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(stop)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(stop)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(stop)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(stop-application)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(stop-application)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(stop-application)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(stop-application)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(stop-application)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(stop-application)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(sync)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(sync)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(sync)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(sync)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(sync)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(sync)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(terminate)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(terminate)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(terminate)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(terminate)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(terminate)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(terminate)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(test)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(test)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(test)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(test)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(test)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(test)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(unlock)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action"
+      ],
+      "type": "object"
+    },
+    "(unlock)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(unlock)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(unlock)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(unlock)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(unlock)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-backout)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(upgrade-backout)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(upgrade-backout)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-backout)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-backout)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(upgrade-backout)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-backup)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(upgrade-backup)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(upgrade-backup)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-backup)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-backup)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(upgrade-backup)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-post-check)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(upgrade-post-check)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(upgrade-post-check)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-post-check)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-post-check)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(upgrade-post-check)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-pre-check)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(upgrade-pre-check)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(upgrade-pre-check)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-pre-check)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-pre-check)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(upgrade-pre-check)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-software)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(upgrade-software)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(upgrade-software)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-software)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(upgrade-software)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(upgrade-software)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(download-n-e-sw)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(download-n-e-sw)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(download-n-e-sw)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(download-n-e-sw)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(download-n-e-sw)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(download-n-e-sw)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(activate-n-e-sw)input": {
+      "properties": {
+        "LCM:action": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        },
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "required": [
+        "LCM:action",
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(activate-n-e-sw)input-TOP": {
+      "properties": {
+        "LCM:input": {
+          "items": {
+            "$ref": "#/definitions/(activate-n-e-sw)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(activate-n-e-sw)output": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        },
+        "LCM:payload": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "LCM:payload"
+      ],
+      "type": "object"
+    },
+    "(activate-n-e-sw)output-TOP": {
+      "properties": {
+        "LCM:output": {
+          "items": {
+            "$ref": "#/definitions/(activate-n-e-sw)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "LCM(config)action-identifiers": {
+      "properties": {
+        "LCM:service-instance-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "identifies a specific service the command refers to. When multiple\\n   APP-C instances are used and applied to a subset of services,\\n   this will become significant . The field is mandatory when the\\n   vnf-id is empty"
+        },
+        "LCM:vf-module-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "identifies the VF module to which this action is to be applied."
+        },
+        "LCM:vnf-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "identifies the VNF to which this action is to be applied(vnf-id\\n   uniquely identifies the service-instance referred to). Note that\\n   some actions are applied to multiple VNFs in the same service.\\n   When this is the case, vnf-id may be left out, but service-instance-id\\n   must appear. The field is mandatory when service-instance-id is\\n   empty"
+        },
+        "LCM:vnfc-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "identifies the VNFC to which this action is to be applied. Some\\n   actions apply only to a component within a VNF (e.g. RESTART is\\n   sometimes applied to on VM only). In such a case, the name of\\n   the VNFC is used to search for the component within the VNF"
+        },
+        "LCM:vserver-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "identifies a specific VM within the given service/vnf to which\\n   this action is to be applied"
+        },
+        "LCM:pnf-name": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "identifies the PNF to which this action is to be applied."
+        }
+      },
+      "type": "object"
+    },
+    "LCM(config)action-identifiers-TOP": {
+      "properties": {
+        "LCM:action-identifiers": {
+          "description": "A block containing the action arguments. These are used to specify\\nthe object upon which APP-C LCM command is to operate",
+          "items": {
+            "$ref": "#/definitions/LCM(config)action-identifiers"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "LCM(config)common-header": {
+      "properties": {
+        "LCM:api-ver": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "api-ver is the API version identifier. A given release of APPC\\n   should support all previous versions of APPC API (correlate with\\n   general requirements)"
+        },
+        "LCM:flags": {
+          "description": "Flags are generic flags that apply to any and all commands, all are optional",
+          "items": {
+            "$ref": "#/definitions/LCM/common-header(config)flags"
+          },
+          "type": "object"
+        },
+        "LCM:originator-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "originator-id an identifier of the calling system which can be\\n   used addressing purposes, i.e. returning asynchronous response\\n   to the proper destination over DMaaP (especially in case of multiple\\n   consumers of APP-C APIs)"
+        },
+        "LCM:request-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "UUID for the request ID. An OSS/BSS identifier for the request\\n   that caused the current action. Multiple API calls may be made\\n   with the same request-id The request-id shall be recorded throughout\\n   the operations on a single request"
+        },
+        "LCM:sub-request-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Uniquely identifies a specific LCM action. It is persistent over\\n   the life-cycle of a single request"
+        },
+        "LCM:timestamp": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "timestamp is in ISO 8601 timestamp format ZULU offset"
+        }
+      },
+      "required": [
+        "LCM:api-ver",
+        "LCM:originator-id",
+        "LCM:request-id",
+        "LCM:timestamp"
+      ],
+      "type": "object"
+    },
+    "LCM(config)common-header-TOP": {
+      "properties": {
+        "LCM:common-header": {
+          "description": "A common header for all APP-C requests",
+          "items": {
+            "$ref": "#/definitions/LCM(config)common-header"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "LCM(config)query-results": {
+      "properties": {
+        "LCM:vm-state": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "The state of the VM"
+        },
+        "LCM:vm-status": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "the status of the VM"
+        },
+        "LCM:vserver-id": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Identifier of a VM"
+        }
+      },
+      "required": [
+        "LCM:vm-state",
+        "LCM:vm-status",
+        "LCM:vserver-id"
+      ],
+      "type": "object"
+    },
+    "LCM(config)query-results-TOP": {
+      "properties": {
+        "LCM:query-results": {
+          "items": {
+            "$ref": "#/definitions/LCM(config)query-results"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "LCM(config)status": {
+      "properties": {
+        "LCM:code": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Response code"
+        },
+        "LCM:message": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "Response message"
+        }
+      },
+      "required": [
+        "LCM:code",
+        "LCM:message"
+      ],
+      "type": "object"
+    },
+    "LCM(config)status-TOP": {
+      "properties": {
+        "LCM:status": {
+          "description": "The specific response codes are to be aligned with SDC reference doc\\n(main table removed to avoid duplication and digression from main table).\\nSee SDC and ECOMP Distribution Consumer Interface Agreement",
+          "items": {
+            "$ref": "#/definitions/LCM(config)status"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "LCM/common-header(config)flags": {
+      "properties": {
+        "LCM:force": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "TRUE/FALSE - Execute action even if target is in unstable (i.e.\\n       locked, transiting, etc.) state"
+        },
+        "LCM:mode": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "EXCLUSIVE (accept no queued requests on this VNF while processing)\\n       or NORMAL (queue other requests until complete)"
+        },
+        "LCM:ttl": {
+          "$ref": "#/definitions/Optional.empty",
+          "description": "<0....N> - The timeout value (expressed in seconds) for action\\n       execution, between action being received by APPC and action initiation"
+        }
+      },
+      "type": "object"
+    },
+    "LCM/common-header(config)flags-TOP": {
+      "properties": {
+        "LCM:flags": {
+          "description": "Flags are generic flags that apply to any and all commands, all are optional",
+          "items": {
+            "$ref": "#/definitions/LCM/common-header(config)flags"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "unique_empty_identifier": {}
+  }
+}
