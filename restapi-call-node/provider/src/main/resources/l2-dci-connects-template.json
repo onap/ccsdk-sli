@@ -1,0 +1,11 @@
+{
+  "l2-dci-connect": {
+    "id": ${prop.dci-connects.id},
+    "name": ${prop.dci-connects.name},
+    "description": ${prop.dci-connects.description},
+    "network_id": ${prop.dci-connects.local_networks[0]},
+    "evpn_irts": ${prop.dci-connects.evpn_irts},
+    "evpn_erts": ${prop.dci-connects.evpn_erts},
+    "vni": ${prop.dci-connects.vni}
+  }
+}

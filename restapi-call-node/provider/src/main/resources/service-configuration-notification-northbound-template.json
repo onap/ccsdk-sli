@@ -1,0 +1,23 @@
+{
+  "input": {
+    "svc-request-id": ${service-configuration-notification-input.svc-request-id},
+    "response-code": ${service-configuration-notification-input.response-code},
+    "response-message": ${service-configuration-notification-input.response-message},
+    "ack-final-indicator": ${service-configuration-notification-input.ack-final-indicator},
+    "service-information": {
+      "service-type": ${service-data.service-information.service-type},
+      "service-instance-id": ${service-data.service-information.service-instance-id},
+      "subscriber-name": ${service-data.service-information.subscriber-name},
+      "subscriber-global-id": ${service-data.service-information.subscriber-global-id}
+    },
+    "response-parameters": [
+        ${repeat:service-configuration-notification-input.response-parameters_length:
+           {
+            "sequence-number": ${service-configuration-notification-input.response-parameters[${1}].sequence-number},
+            "tag-name": ${service-configuration-notification-input.response-parameters[${1}].tag-name},
+            "tag-value": ${service-configuration-notification-input.response-parameters[${1}].tag-value}
+           }
+        }
+    ]
+  }
+}

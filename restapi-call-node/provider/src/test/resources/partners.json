@@ -1,0 +1,22 @@
+{
+	"partnerOne": {
+		"url": "http://localhost:7001",
+		"test": "/metrics"
+	},
+	"partnerTwo": {
+		"url": "http://localhost:7002",
+		"user": "controller_user",
+		"password": "P@ssword",
+		"test": "/metrics"
+	},
+	"partnerThree": {
+		"url": "http://localhost:7003",
+		"user": "controller_admin"
+	},
+	"partnerFour": {
+		"url": "http://localhost:7004",
+		"user": "m30402@sdncp.att.com",
+		"password": "${deployer_pass}",
+		"test": "/metrics"
+	}
+}

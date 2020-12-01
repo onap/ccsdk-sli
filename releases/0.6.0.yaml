@@ -1,0 +1,5 @@
+---
+distribution_type: 'maven'
+version: '0.6.0'
+project: 'ccsdk-sli-plugins'
+log_dir: 'ccsdk-sli-plugins-maven-stage-master/187/'

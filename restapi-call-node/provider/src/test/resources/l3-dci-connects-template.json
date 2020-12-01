@@ -1,0 +1,14 @@
+{
+  "l3-dci-connect": {
+    "id": ${prop.dci-connects.id},
+    "name": ${prop.dci-connects.name},
+    "description": ${prop.dci-connects.description},
+    "router_id": ${prop.dci-connects.router_id},
+    "firewall_enable": false,
+    "local_networks": ${prop.dci-connects.local_networks},
+    "local_network_all": false,
+    "evpn_irts": ${prop.dci-connects.evpn_irts},
+    "evpn_erts": ${prop.dci-connects.evpn_erts},
+    "l3_vni": ${prop.dci-connects.vni}
+  }
+}

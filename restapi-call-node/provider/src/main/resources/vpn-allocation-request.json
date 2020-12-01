@@ -1,0 +1,15 @@
+{
+  "AllocateVpnResourcesRequest": {
+    "message-id": "${service-data.oper-status.modify-timestamp}",
+    "service-instance-id": "${service-data.service-information.service-instance-id}",
+    "vrf-request-type": {
+      "vpn-id": "${service-data.avpn-logicalchannel-information.vpn-id}",
+      "vpn-service": "${service-data.service-information.service-type}",
+      "e2e-vpn-id": "${service-data.avpn-logicalchannel-information.e2e-vpn-id}",
+      "vpe-name": "${service-data.avpn-logicalchannel-information.evc-endpoint-information.vpe-name}",
+      "asn": "${service-data.avpn-logicalchannel-information.carrier-asn}",
+      "route-group-name": "${service-data.avpn-logicalchannel-information.bgp-options.neighbor-address-information.route-group-name}",
+      "hub-or-spoke": "${service-data.avpn-logicalchannel-information.hub-or-spoke}"
+    }
+  }
+}

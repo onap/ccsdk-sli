@@ -1,0 +1,13 @@
+{
+  "input": {
+    "sdnc-request-header": {
+      "svc-request-id": ${connection-details-notification-input.configuration-response-common.svc-request-id},
+      "svc-action": "updatemulticastvpn"
+    },
+    "service-information": {
+      "service-type": "AVPN",
+      "service-instance-id": ${tmp.ete-vpn-key}
+    }
+  }
+}
+

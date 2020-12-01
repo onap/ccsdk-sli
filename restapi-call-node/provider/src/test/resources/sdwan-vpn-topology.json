@@ -1,0 +1,23 @@
+{
+  "vpnId": ${prop.vpn1Id},
+  "areas": [
+            {
+              "name": "area1",
+              "areaType": "leaf",
+              "topologyType": ${prop.topology},
+              "siteAttachements": [${repeat:prop.siteAttachement_length:
+              {
+                "siteId": ${prop.siteAttachement[${1}].siteId},
+                "role": [${repeat:prop.siteAttachement[${1}].roles_length:
+                         ${prop.siteAttachement[${1}].roles[${2}]},
+                        }
+                        ],
+                "workMode": "with-interconnection",
+                "sitePriority": "active",
+                "borders": "null"
+              },
+            }
+          ]
+        }
+  ]
+}

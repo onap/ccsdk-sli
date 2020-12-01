@@ -1,0 +1,12 @@
+{
+  "input": {
+    "sdnc-request-header": {
+      "svc-request-id": "$ctx.getAttribute("input.svc-request-id")",
+      "svc-action": "$ctx.getAttribute("action").toUpperCase()"
+    },
+    "service-information": {
+      "service-type": "$params.get("service-type")",
+      "service-instance-id": "$ctx.getAttribute("input.unique-key")"
+    }
+  }
+}
