@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ============LICENSE_START=======================================================
+  openECOMP : SDN-C
+  ================================================================================
+  Copyright (C) 2017 AT&T Intellectual Property. All rights
+  						reserved.
+  ================================================================================
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  ============LICENSE_END=========================================================
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/jdbc
+ 	http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+ 	http://www.springframework.org/schema/context
+ 	http://www.springframework.org/schema/context/spring-context-3.1.xsd
+ 					">
+
+    <context:annotation-config />
+
+	<!-- JDBC setup -->
+
+    <bean id="test.dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+        lazy-init="false" primary="true">
+        <property name="driverClassName" value="org.h2.Driver" />
+        <property name="url" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;MODE=MySQL" />
+    </bean>
+
+    <jdbc:initialize-database data-source="test.dataSource">
+        <jdbc:script location="sql/schema.sql" />
+        <jdbc:script location="sql/data.sql" />
+    </jdbc:initialize-database>
+
+    <bean id="lock.dataSource" class="org.onap.ccsdk.sli.adaptors.util.db.CachedDataSourceWrap">
+        <property name="dataSource" ref="test.dataSource" />
+    </bean>
+
+    <bean id="rm.jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" primary="true">
+        <property name="dataSource" ref="test.dataSource" />
+    </bean>
+
+    <bean id="lock.jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="lock.dataSource" />
+    </bean>
+
+    <bean id="testDb" class="jtest.util.org.onap.ccsdk.sli.adaptors.ra.TestDb">
+        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
+    </bean>
+
+    <bean id="dataSetup" class="jtest.org.onap.ccsdk.sli.adaptors.ra.DataSetup">
+        <property name="testDb" ref="testDb" />
+    </bean>
+
+	<!-- Resource Lock Configuration -->
+
+    <bean id="resourceLockDao" class="org.onap.ccsdk.sli.adaptors.lock.dao.ResourceLockDaoImpl">
+        <property name="jdbcTemplate" ref="lock.jdbcTemplate" />
+    </bean>
+
+    <bean id="lockHelper" class="org.onap.ccsdk.sli.adaptors.lock.comp.LockHelperImpl">
+        <property name="resourceLockDao" ref="resourceLockDao" />
+        <property name="retryCount" value="10" />
+        <property name="lockWait" value="5" /> <!-- Seconds -->
+    </bean>
+
+	<!-- RM Configuration -->
+
+    <bean id="resourceJdbcDao" class="org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.ResourceJdbcDaoImpl">
+        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
+    </bean>
+
+    <bean id="allocationItemJdbcDao" class="org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.AllocationItemJdbcDaoImpl">
+        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
+    </bean>
+
+    <bean id="resourceLoadJdbcDao" class="org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.ResourceLoadJdbcDaoImpl">
+        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
+    </bean>
+
+    <bean id="resourceDao" class="org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.ResourceDaoImpl">
+        <property name="resourceJdbcDao" ref="resourceJdbcDao" />
+        <property name="allocationItemJdbcDao" ref="allocationItemJdbcDao" />
+        <property name="resourceLoadJdbcDao" ref="resourceLoadJdbcDao" />
+    </bean>
+
+    <bean id="resourceManager" class="org.onap.ccsdk.sli.adaptors.rm.comp.ResourceManagerImpl">
+        <property name="lockHelper" ref="lockHelper" />
+        <property name="resourceDao" ref="resourceDao" />
+        <property name="lockTimeout" value="600" /> <!-- Seconds -->
+    </bean>
+
+	<!-- Rule DAO Configuration -->
+
+    <bean id="resourceRuleDao" class="org.onap.ccsdk.sli.adaptors.ra.rule.dao.ResourceRuleDaoImpl">
+        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
+    </bean>
+
+    <bean id="rangeRuleDao" class="org.onap.ccsdk.sli.adaptors.ra.rule.dao.RangeRuleDaoImpl">
+        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
+    </bean>
+
+	<!-- ResourceAllocator Configuration -->
+
+    <bean id="resourceAllocator" class="org.onap.ccsdk.sli.adaptors.ra.ResourceAllocator">
+        <property name="resourceManager" ref="resourceManager" />
+        <property name="endPointAllocator" ref="endPointAllocator" />
+        <property name="speedUtil" ref="speedUtil" />
+    </bean>
+
+	<bean id="resourceLockNode" class="org.onap.ccsdk.sli.adaptors.ra.ResourceLockNode">
+		<property name="lockHelper" ref="lockHelper" />
+	</bean>
+
+    <bean id="speedUtil" class="org.onap.ccsdk.sli.adaptors.util.speed.SpeedUtil" />
+
+	<!-- EndPointAllocator Configuration -->
+
+    <bean id="endPointAllocator" class="org.onap.ccsdk.sli.adaptors.ra.comp.EndPointAllocatorImpl">
+        <property name="resourceManager" ref="resourceManager" />
+        <property name="allocationRuleMap">
+            <map>
+                <entry key="DEFAULT">
+                    <list>
+                        <ref bean="dbAllocationRule" />
+                    </list>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+	<!-- Resource Allocation Rule Configuration -->
+
+    <bean id="dbAllocationRule" class="org.onap.ccsdk.sli.adaptors.ra.alloc.DbAllocationRule">
+        <property name="resourceRuleDao" ref="resourceRuleDao" />
+        <property name="rangeRuleDao" ref="rangeRuleDao" />
+    </bean>
+
+</beans>
