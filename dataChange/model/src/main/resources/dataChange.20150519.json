@@ -1,0 +1,132 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0"
+  },
+  "basePath": "/restconf",
+  "paths": {
+    "/operations/DataChange:data-change-notification": {
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/(data-change-notification)input-TOP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response was specified",
+            "schema": {
+              "$ref": "#/definitions/(data-change-notification)output-TOP"
+            }
+          }
+        },
+        "operationId": "data-change-notification"
+      }
+    }
+  },
+  "definitions": {
+    "(config)DataChange_modulePOST": {
+      "type": "object"
+    },
+    "(config)key-dataPOST": {
+      "properties": {
+        "key-name": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "key-value": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "type": "object"
+    },
+    "(data-change-notification)input": {
+      "properties": {
+        "DataChange:aai-event-id": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "DataChange:aai-event-trigger": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "DataChange:aai-node-type": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "DataChange:key-data": {
+          "items": {
+            "$ref": "#/definitions/DataChange(config)key-data"
+          },
+          "type": "array"
+        },
+        "DataChange:selflink": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "type": "object"
+    },
+    "(data-change-notification)input-TOP": {
+      "properties": {
+        "DataChange:input": {
+          "items": {
+            "$ref": "#/definitions/(data-change-notification)input"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "(data-change-notification)output": {
+      "properties": {
+        "DataChange:data-change-response-code": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "type": "object"
+    },
+    "(data-change-notification)output-TOP": {
+      "properties": {
+        "DataChange:output": {
+          "items": {
+            "$ref": "#/definitions/(data-change-notification)output"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "DataChange(config)key-data": {
+      "properties": {
+        "DataChange:key-name": {
+          "$ref": "#/definitions/Optional.empty"
+        },
+        "DataChange:key-value": {
+          "$ref": "#/definitions/Optional.empty"
+        }
+      },
+      "type": "object"
+    },
+    "DataChange(config)key-data-TOP": {
+      "properties": {
+        "DataChange:key-data": {
+          "items": {
+            "$ref": "#/definitions/DataChange(config)key-data"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "unique_empty_identifier": {}
+  }
+}

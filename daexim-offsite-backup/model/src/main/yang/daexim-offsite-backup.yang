@@ -1,0 +1,46 @@
+module daexim-offsite-backup{
+  namespace "org:onap:ccsdk:sli:northbound:daeximoffsitebackup";
+  prefix daexim-offsite-backup;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
+  description
+    "This ODL feature is designed for transferring MD-SAL data
+     to an offsite location in the ECOMP-C containerized environments.";
+  revision "2018-09-26" {
+    description
+      "Release 19.02 draft";
+  }
+
+  rpc backup-data {
+    output {
+      leaf status { type string; }
+      leaf message { type string; }
+    }
+  }
+
+  rpc retrieve-data {
+    input {
+      leaf pod-name {
+        type string;
+        description
+          "Name of the desired MD-SAL backup's pod. If not supplied will
+          default to the name of this pod.";
+      }
+      leaf timestamp {
+        type string;
+        description
+          "Timestamp of the desired backup. Format: yyyyMMdd_HH";
+          mandatory true;
+      }
+    }
+    output {
+      leaf status { type string; }
+      leaf message { type string; }
+    }
+  }
+}////closes the module

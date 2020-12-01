@@ -1,0 +1,5 @@
+# SDN-C URL
+SDNC.endpoint => SLI-API:execute-graph
+
+# Field mapping
+SDNC.template => anr-pci-changes-from-policy-to-sdnr.vt

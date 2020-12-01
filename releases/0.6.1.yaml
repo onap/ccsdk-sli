@@ -1,0 +1,5 @@
+---
+distribution_type: 'maven'
+version: '0.6.1'
+project: 'ccsdk-sli-northbound'
+log_dir: 'ccsdk-sli-northbound-maven-stage-master/206/'
