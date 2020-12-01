@@ -1,0 +1,231 @@
+module test_name_of_the_module {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:test:name";
+    prefix "name";
+
+    revision "2015-01-05" {
+        description "Initial revision of hello model";
+    }
+
+    container name_of_the_cont1 {
+        container name_of_the_cont2 {
+            container name_of_the_cont3 {
+                leaf name_of_the_leaf10 {
+                    type string;
+                }
+            }
+            list name_of_the_list1 {
+                key "name_of_the_leaf1 name_of_the_leaf2";
+                leaf name_of_the_leaf1 {
+                    type empty;
+                }
+                leaf name_of_the_leaf2 {
+                    type string;
+                }
+                leaf name_of_the_leaf3 {
+                    type string;
+                }
+                leaf-list name_of_the_ll1 {
+                    type string;
+                }
+                leaf-list name_of_the_ll2 {
+                    type string;
+                }
+                container name_of_the_cont4 {
+                    leaf name_of_the_leaf11 {
+                        type string;
+                    }
+                }
+                list name_of_the_list4 {
+                    leaf name_of_the_leaf8 {
+                        type string;
+                    }
+                }
+                list name_of_the_list5 {
+                    leaf name_of_the_leaf9 {
+                        type string;
+                    }
+                }
+            }
+            list name_of_the_list2 {
+                leaf name_of_the_leaf4 {
+                    type string;
+                }
+            }
+            leaf name_of_the_leaf5 {
+                type string;
+            }
+            leaf name_of_the_leaf6 {
+                type string;
+            }
+            leaf-list name_of_the_ll3 {
+                type string;
+            }
+            leaf-list name_of_the_ll4 {
+                type string;
+            }
+        }
+    }
+
+    augment "/name_of_the_cont1/name_of_the_cont2" {
+        container name_of_the_cont4 {
+            leaf name_of_the_leaf10 {
+               type string;
+            }
+        }
+        list name_of_the_list6 {
+           leaf name_of_the_leaf11 {
+              type string;
+           }
+        }
+        leaf name_of_the_leaf12 {
+            type string;
+        }
+        leaf-list name_of_the_ll5 {
+            type string;
+        }
+    }
+
+    choice name_of_the_ch1 {
+        case name_of_the_c1 {
+            container name_of_the_cont8 {
+                container name_of_the_cont6 {
+                    leaf name_of_the_leaf16 {
+                        type string;
+                    }
+                }
+                list name_of_the_list8 {
+                    leaf name_of_the_leaf18 {
+                        type string;
+                    }
+                }
+                leaf name_of_the_leaf19 {
+                    type string;
+                }
+                leaf-list name_of_the_ll7 {
+                    type string;
+                }
+            }
+        }
+        case name_of_the_c2 {
+            container name_of_the_cont9 {
+                leaf name_of_the_leaf20 {
+                    type string;
+                }
+                leaf-list name_of_the_ll8 {
+                    type string;
+                }
+                container name_of_the_cont11 {
+                    choice name_of_the_ch3 {
+                        case name_of_the_c1 {
+                            leaf name_of_the_leaf25 {
+                                type string;
+                            }
+                            uses name_of_the_g1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    grouping name_of_the_g1 {
+        container name_of_the_cont13 {
+            container name_of_the_cont12 {
+                leaf name_of_the_leaf26 {
+                    type string;
+                }
+            }
+            list name_of_the_list9 {
+                leaf name_of_the_leaf27 {
+                    type string;
+                }
+            }
+            leaf name_of_the_leaf28 {
+                type string;
+            }
+            leaf-list name_of_the_ll9 {
+                type string;
+            }
+        }
+    }
+
+    uses name_of_the_g1;
+
+    rpc name_of_the_create-sfc {
+        input {
+            container name_of_the_cont14 {
+                leaf name_of_the_leaf28 {
+                    type string;
+                }
+            }
+            list name_of_the_list10 {
+                leaf name_of_the_leaf29 {
+                    type string;
+                }
+            }
+            leaf name_of_the_leaf30 {
+                type string;
+            }
+            leaf-list name_of_the_ll10 {
+                type string;
+            }
+            choice name_of_the_ch3 {
+                case name_of_the_c1 {
+                    container name_of_the_cont15 {
+                        leaf name_of_the_leaf31 {
+                            type string;
+                        }
+                    }
+                }
+            }
+            uses name_of_the_g1;
+        }
+        output {
+            container name_of_the_cont16 {
+                leaf name_of_the_leaf32 {
+                    type string;
+                }
+            }
+            list name_of_the_list11 {
+                leaf name_of_the_leaf33 {
+                    type string;
+                }
+            }
+            leaf name_of_the_leaf34 {
+                type string;
+            }
+            leaf-list name_of_the_ll11 {
+                type string;
+            }
+            choice name_of_the_ch4 {
+                case name_of_the_c1 {
+                    container name_of_the_cont17 {
+                        leaf name_of_the_leaf35 {
+                            type string;
+                        }
+                    }
+                }
+            }
+            uses name_of_the_g1;
+        }
+    }
+
+    container name_of_the_cont18 {
+        container name_of_the_cont18 {
+            list name_of_the_list12 {
+                list name_of_the_list12 {
+                    leaf name_of_the_leaf36 {
+                        type string;
+                    }
+                }
+                leaf name_of_the_leaf36 {
+                    type string;
+                }
+            }
+        }
+        leaf name_of_the_leaf40 {
+            type string;
+        }
+    }
+}

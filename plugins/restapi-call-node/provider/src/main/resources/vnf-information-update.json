@@ -1,0 +1,3 @@
+{
+"generic-vnf-service" :${vnf-service.generic-vnf-service}
+}

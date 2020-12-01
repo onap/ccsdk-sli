@@ -1,0 +1,12 @@
+{
+  "input": {
+    "e2e-vpn-key": ${service-data.avpn-logicalchannel-information.e2e-vpn-id},
+    "logical-channel-id": ${service-data.service-information.service-instance-id},
+    "vpe-name": ${service-data.avpn-logicalchannel-information.evc-endpoint-information.vpe-name},
+    "rpc-action": ${tmp.rpc-action},
+    "vrf-vlan-resources": {
+      "logical-channel-id": ${service-data.service-information.service-instance-id},
+      "logical-channel-status": ${tmp.logical-channel-status}
+    }
+  }
+}

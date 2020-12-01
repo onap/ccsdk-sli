@@ -1,0 +1,10 @@
+{
+  "vpn-service": [
+    {
+      "vpn-id": ${prop.l3vpn.name},
+      "customer-name": "huawei",
+      "vpn-service-topology": ${prop.l3vpn.topology},
+      "route-exchange-policy": "huawei-ac-net-l3vpn-svc:vpnv4-way"
+    }
+  ]
+}

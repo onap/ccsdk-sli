@@ -1,0 +1,17 @@
+{
+  "request": {
+    "mbean": "akka:type=Cluster",
+    "type": "read"
+  },
+  "value": {
+    "Leader": "akka.tcp://opendaylight-cluster-data@localhost:2550",
+    "Unreachable": "",
+    "Singleton": true,
+    "Available": true,
+    "MemberStatus": "Up",
+    "ClusterStatus": "{\n  \"members\": [\n    {\n      \"address\": \"akka.tcp://opendaylight-cluster-data@localhost:2550\",\n      \"roles\": [\n        \"dc-default\",\n        \"member-1\"\n      ],\n      \"status\": \"Up\"\n    }\n  ],\n  \"self-address\": \"akka.tcp://opendaylight-cluster-data@localhost:2550\",\n  \"unreachable\": []\n}\n",
+    "Members": "akka.tcp://opendaylight-cluster-data@localhost:2550"
+  },
+  "timestamp": 1575393881,
+  "status": 200
+}

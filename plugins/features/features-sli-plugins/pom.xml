@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>feature-repo-parent</artifactId>
+        <version>2.1.0</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>org.onap.ccsdk.sli.plugins</groupId>
+    <artifactId>features-sli-plugins</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
+    <packaging>feature</packaging>
+
+    <name>ccsdk-sli-plugins :: features :: ${project.artifactId}</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.onap.ccsdk.sli.plugins</groupId>
+            <artifactId>ccsdk-gr-toolkit</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.ccsdk.sli.plugins</groupId>
+            <artifactId>ccsdk-properties-node</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.ccsdk.sli.plugins</groupId>
+            <artifactId>ccsdk-restapi-call-node</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-sli-plugins-all</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+
+    </dependencies>
+</project>

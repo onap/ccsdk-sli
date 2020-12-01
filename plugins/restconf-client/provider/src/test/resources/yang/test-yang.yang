@@ -1,0 +1,231 @@
+module test-yang {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:test";
+    prefix "hello";
+
+    revision "2015-01-05" {
+        description "Initial revision of hello model";
+    }
+
+    container cont1 {
+        container cont2 {
+            container cont3 {
+                leaf leaf10 {
+                    type string;
+                }
+            }
+            list list1 {
+                key "leaf1 leaf2";
+                leaf leaf1 {
+                    type empty;
+                }
+                leaf leaf2 {
+                    type string;
+                }
+                leaf leaf3 {
+                    type string;
+                }
+                leaf-list ll1 {
+                    type string;
+                }
+                leaf-list ll2 {
+                    type string;
+                }
+                container cont4 {
+                    leaf leaf11 {
+                        type string;
+                    }
+                }
+                list list4 {
+                    leaf leaf8 {
+                        type string;
+                    }
+                }
+                list list5 {
+                    leaf leaf9 {
+                        type string;
+                    }
+                }
+            }
+            list list2 {
+                leaf leaf4 {
+                    type string;
+                }
+            }
+            leaf leaf5 {
+                type string;
+            }
+            leaf leaf6 {
+                type string;
+            }
+            leaf-list ll3 {
+                type string;
+            }
+            leaf-list ll4 {
+                type string;
+            }
+        }
+    }
+
+    augment "/cont1/cont2" {
+        container cont4 {
+            leaf leaf10 {
+               type string;
+            }
+        }
+        list list6 {
+           leaf leaf11 {
+              type string;
+           }
+        }
+        leaf leaf12 {
+            type string;
+        }
+        leaf-list ll5 {
+            type string;
+        }
+    }
+
+    choice ch1 {
+        case c1 {
+            container cont8 {
+                container cont6 {
+                    leaf leaf16 {
+                        type string;
+                    }
+                }
+                list list8 {
+                    leaf leaf18 {
+                        type string;
+                    }
+                }
+                leaf leaf19 {
+                    type string;
+                }
+                leaf-list ll7 {
+                    type string;
+                }
+            }
+        }
+        case c2 {
+            container cont9 {
+                leaf leaf20 {
+                    type string;
+                }
+                leaf-list ll8 {
+                    type string;
+                }
+                container cont11 {
+                    choice ch3 {
+                        case c1 {
+                            leaf leaf25 {
+                                type string;
+                            }
+                            uses g1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    grouping g1 {
+        container cont13 {
+            container cont12 {
+                leaf leaf26 {
+                    type string;
+                }
+            }
+            list list9 {
+                leaf leaf27 {
+                    type string;
+                }
+            }
+            leaf leaf28 {
+                type string;
+            }
+            leaf-list ll9 {
+                type string;
+            }
+        }
+    }
+
+    uses g1;
+
+    rpc create-sfc {
+        input {
+            container cont14 {
+                leaf leaf28 {
+                    type string;
+                }
+            }
+            list list10 {
+                leaf leaf29 {
+                    type string;
+                }
+            }
+            leaf leaf30 {
+                type string;
+            }
+            leaf-list ll10 {
+                type string;
+            }
+            choice ch3 {
+                case c1 {
+                    container cont15 {
+                        leaf leaf31 {
+                            type string;
+                        }
+                    }
+                }
+            }
+            uses g1;
+        }
+        output {
+            container cont16 {
+                leaf leaf32 {
+                    type string;
+                }
+            }
+            list list11 {
+                leaf leaf33 {
+                    type string;
+                }
+            }
+            leaf leaf34 {
+                type string;
+            }
+            leaf-list ll11 {
+                type string;
+            }
+            choice ch4 {
+                case c1 {
+                    container cont17 {
+                        leaf leaf35 {
+                            type string;
+                        }
+                    }
+                }
+            }
+            uses g1;
+        }
+    }
+
+    container cont18 {
+      container cont18 {
+          list list12 {
+              list list12 {
+                  leaf leaf36 {
+                      type string;
+                  }
+              }
+              leaf leaf36 {
+                  type string;
+              }
+          }
+      }
+      leaf leaf40 {
+         type string;
+      }
+    }
+}

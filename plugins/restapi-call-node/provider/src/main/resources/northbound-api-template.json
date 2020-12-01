@@ -1,0 +1,22 @@
+{
+"input":
+            {
+            "sdnc-request-header":{
+                "svc-request-id":	${service-topology-operation-input.sdnc-request-header.svc-request-id},
+                "svc-notification-url":	${service-topology-operation-input.sdnc-request-header.svc-notification-url}
+            },
+            "request-information":{
+                "request-id":	${service-topology-operation-input.request-information.request-id},
+                "request-action":	${service-topology-operation-input.request-information.request-action},
+                "request-sub-action":	${service-topology-operation-input.request-information.request-sub-action},
+                "source":	${service-topology-operation-input.request-information.source},
+                "notification-url":	${service-topology-operation-input.request-information.notification-url}
+            },
+            "service-information":{
+                "service-type":	${service-topology-operation-input.service-information.service-type},
+                "service-instance-id":	${service-topology-operation-input.service-information.service-instance-id},
+                "subscriber-name":	${service-topology-operation-input.service-information.subscriber-name},
+                "subscriber-global-id": ${service-topology-operation-input.service-information.subscriber-global-id}
+            }
+}
+

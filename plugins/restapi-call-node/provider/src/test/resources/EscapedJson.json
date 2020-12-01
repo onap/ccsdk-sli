@@ -1,0 +1,1 @@
+{\"widget\":{\"debug\":false,\"window\":{\"title\":\"ONAP Widget\",\"name\":\"main_window\",\"width\":200,\"height\":300},\"image\":{\"src\":\"images\/moon.png\",\"name\":\"moon\",\"hOffset\":150,\"vOffset\":150,\"alignment\":\"center\"},\"text\":{\"data\":\"Click Me\",\"size\":21,\"style\":\"bold\",\"name\":\"text1\",\"hOffset\":350,\"vOffset\":200,\"alignment\":\"center\"}}}

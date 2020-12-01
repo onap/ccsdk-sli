@@ -1,0 +1,106 @@
+module test-augment {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:augment";
+    prefix "hello";
+
+    import test-yang {
+       prefix t;
+    }
+
+    revision "2015-01-05" {
+        description "Initial revision of hello model";
+    }
+
+    augment "/t:cont1/t:cont2/t:cont4" {
+        container cont5 {
+            leaf leaf13 {
+               type empty;
+            }
+        }
+        list list7 {
+            leaf leaf14 {
+                type instance-identifier;
+            }
+        }
+        leaf leaf15 {
+            type string;
+        }
+        leaf-list ll6 {
+            type union {
+                type int32;
+                type enumeration {
+                    enum "unbounded";
+                }
+            }
+        }
+        uses "t:g1";
+    }
+
+    uses "t:g1";
+    augment "/t:ch1/t:c1/t:cont8/t:cont6" {
+        choice ch2 {
+            case c3 {
+                leaf leaf21 {
+                    type string;
+                }
+            }
+            case c4 {
+                leaf leaf22 {
+                    type enumeration {
+                        enum zero;
+                        enum one;
+                        enum seven {
+                            value 7;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    augment "/t:ch1" {
+       case c5 {
+          container cont10 {
+              leaf leaf23 {
+                  type string;
+              }
+          }
+       }
+    }
+
+    augment "/t:ch1/t:c1" {
+        container cont7 {
+            leaf leaf24 {
+                type string;
+            }
+        }
+    }
+
+    augment "/t:cont13/t:cont12" {
+       leaf leaf29 {
+           type string;
+       }
+    }
+
+    augment "/t:create-sfc/t:input" {
+        leaf leaf36 {
+            type bits {
+                bit angle {
+                    position 0;
+                }
+                bit degree {
+                    position 1;
+                }
+                bit movement {
+                    position 2;
+                }
+            }
+        }
+    }
+
+    augment "/t:create-sfc/t:output" {
+       leaf leaf37 {
+           type boolean;
+       }
+    }
+}

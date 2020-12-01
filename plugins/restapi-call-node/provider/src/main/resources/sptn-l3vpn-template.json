@@ -1,0 +1,159 @@
+{
+  "snc-l3vpn": {
+    "-xmlns": "urn:chinamobile:l3vpn",
+    "operate-status": "operate-up",
+    "traffic-class": "BE",
+    "acs": {
+      "l3-acs": [
+        {
+          "id": "0",
+          "ne-id": ${prop.l3vpn.pe1_id},
+          "ltp-id": ${prop.l3vpn.ac1_id},
+          "ip-addr": ${prop.l3vpn.ac1_ip.value},
+          "ip-mask": ${prop.l3vpn.ac1_ip.mask},
+          "access-type": "Sub-interface",
+          "vlan": ${prop.l3vpn.ac1_svlan},
+          "qos": {
+            "belonged-id": ${prop.l3vpn.ac1_id},
+            "tunnel-mode": "pipeline",
+            "cac-mode": "1",
+            "convg-mode": "0",
+            "traffic-adj-mode": "0",
+            "a2z-policing": "1",
+            "z2a-policing": "1",
+            "a2z-cir": "5000",
+            "z2a-cir": "5000",
+            "a2z-pir": "1000000",
+            "z2a-pir": "1000000",
+            "a2z-cbs": "1024",
+            "z2a-cbs": "1024",
+            "a2z-pbs": "1024",
+            "z2a-pbs": "1024",
+            "a2z-color-mode": "0",
+            "z2a-color-mode": "0",
+            "traffic-class": "CS7"
+          },
+          "protocol-list": {
+            "protocols": {
+              "protocol-type": "static",
+              "static-route-list": {
+                "static-routes": [
+                  {
+                    "id": "0",
+                    "dest-ip": ${prop.l3vpn.ac1_peer_ip.value},
+                    "dest-mask": ${prop.l3vpn.ac1_peer_ip.mask},
+                    "route-type": "direct-route",
+                    "out-inf": ${prop.l3vpn.ac1_id},
+                    "route-weight": "3",
+                    "route-status": "up"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": "1",
+          "ne-id": ${prop.l3vpn.pe2_id},
+          "ltp-id": ${prop.l3vpn.ac2_id},
+          "ip-addr": ${prop.l3vpn.ac2_ip.value},
+          "ip-mask": ${prop.l3vpn.ac2_ip.mask},
+          "access-type": "Sub-interface",
+          "vlan": ${prop.l3vpn.ac1_svlan},
+          "qos": {
+            "belonged-id": ${prop.l3vpn.ac2_id},
+            "tunnel-mode": "pipeline",
+            "cac-mode": "1",
+            "convg-mode": "0",
+            "traffic-adj-mode": "0",
+            "a2z-policing": "1",
+            "z2a-policing": "1",
+            "a2z-cir": "5000",
+            "z2a-cir": "5000",
+            "a2z-pir": "1000000",
+            "z2a-pir": "1000000",
+            "a2z-cbs": "1024",
+            "z2a-cbs": "1024",
+            "a2z-pbs": "1024",
+            "z2a-pbs": "1024",
+            "a2z-color-mode": "0",
+            "z2a-color-mode": "0",
+            "traffic-class": "CS7"
+          },
+          "protocol-list": {
+            "protocols": {
+              "protocol-type": "static",
+              "static-route-list": {
+                "static-routes": [
+                  {
+                    "id": "0",
+                    "dest-ip": ${prop.l3vpn.ac2_peer_ip.value},
+                    "dest-mask": ${prop.l3vpn.ac2_peer_ip.mask},
+                    "route-type": "direct-route",
+                    "out-inf": ${prop.l3vpn.ac2_id},
+                    "route-weight": "4",
+                    "route-status": "up"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "user-label": ${prop.l3vpn.name},
+    "topo-mode": "any-to-any",
+    "admin-status": "admin-up",
+    "tunnel-create-policy": {
+      "user-label": "tunnel",
+      "tenant-id": "tunnel",
+      "direction": "bidirection",
+      "type": "1",
+      "admin-status": "admin-up",
+      "qos": {
+        "tunnel-mode": "pipeline",
+        "cac-mode": "1",
+        "convg-mode": "0",
+        "traffic-adj-mode": "0",
+        "a2z-policing": "0",
+        "a2z-cir": "500",
+        "a2z-pir": "1000000",
+        "a2z-cbs": "1024",
+        "a2z-pbs": "1024",
+        "a2z-color-mode": "0",
+        "z2a-policing": "0",
+        "z2a-cir": "500",
+        "z2a-pir": "1000000",
+        "z2a-cbs": "1024",
+        "z2a-pbs": "1024",
+        "z2a-color-mode": "0",
+        "traffic-class": "CS7"
+      },
+      "snc-switch": {
+        "layer-rate": "LSP",
+        "linear-protection-type": "path-protection-1-to-1",
+        "linear-protection-protocol": "APS",
+        "switch-mode": "double-end-switch",
+        "revertive-mode": "revertive",
+        "wtr": "60",
+        "hold-off-time": "0",
+        "reroute-revertive-mode": "revertive",
+        "reroute-wtr": "50"
+      },
+      "lsp-oam": {
+        "cc-allow": "true",
+        "cc-exp": "CS7",
+        "cc-interval": "3.3",
+        "lm-mode": "preactive",
+        "dm-mode": "preactive",
+        "meps": {
+          "mep": [
+            { "id": "1" },
+            { "id": "2" }
+          ]
+        }
+      }
+    }
+  }
+}
+

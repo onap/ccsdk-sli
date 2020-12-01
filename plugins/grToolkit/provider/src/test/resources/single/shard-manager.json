@@ -1,0 +1,15 @@
+{
+  "request": {
+    "mbean": "org.opendaylight.controller:Category=ShardManager,name=shard-manager-config,type=DistributedConfigDatastore",
+    "type": "read"
+  },
+  "value": {
+    "LocalShards": [
+      "member-1-shard-default-config"
+    ],
+    "SyncStatus": true,
+    "MemberName": "member-1"
+  },
+  "timestamp": 1575393918,
+  "status": 200
+}

@@ -1,0 +1,41 @@
+[{
+		"id": "1",
+		"type": "pizza",
+		"name": "plain",
+		"calories": 1000,
+		"vegetarian": true
+	}, {
+		"id": "2",
+		"type": "pizza",
+		"name": "Tuesday Special",
+		"calories": 2000,
+		"vegetarian": false,
+		"topping":
+		[{
+				"id": "1",
+				"name": "onion"
+			}, {
+				"id": "2",
+				"name": "pepperoni"
+			}
+		]
+	}, {
+		"id": "3",
+		"type": "pizza",
+		"name": "House Special",
+		"calories": 1500,
+		"vegetarian": true,
+		"topping":
+		[{
+				"id": "3",
+				"name": "basil"
+			}, {
+				"id": "4",
+				"name": "fresh mozzarella"
+			}, {
+				"id": "5",
+				"name": "tomato"
+			}
+		]
+	}
+]

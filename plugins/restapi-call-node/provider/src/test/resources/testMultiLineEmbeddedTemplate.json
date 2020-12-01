@@ -1,0 +1,20 @@
+{
+  "commonHeader": {
+    "origin": "earth",
+    "requestId": ${reqId},
+    "subRequestId": ${subReqId}
+  },
+  "actions": {
+    "actionName": ${actionName},
+    "mode": "sync"
+  },
+  "payload": {
+    "assignment-request": {
+      "prefix": [
+        ${myPrefix}
+      ],
+        "assignment-properties": ${complexObj}
+    }
+  }
+}
+

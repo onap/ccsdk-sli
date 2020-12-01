@@ -1,0 +1,199 @@
+module gr-toolkit{
+  namespace "org:onap:ccsdk:sli:plugins:gr-toolkit";
+  prefix gr-toolkit;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
+  description
+    "This ODL feature is designed to gauge the health of all cluster members.";
+  revision "2018-09-26" {
+    description
+      "Release 19.02 draft";
+  }
+
+  grouping member {
+    leaf address {
+      type string;
+      mandatory true;
+    }
+    leaf role {
+      type string;
+      mandatory true;
+    }
+    leaf up {
+      type boolean;
+      mandatory true;
+    }
+    leaf unreachable {
+      type boolean;
+      mandatory true;
+    }
+    leaf voting {
+      type boolean;
+      mandatory true;
+    }
+    list leader {
+      leaf shard {
+        type string;
+        mandatory true;
+      }
+    }
+    list replicas {
+      leaf shard {
+        type string;
+        mandatory true;
+      }
+    }
+    list commit-status {
+      leaf shard {
+        type string;
+        mandatory true;
+      }
+      leaf delta {
+        type int32;
+        mandatory true;
+      }
+    }
+  }
+
+  grouping site {
+    leaf id {
+      type string;
+      mandatory true;
+    }
+    leaf role {
+      type string;
+      mandatory true;
+    }
+    leaf health {
+      type string;
+      mandatory true;
+    }
+  }
+
+  grouping node {
+    leaf node { 
+      type string;
+      mandatory true;
+    }
+    leaf port { 
+      type string;
+      mandatory true;
+    }
+  }
+
+  rpc cluster-health {
+    description
+      "Parses akka.conf for seed nodes and queries Jolokia for the health
+      of each node.";
+    output {
+      leaf status { type string; }
+      leaf message { type string; }
+      leaf served-by { type string; }
+      leaf site1-health { type string; }
+      leaf site2-health { type string; }
+      list members {
+        uses member;
+      }
+    }
+  }
+
+  rpc database-health {
+    description
+      "Uses DbLibService connection info to determine if the database is reachable.";
+    output {
+      leaf status { type string; }
+      leaf health { type string; }
+      leaf served-by { type string; }
+    }
+  }
+
+  rpc admin-health {
+    description
+      "Pings the admin portal health check to determine if the admin portal is reachable.";
+    output {
+      leaf status { type string; }
+      leaf health { type string; }
+      leaf served-by { type string; }
+    }
+  }
+
+  rpc site-health {
+    description
+      "Gathers health information on the ODL cluster, database, and admin portal
+      to determine if the entire site is in a healthy state.";
+    output {
+      leaf status { type string; }
+      leaf served-by { type string; }
+      list sites {
+        uses site;
+      }
+    }
+  }
+
+  rpc site-identifier {
+    description
+      "Returns the unique site identifier.";
+    output {
+      leaf status { type string; }
+      leaf served-by { type string; }
+      leaf id { type string; mandatory true; }
+    }
+  }
+
+  rpc halt-akka-traffic {
+    description
+      "Executes IP Tables commands to halt traffic to the akka port.";
+    input {
+      list node-info {
+        uses node;
+      }
+    }
+    output {
+      leaf status { type string; }
+      leaf served-by { type string; }
+    }
+  }
+
+  rpc resume-akka-traffic {
+    description
+      "Executes IP Tables commands to resume traffic to the akka port.";
+    input {
+      list node-info {
+        uses node;
+      }
+    }
+    output {
+      leaf status { type string; }
+      leaf served-by { type string; }
+    }
+  }
+
+  rpc failover {
+    description
+      "Performs a failover from primary site to standby site.";
+    input {
+      leaf backupData {
+        type string;
+        default "false";
+      }
+      leaf isolate {
+        type string;
+        default "false";
+      }
+      leaf downUnreachable {
+        type string;
+        default "false";
+      }
+    }
+    output {
+      leaf status { type string; }
+      leaf message { type string; }
+      leaf served-by { type string; }
+    }
+  }
+}

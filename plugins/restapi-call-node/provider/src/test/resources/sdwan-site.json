@@ -1,0 +1,10 @@
+{
+    "sites": [
+        {
+            "name": ${prop.name},
+            "controlPoints": []
+        }
+    ]
+}
+
+

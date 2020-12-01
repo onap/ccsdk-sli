@@ -1,0 +1,108 @@
+module test_augment_1_for_module {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:test:augment:name";
+    prefix "augment-name";
+
+    import test_name_of_the_module {
+       prefix aug;
+    }
+
+    revision "2015-01-05" {
+        description "Initial revision of hello model";
+    }
+
+    augment "/aug:name_of_the_cont1/aug:name_of_the_cont2/aug:name_of_the_cont4" {
+        container name_of_the_cont5 {
+            leaf name_of_the_leaf13 {
+               type empty;
+            }
+        }
+        list name_of_the_list7 {
+            leaf name_of_the_leaf14 {
+                type instance-identifier;
+            }
+        }
+        leaf name_of_the_leaf15 {
+            type string;
+        }
+        leaf-list name_of_the_ll6 {
+            type union {
+                type int32;
+                type enumeration {
+                    enum "unbounded";
+                }
+            }
+        }
+        uses "aug:name_of_the_g1";
+    }
+
+    uses "aug:name_of_the_g1";
+
+    augment "/aug:name_of_the_cont1/aug:name_of_the_cont2/aug:name_of_the_cont3" {
+        choice name_of_the_ch2 {
+            case name_of_the_c3 {
+                leaf name_of_the_leaf21 {
+                    type string;
+                }
+            }
+            case name_of_the_c4 {
+                leaf name_of_the_leaf22 {
+                    type enumeration {
+                        enum zero;
+                        enum one;
+                        enum seven {
+                            value 7;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    augment "/aug:name_of_the_ch1" {
+       case name_of_the_c5 {
+          container name_of_the_cont10 {
+              leaf name_of_the_leaf23 {
+                  type string;
+              }
+          }
+       }
+    }
+
+    augment "/aug:name_of_the_ch1/aug:name_of_the_c1" {
+        container name_of_the_cont7 {
+            leaf name_of_the_leaf24 {
+                type string;
+            }
+        }
+    }
+
+    augment "/aug:name_of_the_cont13/aug:name_of_the_cont12" {
+       leaf name_of_the_leaf29 {
+           type string;
+       }
+    }
+
+    augment "/aug:name_of_the_create-sfc/aug:input" {
+        leaf name_of_the_leaf36 {
+            type bits {
+                bit angle {
+                    position 0;
+                }
+                bit degree {
+                    position 1;
+                }
+                bit movement {
+                    position 2;
+                }
+            }
+        }
+    }
+
+    augment "/aug:name_of_the_create-sfc/aug:output" {
+       leaf leaf37 {
+           type boolean;
+       }
+    }
+
+}
