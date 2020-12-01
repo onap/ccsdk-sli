@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>odlparent-lite</artifactId>
+        <version>2.1.0</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>org.onap.ccsdk.sli.northbound</groupId>
+    <artifactId>daexim-offsite-backup</artifactId>
+    <version>1.1.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>ccsdk-sli-northbound :: daexim-offsite-backup</name>
+    <description>ODL feature used for transferring MD-SAL data to an offsite location.</description>
+
+    <modules>
+        <module>model</module>
+        <module>provider</module>
+        <module>installer</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.northbound</groupId>
+                <artifactId>daexim-offsite-backup-features</artifactId>
+                <version>${project.version}</version>
+                <type>xml</type>
+                <classifier>features</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.northbound</groupId>
+                <artifactId>daexim-offsite-backup-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.northbound</groupId>
+                <artifactId>daexim-offsite-backup-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

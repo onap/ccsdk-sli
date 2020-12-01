@@ -1,0 +1,53 @@
+
+module asdc-api-common {
+    yang-version "1";
+
+    // Use same namespace defined for file upload in 15.12
+    namespace "org:onap:ccsdk:sli:northbound:asdcapi:common";
+
+    prefix asdcapi;
+
+    organization
+        "ONAP";
+
+    contact
+        "Dan Timoney";
+
+    description
+        "ASDC/SDN-C API common data";
+
+    revision 2017-02-01 {
+        description "Initial release";
+    }
+
+
+
+    // Groupings
+
+    grouping artifact-fields {
+        leaf artifact-name {
+            type string;
+            description "Name of artifact";
+        }
+
+        leaf artifact-version {
+            type string;
+            description "Version of artifact";
+        }
+    }
+
+    grouping asdc-api-response {
+        leaf asdc-api-response-code {
+            type string;
+            description "Code indicating success/failure";
+        }
+
+        leaf asdc-api-response-text {
+            type string;
+            description "Text indicating reason for failure";
+        }
+    }
+
+
+
+}

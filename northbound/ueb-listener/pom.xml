@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>standalone-parent</artifactId>
+        <version>2.1.0</version>
+    </parent>
+
+    <groupId>org.onap.ccsdk.sli.northbound</groupId>
+    <artifactId>ueb-listener</artifactId>
+    <version>1.1.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>ccsdk-sli-northbound :: ueb-listener</name>
+    <description>UEB Listener</description>
+
+    <properties>
+        <skip.SWM>true</skip.SWM>
+        <ueb.listener.base>/opt/app/ueb-listener</ueb.listener.base>
+        <maven.build.timestamp.format>yyyyMMdd'T'HHmmss'Z'</maven.build.timestamp.format>
+        <build.number>${maven.build.timestamp}</build.number>
+        <SWM_VERSION>${project.version}-${build.number}</SWM_VERSION>
+        <ccsdk.sli.core.version>1.1.0</ccsdk.sli.core.version>
+        <ccsdk.sli.northbound.version>${project.version}</ccsdk.sli.northbound.version>
+        <sdc.client.version>1.4.1</sdc.client.version>
+	<sdc.tosca.version>1.6.5</sdc.tosca.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.core</groupId>
+                <artifactId>sli-core-artifacts</artifactId>
+                <version>${ccsdk.sli.core.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+    
+
+        <dependency>
+            <groupId>org.onap.sdc.sdc-distribution-client</groupId>
+            <artifactId>sdc-distribution-client</artifactId>
+            <version>${sdc.client.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.sdc.sdc-tosca</groupId>
+            <artifactId>sdc-tosca</artifactId>
+            <version>${sdc.tosca.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.vorburger.mariaDB4j</groupId>
+            <artifactId>mariaDB4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.ccsdk.sli.core</groupId>
+            <artifactId>dblib-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.13</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- ================================================== -->
+            <!-- Set the JDK compiler version. -->
+            <!-- ================================================== -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>org.onap.ccsdk.sli.northbound.uebclient.SdncUebClient</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>create-zip</id>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <attach>true</attach>
+                            <finalName>${project.artifactId}.${project.version}</finalName>
+                            <attach>true</attach>
+                            <descriptors>
+                                <descriptor>src/assembly/assemble_zip.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

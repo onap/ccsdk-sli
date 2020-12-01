@@ -33463,3 +33463,1677 @@ java.lang.NumberFormatException: For input string: "test"
 2020-12-01 15:58:36,853|||main||||INFO||||||| --- resource-state.limit-value: 1920000
 2020-12-01 15:58:36,854|||main||||INFO||||||| --- resource-state.threshold-value: 1600000
 2020-12-01 15:58:36,854|||main||||INFO||||||| --- resource-state.used: 1605000
+2020-12-01 16:20:19,551|||main||||INFO||||||| EELF0005I Searching path "${user.home};etc;../etc" for log configuration file "logback-test.xml"
+2020-12-01 16:20:19,556|||main||||INFO||||||| EELF0001I Loading default logging configuration from system resource file "com/att/eelf/logback.xml"
+2020-12-01 16:20:19,570|||main||||ERROR||||||| Error executing command [test] over SSH [test@test:10]. Exit Code 255 and Error message : Malformed configuration. src/test/resources/test.json
+2020-12-01 16:20:19,579|||main||||ERROR||||||| Error executing command [test] over SSH [test@test:10]. Exit Code 65 and Error message : Host not allowed to connect. src/test/resources/test.json
+2020-12-01 16:20:19,580|||main||||ERROR||||||| Error executing command [test] over SSH [test@test:10]. Exit Code 5 and Error message : Host not allowed to connect. src/test/resources/test.json
+2020-12-01 16:20:19,580|||main||||ERROR||||||| Error executing command [test] over SSH [test@test:10]. Exit Code 5121 and Error message : src/test/resources/test.json
+2020-12-01 16:20:19,580|||main||||ERROR||||||| Error executing command [test] over SSH [test@test:10]. Exit Code 65 and Error message : Host not allowed to connect. src/test/resource/test.json
+2020-12-01 16:20:19,581|||main||||ERROR||||||| Error executing command [test] over SSH [test@test:10]. Exit Code 65 and Error message : Host not allowed to connect. src/test/resources/test.json
+2020-12-01 16:20:19,581|||main||||ERROR||||||| Error executing command [test] over SSH [test@test:10]. Exit Code 67 and Error message : Key exchange failed. src/test/resources/test.json
+2020-12-01 16:20:19,581|||main||||ERROR||||||| Error executing command [test] over SSH [test@test:10]. Exit Code 73 and Error message : Key exchange failed. src/test/resources/test.json
+2020-12-01 16:20:19,581|||main||||ERROR||||||| Error executing command [test] over SSH [test@test:10]. Exit Code 1 and Error message : Malformed configuration. src/test/resources/test.json
+2020-12-01 16:20:19,582|||main||||ERROR||||||| Error executing command [test] over SSH [test@test:10]. Exit Code 5 and Error message : Host not allowed to connect. src/test/resources/test.json
+2020-12-01 16:20:19,656|||main||||INFO||||||| Saltstack ssh client type set to TRUST_ALL
+2020-12-01 16:20:19,656|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:19,657|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:19,657|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:19,657|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:19,667|||main||||INFO||||||| FileParameters : echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config-tep.txt; 
+2020-12-01 16:20:19,667|||main||||INFO||||||| FileParameters : echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config-tep.txt; echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config.txt; 
+2020-12-01 16:20:19,667|||main||||INFO||||||| EnvParameters : exclude=bar*
+2020-12-01 16:20:19,668|||main||||INFO||||||| Command to be executed on server : echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config-tep.txt; echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config.txt;  cd /srv/salt/ ; salt 'minion1' state.apply vim exclude=bar* --out=json --static 
+2020-12-01 16:20:20,002|||main||||INFO||||||| resolveEffectiveResolver(root@<IP>:2222) loaded 9 entries from /Users/dt5972/.ssh/config
+2020-12-01 16:20:20,008|||main||||ERROR||||||| Caught Exception
+java.lang.IllegalArgumentException: Invalid host pattern char in <IP>
+	at org.apache.sshd.common.util.ValidateUtils.createFormattedException(ValidateUtils.java:213)
+	at org.apache.sshd.common.util.ValidateUtils.throwIllegalArgumentException(ValidateUtils.java:179)
+	at org.apache.sshd.common.util.ValidateUtils.checkTrue(ValidateUtils.java:168)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.toPattern(HostPatternsHolder.java:283)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.parsePatterns(HostPatternsHolder.java:236)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.setHost(HostConfigEntry.java:139)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.<init>(HostConfigEntry.java:124)
+	at org.apache.sshd.client.SshClient.connect(SshClient.java:505)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SshConnection.connect(SshConnection.java:82)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:100)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:74)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:423)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecSLS(SaltstackAdapterImpl.java:371)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_shouldSetSuccessMultiFileParam(TestSaltstackAdapterImpl.java:987)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,008|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,017|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,018|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,033|||main||||INFO||||||| Added property: equipment-data_length: 1
+2020-12-01 16:20:20,033|||main||||INFO||||||| Added property: message : The provisioned access bandwidth is at or exceeds 50% of the total server capacity.
+2020-12-01 16:20:20,033|||main||||INFO||||||| Added property: resource-state.used : 1605000
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: resource-state.limit-value : 1920000
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: resource-state.threshold-value : 1600000
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: resource-rule.service-model : DUMMY
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: resource-rule.resource-name : Bandwidth
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: resource-rule.equipment-level : Server
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: resource-rule.soft-limit-expression : 0.6 * max-server-speed * number-primary-servers
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: resource-rule.endpoint-position : VCE-Cust
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: resource-state.last-added : 1605000
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: resource-rule.hard-limit-expression : max-server-speed * number-primary-servers
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: equipment-data[0].max-server-speed : 1600000
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: equipment-data[0].number-primary-servers : 2
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: equipment-data[0].server-model : Unknown
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: equipment-data[0].server-count : 4
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: equipment-data[0].equipment-id : Server1
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: equipment-data[0].server-id : Server1
+2020-12-01 16:20:20,034|||main||||INFO||||||| Added property: equipment-data[0].test-node.test-inner-node : Test-Value
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.equipment-data_length: [1]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.resource-state.used: [1605000]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.resource-state.limit-value: [1920000]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.resource-rule.resource-name: [Bandwidth]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.equipment-data[0].test-node.test-inner-node: [Test-Value]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.message: [The provisioned access bandwidth is at or exceeds 50% of the total server capacity.]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.resource-state.last-added: [1605000]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.resource-rule.hard-limit-expression: [max-server-speed * number-primary-servers]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.equipment-data[0].equipment-id: [Server1]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.equipment-data[0].server-id: [Server1]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.equipment-data[0].max-server-speed: [1600000]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.equipment-data[0].number-primary-servers: [2]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.resource-state.threshold-value: [1600000]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.resource-rule.service-model: [DUMMY]
+2020-12-01 16:20:20,035|||main||||INFO||||||| +++ test1.resource-rule.equipment-level: [Server]
+2020-12-01 16:20:20,036|||main||||INFO||||||| +++ test1.resource-rule.soft-limit-expression: [0.6 * max-server-speed * number-primary-servers]
+2020-12-01 16:20:20,036|||main||||INFO||||||| +++ test1.equipment-data[0].server-model: [Unknown]
+2020-12-01 16:20:20,036|||main||||INFO||||||| +++ test1.resource-rule.endpoint-position: [VCE-Cust]
+2020-12-01 16:20:20,036|||main||||INFO||||||| +++ test1.equipment-data[0].server-count: [4]
+2020-12-01 16:20:20,036|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,037|||main||||INFO||||||| Saltstack ssh client type set to TRUST_ALL
+2020-12-01 16:20:20,037|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,037|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,037|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,037|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,037|||main||||INFO||||||| Command to be executed on server : echo -e "vim:
+  pkg.installed
+" > /srv/salt/config.sls;  cd /srv/salt/ ; salt 'minion1' state.apply config  --out=json --static 
+2020-12-01 16:20:20,039|||main||||ERROR||||||| Caught Exception
+java.lang.IllegalArgumentException: Invalid host pattern char in <IP>
+	at org.apache.sshd.common.util.ValidateUtils.createFormattedException(ValidateUtils.java:213)
+	at org.apache.sshd.common.util.ValidateUtils.throwIllegalArgumentException(ValidateUtils.java:179)
+	at org.apache.sshd.common.util.ValidateUtils.checkTrue(ValidateUtils.java:168)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.toPattern(HostPatternsHolder.java:283)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.parsePatterns(HostPatternsHolder.java:236)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.setHost(HostConfigEntry.java:139)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.<init>(HostConfigEntry.java:124)
+	at org.apache.sshd.client.SshClient.connect(SshClient.java:505)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SshConnection.connect(SshConnection.java:82)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:100)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:74)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:423)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecSLSFile(SaltstackAdapterImpl.java:404)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_shouldSetSuccessSSLFile(TestSaltstackAdapterImpl.java:1013)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,039|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,040|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,040|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,041|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,041|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,041|||main||||INFO||||||| Command to be executed on server :  cd /srv/salt/ ; salt '*' state.apply src/test  --out=json --static 
+2020-12-01 16:20:20,042|||main||||INFO||||||| Added property: minion2.retcode : 0
+2020-12-01 16:20:20,042|||main||||INFO||||||| Added property: minion1.retcode : 0
+2020-12-01 16:20:20,042|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.152099
+2020-12-01 16:20:20,042|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,042|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,042|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,042|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,042|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 11086.334
+2020-12-01 16:20:20,042|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl
+2020-12-01 16:20:20,043|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,043|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : curl
+2020-12-01 16:20:20,043|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,043|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : install_network_packages
+2020-12-01 16:20:20,043|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : All specified packages are already installed
+2020-12-01 16:20:20,043|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 426.493
+2020-12-01 16:20:20,043|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.061765
+2020-12-01 16:20:20,043|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,043|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,043|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new : 4.6.3a-1build2
+2020-12-01 16:20:20,043|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old : 
+2020-12-01 16:20:20,043|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.152099]
+2020-12-01 16:20:20,043|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,043|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,043|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,043|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,043|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [11086.334]
+2020-12-01 16:20:20,043|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl]
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [curl]
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new: [4.6.3a-1build2]
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [install_network_packages]
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [All specified packages are already installed]
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [426.493]
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old: []
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion2.retcode: [0]
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.061765]
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion1.retcode: [0]
+2020-12-01 16:20:20,044|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,044|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,045|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,045|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,045|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,046|||main||||INFO||||||| Saltstack ssh client type set to TRUST_ALL
+2020-12-01 16:20:20,046|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,046|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,046|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,046|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,046|||main||||INFO||||||| EnvParameters : exclude=bar*
+2020-12-01 16:20:20,046|||main||||INFO||||||| Command to be executed on server :  cd /srv/salt/ ; salt 'minion1' state.apply vim exclude=bar* --out=json --static 
+2020-12-01 16:20:20,048|||main||||ERROR||||||| Caught Exception
+java.lang.IllegalArgumentException: Invalid host pattern char in <IP>
+	at org.apache.sshd.common.util.ValidateUtils.createFormattedException(ValidateUtils.java:213)
+	at org.apache.sshd.common.util.ValidateUtils.throwIllegalArgumentException(ValidateUtils.java:179)
+	at org.apache.sshd.common.util.ValidateUtils.checkTrue(ValidateUtils.java:168)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.toPattern(HostPatternsHolder.java:283)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.parsePatterns(HostPatternsHolder.java:236)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.setHost(HostConfigEntry.java:139)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.<init>(HostConfigEntry.java:124)
+	at org.apache.sshd.client.SshClient.connect(SshClient.java:505)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SshConnection.connect(SshConnection.java:82)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:100)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:74)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:423)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecSLS(SaltstackAdapterImpl.java:371)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_shouldSetSuccessEnvParam(TestSaltstackAdapterImpl.java:903)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,048|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,049|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,049|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,049|||main||||ERROR||||||| Exception caught
+java.io.FileNotFoundException: No response file found
+	at org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator.mockReqExec(SaltstackServerEmulator.java:66)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:437)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecCommand(SaltstackAdapterImpl.java:340)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_NoResponseFileWithNoRetry(TestSaltstackAdapterImpl.java:231)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:19)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,049|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,050|||main||||INFO||||||| Saltstack ssh client type set to TRUST_ALL
+2020-12-01 16:20:20,050|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,050|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,050|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,050|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,070|||main||||ERROR||||||| Caught Exception
+java.lang.NullPointerException: null
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SshConnection.connect(SshConnection.java:84)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:100)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:74)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:423)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecCommand(SaltstackAdapterImpl.java:340)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_shouldSetSuccessReal(TestSaltstackAdapterImpl.java:796)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,071|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,072|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,072|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,072|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,072|||main||||INFO||||||| Command to be executed on server :  cd /srv/salt/ ; salt 'minion1' state.apply src/test/resources/test.json  --out=json --static 
+2020-12-01 16:20:20,073|||main||||ERROR||||||| Exception caught
+java.nio.file.NoSuchFileException: src/test/resources/test-none.json
+	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:116)
+	at java.base/sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:219)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:370)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:421)
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:3205)
+	at org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator.acceptRequest(SaltstackServerEmulator.java:87)
+	at org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator.mockReqExec(SaltstackServerEmulator.java:68)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:425)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecSLS(SaltstackAdapterImpl.java:371)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecSLS_WithMinionNoResponsefile(TestSaltstackAdapterImpl.java:734)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:19)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,073|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,073|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,073|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,074|||main||||INFO||||||| Output not in JSON format
+2020-12-01 16:20:20,074|||main||||INFO||||||| +++ test1."server-count": ["4",]
+2020-12-01 16:20:20,074|||main||||INFO||||||| +++ test1."resource-rule": [{]
+2020-12-01 16:20:20,074|||main||||INFO||||||| +++ test1."equipment-level": ["Server"]
+2020-12-01 16:20:20,074|||main||||INFO||||||| +++ test1."server-id": ["Server1",]
+2020-12-01 16:20:20,074|||main||||INFO||||||| +++ test1."used": ["1605000",]
+2020-12-01 16:20:20,074|||main||||INFO||||||| +++ test1."last-added": ["1605000",]
+2020-12-01 16:20:20,074|||main||||INFO||||||| +++ test1."equipment-id": ["Server1",]
+2020-12-01 16:20:20,074|||main||||INFO||||||| +++ test1."resource-name": ["Bandwidth",]
+2020-12-01 16:20:20,074|||main||||INFO||||||| +++ test1."threshold-value": ["1600000",]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."message": ["The provisioned access bandwidth is at or exceeds 50% of the total server capacity."]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."equipment-data": [[]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."server-model": ["Unknown",]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."limit-value": ["1920000"]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."resource-state": [{]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."test-node": [{]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."hard-limit-expression": ["max-server-speed * number-primary-servers",]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."endpoint-position": ["VCE-Cust",]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."test-inner-node": ["Test-Value"]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."max-server-speed": ["1600000",]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."soft-limit-expression": ["0.6 * max-server-speed * number-primary-servers",]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."number-primary-servers": ["2",]
+2020-12-01 16:20:20,075|||main||||INFO||||||| +++ test1."service-model": ["DUMMY",]
+2020-12-01 16:20:20,075|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,075|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,076|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,076|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,076|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,076|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,076|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,077|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,077|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,077|||main||||INFO||||||| Command to be executed on server :  cd /srv/salt/ ; salt '*' state.apply src/test/resources/test.json  --out=json --static 
+2020-12-01 16:20:20,077|||main||||ERROR||||||| Exception caught
+java.nio.file.NoSuchFileException: src/test/resources/test-none.json
+	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:116)
+	at java.base/sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:219)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:370)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:421)
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:3205)
+	at org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator.acceptRequest(SaltstackServerEmulator.java:87)
+	at org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator.mockReqExec(SaltstackServerEmulator.java:68)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:425)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecSLS(SaltstackAdapterImpl.java:371)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecSLS_WithAllMinionNoResponsefile(TestSaltstackAdapterImpl.java:776)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:19)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,077|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,079|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,079|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,080|||main||||INFO||||||| Command to be executed on server :  cd /srv/salt/ ; salt 'minion1' state.apply src/test/resources/test  --out=json --static 
+2020-12-01 16:20:20,080|||main||||INFO||||||| Added property: minion2.retcode : 0
+2020-12-01 16:20:20,080|||main||||INFO||||||| Added property: minion1.retcode : 0
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.152099
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 11086.334
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : curl
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : install_network_packages
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : All specified packages are already installed
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 426.493
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.061765
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new : 4.6.3a-1build2
+2020-12-01 16:20:20,081|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old : 
+2020-12-01 16:20:20,081|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.152099]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [11086.334]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [curl]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new: [4.6.3a-1build2]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [install_network_packages]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [All specified packages are already installed]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [426.493]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old: []
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion2.retcode: [0]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.061765]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion1.retcode: [0]
+2020-12-01 16:20:20,082|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,082|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,083|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,083|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion2.retcode : 0
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion1.retcode : 0
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.152099
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 11086.334
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : curl
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : install_network_packages
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : All specified packages are already installed
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 426.493
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.061765
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,084|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,085|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new : 4.6.3a-1build2
+2020-12-01 16:20:20,085|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old : 
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.152099]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [11086.334]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [curl]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new: [4.6.3a-1build2]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [install_network_packages]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [All specified packages are already installed]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [426.493]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old: []
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion2.retcode: [0]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.061765]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,085|||main||||INFO||||||| +++ test1.minion1.retcode: [0]
+2020-12-01 16:20:20,086|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,086|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,086|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,086|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,086|||main||||INFO||||||| Command to be executed on server :  cd /srv/salt/ ; salt '*' state.apply src/test/resources/test.json  --out=json --static 
+2020-12-01 16:20:20,086|||main||||ERROR||||||| Exception caught
+java.nio.file.NoSuchFileException: src/test/resources/test-none.json
+	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:116)
+	at java.base/sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:219)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:370)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:421)
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:3205)
+	at org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator.acceptRequest(SaltstackServerEmulator.java:87)
+	at org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator.mockReqExec(SaltstackServerEmulator.java:68)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:425)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecSLS(SaltstackAdapterImpl.java:371)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecSLS_NoResponsefile(TestSaltstackAdapterImpl.java:691)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:19)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,087|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,087|||main||||INFO||||||| Saltstack ssh client type set to TRUST_ALL
+2020-12-01 16:20:20,087|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,088|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,088|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,088|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,090|||main||||ERROR||||||| Caught Exception
+java.lang.IllegalArgumentException: Invalid host pattern char in <IP>
+	at org.apache.sshd.common.util.ValidateUtils.createFormattedException(ValidateUtils.java:213)
+	at org.apache.sshd.common.util.ValidateUtils.throwIllegalArgumentException(ValidateUtils.java:179)
+	at org.apache.sshd.common.util.ValidateUtils.checkTrue(ValidateUtils.java:168)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.toPattern(HostPatternsHolder.java:283)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.parsePatterns(HostPatternsHolder.java:236)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.setHost(HostConfigEntry.java:139)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.<init>(HostConfigEntry.java:124)
+	at org.apache.sshd.client.SshClient.connect(SshClient.java:505)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SshConnection.connect(SshConnection.java:82)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:100)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:74)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:423)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecCommand(SaltstackAdapterImpl.java:340)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_shouldSetSuccessRealCommand(TestSaltstackAdapterImpl.java:850)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,091|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,091|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,091|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,091|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,092|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,092|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,093|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,093|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,093|||main||||INFO||||||| Output not in JSON format
+2020-12-01 16:20:20,093|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.shaping.pe-egress-per-class-shaping-codes.cos2v-shaping-code: [P]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.queueing.pe-egress-class-queueing-policing-codes.cos2v-queueing-code: [P]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.service-information.service-instance-id: [ICORESITE-2751508]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.queueing.pe-per-class-queueing-behaviors.cos2-queueing: [WRED]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-configuration-notification-input.response-message: [Plc Activation Failed: Device gblond2005me6 Sync-from Failed. Please check device IP address and NCS setup.]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-configuration-notification-input.response-code: [0]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.access-speed-units: [Kbps]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.clli: [LONDENEH]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.queueing.pe-per-class-queueing-behaviors.cos2v-queueing: [QueueLimit]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.l1-customer-handoff: [_1000BASELX]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.shaping.pe-egress-per-class-shaping-codes.cos2-shaping-code: [W]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.shaping.pe-egress-per-class-shaping-behaviors.cos2-shaping: [Disable]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.vlan-tag-control: [_1Q]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.shaping.pe-egress-per-class-shaping-behaviors.cos2v-shaping: [Enable]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-configuration-notification-input.service-information.service-instance-id: [TEST7]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.shaping.pe-egress-per-class-shaping-behaviors.cos3-shaping: [Disable]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.endpoint-information.bundle-id: [33]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.endpoint-information.interface-string: [ae0]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.contracted-port-speed-units: [Kbps]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-configuration-notification-input.ack-final-indicator: [Y]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.service-information.service-type: [AVPN]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.access-circuit-id: [DHEC.54831.170.ATI]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.access-speed: [10000]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.queueing.pe-egress-class-queueing-policing-codes.cos3-queueing-code: [W]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.managed-ce: [N]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.contracted-port-speed: [10000]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-configuration-notification-input.svc-request-id: [TEST7]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.queueing.pe-per-class-queueing-behaviors.cos3-queueing: [WRED]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-configuration-notification-input.service-information.service-type: [AVPN]
+2020-12-01 16:20:20,094|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.access-interface: [_1G]
+2020-12-01 16:20:20,095|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,095|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,095|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,095|||main||||ERROR||||||| Exception caught
+java.io.FileNotFoundException: No response file found
+	at org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator.mockReqExec(SaltstackServerEmulator.java:66)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:431)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecCommand(SaltstackAdapterImpl.java:340)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_NoResponseFileWithRetry(TestSaltstackAdapterImpl.java:186)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:19)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,095|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,096|||main||||INFO||||||| Saltstack ssh client type set to TRUST_ALL
+2020-12-01 16:20:20,096|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,096|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,096|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,096|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,097|||main||||INFO||||||| FileParameters : echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config.txt; 
+2020-12-01 16:20:20,097|||main||||INFO||||||| EnvParameters : exclude=bar,baz
+2020-12-01 16:20:20,097|||main||||INFO||||||| Command to be executed on server : echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config.txt;  cd /srv/salt/ ; salt 'minion1' state.apply vim exclude=bar,baz --out=json --static 
+2020-12-01 16:20:20,099|||main||||ERROR||||||| Caught Exception
+java.lang.IllegalArgumentException: Invalid host pattern char in <IP>
+	at org.apache.sshd.common.util.ValidateUtils.createFormattedException(ValidateUtils.java:213)
+	at org.apache.sshd.common.util.ValidateUtils.throwIllegalArgumentException(ValidateUtils.java:179)
+	at org.apache.sshd.common.util.ValidateUtils.checkTrue(ValidateUtils.java:168)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.toPattern(HostPatternsHolder.java:283)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.parsePatterns(HostPatternsHolder.java:236)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.setHost(HostConfigEntry.java:139)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.<init>(HostConfigEntry.java:124)
+	at org.apache.sshd.client.SshClient.connect(SshClient.java:505)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SshConnection.connect(SshConnection.java:82)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:100)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:74)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:423)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecSLS(SaltstackAdapterImpl.java:371)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_shouldSetSuccessFileParam(TestSaltstackAdapterImpl.java:931)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,100|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,100|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,100|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,101|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,101|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,101|||main||||INFO||||||| Command to be executed on server : echo -e "{
+  "equipment-data": [
+    {
+      "server-count": "4",
+      "max-server-speed": "1600000",
+      "number-primary-servers": "2",
+      "equipment-id": "Server1",
+      "server-model": "Unknown",
+      "server-id": "Server1",
+      "test-node" : {
+        "test-inner-node" : "Test-Value"
+      }
+    }
+  ],
+  "resource-state": {
+    "threshold-value": "1600000",
+    "last-added": "1605000",
+    "used": "1605000",
+    "limit-value": "1920000"
+  },
+  "resource-rule": {
+    "endpoint-position": "VCE-Cust",
+    "soft-limit-expression": "0.6 * max-server-speed * number-primary-servers",
+    "resource-name": "Bandwidth",
+    "service-model": "DUMMY",
+    "hard-limit-expression": "max-server-speed * number-primary-servers",
+    "equipment-level": "Server"
+  },
+  "message": "The provisioned access bandwidth is at or exceeds 50% of the total server capacity."
+}
+" > /srv/salt/test.sls;  cd /srv/salt/ ; salt '*' state.apply test  --out=json --static 
+2020-12-01 16:20:20,101|||main||||INFO||||||| Added property: minion2.retcode : 0
+2020-12-01 16:20:20,101|||main||||INFO||||||| Added property: minion1.retcode : 0
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.152099
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 11086.334
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : curl
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : install_network_packages
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : All specified packages are already installed
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 426.493
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.061765
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,102|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,103|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new : 4.6.3a-1build2
+2020-12-01 16:20:20,103|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old : 
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.152099]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [11086.334]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [curl]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new: [4.6.3a-1build2]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [install_network_packages]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [All specified packages are already installed]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [426.493]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old: []
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion2.retcode: [0]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.061765]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion1.retcode: [0]
+2020-12-01 16:20:20,103|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,104|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,104|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,104|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,104|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,104|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,105|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,105|||main||||INFO||||||| Command to be executed on server :  cd /srv/salt/ ; salt '*' state.apply src/test/resources/test  --out=json --static 
+2020-12-01 16:20:20,105|||main||||INFO||||||| Added property: minion2.retcode : 0
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion1.retcode : 0
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.152099
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 11086.334
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : curl
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : install_network_packages
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : All specified packages are already installed
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 426.493
+2020-12-01 16:20:20,106|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.061765
+2020-12-01 16:20:20,107|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,107|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,107|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new : 4.6.3a-1build2
+2020-12-01 16:20:20,107|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old : 
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.152099]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [11086.334]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [curl]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new: [4.6.3a-1build2]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [install_network_packages]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [All specified packages are already installed]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [426.493]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old: []
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion2.retcode: [0]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.061765]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion1.retcode: [0]
+2020-12-01 16:20:20,107|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,107|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,108|||main||||INFO||||||| Saltstack ssh client type set to TRUST_ALL
+2020-12-01 16:20:20,108|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,109|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,109|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,109|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,109|||main||||INFO||||||| FileParameters : echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config.txt; 
+2020-12-01 16:20:20,109|||main||||INFO||||||| EnvParameters : pillar='{"foo": "bar"}'
+2020-12-01 16:20:20,109|||main||||INFO||||||| EnvParameters : pillar='{"foo": "bar"}', exclude=bar,baz
+2020-12-01 16:20:20,109|||main||||INFO||||||| Command to be executed on server : echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config.txt;  cd /srv/salt/ ; salt 'minion1' state.apply vim pillar='{"foo": "bar"}', exclude=bar,baz --out=json --static 
+2020-12-01 16:20:20,112|||main||||ERROR||||||| Caught Exception
+java.lang.IllegalArgumentException: Invalid host pattern char in <IP>
+	at org.apache.sshd.common.util.ValidateUtils.createFormattedException(ValidateUtils.java:213)
+	at org.apache.sshd.common.util.ValidateUtils.throwIllegalArgumentException(ValidateUtils.java:179)
+	at org.apache.sshd.common.util.ValidateUtils.checkTrue(ValidateUtils.java:168)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.toPattern(HostPatternsHolder.java:283)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.parsePatterns(HostPatternsHolder.java:236)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.setHost(HostConfigEntry.java:139)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.<init>(HostConfigEntry.java:124)
+	at org.apache.sshd.client.SshClient.connect(SshClient.java:505)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SshConnection.connect(SshConnection.java:82)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:100)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:74)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:423)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecSLS(SaltstackAdapterImpl.java:371)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_shouldSetSuccessPillarParam(TestSaltstackAdapterImpl.java:959)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,112|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,112|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,112|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: equipment-data_length: 1
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: message : The provisioned access bandwidth is at or exceeds 50% of the total server capacity.
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: resource-state.used : 1605000
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: resource-state.limit-value : 1920000
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: resource-state.threshold-value : 1600000
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: resource-rule.service-model : DUMMY
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: resource-rule.resource-name : Bandwidth
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: resource-rule.equipment-level : Server
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: resource-rule.soft-limit-expression : 0.6 * max-server-speed * number-primary-servers
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: resource-rule.endpoint-position : VCE-Cust
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: resource-state.last-added : 1605000
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: resource-rule.hard-limit-expression : max-server-speed * number-primary-servers
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: equipment-data[0].max-server-speed : 1600000
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: equipment-data[0].number-primary-servers : 2
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: equipment-data[0].server-model : Unknown
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: equipment-data[0].server-count : 4
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: equipment-data[0].equipment-id : Server1
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: equipment-data[0].server-id : Server1
+2020-12-01 16:20:20,113|||main||||INFO||||||| Added property: equipment-data[0].test-node.test-inner-node : Test-Value
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.equipment-data_length: [1]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.resource-state.used: [1605000]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.resource-state.limit-value: [1920000]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.resource-rule.resource-name: [Bandwidth]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.equipment-data[0].test-node.test-inner-node: [Test-Value]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.message: [The provisioned access bandwidth is at or exceeds 50% of the total server capacity.]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.resource-state.last-added: [1605000]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.resource-rule.hard-limit-expression: [max-server-speed * number-primary-servers]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.equipment-data[0].equipment-id: [Server1]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.equipment-data[0].server-id: [Server1]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.equipment-data[0].max-server-speed: [1600000]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.equipment-data[0].number-primary-servers: [2]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.resource-state.threshold-value: [1600000]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.resource-rule.service-model: [DUMMY]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.resource-rule.equipment-level: [Server]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.resource-rule.soft-limit-expression: [0.6 * max-server-speed * number-primary-servers]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.equipment-data[0].server-model: [Unknown]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.resource-rule.endpoint-position: [VCE-Cust]
+2020-12-01 16:20:20,114|||main||||INFO||||||| +++ de13ae8f-93d2-42b0-a5d6-69fd4ca23ce5.equipment-data[0].server-count: [4]
+2020-12-01 16:20:20,114|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,115|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,115|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,115|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,115|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,116|||main||||INFO||||||| Output not in JSON format
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.shaping.pe-egress-per-class-shaping-codes.cos2v-shaping-code: [P]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.queueing.pe-egress-class-queueing-policing-codes.cos2v-queueing-code: [P]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.service-information.service-instance-id: [ICORESITE-2751508]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.queueing.pe-per-class-queueing-behaviors.cos2-queueing: [WRED]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-configuration-notification-input.response-message: [Plc Activation Failed: Device gblond2005me6 Sync-from Failed. Please check device IP address and NCS setup.]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-configuration-notification-input.response-code: [0]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.access-speed-units: [Kbps]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.clli: [LONDENEH]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.queueing.pe-per-class-queueing-behaviors.cos2v-queueing: [QueueLimit]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.l1-customer-handoff: [_1000BASELX]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.shaping.pe-egress-per-class-shaping-codes.cos2-shaping-code: [W]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.shaping.pe-egress-per-class-shaping-behaviors.cos2-shaping: [Disable]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.vlan-tag-control: [_1Q]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.shaping.pe-egress-per-class-shaping-behaviors.cos2v-shaping: [Enable]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-configuration-notification-input.service-information.service-instance-id: [TEST7]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.shaping.pe-egress-per-class-shaping-behaviors.cos3-shaping: [Disable]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.endpoint-information.bundle-id: [33]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.endpoint-information.interface-string: [ae0]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.contracted-port-speed-units: [Kbps]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-configuration-notification-input.ack-final-indicator: [Y]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.service-information.service-type: [AVPN]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.access-circuit-id: [DHEC.54831.170.ATI]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.access-speed: [10000]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.queueing.pe-egress-class-queueing-policing-codes.cos3-queueing-code: [W]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.managed-ce: [N]
+2020-12-01 16:20:20,116|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.contracted-port-speed: [10000]
+2020-12-01 16:20:20,117|||main||||INFO||||||| +++ txt.service-configuration-notification-input.svc-request-id: [TEST7]
+2020-12-01 16:20:20,117|||main||||INFO||||||| +++ txt.operational-data.avpn-ip-port-information.port-level-cos.queueing.pe-per-class-queueing-behaviors.cos3-queueing: [WRED]
+2020-12-01 16:20:20,117|||main||||INFO||||||| +++ txt.service-configuration-notification-input.service-information.service-type: [AVPN]
+2020-12-01 16:20:20,117|||main||||INFO||||||| +++ txt.service-data.avpn-ip-port-information.avpn-access-information.access-interface: [_1G]
+2020-12-01 16:20:20,117|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,117|||main||||INFO||||||| Saltstack ssh client type set to TRUST_ALL
+2020-12-01 16:20:20,117|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,117|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,117|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,117|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,119|||main||||ERROR||||||| Caught Exception
+java.lang.IllegalArgumentException: Invalid host pattern char in <IP>
+	at org.apache.sshd.common.util.ValidateUtils.createFormattedException(ValidateUtils.java:213)
+	at org.apache.sshd.common.util.ValidateUtils.throwIllegalArgumentException(ValidateUtils.java:179)
+	at org.apache.sshd.common.util.ValidateUtils.checkTrue(ValidateUtils.java:168)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.toPattern(HostPatternsHolder.java:283)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.parsePatterns(HostPatternsHolder.java:236)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.setHost(HostConfigEntry.java:139)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.<init>(HostConfigEntry.java:124)
+	at org.apache.sshd.client.SshClient.connect(SshClient.java:505)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SshConnection.connect(SshConnection.java:82)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:100)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:74)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:423)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecCommand(SaltstackAdapterImpl.java:340)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_shouldSetSuccessRealSLSCommand(TestSaltstackAdapterImpl.java:822)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,120|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,120|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,120|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,120|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,121|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,121|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,121|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,121|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,121|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,121|||main||||INFO||||||| Command to be executed on server : echo -e "{
+  "equipment-data": [
+    {
+      "server-count": "4",
+      "max-server-speed": "1600000",
+      "number-primary-servers": "2",
+      "equipment-id": "Server1",
+      "server-model": "Unknown",
+      "server-id": "Server1",
+      "test-node" : {
+        "test-inner-node" : "Test-Value"
+      }
+    }
+  ],
+  "resource-state": {
+    "threshold-value": "1600000",
+    "last-added": "1605000",
+    "used": "1605000",
+    "limit-value": "1920000"
+  },
+  "resource-rule": {
+    "endpoint-position": "VCE-Cust",
+    "soft-limit-expression": "0.6 * max-server-speed * number-primary-servers",
+    "resource-name": "Bandwidth",
+    "service-model": "DUMMY",
+    "hard-limit-expression": "max-server-speed * number-primary-servers",
+    "equipment-level": "Server"
+  },
+  "message": "The provisioned access bandwidth is at or exceeds 50% of the total server capacity."
+}
+" > /srv/salt/test.sls;  cd /srv/salt/ ; salt 'minion1' state.apply test  --out=json --static 
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion2.retcode : 0
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion1.retcode : 0
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.152099
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 11086.334
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : curl
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : install_network_packages
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : All specified packages are already installed
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 426.493
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.061765
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,122|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,123|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new : 4.6.3a-1build2
+2020-12-01 16:20:20,123|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old : 
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.152099]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [11086.334]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [curl]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new: [4.6.3a-1build2]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [install_network_packages]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [All specified packages are already installed]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [426.493]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old: []
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion2.retcode: [0]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.061765]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion1.retcode: [0]
+2020-12-01 16:20:20,123|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,123|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,124|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,124|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,124|||main||||INFO||||||| Command to be executed on server :  cd /srv/salt/ ; salt '*' state.apply src/test  --out=json --static 
+2020-12-01 16:20:20,124|||main||||INFO||||||| Added property: minion2.retcode : 0
+2020-12-01 16:20:20,124|||main||||INFO||||||| Added property: minion1.retcode : 0
+2020-12-01 16:20:20,124|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.152099
+2020-12-01 16:20:20,124|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,124|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,124|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,124|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,124|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 11086.334
+2020-12-01 16:20:20,124|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl
+2020-12-01 16:20:20,124|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,125|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : curl
+2020-12-01 16:20:20,125|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,125|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : install_network_packages
+2020-12-01 16:20:20,125|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : All specified packages are already installed
+2020-12-01 16:20:20,125|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 426.493
+2020-12-01 16:20:20,125|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.061765
+2020-12-01 16:20:20,125|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,125|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,125|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new : 4.6.3a-1build2
+2020-12-01 16:20:20,125|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old : 
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.152099]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [11086.334]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [curl]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new: [4.6.3a-1build2]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [install_network_packages]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [All specified packages are already installed]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [426.493]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old: []
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion2.retcode: [0]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.061765]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion1.retcode: [0]
+2020-12-01 16:20:20,125|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,125|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,126|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,126|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,126|||main||||ERROR||||||| Exception caught
+java.io.FileNotFoundException: No response file found
+	at org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator.mockReqExec(SaltstackServerEmulator.java:66)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:437)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecCommand(SaltstackAdapterImpl.java:340)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_NoResponseFileWithRetryZero(TestSaltstackAdapterImpl.java:208)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:19)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,126|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,127|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,127|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,127|||main||||INFO||||||| Command to be executed on server : echo -e "{
+  "equipment-data": [
+    {
+      "server-count": "4",
+      "max-server-speed": "1600000",
+      "number-primary-servers": "2",
+      "equipment-id": "Server1",
+      "server-model": "Unknown",
+      "server-id": "Server1",
+      "test-node" : {
+        "test-inner-node" : "Test-Value"
+      }
+    }
+  ],
+  "resource-state": {
+    "threshold-value": "1600000",
+    "last-added": "1605000",
+    "used": "1605000",
+    "limit-value": "1920000"
+  },
+  "resource-rule": {
+    "endpoint-position": "VCE-Cust",
+    "soft-limit-expression": "0.6 * max-server-speed * number-primary-servers",
+    "resource-name": "Bandwidth",
+    "service-model": "DUMMY",
+    "hard-limit-expression": "max-server-speed * number-primary-servers",
+    "equipment-level": "Server"
+  },
+  "message": "The provisioned access bandwidth is at or exceeds 50% of the total server capacity."
+}
+" > /srv/salt/test.sls;  cd /srv/salt/ ; salt '*' state.apply test  --out=json --static 
+2020-12-01 16:20:20,127|||main||||INFO||||||| Added property: minion2.retcode : 0
+2020-12-01 16:20:20,127|||main||||INFO||||||| Added property: minion1.retcode : 0
+2020-12-01 16:20:20,127|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.152099
+2020-12-01 16:20:20,127|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,127|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,127|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,127|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__ : nettools
+2020-12-01 16:20:20,127|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 11086.334
+2020-12-01 16:20:20,128|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl
+2020-12-01 16:20:20,128|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result : true
+2020-12-01 16:20:20,128|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : curl
+2020-12-01 16:20:20,128|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__ : install_network_packages
+2020-12-01 16:20:20,128|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name : install_network_packages
+2020-12-01 16:20:20,128|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment : All specified packages are already installed
+2020-12-01 16:20:20,128|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration : 426.493
+2020-12-01 16:20:20,128|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time : 08:47:16.061765
+2020-12-01 16:20:20,128|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,128|||main||||INFO||||||| Added property: minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__ : 0
+2020-12-01 16:20:20,128|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new : 4.6.3a-1build2
+2020-12-01 16:20:20,128|||main||||INFO||||||| Added property: minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old : 
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.152099]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__sls__: [nettools]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [11086.334]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [The following packages were installed/updated: lftp
+The following packages were already installed: rsync, curl]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.result: [true]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [curl]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__id__: [install_network_packages]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.new: [4.6.3a-1build2]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.name: [install_network_packages]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.comment: [All specified packages are already installed]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.duration: [426.493]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.changes.lftp.old: []
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion2.retcode: [0]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.start_time: [08:47:16.061765]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion1.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion1.retcode: [0]
+2020-12-01 16:20:20,128|||main||||INFO||||||| +++ test1.minion2.pkg_|-install_network_packages_|-install_network_packages_|-installed.__run_num__: [0]
+2020-12-01 16:20:20,128|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,129|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,129|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,129|||main||||ERROR||||||| Exception caught
+java.io.FileNotFoundException: No response file found
+	at org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator.mockReqExec(SaltstackServerEmulator.java:66)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:425)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecCommand(SaltstackAdapterImpl.java:340)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_NoResponseFile(TestSaltstackAdapterImpl.java:164)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:19)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,129|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,129|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,129|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,130|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,130|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,130|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,130|||main||||INFO||||||| Added property: equipment-data_length: 1
+2020-12-01 16:20:20,130|||main||||INFO||||||| Added property: message : The provisioned access bandwidth is at or exceeds 50% of the total server capacity.
+2020-12-01 16:20:20,130|||main||||INFO||||||| Added property: resource-state.used : 1605000
+2020-12-01 16:20:20,130|||main||||INFO||||||| Added property: resource-state.limit-value : 1920000
+2020-12-01 16:20:20,130|||main||||INFO||||||| Added property: resource-state.threshold-value : 1600000
+2020-12-01 16:20:20,130|||main||||INFO||||||| Added property: resource-rule.service-model : DUMMY
+2020-12-01 16:20:20,130|||main||||INFO||||||| Added property: resource-rule.resource-name : Bandwidth
+2020-12-01 16:20:20,130|||main||||INFO||||||| Added property: resource-rule.equipment-level : Server
+2020-12-01 16:20:20,130|||main||||INFO||||||| Added property: resource-rule.soft-limit-expression : 0.6 * max-server-speed * number-primary-servers
+2020-12-01 16:20:20,131|||main||||INFO||||||| Added property: resource-rule.endpoint-position : VCE-Cust
+2020-12-01 16:20:20,131|||main||||INFO||||||| Added property: resource-state.last-added : 1605000
+2020-12-01 16:20:20,131|||main||||INFO||||||| Added property: resource-rule.hard-limit-expression : max-server-speed * number-primary-servers
+2020-12-01 16:20:20,131|||main||||INFO||||||| Added property: equipment-data[0].max-server-speed : 1600000
+2020-12-01 16:20:20,131|||main||||INFO||||||| Added property: equipment-data[0].number-primary-servers : 2
+2020-12-01 16:20:20,131|||main||||INFO||||||| Added property: equipment-data[0].server-model : Unknown
+2020-12-01 16:20:20,131|||main||||INFO||||||| Added property: equipment-data[0].server-count : 4
+2020-12-01 16:20:20,131|||main||||INFO||||||| Added property: equipment-data[0].equipment-id : Server1
+2020-12-01 16:20:20,131|||main||||INFO||||||| Added property: equipment-data[0].server-id : Server1
+2020-12-01 16:20:20,131|||main||||INFO||||||| Added property: equipment-data[0].test-node.test-inner-node : Test-Value
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.equipment-data_length: [1]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.resource-state.used: [1605000]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.resource-state.limit-value: [1920000]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.resource-rule.resource-name: [Bandwidth]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.equipment-data[0].test-node.test-inner-node: [Test-Value]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.message: [The provisioned access bandwidth is at or exceeds 50% of the total server capacity.]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.resource-state.last-added: [1605000]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.resource-rule.hard-limit-expression: [max-server-speed * number-primary-servers]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.equipment-data[0].equipment-id: [Server1]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.equipment-data[0].server-id: [Server1]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.equipment-data[0].max-server-speed: [1600000]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.equipment-data[0].number-primary-servers: [2]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.resource-state.threshold-value: [1600000]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.resource-rule.service-model: [DUMMY]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.resource-rule.equipment-level: [Server]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.resource-rule.soft-limit-expression: [0.6 * max-server-speed * number-primary-servers]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.equipment-data[0].server-model: [Unknown]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.resource-rule.endpoint-position: [VCE-Cust]
+2020-12-01 16:20:20,131|||main||||INFO||||||| +++ test1.equipment-data[0].server-count: [4]
+2020-12-01 16:20:20,131|||main||||INFO||||||| Execution of request : successful.
+2020-12-01 16:20:20,132|||main||||INFO||||||| Saltstack ssh client type set to TRUST_ALL
+2020-12-01 16:20:20,132|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,132|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,132|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,132|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,132|||main||||INFO||||||| Command to be executed on server :  cd /srv/salt/ ; salt 'minion1' state.apply vim  --out=json --static 
+2020-12-01 16:20:20,135|||main||||ERROR||||||| Caught Exception
+java.lang.IllegalArgumentException: Invalid host pattern char in <IP>
+	at org.apache.sshd.common.util.ValidateUtils.createFormattedException(ValidateUtils.java:213)
+	at org.apache.sshd.common.util.ValidateUtils.throwIllegalArgumentException(ValidateUtils.java:179)
+	at org.apache.sshd.common.util.ValidateUtils.checkTrue(ValidateUtils.java:168)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.toPattern(HostPatternsHolder.java:283)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.parsePatterns(HostPatternsHolder.java:236)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.setHost(HostConfigEntry.java:139)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.<init>(HostConfigEntry.java:124)
+	at org.apache.sshd.client.SshClient.connect(SshClient.java:505)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SshConnection.connect(SshConnection.java:82)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:100)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:74)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:423)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecSLS(SaltstackAdapterImpl.java:371)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_shouldSetSuccessRealSSL(TestSaltstackAdapterImpl.java:876)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,135|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,135|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,135|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,135|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,136|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,136|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,136|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,136|||main||||INFO||||||| Saltstack ssh client type set to TRUST_ALL
+2020-12-01 16:20:20,136|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,136|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,136|||main||||INFO||||||| saltstack-adapter.properties not defined so reading saltstack host and auth details from DG's parameters
+2020-12-01 16:20:20,136|||main||||INFO||||||| Creating ssh client with BASIC Auth
+2020-12-01 16:20:20,137|||main||||INFO||||||| FileParameters : echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config-tep.txt; 
+2020-12-01 16:20:20,137|||main||||INFO||||||| FileParameters : echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config-tep.txt; echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config.txt; 
+2020-12-01 16:20:20,137|||main||||INFO||||||| EnvParameters : pillar='{"foo": "bar"}'
+2020-12-01 16:20:20,137|||main||||INFO||||||| EnvParameters : pillar='{"foo": "bar"}', exclude=bar
+2020-12-01 16:20:20,137|||main||||INFO||||||| Command to be executed on server : echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config-tep.txt; echo -e "db_ip=10.1.1.1, sip_timer=10000" > /srv/salt/config.txt; echo -e "vim:
+  pkg.installed
+" > /srv/salt/config.sls;  cd /srv/salt/ ; salt 'minion1' state.apply config pillar='{"foo": "bar"}', exclude=bar --out=json --static 
+2020-12-01 16:20:20,138|||main||||ERROR||||||| Caught Exception
+java.lang.IllegalArgumentException: Invalid host pattern char in <IP>
+	at org.apache.sshd.common.util.ValidateUtils.createFormattedException(ValidateUtils.java:213)
+	at org.apache.sshd.common.util.ValidateUtils.throwIllegalArgumentException(ValidateUtils.java:179)
+	at org.apache.sshd.common.util.ValidateUtils.checkTrue(ValidateUtils.java:168)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.toPattern(HostPatternsHolder.java:283)
+	at org.apache.sshd.client.config.hosts.HostPatternsHolder.parsePatterns(HostPatternsHolder.java:236)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.setHost(HostConfigEntry.java:139)
+	at org.apache.sshd.client.config.hosts.HostConfigEntry.<init>(HostConfigEntry.java:124)
+	at org.apache.sshd.client.SshClient.connect(SshClient.java:505)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SshConnection.connect(SshConnection.java:82)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:100)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.connectNExecute(ConnectionBuilder.java:74)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.execCommand(SaltstackAdapterImpl.java:423)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.reqExecSLSFile(SaltstackAdapterImpl.java:404)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterImpl.reqExecCommand_shouldSetSuccessSSLFileMultiFileParam(TestSaltstackAdapterImpl.java:1041)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,139|||main||||ERROR||||||| APPCException caught
+2020-12-01 16:20:20,141|||main||||INFO||||||| Saltstack ssh client type set to SSH_CERT
+2020-12-01 16:20:20,142|||main||||INFO||||||| Creating ssh client with ssh KEY from test
+2020-12-01 16:20:20,142|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,142|||main||||INFO||||||| Saltstack ssh client type set to TRUST_ALL
+2020-12-01 16:20:20,142|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,142|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,143|||main||||INFO||||||| Saltstack ssh client type set to BOTH
+2020-12-01 16:20:20,143|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,143|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,143|||main||||INFO||||||| Saltstack ssh client type set to SSH_CERT
+2020-12-01 16:20:20,143|||main||||INFO||||||| Creating ssh client with ssh KEY from test
+2020-12-01 16:20:20,143|||main||||ERROR||||||| Error Initializing Saltstack Adapter due to Unknown Exception
+java.lang.NumberFormatException: For input string: "test"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
+	at java.base/java.lang.Integer.parseInt(Integer.java:652)
+	at java.base/java.lang.Integer.parseInt(Integer.java:770)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.<init>(ConnectionBuilder.java:61)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.initialize(SaltstackAdapterImpl.java:188)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.<init>(SaltstackAdapterImpl.java:115)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterPropertiesProviderImpl.reqExecCommand_setPropertiesSSH_CERTPortString(TestSaltstackAdapterPropertiesProviderImpl.java:140)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:19)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,144|||main||||INFO||||||| Saltstack ssh client type set to NONE
+2020-12-01 16:20:20,144|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,144|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,144|||main||||INFO||||||| Saltstack ssh client type set to BOTH
+2020-12-01 16:20:20,144|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,144|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,145|||main||||INFO||||||| Saltstack ssh client type set to null
+2020-12-01 16:20:20,145|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,145|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,145|||main||||INFO||||||| Saltstack ssh client type set to BASIC
+2020-12-01 16:20:20,145|||main||||INFO||||||| Creating ssh client connection
+2020-12-01 16:20:20,145|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,145|||main||||INFO||||||| Saltstack ssh client type set to BASIC
+2020-12-01 16:20:20,145|||main||||INFO||||||| Creating ssh client connection
+2020-12-01 16:20:20,145|||main||||ERROR||||||| Error Initializing Saltstack Adapter due to Unknown Exception
+java.lang.NumberFormatException: For input string: "test"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
+	at java.base/java.lang.Integer.parseInt(Integer.java:652)
+	at java.base/java.lang.Integer.parseInt(Integer.java:770)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder.<init>(ConnectionBuilder.java:53)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.initialize(SaltstackAdapterImpl.java:181)
+	at org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl.<init>(SaltstackAdapterImpl.java:115)
+	at org.onap.ccsdk.adapter.impl.TestSaltstackAdapterPropertiesProviderImpl.reqExecCommand_setPropertiesBasicPortString(TestSaltstackAdapterPropertiesProviderImpl.java:87)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:19)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:383)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:344)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:125)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:417)
+2020-12-01 16:20:20,146|||main||||INFO||||||| Saltstack ssh client type set to NONE
+2020-12-01 16:20:20,146|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,146|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,146|||main||||INFO||||||| Saltstack ssh client type set to null
+2020-12-01 16:20:20,146|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,146|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,146|||main||||INFO||||||| Saltstack ssh client type set to null
+2020-12-01 16:20:20,146|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,146|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,147|||main||||INFO||||||| Saltstack ssh client type set to SSH_CERT
+2020-12-01 16:20:20,147|||main||||INFO||||||| Creating ssh client with ssh KEY from null
+2020-12-01 16:20:20,147|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,148|||main||||INFO||||||| Saltstack ssh client type set to NONE
+2020-12-01 16:20:20,148|||main||||INFO||||||| No saltstack-adapter.properties defined so reading from DG props
+2020-12-01 16:20:20,148|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,148|||main||||INFO||||||| Saltstack ssh client type set to BASIC
+2020-12-01 16:20:20,148|||main||||INFO||||||| Creating ssh client connection
+2020-12-01 16:20:20,148|||main||||INFO||||||| Initialized Saltstack Adapter
+2020-12-01 16:20:20,150|||main||||INFO||||||| Added property: equipment-data_length: 1
+2020-12-01 16:20:20,150|||main||||INFO||||||| Added property: message : The provisioned access bandwidth is at or exceeds 50% of the total server capacity.
+2020-12-01 16:20:20,150|||main||||INFO||||||| Added property: resource-state.used : 1605000
+2020-12-01 16:20:20,150|||main||||INFO||||||| Added property: resource-state.limit-value : 1920000
+2020-12-01 16:20:20,150|||main||||INFO||||||| Added property: resource-state.threshold-value : 1600000
+2020-12-01 16:20:20,150|||main||||INFO||||||| Added property: resource-rule.service-model : DUMMY
+2020-12-01 16:20:20,150|||main||||INFO||||||| Added property: resource-rule.resource-name : Bandwidth
+2020-12-01 16:20:20,150|||main||||INFO||||||| Added property: resource-rule.equipment-level : Server
+2020-12-01 16:20:20,150|||main||||INFO||||||| Added property: resource-rule.soft-limit-expression : 0.6 * max-server-speed * number-primary-servers
+2020-12-01 16:20:20,150|||main||||INFO||||||| Added property: resource-rule.endpoint-position : VCE-Cust
+2020-12-01 16:20:20,150|||main||||INFO||||||| Added property: resource-state.last-added : 1605000
+2020-12-01 16:20:20,151|||main||||INFO||||||| Added property: resource-rule.hard-limit-expression : max-server-speed * number-primary-servers
+2020-12-01 16:20:20,151|||main||||INFO||||||| Added property: equipment-data[0].max-server-speed : 1600000
+2020-12-01 16:20:20,151|||main||||INFO||||||| Added property: equipment-data[0].number-primary-servers : 2
+2020-12-01 16:20:20,151|||main||||INFO||||||| Added property: equipment-data[0].server-model : Unknown
+2020-12-01 16:20:20,151|||main||||INFO||||||| Added property: equipment-data[0].server-count : 4
+2020-12-01 16:20:20,151|||main||||INFO||||||| Added property: equipment-data[0].equipment-id : Server1
+2020-12-01 16:20:20,151|||main||||INFO||||||| Added property: equipment-data[0].server-id : Server1
+2020-12-01 16:20:20,151|||main||||INFO||||||| Added property: equipment-data[0].test-node.test-inner-node : Test-Value
+2020-12-01 16:20:20,151|||main||||INFO||||||| Properties:
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- equipment-data[0].equipment-id: Server1
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- equipment-data[0].max-server-speed: 1600000
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- equipment-data[0].number-primary-servers: 2
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- equipment-data[0].server-count: 4
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- equipment-data[0].server-id: Server1
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- equipment-data[0].server-model: Unknown
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- equipment-data[0].test-node.test-inner-node: Test-Value
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- equipment-data_length: 1
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- message: The provisioned access bandwidth is at or exceeds 50% of the total server capacity.
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- resource-rule.endpoint-position: VCE-Cust
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- resource-rule.equipment-level: Server
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- resource-rule.hard-limit-expression: max-server-speed * number-primary-servers
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- resource-rule.resource-name: Bandwidth
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- resource-rule.service-model: DUMMY
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- resource-rule.soft-limit-expression: 0.6 * max-server-speed * number-primary-servers
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- resource-state.last-added: 1605000
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- resource-state.limit-value: 1920000
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- resource-state.threshold-value: 1600000
+2020-12-01 16:20:20,151|||main||||INFO||||||| --- resource-state.used: 1605000
