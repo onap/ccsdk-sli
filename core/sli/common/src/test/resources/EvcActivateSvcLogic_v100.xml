@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============LICENSE_START=======================================================
+  ONAP : CCSDK
+  ================================================================================
+  Copyright (C) 2017 AT&T Intellectual Property. All rights
+  						reserved.
+  ================================================================================
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  ============LICENSE_END=========================================================
+  -->
+
+
+<service-logic xmlns="http://www.onap.org/sdnc/svclogic"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.onap.org/sdnc/svclogic ./svclogic.xsd"
+    module="ase" version="1.0.0">
+
+
+    <method rpc="ase-evc-activation" mode="sync">
+        <configure adaptor="org.onap.ccsdl.sli.adaptors.emt.EmtAdaptor"
+            key="$evc-name" activate="true">
+            <parameter name="circuit.name" value="$evc-name" />
+            <parameter name="topology" value="$topology" />
+            <parameter name="leg1.uniCircuitId" value="$evc-leg[0].evc-access-name" />
+            <parameter name="leg2.uniCircuitId" value="$evc-leg[1].evc-access-name" />
+            <outcome value="success">
+                <return status="success" />
+            </outcome>
+            <outcome value="already-active">
+                <return status="failure">
+                    <parameter name="error-code" value="1590" />
+                    <parameter name="error-message" value="`Circuit already active`" />
+                </return>
+            </outcome>
+            <outcome value="Other">
+                <return status="failure">
+                    <parameter name="error-code" value="1542" />
+                    <parameter name="error-message" value="Activation failure" />
+                </return>
+            </outcome>
+        </configure>
+    </method>
+
+    <method rpc="ase-evc-disconnect-request" mode="sync">
+        <configure adaptor="org.onap.ccsdk.sli.adaptors.emt.EmtAdaptor"
+            key="$evc-name" activate="false">
+            <outcome value="success">
+                <return status="success" />
+            </outcome>
+
+            <outcome value="Other">
+                <return status="failure">
+                    <parameter name="error-code" value="1542" />
+                    <parameter name="error-message" value="De-activation failure" />
+                </return>
+            </outcome>
+        </configure>
+    </method>
+
+
+</service-logic>

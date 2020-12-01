@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============LICENSE_START=======================================================
+  ONAP : CCSDK
+  ================================================================================
+  Copyright (C) 2017 AT&T Intellectual Property. All rights
+  						reserved.
+  ================================================================================
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  ============LICENSE_END=========================================================
+  -->
+
+
+<service-logic xmlns="http://www.onap.org/sdnc/svclogic"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.onap.org/sdnc/svclogic ./svclogic.xsd"
+    module="ase" version="1.0.0">
+
+    <!-- Reserve a port. Returns uni-circuit-id of reserved ase-port -->
+    <method rpc="ase-port-reserve" mode="sync">
+        <switch test="$uni-cir-units">
+            <outcome value="Mbps">
+                <reserve plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
+                    resource="ase-port"
+                    key="resource-emt-clli == $edge-device-clli and speed >= $uni-cir-value"
+                    pfx="asePort">
+
+
+                    <outcome value="success">
+                        <block>
+                            <record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
+                                <parameter name="file" value="/tmp/sample_r1.log" />
+                                <parameter name="field1" value="__TIMESTAMP__"/>
+                                <parameter name="field2" value="RESERVED"/>
+                                <parameter name="field3" value="$asePort.uni_circuit_id"/>
+                            </record>
+                            <return status="success">
+                                <parameter name="uni-circuit-id" value="$asePort.uni_circuit_id" />
+                            </return>
+                        </block>
+
+                    </outcome>
+
+                    <outcome value="not-found">
+                        <return status="failure">
+                            <parameter name="error-code" value="1010" />
+                            <parameter name="error-message" value="No ports found that match criteria" />
+                        </return>
+                    </outcome>
+
+                    <outcome value="Other">
+                        <return status="failure">
+                            <parameter name="error-code" value="1010" />
+                            <parameter name="error-message"
+                                value="Error encountered trying to reserve port" />
+                        </return>
+                    </outcome>
+
+                </reserve>
+            </outcome>
+            <outcome value="Gbps">
+                <reserve plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
+                    resource="ase-port"
+                    key="resource-emt-clli == $edge-device-clli and speed >= 1000 * $uni-cir-value"
+                    pfx="asePort">
+
+
+                    <outcome value="success">
+                        <block>
+                            <record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
+                                <parameter name="file" value="/tmp/sample_r1.log" />
+                                <parameter name="field1" value="__TIMESTAMP__"/>
+                                <parameter name="field2" value="RESERVED"/>
+                                <parameter name="field3" value="$asePort.uni_circuit_id"/>
+                            </record>
+                            <return status="success">
+                                <parameter name="uni-circuit-id" value="$asePort.uni_circuit_id" />
+                            </return>
+                        </block>
+                    </outcome>
+
+                    <outcome value="not-found">
+                        <return status="failure">
+                            <parameter name="error-code" value="1010" />
+                            <parameter name="error-message" value="No ports found that match criteria" />
+                        </return>
+                    </outcome>
+                    <outcome value="">
+                        <return status="failure">
+                            <parameter name="error-code" value="1012" />
+                            <parameter name="error-message"
+                                value="Error encountered trying to reserve port" />
+                        </return>
+                    </outcome>
+                    <outcome value="Other">
+                        <return status="failure">
+                            <parameter name="error-code" value="1010" />
+                            <parameter name="error-message"
+                                value="Error encountered trying to reserve port" />
+                        </return>
+                    </outcome>
+                </reserve>
+            </outcome>
+        </switch>
+    </method>
+
+    <!-- One step provisioning/activation command. Allocates a local resource,
+        then configures it on device -->
+    <method rpc="ase-port-activate-request" mode="sync">
+
+        <allocate plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
+            resource="ase-port" key="uni-circuit-id == $uni-circuit-id" pfx="asePort">
+
+            <outcome value="success">
+                <configure adaptor="org.onap.ccsdk.sli.adaptors.emt.EmtAdaptor"
+                    key="$uni-circuit-id" activate="true">
+                    <parameter name="circuit.id" value="$uni-circuit-id" />
+                    <parameter name="subscriber.name" value="$subscriber-name" />
+                    <parameter name="emt.clli" value="$edge-device-clli" />
+                    <parameter name="port.tagging" value="$port-tagging" />
+                    <parameter name="port.mediaSpeed" value="$media-speed" />
+                    <parameter name="location.state" value="$uni-location-state" />
+                    <parameter name="location.city" value="$uni-location-city" />
+                    <parameter name="cosCategory" value="$cos-category" />
+                    <parameter name="gosProfile" value="$gos-profile" />
+                    <parameter name="lldp" value="$asePort.resource-lldp" />
+                    <parameter name="mtu" value="$asePort.resource-mtu" />
+                    <outcome value="success">
+                        <block>
+                            <record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
+                                <parameter name="file" value="/tmp/sample_r1.log" />
+                                <parameter name="field1" value="__TIMESTAMP__"/>
+                                <parameter name="field2" value="ACTIVE"/>
+                                <parameter name="field3" value="$uni-circuit-id"/>
+                            </record>
+                            <return status="success">
+                                <parameter name="edge-device-clli" value="$asePort.resource-emt-clli" />
+                            </return>
+                        </block>
+
+                    </outcome>
+                    <outcome value="already-active">
+                        <return status="failure">
+                            <parameter name="error-code" value="1590" />
+                            <parameter name="error-message" value="Port already active" />
+                        </return>
+                    </outcome>
+                    <outcome value="Other">
+                        <return status="failure">
+                            <parameter name="error-code" value="1542" />
+                            <parameter name="error-message" value="Activation failure" />
+                        </return>
+                    </outcome>
+                </configure>
+            </outcome>
+
+            <outcome value="not-found">
+
+                <return status="failure">
+                    <parameter name="error-code" value="1220" />
+                    <parameter name="error-message" value="Circuit not found" />
+                </return>
+
+            </outcome>
+
+            <outcome value="Other">
+                <return status="failure">
+                    <parameter name="error-code" value="1230" />
+                    <parameter name="error-message" value="Error occurred trying to find circuit" />
+                </return>
+            </outcome>
+        </allocate>
+    </method>
+
+
+
+    <!-- Change provisioning w/o activation -->
+    <method rpc="ase-change-port-prov-request" mode="sync">
+        <allocate plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
+            resource="ase-port" key="uni-circuit-id == $uni-circuit-id" pfx="asePort">
+
+            <outcome value="success">
+                <return status="success">
+                    <parameter name="edge-device-clli" value="$asePort.resource-emt-clli" />
+                </return>
+            </outcome>
+
+            <outcome value="not-found">
+                <return status="failure">
+                    <parameter name="error-code" value="1220" />
+                    <parameter name="error-message" value="Circuit not found" />
+                </return>
+            </outcome>
+
+            <outcome value="Other">
+                <return status="failure">
+                    <parameter name="error-code" value="1230" />
+                    <parameter name="error-message" value="Error occurred trying to find circuit" />
+                </return>
+            </outcome>
+        </allocate>
+    </method>
+
+
+
+
+    <!-- Release port -->
+
+    <method rpc="ase-release-port-request" mode="sync">
+        <exists plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
+            resource="ase-evc" key="uni-circuit-id  == $uni-circuit-id">
+
+            <outcome value="true">
+                <return status="failure">
+                    <parameter name="error-code" value="1130" />
+                    <parameter name="error-message"
+                        value="Cannot release port - used in existing EVC" />
+                </return>
+            </outcome>
+            <outcome value="false">
+                <release plugin="org.onap.ccsdk.sli.adaptors.sample.SampleResource"
+                    resource="ase-port" key="uni-circuit-id == $uni-circuit-id">
+                    <outcome value="success">
+                        <block>
+                            <record plugin="org.onap.ccsdk.sli.core.sli.recording.FileRecorder">
+                                <parameter name="file" value="/tmp/sample_r1.log" />
+                                <parameter name="field1" value="__TIMESTAMP__"/>
+                                <parameter name="field2" value="RELEASED"/>
+                                <parameter name="field3" value="$uni-circuit-id"/>
+                            </record>
+                            <return status="success"/>
+                        </block>
+                    </outcome>
+
+                    <outcome value="not-found">
+                        <return status="failure">
+                            <parameter name="error-code" value="1110" />
+                            <parameter name="error-message" value="No port found for this uni-circuit-id" />
+                        </return>
+                    </outcome>
+
+                    <outcome value="Other">
+                        <return status="failure">
+                            <parameter name="error-code" value="1130" />
+                            <parameter name="error-message"
+                                value="Error encountered trying to release port" />
+                        </return>
+                    </outcome>
+                </release>
+            </outcome>
+        </exists>
+    </method>
+
+</service-logic>
+
