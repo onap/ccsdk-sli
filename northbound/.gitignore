@@ -1,0 +1,46 @@
+#####standard .git ignore entries#####
+
+## IDE Specific Files ##
+org.eclipse.core.resources.prefs
+.classpath
+.project
+.settings
+.idea
+.externalToolBuilders
+.checkstyle
+.factorypath
+maven-eclipse.xml
+workspace
+
+## Compilation Files ##
+*.class
+**/target
+target
+target-ide
+MANIFEST.MF
+
+## Misc Ignores (OS specific etc) ##
+bin/
+lib/
+dist
+*~
+*.ipr
+*.iml
+*.iws
+*.log
+classes
+out/
+.DS_STORE
+.metadata
+provider/src/main/java/META-INF/
+provider/src/main/java/inventory/
+model/src/main/yang-gen-sal
+yang-gen-sal/
+
+## BlackDuck generated file
+sdnc-northbound_bdio.jsonld
+blackDuckHubProjectName.txt
+blackDuckHubProjectVersionName.txt
+
+# Generated dependencies list
+direct-dependencies.txt
