@@ -1,0 +1,100 @@
+{
+    "DataChange:input": {
+        "DataChange:aai-node-type": "$entitytype",
+        "DataChange:selflink": "$entitylink",
+        "DataChange:aai-event-id": "$id",
+        "DataChange:aai-event-trigger": "$action",
+        "DataChange:key-data": [{
+                                     "DataChange:key-name": "thirdparty-sdnc-id",
+                                     "DataChange:key-value": "$thirdpartysdncid"
+                                 },
+                                 {
+                                     "DataChange:key-name": "resource-version",
+                                     "DataChange:key-value": "$resourceversion"
+                                 },
+                                 {
+                                     "DataChange:key-name": "location",
+                                     "DataChange:key-value": "$location"
+                                 },
+                                 {
+                                     "DataChange:key-name": "product-name",
+                                     "DataChange:key-value": "$productname"
+                                 },
+                                 {
+                                     "DataChange:key-name": "esr-system-info-id",
+                                     "DataChange:key-value": "$esrsysteminfoid"
+                                 },
+                                 {
+                                     "DataChange:key-name": "system-type",
+                                     "DataChange:key-value": "$systemtype"
+                                 },
+                                 {
+                                     "DataChange:key-name": "service-url",
+                                     "DataChange:key-value": "$serviceurl"
+                                 },
+                                 {
+                                     "DataChange:key-name": "ssl-cacert",
+                                     "DataChange:key-value": "$sslcacert"
+                                 },
+                                 {
+                                     "DataChange:key-name": "type",
+                                     "DataChange:key-value": "$type"
+                                 },
+                                 {
+                                     "DataChange:key-name": "ssl-insecure",
+                                     "DataChange:key-value": "$sslinsecure"
+                                 },
+                                 {
+                                     "DataChange:key-name": "system-status",
+                                     "DataChange:key-value": "$systemstatus"
+                                 },
+                                 {
+                                     "DataChange:key-name": "version",
+                                     "DataChange:key-value": "$version"
+                                 },
+                                 {
+                                     "DataChange:key-name": "passive",
+                                     "DataChange:key-value": "$passive"
+                                 },
+                                 {
+                                     "DataChange:key-name": "password",
+                                     "DataChange:key-value": "$password"
+                                 },
+                                 {
+                                     "DataChange:key-name": "protocol",
+                                     "DataChange:key-value": "$protocol"
+                                 },
+                                 {
+                                     "DataChange:key-name": "ip-address",
+                                     "DataChange:key-value": "$ipaddress"
+                                 },
+                                 {
+                                     "DataChange:key-name": "cloud-domain",
+                                     "DataChange:key-value": "$clouddomain"
+                                 },
+                                 {
+                                     "DataChange:key-name": "user-name",
+                                     "DataChange:key-value": "$username"
+                                 },
+                                 {
+                                     "DataChange:key-name": "system-name",
+                                     "DataChange:key-value": "$systemname"
+                                 },
+                                 {
+                                     "DataChange:key-name": "port",
+                                     "DataChange:key-value": "$port"
+                                 },
+                                 {
+                                     "DataChange:key-name": "vendor",
+                                     "DataChange:key-value": "$vendor"
+                                 },
+                                 {
+                                     "DataChange:key-name": "remote-path",
+                                     "DataChange:key-value": "$remotepath"
+                                 },
+                                 {
+                                     "DataChange:key-name": "default-tenant",
+                                     "DataChange:key-value": "$defaulttenant"
+                                 }]
+    }
+}

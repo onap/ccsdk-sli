@@ -194,6 +194,7 @@ public class DaeximOffsiteBackupProviderTest {
 
         }
         catch(NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
             fail();
         }
 
