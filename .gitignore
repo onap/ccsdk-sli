@@ -7,10 +7,11 @@ org.eclipse.core.resources.prefs
 .settings
 .idea
 .externalToolBuilders
+.checkstyle
 maven-eclipse.xml
 workspace
-.checkstyle
 .vscode
+.factorypath
 
 ## Compilation Files ##
 *.class
@@ -18,6 +19,9 @@ workspace
 target
 target-ide
 MANIFEST.MF
+**/yang-gen-sal
+*.interp
+core/sli/model/src/main/java
 
 ## Misc Ignores (OS specific etc) ##
 bin/
@@ -30,18 +34,27 @@ classes
 out/
 .DS_STORE
 .metadata
-.vscode
-provider/src/main/java/META-INF/
-provider/src/main/java/inventory/
+
+## antlr4 generated files ##
+ExprGrammarBaseListener.java
+ExprGrammarLexer.java
+ExprGrammarListener.java
+ExprGrammarParser.java
+ExprGrammar.tokens
+ExprGrammarLexer.tokens
+
+# BlackDuck generated file
+*.jsonld
+blackDuckHubProjectName.txt
+blackDuckHubProjectVersionName.txt
+
+# Derby log
+derby.log
+
+# Generated file
+core/sliPluginUtils/provider/testFileName
+direct-dependencies.txt
 logs/
 debug-logs/
 *.log
 *.versionsBackup
-
-## BlackDuck generated file
-ccsdk-adaptors_bdio.jsonld
-blackDuckHubProjectName.txt
-blackDuckHubProjectVersionName.txt
-
-#Generated dependencies list
-direct-dependencies.txt
