@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>odlparent-lite</artifactId>
+        <version>2.1.0</version>
+    </parent>
+
+    <groupId>org.onap.ccsdk.sli.northbound</groupId>
+    <artifactId>ccsdk-sli-northbound</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>ccsdk-sli-northbound</name>
+    <description>The SDN-C Northbound APIs repo contains code for northbound API adaptors, typically MD-SAL applications</description>
+    <url>https://wiki.onap.org</url>
+    <organization>
+        <name>ONAP</name>
+    </organization>
+
+    <modules>
+        <module>asdcApi</module>
+        <module>dataChange</module>
+        <module>lcm</module>
+        <module>dmaap-listener</module>
+        <module>ueb-listener</module>
+        <module>daexim-offsite-backup</module>
+        <module>features</module>
+        <module>artifacts</module>
+    </modules>
+
+    <scm>
+        <connection>scm:git:ssh://git@${onap.git.host}/sdnc-northbound.git</connection>
+
+        <developerConnection>scm:git:ssh://${onap.git.host}:${onap.git.port}/${onap.git.project}/sdnc-northbound.git</developerConnection>
+        <url>${onap.git.protocol}://${onap.git.host}/projects/${onap.git.project}/repos/sdnc-northbound/browse</url>
+    </scm>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://jira.onap.org/</url>
+    </issueManagement>
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>https://jenkins.onap.org/</url>
+    </ciManagement>
+    <distributionManagement>
+        <site>
+            <id>sdnc-javadoc</id>
+            <url>dav:https://${onap.nexus.host}:${onap.nexus.port}/repository/sdn-c-javadoc/${project.artifactId}/${project.version}</url>
+        </site>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>false</skipTests>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>blackduck</id>
+            <activation>
+                <property>
+                    <name>blackduck-scan</name>
+                </property>
+            </activation>
+            <build>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.blackducksoftware.integration</groupId>
+                            <artifactId>hub-maven-plugin</artifactId>
+                            <version>1.4.0</version>
+                            <inherited>false</inherited>
+                            <configuration>
+                                <hubProjectName>${project.name}</hubProjectName>
+                                <outputDirectory>${project.basedir}</outputDirectory>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <id>create-bdio-file</id>
+                                    <phase>package</phase>
+                                    <goals>
+                                        <goal>createHubOutput</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+
+
+            </build>
+
+        </profile>
+        <profile>
+            <id>dependency-list</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.ferstl</groupId>
+                        <artifactId>depgraph-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <inherited>false</inherited>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-artifacts</id>
+                                <phase>package</phase>
+                                <inherited>false</inherited>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${dependency-list.file}</file>
+                                            <type>txt</type>
+                                            <classifier>dependencies</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

@@ -1,0 +1,44 @@
+# SDN-C URL
+SDNC.endpoint => FLOWRED-API:process-edge-router-status-change
+
+# Field mapping 
+equip_id => equip_id
+ptnii_equip_name => equip-name
+equip_type.equip_type => equip-type
+ip_addr => loopback0
+router_prov_status => prov-status
+country.region => region
+country_abbr => country
+equip_name_code => equip-name-code
+as_number => as-number
+loopback1 => loopback1
+loopback2 => loopback2
+loopback3 => loopback3
+loopback40 => loopback40
+loopback65535 => loopback65535
+inms_list => inms-list
+encrypted_access_flag => encrypted-access-flag
+sw_name => sw-name
+nmipaddr => nm-addr
+function_code => function-code
+
+EquipmentId => equip-id
+PTNIIEquipmentName => equip-name
+EquipmentType => equip-type
+Loopback0 => loopback0
+RouterStatus => prov-status
+Region => region
+CountryAbbreviation => country
+EquipmentNameCode => equip-name-code
+ASNumber => as-number
+SoftwareName => sw-name
+NetworkManagementIPAddress => nm-addr
+FunctionCode => function-code
+Loopback1 => loopback1
+Loopback2 => loopback2
+Loopback3 => loopback3
+Loopback40 => loopback40
+Loopback65535 => loopback65535
+InmsList => inms-list
+EncryptedAccessFlag => encrypted-access-flag
+
