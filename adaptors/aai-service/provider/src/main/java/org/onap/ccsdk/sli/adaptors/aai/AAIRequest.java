@@ -51,7 +51,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.onap.aai.inventory.v21.GenericVnf;
+import org.onap.aai.inventory.v19.GenericVnf;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -162,11 +162,8 @@ public abstract class AAIRequest {
         AAIRequest.configProperties = props;
         AAIRequest.aaiService = aaiService;
 
-        InputStream in = null;
-
         try
         {
-            LOG.info("Loading aai-path.properties via OSGi");
             URL url = null;
             Bundle bundle = FrameworkUtil.getBundle(AAIService.class);
             if(bundle != null) {
@@ -179,19 +176,7 @@ public abstract class AAIRequest {
                 url = aaiService.getClass().getResource("/aai-path.properties");
             }
 
-            in = url.openStream();
-        }
-        catch (NoClassDefFoundError|Exception e) {
-            LOG.info("Loading aai-path.properties from jar");
-            in = AAIRequest.class.getResourceAsStream("/aai-path.properties");
-
-        }
-
-        if (in == null) {
-            return;
-        }
-
-        try {
+            InputStream in = url.openStream();
             Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
 
             Properties properties = new Properties();
@@ -488,6 +473,6 @@ public abstract class AAIRequest {
     }
  
     public static final String getSupportedAAIVersion() {
-        return configProperties.getProperty(AAIDeclarations.AAI_VERSION, "/v21/");
+        return configProperties.getProperty(AAIDeclarations.AAI_VERSION, "/v19/");
     }
 }
