@@ -298,11 +298,7 @@ public class SvcLogicContext {
         String jsonString = this.toJsonString();
         JsonObject jsonRoot = (JsonObject) jp.parse(jsonString);
         JsonObject targetJson = jsonRoot.getAsJsonObject(pfx);
-        if (targetJson == null) {
-            return("");
-        } else {
-            return(targetJson.toString());
-        }
+        return(targetJson.toString());
     }
 
     public String toJsonString() {
