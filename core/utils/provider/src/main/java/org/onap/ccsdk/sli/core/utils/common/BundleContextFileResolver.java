@@ -56,22 +56,20 @@ public class BundleContextFileResolver implements PropertiesFileResolver {
      */
     @Override
     public Optional<File> resolveFile(final String filename) {
-        try {
-            if (FrameworkUtil.getBundle(clazz) == null) {
-                return Optional.empty();
-            } else {
-                     final String pathProperty = FrameworkUtil.getBundle(this.clazz).getBundleContext()
-                            .getProperty(SDNC_CONFIG_DIR_PROP_KEY);
-                    if (Strings.isNullOrEmpty(pathProperty)) {
-                        return Optional.empty();
-                    }
-                    final Path dblibPath = Paths.get(pathProperty);
-                    return Optional.of(dblibPath.resolve(filename).toFile());
-
-            }
-        } catch (Exception|NoClassDefFoundError e) {
-            LoggerFactory.getLogger(this.getClass()).error("", e);
+        if(FrameworkUtil.getBundle(clazz) == null) {
             return Optional.empty();
+        } else {
+            try {
+                final String pathProperty = FrameworkUtil.getBundle(this.clazz).getBundleContext().getProperty(SDNC_CONFIG_DIR_PROP_KEY);
+                if(Strings.isNullOrEmpty(pathProperty)) {
+                    return Optional.empty();
+                }
+                final Path dblibPath = Paths.get(pathProperty);
+                return Optional.of(dblibPath.resolve(filename).toFile());
+            } catch(final Exception e) {
+                LoggerFactory.getLogger(this.getClass()).error("", e);
+                return Optional.empty();
+            }
         }
     }
 

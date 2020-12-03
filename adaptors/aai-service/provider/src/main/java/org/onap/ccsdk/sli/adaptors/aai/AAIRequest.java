@@ -162,11 +162,8 @@ public abstract class AAIRequest {
         AAIRequest.configProperties = props;
         AAIRequest.aaiService = aaiService;
 
-        InputStream in = null;
-
         try
         {
-            LOG.info("Loading aai-path.properties via OSGi");
             URL url = null;
             Bundle bundle = FrameworkUtil.getBundle(AAIService.class);
             if(bundle != null) {
@@ -179,19 +176,7 @@ public abstract class AAIRequest {
                 url = aaiService.getClass().getResource("/aai-path.properties");
             }
 
-            in = url.openStream();
-        }
-        catch (NoClassDefFoundError|Exception e) {
-            LOG.info("Loading aai-path.properties from jar");
-            in = AAIRequest.class.getResourceAsStream("/aai-path.properties");
-
-        }
-
-        if (in == null) {
-            return;
-        }
-
-        try {
+            InputStream in = url.openStream();
             Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
 
             Properties properties = new Properties();
