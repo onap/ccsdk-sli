@@ -20,10 +20,6 @@
         <name>ONAP</name>
     </organization>
 
-    <properties>
-        <ccsdk.sli.northbound.version>${project.version}</ccsdk.sli.northbound.version>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>

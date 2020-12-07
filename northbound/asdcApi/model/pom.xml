@@ -16,10 +16,6 @@
 
     <name>ccsdk-sli-northbound :: asdcApi :: ${project.artifactId}</name>
 
-    <properties>
-        <ccsdk.sli.northbound.version>${project.version}</ccsdk.sli.northbound.version>
-    </properties>
-
     <dependencies>
 
         <dependency>

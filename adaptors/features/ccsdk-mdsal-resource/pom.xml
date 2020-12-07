@@ -16,16 +16,12 @@
 
     <name>ccsdk-sli-adaptors :: mdsal-resource :: ${project.artifactId}</name>
 
-    <properties>
-        <ccsdk.sli.adaptors.version>${project.version}</ccsdk.sli.adaptors.version>
-    </properties>
-
     <dependencies>
 
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>ccsdk-sli</artifactId>
-            <version>${ccsdk.sli.core.version}</version>
+            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
             <scope>provided</scope>

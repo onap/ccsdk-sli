@@ -22,7 +22,4 @@
         <module>installer</module>
     </modules>
 
-    <properties>
-        <ccsdk.sli.northbound.version>${project.version}</ccsdk.sli.northbound.version>
-    </properties>
 </project>

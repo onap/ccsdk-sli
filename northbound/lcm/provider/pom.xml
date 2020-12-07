@@ -16,16 +16,12 @@
 
     <name>ccsdk-sli-northbound :: lcm :: ${project.artifactId}</name>
 
-    <properties>
-        <ccsdk.sli.northbound.version>${project.version}</ccsdk.sli.northbound.version>
-    </properties>
-
     <dependencyManagement>
     	<dependencies>
     		<dependency>
   <groupId>org.onap.ccsdk.sli.core</groupId>
   <artifactId>sli-core-artifacts</artifactId>
-  <version>${ccsdk.sli.core.version}</version>
+  <version>${project.version}</version>
   <type>pom</type>
   <scope>import</scope>
     		</dependency>
@@ -62,7 +58,7 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-provider-base</artifactId>
-            <version>${ccsdk.sli.core.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>

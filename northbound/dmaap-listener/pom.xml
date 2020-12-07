@@ -24,8 +24,6 @@
         <build.number>${maven.build.timestamp}</build.number>
         <SWM_VERSION>${project.version}-${build.number}</SWM_VERSION>
 
-        <ccsdk.sli.core.version>1.1.0</ccsdk.sli.core.version>
-        <ccsdk.sli.northbound.version>${project.version}</ccsdk.sli.northbound.version>
     </properties>
 
     <dependencyManagement>
@@ -33,7 +31,7 @@
             <dependency>
                 <groupId>org.onap.ccsdk.sli.core</groupId>
                 <artifactId>sli-core-artifacts</artifactId>
-                <version>${ccsdk.sli.core.version}</version>
+                <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

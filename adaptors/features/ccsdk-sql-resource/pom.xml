@@ -16,16 +16,13 @@
 
     <name>ccsdk-sli-adaptors :: sql-resource :: ${project.artifactId}</name>
 
-    <properties>
-        <ccsdk.sli.adaptors.version>${project.version}</ccsdk.sli.adaptors.version>
-    </properties>
 
     <dependencies>
 
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>ccsdk-sli</artifactId>
-            <version>${ccsdk.sli.core.version}</version>
+            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
             <scope>provided</scope>
@@ -33,7 +30,7 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>ccsdk-dblib</artifactId>
-            <version>${ccsdk.sli.core.version}</version>
+            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
             <scope>provided</scope>

@@ -16,15 +16,11 @@
 
     <name>ccsdk-sli-northbound :: asdcApi :: ${project.artifactId}</name>
 
-    <properties>
-        <ccsdk.sli.northbound.version>${project.version}</ccsdk.sli.northbound.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>ccsdk-sli</artifactId>
-            <version>${ccsdk.sli.core.version}</version>
+            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
