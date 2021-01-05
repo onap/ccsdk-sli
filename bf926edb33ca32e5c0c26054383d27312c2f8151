@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b12d7a97_0f03150c",
+        "filename": "adaptors/aai-service/provider/src/main/resources/aai-path.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 6200
+      },
+      "writtenOn": "2021-01-05T15:58:50Z",
+      "side": 0,
+      "message": "These lines are previously committed in another submission by another developer. Perhaps, you may want to put them back in. Here is the commit I\u0027m referring to:\nhttps://gerrit.onap.org/r/gitweb?p\u003dccsdk/sli.git;a\u003dcommit;h\u003db7048faf040499c15f868b40566edc71ba753c7e",
+      "revId": "bf926edb33ca32e5c0c26054383d27312c2f8151",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
