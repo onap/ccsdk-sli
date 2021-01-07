@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Gaurav Agrawal <gaurav.agrawal@huawei.com>
+Code-Review+1: Dan Timoney <dtimoney@att.com>
+Submitted-by: KAPIL SINGAL <ks220y@att.com>
+Submitted-at: Thu, 07 Jan 2021 15:05:02 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/ccsdk/sli/+/116673
+Project: ccsdk/sli
+Branch: refs/heads/guilin
