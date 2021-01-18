@@ -2,10 +2,9 @@ package org.onap.ccsdk.sli.northbound;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -21,13 +20,14 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicClassResolver;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicPropertiesProviderImpl;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicServiceImpl;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
-import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.Action;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.ActionStatusInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.ActionStatusOutput;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.ActivateNESwInputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.ActivateNESwOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.AttachVolumeInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.AttachVolumeOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.AuditInputBuilder;
@@ -52,6 +52,8 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.DetachVolumeOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.DistributeTrafficInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.DistributeTrafficOutput;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.DownloadNESwInputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.DownloadNESwOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.EvacuateInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.EvacuateOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.HealthCheckInputBuilder;
@@ -106,13 +108,10 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.UpgradePreCheckOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.UpgradeSoftwareInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.UpgradeSoftwareOutput;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.DownloadNESwInputBuilder;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.DownloadNESwOutput;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.ActivateNESwInputBuilder;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.ActivateNESwOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.ZULU;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.action.identifiers.ActionIdentifiersBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.common.header.CommonHeaderBuilder;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,11 +125,11 @@ public class TestLcmProvider {
      */
     @Before
     public void setUp() throws Exception {
-        DataBroker dataBroker = mock(DataBroker.class);
+        DOMDataBroker dataBroker = mock(DOMDataBroker.class);
         NotificationPublishService notifyService = mock(NotificationPublishService.class);
-        RpcProviderRegistry rpcRegistry = mock(RpcProviderRegistry.class);
-        BindingAwareBroker.RpcRegistration<LCMService> rpcRegistration = (BindingAwareBroker.RpcRegistration<LCMService>) mock(BindingAwareBroker.RpcRegistration.class);
-        when(rpcRegistry.addRpcImplementation(any(Class.class), any(LCMService.class))).thenReturn(rpcRegistration);
+        RpcProviderService rpcRegistry = mock(RpcProviderService.class);
+        ObjectRegistration<LCMService> rpcRegistration = mock(ObjectRegistration.class);
+        when(rpcRegistry.registerRpcImplementation(any(Class.class), any(LCMService.class))).thenReturn(rpcRegistration);
 
 
         // Load svclogic.properties and get a SvcLogicStore
@@ -194,7 +193,7 @@ public class TestLcmProvider {
 		try {
 			CheckLockOutput results = provider.checkLock(builder.build()).get().getResult();
 			LOG.info("CheckLock returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("CheckLock threw exception");
@@ -229,7 +228,7 @@ public class TestLcmProvider {
 		try {
 			RebootOutput results = provider.reboot(builder.build()).get().getResult();
 			LOG.info("Reboot returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Reboot threw exception");
@@ -264,7 +263,7 @@ public class TestLcmProvider {
 		try {
 			UpgradeBackupOutput results = provider.upgradeBackup(builder.build()).get().getResult();
 			LOG.info("UpgradeBackout returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("CheckLock threw exception");
@@ -298,7 +297,7 @@ public class TestLcmProvider {
 		try {
 			RollbackOutput results = provider.rollback(builder.build()).get().getResult();
 			LOG.info("Rollback returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Rollback threw exception");
@@ -332,7 +331,7 @@ public class TestLcmProvider {
 		try {
 			SyncOutput results = provider.sync(builder.build()).get().getResult();
 			LOG.info("Sync returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Sync threw exception");
@@ -365,7 +364,7 @@ public class TestLcmProvider {
 		try {
 			QueryOutput results = provider.query(builder.build()).get().getResult();
 			LOG.info("Query returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Query threw exception");
@@ -399,7 +398,7 @@ public class TestLcmProvider {
 		try {
 			ConfigExportOutput results = provider.configExport(builder.build()).get().getResult();
 			LOG.info("ConfigExport returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("ConfigExport threw exception");
@@ -434,7 +433,7 @@ public class TestLcmProvider {
 		try {
 			StopApplicationOutput results = provider.stopApplication(builder.build()).get().getResult();
 			LOG.info("StopApplication returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("StopApplication threw exception");
@@ -468,7 +467,7 @@ public class TestLcmProvider {
 		try {
 			SoftwareUploadOutput results = provider.softwareUpload(builder.build()).get().getResult();
 			LOG.info("SoftwareUpload returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("SoftwareUpload threw exception");
@@ -502,7 +501,7 @@ public class TestLcmProvider {
 		try {
 			ResumeTrafficOutput results = provider.resumeTraffic(builder.build()).get().getResult();
 			LOG.info("ResumeTraffic returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("ResumeTraffic threw exception");
@@ -536,7 +535,7 @@ public class TestLcmProvider {
 		try {
 			DistributeTrafficOutput results = provider.distributeTraffic(builder.build()).get().getResult();
 			LOG.info("DistributeTraffic returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("DistributeTraffic threw exception");
@@ -570,7 +569,7 @@ public class TestLcmProvider {
 		try {
 			ConfigureOutput results = provider.configure(builder.build()).get().getResult();
 			LOG.info("Configure returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Configure threw exception");
@@ -604,7 +603,7 @@ public class TestLcmProvider {
 		try {
 			ActionStatusOutput results = provider.actionStatus(builder.build()).get().getResult();
 			LOG.info("ActionStatus returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("ActionStatus threw exception");
@@ -638,7 +637,7 @@ public class TestLcmProvider {
 		try {
 			UpgradePreCheckOutput results = provider.upgradePreCheck(builder.build()).get().getResult();
 			LOG.info("UpgradePreCheck returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("UpgradePreCheck threw exception");
@@ -672,7 +671,7 @@ public class TestLcmProvider {
 		try {
 			LiveUpgradeOutput results = provider.liveUpgrade(builder.build()).get().getResult();
 			LOG.info("LiveUpgrade returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("LiveUpgrade threw exception");
@@ -706,7 +705,7 @@ public class TestLcmProvider {
 		try {
 			ConfigModifyOutput results = provider.configModify(builder.build()).get().getResult();
 			LOG.info("ConfigModify returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("ConfigModify threw exception");
@@ -740,7 +739,7 @@ public class TestLcmProvider {
 		try {
 			RestartOutput results = provider.restart(builder.build()).get().getResult();
 			LOG.info("Restart returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Restart threw exception");
@@ -774,7 +773,7 @@ public class TestLcmProvider {
 		try {
 			HealthCheckOutput results = provider.healthCheck(builder.build()).get().getResult();
 			LOG.info("HealthCheck returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("HealthCheck threw exception");
@@ -808,7 +807,7 @@ public class TestLcmProvider {
 		try {
 			LockOutput results = provider.lock(builder.build()).get().getResult();
 			LOG.info("Lock returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Lock threw exception");
@@ -842,7 +841,7 @@ public class TestLcmProvider {
 		try {
 			TerminateOutput results = provider.terminate(builder.build()).get().getResult();
 			LOG.info("Terminate returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Terminate threw exception");
@@ -876,7 +875,7 @@ public class TestLcmProvider {
 		try {
 			AttachVolumeOutput results = provider.attachVolume(builder.build()).get().getResult();
 			LOG.info("AttachVolume returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("AttachVolume threw exception");
@@ -910,7 +909,7 @@ public class TestLcmProvider {
 		try {
 			MigrateOutput results = provider.migrate(builder.build()).get().getResult();
 			LOG.info("Migrate returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Migrate threw exception");
@@ -944,7 +943,7 @@ public class TestLcmProvider {
 		try {
 			QuiesceTrafficOutput results = provider.quiesceTraffic(builder.build()).get().getResult();
 			LOG.info("QuiesceTraffic returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("QuiesceTraffic threw exception");
@@ -978,7 +977,7 @@ public class TestLcmProvider {
 		try {
 			ConfigRestoreOutput results = provider.configRestore(builder.build()).get().getResult();
 			LOG.info("ConfigRestore returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("ConfigRestore threw exception");
@@ -1012,7 +1011,7 @@ public class TestLcmProvider {
 		try {
 			UpgradeBackoutOutput results = provider.upgradeBackout(builder.build()).get().getResult();
 			LOG.info("UpgradeBackout returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("UpgradeBackout threw exception");
@@ -1046,7 +1045,7 @@ public class TestLcmProvider {
 		try {
 			EvacuateOutput results = provider.evacuate(builder.build()).get().getResult();
 			LOG.info("Evacuate returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Evacuate threw exception");
@@ -1080,7 +1079,7 @@ public class TestLcmProvider {
 		try {
 			UnlockOutput results = provider.unlock(builder.build()).get().getResult();
 			LOG.info("Unlock returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Unlock threw exception");
@@ -1113,7 +1112,7 @@ public class TestLcmProvider {
 		try {
 			ConfigBackupDeleteOutput results = provider.configBackupDelete(builder.build()).get().getResult();
 			LOG.info("ConfigBackupDelete returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("ConfigBackupDelete threw exception");
@@ -1147,7 +1146,7 @@ public class TestLcmProvider {
 		try {
 			UpgradeSoftwareOutput results = provider.upgradeSoftware(builder.build()).get().getResult();
 			LOG.info("UpgradeSoftware returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("UpgradeSoftware threw exception");
@@ -1182,7 +1181,7 @@ public class TestLcmProvider {
 		try {
 			DownloadNESwOutput results = provider.downloadNESw(builder.build()).get().getResult();
 			LOG.info("DownloadNESw returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("DownloadNESw threw exception");
@@ -1217,7 +1216,7 @@ public class TestLcmProvider {
 		try {
 			ActivateNESwOutput results = provider.activateNESw(builder.build()).get().getResult();
 			LOG.info("ActivateNESw returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("ActivateNESw threw exception");
@@ -1251,7 +1250,7 @@ public class TestLcmProvider {
 		try {
 			StopOutput results = provider.stop(builder.build()).get().getResult();
 			LOG.info("Stop returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Stop threw exception");
@@ -1285,7 +1284,7 @@ public class TestLcmProvider {
 		try {
 			DetachVolumeOutput results = provider.detachVolume(builder.build()).get().getResult();
 			LOG.info("DetachVolume returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("DetachVolume threw exception");
@@ -1319,7 +1318,7 @@ public class TestLcmProvider {
 		try {
 			ConfigScaleOutOutput results = provider.configScaleOut(builder.build()).get().getResult();
 			LOG.info("ConfigScaleOut returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("ConfigScaleOut threw exception");
@@ -1353,7 +1352,7 @@ public class TestLcmProvider {
 		try {
 			UpgradePostCheckOutput results = provider.upgradePostCheck(builder.build()).get().getResult();
 			LOG.info("UpgradePostCheck returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("UpgradePostCheck threw exception");
@@ -1387,7 +1386,7 @@ public class TestLcmProvider {
 		try {
 			TestOutput results = provider.test(builder.build()).get().getResult();
 			LOG.info("Test returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Test threw exception");
@@ -1421,7 +1420,7 @@ public class TestLcmProvider {
 		try {
 			StartApplicationOutput results = provider.startApplication(builder.build()).get().getResult();
 			LOG.info("StartApplication returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("StartApplication threw exception");
@@ -1455,7 +1454,7 @@ public class TestLcmProvider {
 		try {
 			ConfigBackupOutput results = provider.configBackup(builder.build()).get().getResult();
 			LOG.info("ConfigBackup returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("ConfigBackup threw exception");
@@ -1489,7 +1488,7 @@ public class TestLcmProvider {
 		try {
 			ConfigBackupOutput results = provider.configBackup(builder.build()).get().getResult();
 			LOG.info("ConfigBackup returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("ConfigBackup threw exception");
@@ -1523,7 +1522,7 @@ public class TestLcmProvider {
 		try {
 			AuditOutput results = provider.audit(builder.build()).get().getResult();
 			LOG.info("Audit returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Audit threw exception");
@@ -1557,7 +1556,7 @@ public class TestLcmProvider {
 		try {
 			StartOutput results = provider.start(builder.build()).get().getResult();
 			LOG.info("Start returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Start threw exception");
@@ -1591,7 +1590,7 @@ public class TestLcmProvider {
 		try {
 			SnapshotOutput results = provider.snapshot(builder.build()).get().getResult();
 			LOG.info("Snapshot returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
-			assert(results.getStatus().getCode() == 400);
+			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {
 			LOG.error("Caught exception", e);
 			fail("Snapshot threw exception");

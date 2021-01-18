@@ -19,6 +19,9 @@
  */
 package org.onap.ccsdk.sli.plugins.yangserializers.pnserializer;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -27,21 +30,16 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
 import org.opendaylight.restconf.nb.rfc8040.utils.parser.ParserIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertTrue;
-
 public final class PropertiesSerializerTest {
-    private SchemaContext context;
+    private EffectiveModelContext context;
 
     @Before
     public void initialization() throws FileNotFoundException {
@@ -1125,7 +1123,7 @@ public final class PropertiesSerializerTest {
         assertThat(l.valueNs().moduleNs().toString(), is("identity:list:second:ns:test:json:ser"));
     }
 
-    public static SchemaContext compileYangFile() throws FileNotFoundException {
+    public static EffectiveModelContext compileYangFile() throws FileNotFoundException {
         String path = PropertiesSerializerTest.class.getResource("/yang").getPath();
         File dir = new File(path);
         String[] fileList = dir.list();
