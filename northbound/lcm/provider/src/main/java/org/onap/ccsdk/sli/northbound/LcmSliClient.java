@@ -24,10 +24,9 @@ package org.onap.ccsdk.sli.northbound;
 
 
 import java.util.Properties;
-
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

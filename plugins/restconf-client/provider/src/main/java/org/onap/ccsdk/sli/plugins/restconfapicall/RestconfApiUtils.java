@@ -22,6 +22,12 @@
 
 package org.onap.ccsdk.sli.plugins.restconfapicall;
 
+import static org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode.getParameters;
+import static org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode.parseParam;
+import static org.opendaylight.yangtools.yang.model.repo.api.StatementParserMode.DEFAULT_MODE;
+import static org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource.forFile;
+import static org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors.defaultReactor;
+import static org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource.create;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -33,22 +39,14 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.plugins.restapicall.HttpMethod;
 import org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.YangParameters;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
-
-import static org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode.getParameters;
-import static org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode.parseParam;
-import static org.opendaylight.yangtools.yang.model.repo.api.StatementParserMode.DEFAULT_MODE;
-import static org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource.forFile;
-import static org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors.defaultReactor;
-import static org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource.create;
 
 /**
  * Utilities for restconf api call node.
@@ -190,7 +188,7 @@ public final class RestconfApiUtils {
      * @return YANG schema context
      * @throws SvcLogicException when YANG file reading fails
      */
-    static SchemaContext getSchemaCtxFromDir(String di)
+    static EffectiveModelContext getSchemaCtxFromDir(String di)
             throws SvcLogicException {
         Path d = Paths.get(di);
         File dir = d.toFile();

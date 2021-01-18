@@ -20,18 +20,6 @@
 
 package org.onap.ccsdk.sli.plugins.yangserializers.pnserializer;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.opendaylight.restconf.common.errors.RestconfDocumentedException;
-import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.MdsalPropertiesNodeUtils.DOT_REGEX;
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.MdsalPropertiesNodeUtils.SLASH;
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.MdsalPropertiesNodeUtils.getChildSchemaNode;
@@ -49,11 +37,21 @@ import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.NodeType.M
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.NodeType.MULTI_INSTANCE_NODE;
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.NodeType.SINGLE_INSTANCE_LEAF_NODE;
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.NodeType.SINGLE_INSTANCE_NODE;
+import java.util.HashMap;
+import java.util.Map;
+import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.opendaylight.restconf.common.errors.RestconfDocumentedException;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Representation of mdsal based properties node serializer implementation.
  */
-public class MdsalPropertiesNodeSerializer extends PropertiesNodeSerializer<SchemaNode, SchemaContext> {
+public class MdsalPropertiesNodeSerializer extends PropertiesNodeSerializer<SchemaNode, EffectiveModelContext> {
 
     private static final Logger log = LoggerFactory.getLogger(
             MdsalPropertiesNodeSerializer.class);
@@ -68,7 +66,7 @@ public class MdsalPropertiesNodeSerializer extends PropertiesNodeSerializer<Sche
      * @param uri        URL of the request
      */
     public MdsalPropertiesNodeSerializer(SchemaNode schemaNode,
-                                         SchemaContext schemaCtx, String uri) {
+            EffectiveModelContext schemaCtx, String uri) {
         super(schemaNode, schemaCtx, uri);
     }
 
