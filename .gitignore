@@ -22,6 +22,7 @@ MANIFEST.MF
 **/yang-gen-sal
 *.interp
 core/sli/model/src/main/java
+**/provider/FileToZip*
 
 ## Misc Ignores (OS specific etc) ##
 bin/
