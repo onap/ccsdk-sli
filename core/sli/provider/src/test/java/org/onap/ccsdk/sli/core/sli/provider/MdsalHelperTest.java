@@ -72,6 +72,7 @@ public class MdsalHelperTest extends TestCase {
   private static final Logger LOG = LoggerFactory.getLogger(MdsalHelperTest.class);
   public static final String pathToSdnPropertiesFile = "src/test/resources/l3sdn.properties";
 
+
   public void testSdnProperties() {
 
     MdsalHelperTesterUtil.loadProperties(pathToSdnPropertiesFile);
@@ -156,7 +157,7 @@ public class MdsalHelperTest extends TestCase {
     props.setProperty("execute-graph-input.rpc", "do-it-now");
     props.setProperty("execute-graph-input.sli-parameter[0].parameter-name", "bool-parm");
     props.setProperty("execute-graph-input.sli-parameter[0].boolean-value", "true");
-    props.setProperty("execute-graph-input,sli-parameter[1].parameter-name", "int-param");
+    props.setProperty("execute-graph-input.sli-parameter[1].parameter-name", "int-param");
     props.setProperty("execute-graph-input.sli-parameter[1].int-value", "1");
     props.setProperty("execute-graph-input.sli-parameter[2].parameter-name", "str-param");
     props.setProperty("execute-graph-input.sli-parameter[2].str-value", "hello");
