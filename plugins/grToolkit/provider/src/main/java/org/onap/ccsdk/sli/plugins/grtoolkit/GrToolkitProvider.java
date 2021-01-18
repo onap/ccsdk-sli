@@ -21,6 +21,8 @@
 
 package org.onap.ccsdk.sli.plugins.grtoolkit;
 
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,18 +35,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.annotation.Nonnull;
-
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-
 import org.apache.commons.lang.StringUtils;
-
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.plugins.grtoolkit.connection.ConnectionManager;
 import org.onap.ccsdk.sli.plugins.grtoolkit.connection.ConnectionResponse;
@@ -60,16 +59,11 @@ import org.onap.ccsdk.sli.plugins.grtoolkit.resolver.HealthResolver;
 import org.onap.ccsdk.sli.plugins.grtoolkit.resolver.SingleNodeHealthResolver;
 import org.onap.ccsdk.sli.plugins.grtoolkit.resolver.SixNodeHealthResolver;
 import org.onap.ccsdk.sli.plugins.grtoolkit.resolver.ThreeNodeHealthResolver;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
-import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
-import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.AdminHealthInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.AdminHealthOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.AdminHealthOutputBuilder;
@@ -98,9 +92,9 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.SiteIdentifierOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.SiteIdentifierOutputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.site.health.output.SitesBuilder;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,8 +127,8 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
     private final ExecutorService executor;
     protected DataBroker dataBroker;
     protected NotificationPublishService notificationService;
-    protected RpcProviderRegistry rpcRegistry;
-    protected BindingAwareBroker.RpcRegistration<GrToolkitService> rpcRegistration;
+    protected RpcProviderService rpcRegistry;
+    protected ObjectRegistration<GrToolkitService> rpcRegistration;
     protected DbLibService dbLib;
     private String member;
     private ClusterActor self;
@@ -155,7 +149,7 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      */
     public GrToolkitProvider(DataBroker dataBroker,
                              NotificationPublishService notificationProviderService,
-                             RpcProviderRegistry rpcProviderRegistry,
+                             RpcProviderService rpcProviderRegistry,
                              DistributedDataStoreInterface configDatastore,
                              DbLibService dbLibService) {
         log.info("Creating provider for {}", APP_NAME);
@@ -177,7 +171,7 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
         createContainers();
         setProperties();
         defineMembers();
-        rpcRegistration = rpcRegistry.addRpcImplementation(GrToolkitService.class, this);
+        rpcRegistration = rpcRegistry.registerRpcImplementation(GrToolkitService.class, this);
         log.info("Initialization complete for {}", APP_NAME);
     }
 

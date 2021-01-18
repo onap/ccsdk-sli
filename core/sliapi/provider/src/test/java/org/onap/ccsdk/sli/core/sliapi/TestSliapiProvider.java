@@ -1,15 +1,30 @@
-/**
+/*-
+ * ============LICENSE_START=======================================================
+ * ONAP : CCSDK
+ * ================================================================================
+ * Copyright (C) 2018 IBM. All rights reserved.
+ * ================================================================================
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============LICENSE_END=========================================================
  */
 package org.onap.ccsdk.sli.core.sliapi;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -47,10 +62,9 @@ import org.onap.ccsdk.sli.core.sli.provider.base.SetNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.SwitchNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.UpdateNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.WhileNodeExecutor;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
-import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.HealthcheckInput;
@@ -58,6 +72,7 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.SLI
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterBuilder;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
 
 /**
  * @author dt5972
@@ -99,12 +114,12 @@ public class TestSliapiProvider {
      */
     @Before
     public void setUp() throws Exception {
-        DataBroker dataBroker = mock(DataBroker.class);
+        DOMDataBroker dataBroker = mock(DOMDataBroker.class);
         NotificationPublishService notifyService = mock(NotificationPublishService.class);
-        RpcProviderRegistry rpcRegistry = mock(RpcProviderRegistry.class);
-        BindingAwareBroker.RpcRegistration<SLIAPIService> rpcRegistration = (BindingAwareBroker.RpcRegistration<SLIAPIService>) mock(
-                BindingAwareBroker.RpcRegistration.class);
-        when(rpcRegistry.addRpcImplementation(any(Class.class), any(SLIAPIService.class))).thenReturn(rpcRegistration);
+        RpcProviderService rpcRegistry = mock(RpcProviderService.class);
+        ObjectRegistration<SLIAPIService> rpcRegistration = mock(
+                ObjectRegistration.class);
+        when(rpcRegistry.registerRpcImplementation(any(Class.class), any(SLIAPIService.class))).thenReturn(rpcRegistration);
 
         // Load svclogic.properties and get a SvcLogicStore
         InputStream propStr = TestSliapiProvider.class.getResourceAsStream("/svclogic.properties");
@@ -172,8 +187,8 @@ public class TestSliapiProvider {
         pList.add(pBuilder.build());
         inputBuilder.setSliParameter(pList);
         provider.executeGraph(inputBuilder.build());
-    
-        
+
+
         // Invalid test - graph does not exist
         inputBuilder.setMode(ExecuteGraphInput.Mode.Sync);
         inputBuilder.setModuleName("sli");
@@ -193,7 +208,7 @@ public class TestSliapiProvider {
         pList.add(pBuilder.build());
         inputBuilder.setSliParameter(pList);
         provider.executeGraph(inputBuilder.build());
-        
+
         assertTrue(provider.vlbcheck(mock(VlbcheckInput.class)) instanceof Future<?>);
     }
 
