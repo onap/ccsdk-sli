@@ -6,7 +6,7 @@
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
         <version>2.1.1-SNAPSHOT</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.northbound</groupId>
@@ -17,15 +17,15 @@
     <name>ccsdk-sli-northbound :: dataChange :: ${project.artifactId}</name>
 
     <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.onap.ccsdk.sli.core</groupId>
-                <artifactId>sli-core-artifacts</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
+    	<dependencies>
+    		<dependency>
+  <groupId>org.onap.ccsdk.sli.core</groupId>
+  <artifactId>sli-core-artifacts</artifactId>
+  <version>${project.version}</version>
+  <type>pom</type>
+  <scope>import</scope>
+    		</dependency>
+    	</dependencies>
     </dependencyManagement>
     <dependencies>
         <dependency>

@@ -54,12 +54,12 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-common</artifactId>
-            <version>${project.version}</version>
+            <version>${ccsdk.sli.core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-provider</artifactId>
-            <version>${project.version}</version>
+            <version>${ccsdk.sli.core.version}</version>
         </dependency>
         <dependency>
               <groupId>com.google.code.findbugs</groupId>
