@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.onap.ccsdk.sli</groupId>
-        <artifactId>sli-root</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>odlparent-lite</artifactId>
+        <version>2.1.1-SNAPSHOT</version>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-    <artifactId>adaptors-root</artifactId>
+    <artifactId>ccsdk-sli-adaptors</artifactId>
     <version>1.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 

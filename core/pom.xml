@@ -3,13 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.onap.ccsdk.sli</groupId>
-		<artifactId>sli-root</artifactId>
-		<version>1.2.0-SNAPSHOT</version>
+		<groupId>org.onap.ccsdk.parent</groupId>
+		<artifactId>odlparent-lite</artifactId>
+		<version>2.1.1-SNAPSHOT</version>
+		<relativePath/>
 	</parent>
 
 	<groupId>org.onap.ccsdk.sli.core</groupId>
-	<artifactId>core-root</artifactId>
+	<artifactId>ccsdk-sli-core</artifactId>
 	<version>1.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -21,7 +22,7 @@
 	</organization>
 
 	<modules>
-		<module>utils</module>
+        <module>utils</module>
 		<module>dblib</module>
 		<module>sli</module>
 		<module>filters</module>
@@ -57,27 +58,27 @@
 				</property>
 			</activation>
 			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.blackducksoftware.integration</groupId>
-						<artifactId>hub-maven-plugin</artifactId>
-						<version>1.4.0</version>
-						<inherited>false</inherited>
-						<configuration>
-							<hubProjectName>${project.name}</hubProjectName>
-							<outputDirectory>${project.basedir}</outputDirectory>
-						</configuration>
-						<executions>
-							<execution>
-								<id>create-bdio-file</id>
-								<phase>package</phase>
-								<goals>
-									<goal>createHubOutput</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
+					<plugins>
+						<plugin>
+							<groupId>com.blackducksoftware.integration</groupId>
+							<artifactId>hub-maven-plugin</artifactId>
+							<version>1.4.0</version>
+							<inherited>false</inherited>
+							<configuration>
+								<hubProjectName>${project.name}</hubProjectName>
+								<outputDirectory>${project.basedir}</outputDirectory>
+							</configuration>
+							<executions>
+								<execution>
+									<id>create-bdio-file</id>
+									<phase>package</phase>
+									<goals>
+										<goal>createHubOutput</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
+					</plugins>
 			</build>
 
 		</profile>

@@ -4,8 +4,9 @@
 
 	<parent>
 		<groupId>org.onap.ccsdk.parent</groupId>
-		<artifactId>single-feature-parent</artifactId>
+		<artifactId>odlparent-lite</artifactId>
 		<version>2.1.1-SNAPSHOT</version>
+		<relativePath/>
 	</parent>
 
 	<groupId>org.onap.ccsdk.sli.core</groupId>
