@@ -58,15 +58,14 @@
 			<artifactId>commons-lang</artifactId>
 			<scope>compile</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.opendaylight.controller</groupId>
-			<artifactId>sal-binding-api</artifactId>
+			<groupId> org.opendaylight.mdsal</groupId>
+			<artifactId>mdsal-binding-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
         <dependency>
@@ -81,11 +80,19 @@
 			<optional>true</optional>
 		</dependency>
         <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-core-api</artifactId>
-			<scope>provided</scope>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-dom-api</artifactId>
+            <scope>provided</scope>
         </dependency>
-		<!-- Testing Dependencies -->
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>yang-binding</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+              <groupId>com.google.code.findbugs</groupId>
+              <artifactId>annotations</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

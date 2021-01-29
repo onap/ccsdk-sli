@@ -21,31 +21,25 @@ package org.onap.ccsdk.sli.northbound;
  * ============LICENSE_END=========================================================
  */
 
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import org.onap.ccsdk.sli.core.sli.provider.MdsalHelper;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
-import org.opendaylight.controller.md.sal.binding.impl.AbstractForwardedDataBroker;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
-import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.*;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.common.header.CommonHeaderBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.status.StatusBuilder;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-
-import org.onap.ccsdk.sli.northbound.LcmResponseCode.*;
 
 /**
  * Defines a base implementation for your provider. This class extends from a
@@ -93,23 +87,19 @@ public class LcmProvider implements AutoCloseable, LCMService {
 	private static final String APPLICATION_NAME = "LCM";
 
 	private final ExecutorService executor;
-	protected DataBroker dataBroker;
 	protected DOMDataBroker domDataBroker;
 	protected NotificationPublishService notificationService;
-	protected RpcProviderRegistry rpcRegistry;
+	protected RpcProviderService rpcRegistry;
 	private final LcmSliClient lcmSliClient;
 
-	protected BindingAwareBroker.RpcRegistration<LCMService> rpcRegistration;
+	protected ObjectRegistration<LCMService> rpcRegistration;
 
-	public LcmProvider(final DataBroker dataBroker, final NotificationPublishService notificationPublishService,
-			final RpcProviderRegistry rpcProviderRegistry, final LcmSliClient lcmSliClient) {
+	public LcmProvider(final DOMDataBroker dataBroker, final NotificationPublishService notificationPublishService,
+			final RpcProviderService rpcProviderRegistry, final LcmSliClient lcmSliClient) {
 
 		LOG.info("Creating provider for {}", APPLICATION_NAME);
 		executor = Executors.newFixedThreadPool(1);
-		this.dataBroker = dataBroker;
-		if (dataBroker instanceof AbstractForwardedDataBroker) {
-			domDataBroker = ((AbstractForwardedDataBroker) dataBroker).getDelegate();
-		}
+			domDataBroker = dataBroker;
 		notificationService = notificationPublishService;
 		rpcRegistry = rpcProviderRegistry;
 		this.lcmSliClient = lcmSliClient;
@@ -121,7 +111,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 
 		if (rpcRegistration == null) {
 			if (rpcRegistry != null) {
-				rpcRegistration = rpcRegistry.addRpcImplementation(LCMService.class, this);
+				rpcRegistration = rpcRegistry.registerRpcImplementation(LCMService.class, this);
 				LOG.info("Initialization complete for {}", APPLICATION_NAME);
 			} else {
 				LOG.warn("Error initializing {} : rpcRegistry unset", APPLICATION_NAME);

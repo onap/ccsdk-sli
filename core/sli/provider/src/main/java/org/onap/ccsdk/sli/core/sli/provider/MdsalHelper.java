@@ -32,8 +32,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Dscp;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -43,9 +46,15 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev180329.RouteDistinguisher;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev180329.RouteDistinguisherBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev200120.RouteDistinguisher;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev200120.RouteDistinguisherBuilder;
 import org.opendaylight.yangtools.yang.binding.Identifier;
+import org.opendaylight.yangtools.yang.binding.ScalarTypeObject;
+import org.opendaylight.yangtools.yang.binding.TypeObject;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
+import org.opendaylight.yangtools.yang.common.Uint64;
+import org.opendaylight.yangtools.yang.common.Uint8;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,11 +65,11 @@ public class MdsalHelper {
     private static final String IP_ADDRESS="IpAddress";
     private static final String IPV4_ADDRESS="Ipv4Address";
     private static final String IPV6_ADDRESS="Ipv6Address";
-    
+
     private static final String IP_PREFIX="IpPrefix";
     private static final String SETTING_PROPERTY="Setting property ";
     private static final String BUILDER="-builder";
-    
+
     @Deprecated
     public static void setProperties(Properties input) {
         setYangMappingProperties(input);
@@ -130,7 +139,7 @@ public class MdsalHelper {
         }
         String simpleTypeName = fromObj.getClass().getTypeName();
         simpleTypeName = simpleTypeName.substring(simpleTypeName.lastIndexOf(".") + 1);
-        
+
         if (classHasSpecialHandling(simpleTypeName)) {
             try {
 
@@ -145,10 +154,14 @@ public class MdsalHelper {
                     if (IP_ADDRESS.equals(simpleTypeName) || IP_PREFIX.equals(simpleTypeName)
                     		|| IPV4_ADDRESS.equals(simpleTypeName) || IPV6_ADDRESS.equals(simpleTypeName)) {
                         propVal = (String) retValue;
-                    } else if ("Dscp".equals(simpleTypeName)) {
+                    }
+                    else if(implementsInterface( fromObj.getClass(), ScalarTypeObject.class)) {
+                        propVal = String.valueOf(((ScalarTypeObject)fromObj).getValue());
+                    }
+                    else if ("Dscp".equals(simpleTypeName)) {
                         propVal = String.valueOf((short) retValue);
                     } else if ("PortNumber".equals(simpleTypeName)) {
-                        propVal = String.valueOf((Integer) retValue);
+                        propVal = String.valueOf(retValue);
                     }
                     LOG.debug(SETTING_PROPERTY + pfx + " to " + propVal);
                     props.setProperty(pfx, propVal);
@@ -165,7 +178,7 @@ public class MdsalHelper {
             }
             props.setProperty(pfx + "_length", Integer.toString(fromList.size()));
 
-        } else if (isYangGenerated(fromClass)) {
+        }  else if (isYangGenerated(fromClass)) {
             // Class is yang generated.
 
             String propNamePfx = null;
@@ -278,7 +291,7 @@ public class MdsalHelper {
                         }
                     } else if (returnType.equals(Class.class)) {
 
-                    } else if (List.class.isAssignableFrom(returnType)) {
+                    } else if (List.class.isAssignableFrom(returnType) || Map.class.isAssignableFrom(returnType)) {
 
                         // This getter method returns a list.
                         try {
@@ -286,15 +299,19 @@ public class MdsalHelper {
                             if (!isAccessible) {
                                 m.setAccessible(true);
                             }
-                            Object retList = m.invoke(fromObj);
-                            if (!isAccessible) {
-                                m.setAccessible(isAccessible);
+                            Object retList = Map.class.isAssignableFrom(returnType)?new ArrayList(((Map) m.invoke(fromObj)).values()):m.invoke(fromObj);
+                            //due duplicated getters with Map and List(deprecated) stop if already mapped
+                            if(!hasAlreadyKeys(props,propNamePfx + "." + fieldName)) {
+
+                                if (!isAccessible) {
+                                    m.setAccessible(isAccessible);
+                                }
+                                // Figure out what type of elements are stored in
+                                // this array.
+                                Type paramType = m.getGenericReturnType();
+                                Type elementType = ((ParameterizedType) paramType).getActualTypeArguments()[Map.class.isAssignableFrom(returnType)?1:0];
+                                toProperties(props, propNamePfx + "." + fieldName, retList, (Class) elementType, useLegacyEnumerationMapping);
                             }
-                            // Figure out what type of elements are stored in
-                            // this array.
-                            Type paramType = m.getGenericReturnType();
-                            Type elementType = ((ParameterizedType) paramType).getActualTypeArguments()[0];
-                            toProperties(props, propNamePfx + "." + fieldName, retList, (Class) elementType, useLegacyEnumerationMapping);
                         } catch (Exception e) {
                             LOG.error("Caught exception trying to convert List returned by " + fromClass.getName() + "."
                                     + m.getName() + "() to Properties entry", e);
@@ -343,7 +360,7 @@ public class MdsalHelper {
             // End of method loop. If there was only one getter, named
             // "getValue", then
             // set value identified by "prefix" to that one value.
-            if ((numGetters == 1) && ("getValue".equals(lastGetterName))) {
+            if ((numGetters == 1) && ("getValue".equals(lastGetterName)) || isYangScalarType(fromObj)) {// || isYangTypeObject(fromObj)) {
                 props.setProperty(propNamePfx, propVal);
             }
         } else {
@@ -366,6 +383,26 @@ public class MdsalHelper {
         }
 
         return (props);
+    }
+
+    private static boolean hasAlreadyKeys(Properties props, String key) {
+        Enumeration<Object> keys = props.keys();
+        while(keys.hasMoreElements()) {
+            if(String.valueOf(keys.nextElement()).startsWith(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean implementsInterface(Class<?> clazz, Class<?> ifClass) {
+//        Class<?>[] ifs = clazz.getInterfaces();
+//        for (Class<?> iff : ifs) {
+//            if (iff.equals(ifClass)) {
+//                return true;
+//            }
+//        }
+        return ifClass.isAssignableFrom(clazz);
     }
 
     public static Object toBuilder(Properties props, Object toObj) {
@@ -609,7 +646,7 @@ public class MdsalHelper {
 
                             if (IPV4_ADDRESS.equals(simpleName) || IPV6_ADDRESS.equals(simpleName)
                                     || IP_ADDRESS.equals(simpleName)) {
-                            	
+
 
                                 if ((paramValue != null) && (paramValue.length() > 0)) {
                                     try {
@@ -964,7 +1001,7 @@ public class MdsalHelper {
         }
         return false;
     }
-    
+
     private static String getStringValueMethod(String simpleName){
     	if (IP_ADDRESS.equals(simpleName) || IP_PREFIX.equals(simpleName)) {
     		return("stringValue");
@@ -1067,6 +1104,18 @@ public class MdsalHelper {
         return false;
     }
 
+    private static boolean isYangScalarType(Object o) {
+        if (!implementsInterface(o.getClass(), ScalarTypeObject.class)) {
+            return false;
+        }
+        Object value = ((ScalarTypeObject) o).getValue();
+        Class valueCls = value.getClass();
+        return valueCls.isAssignableFrom(Uint64.class) || valueCls.isAssignableFrom(Uint32.class)
+                || valueCls.isAssignableFrom(Uint16.class) || valueCls.isAssignableFrom(Uint8.class)|| valueCls.isAssignableFrom(String.class);
+    }
+    private static boolean isYangTypeObject(Object o) {
+        return implementsInterface(o.getClass(),TypeObject.class);
+    }
     public static boolean isIpPrefix(Class c) {
 
         if (c == null) {

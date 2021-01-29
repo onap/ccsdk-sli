@@ -20,11 +20,14 @@
 
 package org.onap.ccsdk.sli.plugins.yangserializers.pnserializer;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
+import static java.util.regex.Pattern.quote;
+import static org.opendaylight.restconf.nb.rfc8040.utils.parser.ParserIdentifier.toInstanceIdentifier;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.Optional;
-
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
 import org.opendaylight.restconf.common.errors.RestconfDocumentedException;
@@ -33,21 +36,17 @@ import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.data.impl.schema.SchemaUtils;
 import org.opendaylight.yangtools.yang.data.util.ParserStreamUtils;
 import org.opendaylight.yangtools.yang.data.util.codec.IdentityCodecUtil;
-import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.AnyxmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
-import static java.util.regex.Pattern.quote;
-import static org.opendaylight.restconf.nb.rfc8040.utils.parser.ParserIdentifier.toInstanceIdentifier;
 
 /**
  * Represents utilities for properties node tree.
@@ -262,12 +261,12 @@ public final class MdsalPropertiesNodeUtils {
      * @return schema path holder
      */
     public static SchemaPathHolder getProcessedPath(String uri,
-                                                    SchemaContext context) {
+            EffectiveModelContext context) {
 
         String uri1 = uri.replaceAll(UNDERSCORE, COLON);
         try {
             InstanceIdentifierContext<?> id = toInstanceIdentifier(
-                    uri1, context, null);
+                    uri1, context, Optional.ofNullable(null));
             return new SchemaPathHolder(id, uri1);
         } catch (IllegalArgumentException | RestconfDocumentedException
                 | NullPointerException e) {
@@ -289,7 +288,7 @@ public final class MdsalPropertiesNodeUtils {
      * @return schema and path holder
      */
     private static SchemaPathHolder processNodesAndAppendPath(String uri,
-                                                              SchemaContext context) {
+            EffectiveModelContext context) {
 
         String actPath = "";
         SchemaPathHolder id = new SchemaPathHolder(null, "");
@@ -330,9 +329,7 @@ public final class MdsalPropertiesNodeUtils {
      * @param prefix  prefix for the node in the path
      * @return schema and path holder
      */
-    private static SchemaPathHolder processIdentifier(String node,
-                                                      SchemaContext context,
-                                                      String prefix) {
+    private static SchemaPathHolder processIdentifier(String node, EffectiveModelContext context, String prefix) {
 
         String[] values = node.split(UNDERSCORE);
         String val = values[0];
@@ -378,7 +375,7 @@ public final class MdsalPropertiesNodeUtils {
      * @param curSchema current schema
      * @return namespace of the given node
      */
-    static Namespace getNamespace(String childName, SchemaContext ctx,
+    static Namespace getNamespace(String childName, EffectiveModelContext ctx,
                                   PropertiesNode parent, SchemaNode curSchema) {
 
         Namespace parentNs = parent.namespace();
@@ -425,8 +422,8 @@ public final class MdsalPropertiesNodeUtils {
      * @param ctx     schema context
      * @return namespace of the given node name
      */
-    private static Namespace getNs(String modName, SchemaContext ctx) {
-        Iterator<Module> it = ctx.findModules(modName).iterator();
+    private static Namespace getNs(String modName, EffectiveModelContext ctx) {
+        Iterator<? extends Module> it = ctx.findModules(modName).iterator();
         if (it.hasNext()) {
             Module m = it.next();
             return new Namespace(modName, m.getQNameModule().getNamespace(),
@@ -488,7 +485,7 @@ public final class MdsalPropertiesNodeUtils {
     public static NodeType getNodeType(int index, int length, String name,
                                        SchemaNode schema) {
         if (index == length-1) {
-            if (schema instanceof AnyXmlSchemaNode){
+            if (schema instanceof AnyxmlSchemaNode) {
                 return NodeType.ANY_XML_NODE;
             }
             return (isListEntry(name) ? NodeType.MULTI_INSTANCE_LEAF_NODE :
@@ -517,9 +514,7 @@ public final class MdsalPropertiesNodeUtils {
      * @return value namespace
      * @throws SvcLogicException if identity/module could not be found
      */
-    static Namespace getValueNamespace(String value,
-                                              SchemaContext ctx)
-            throws SvcLogicException {
+    static Namespace getValueNamespace(String value, EffectiveModelContext ctx) throws SvcLogicException {
         String prefix = getPrefixFromValue(value);
         if (prefix == null) {
             return null;
@@ -528,7 +523,7 @@ public final class MdsalPropertiesNodeUtils {
         IdentitySchemaNode id = IdentityCodecUtil.parseIdentity(value,
                                                                 ctx,
                                                                 prefixToModule -> {
-            final Iterator<Module> modules = ctx.findModules(prefix).iterator();
+            final Iterator<? extends Module> modules = ctx.findModules(prefix).iterator();
             checkArgument(modules.hasNext(), "Could not find " +
                                   "module %s", prefix);
             return modules.next().getQNameModule();
