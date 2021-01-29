@@ -33,7 +33,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicPropertiesProvider;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicResolver;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceImplBase;
-import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -20,42 +20,25 @@
  */
 
 package org.onap.ccsdk.sli.plugins.grtoolkit;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
 import com.google.common.util.concurrent.ListenableFuture;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
+
 import org.onap.ccsdk.sli.core.dblib.DBLibConnection;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterActor;
+
 import org.opendaylight.controller.cluster.access.concepts.MemberName;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.utils.ActorUtils;
-import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.NotificationPublishService;
-import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
+import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.AdminHealthOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.ClusterHealthOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.DatabaseHealthOutput;
@@ -66,15 +49,38 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.ResumeAkkaTrafficOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.SiteHealthOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.SiteIdentifierOutput;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.resume.akka.traffic.input.NodeInfoBuilder;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 public class GrToolkitProviderTest {
     GrToolkitProvider provider;
     GrToolkitProvider providerSpy;
     DataBroker dataBroker;
     NotificationPublishService notificationProviderService;
-    RpcProviderService rpcProviderRegistry;
+    RpcProviderRegistry rpcProviderRegistry;
     DistributedDataStoreInterface configDatastore;
     DbLibService dbLibService;
     DBLibConnection connection;
@@ -90,7 +96,7 @@ public class GrToolkitProviderTest {
         environmentVariables.set("SDNC_CONFIG_DIR","src/test/resources");
         dataBroker = mock(DataBroker.class);
         notificationProviderService = mock(NotificationPublishService.class);
-        rpcProviderRegistry = mock(RpcProviderService.class);
+        rpcProviderRegistry = mock(RpcProviderRegistry.class);
         configDatastore = mock(DistributedDataStoreInterface.class);
         dbLibService = mock(DbLibService.class);
         connection = mock(DBLibConnection.class);
@@ -260,13 +266,11 @@ public class GrToolkitProviderTest {
     @Test
     public void haltTrafficTest() {
         HaltAkkaTrafficInputBuilder builder = new HaltAkkaTrafficInputBuilder();
-        builder.setNodeInfo(Arrays.asList(
-                new org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.halt.akka.traffic.
-                input.NodeInfoBuilder().build()));
+        builder.setNodeInfo(new ArrayList<>());
         ListenableFuture<RpcResult<HaltAkkaTrafficOutput>> result = provider.haltAkkaTraffic(builder.build());
         try {
             assertEquals("200", result.get().getResult().getStatus());
-        } catch (InterruptedException | ExecutionException e) {
+        } catch(InterruptedException | ExecutionException e) {
             fail();
         }
     }
@@ -274,7 +278,7 @@ public class GrToolkitProviderTest {
     @Test
     public void resumeTrafficTest() {
         ResumeAkkaTrafficInputBuilder builder = new ResumeAkkaTrafficInputBuilder();
-        builder.setNodeInfo(Arrays.asList(new NodeInfoBuilder().build()));
+        builder.setNodeInfo(new ArrayList<>());
         ListenableFuture<RpcResult<ResumeAkkaTrafficOutput>> result = provider.resumeAkkaTraffic(builder.build());
         try {
             assertEquals("200", result.get().getResult().getStatus());

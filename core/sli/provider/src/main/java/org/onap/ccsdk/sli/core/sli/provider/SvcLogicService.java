@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,16 +22,15 @@
 package org.onap.ccsdk.sli.core.sli.provider;
 
 import java.util.Properties;
+
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceBase;
-import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-
+import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
 
 public interface SvcLogicService extends SvcLogicServiceBase {
 
     String NAME = "org.onap.ccsdk.sli.core.sli.provider.SvcLogicService";
 
-    @Override
     @Deprecated
     Properties execute(String module, String rpc, String version, String mode, Properties parms) throws SvcLogicException;
 

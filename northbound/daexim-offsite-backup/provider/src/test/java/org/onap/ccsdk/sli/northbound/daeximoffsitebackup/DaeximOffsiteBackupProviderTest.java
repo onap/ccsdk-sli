@@ -26,7 +26,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.CheckedFuture;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -38,9 +38,10 @@ import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
-import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.DaeximOffsiteBackupService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.RetrieveDataInput;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -48,8 +49,8 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 public class DaeximOffsiteBackupProviderTest {
     public DataBroker dataBroker;
     public ReadWriteTransaction writeTransaction;
-    public FluentFuture checkedFuture;
-    public RpcProviderService rpcRegistry;
+    public CheckedFuture<Void, TransactionCommitFailedException> checkedFuture;
+    public RpcProviderRegistry rpcRegistry;
     public DaeximOffsiteBackupProvider provider;
     public Properties resProps;
 
@@ -60,16 +61,16 @@ public class DaeximOffsiteBackupProviderTest {
         resProps.put("error-message", "Success");
         dataBroker = mock(DataBroker.class);
         writeTransaction = mock(ReadWriteTransaction.class);
-        checkedFuture = mock(FluentFuture.class);
-        rpcRegistry = mock(RpcProviderService.class);
-        when(rpcRegistry.registerRpcImplementation(any(), any(DaeximOffsiteBackupService.class))).thenReturn(null);
+        checkedFuture = mock(CheckedFuture.class);
+        rpcRegistry = mock(RpcProviderRegistry.class);
+        when(rpcRegistry.addRoutedRpcImplementation(any(), any(DaeximOffsiteBackupService.class))).thenReturn(null);
         try {
             when(checkedFuture.get()).thenReturn(null);
         }
         catch(InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        when(writeTransaction.commit()).thenReturn(checkedFuture);
+        when(writeTransaction.submit()).thenReturn(checkedFuture);
         when(dataBroker.newReadWriteTransaction()).thenReturn(writeTransaction);
 
         provider = new DaeximOffsiteBackupProvider(dataBroker, rpcRegistry);

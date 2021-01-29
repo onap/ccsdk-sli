@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,25 +22,27 @@
 
 package org.onap.ccsdk.sli.northbound;
 
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import org.onap.ccsdk.sli.core.sli.provider.MdsalHelper;
-import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.NotificationPublishService;
-import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
+import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
+import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.datachange.rev150519.DataChangeNotificationInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.datachange.rev150519.DataChangeNotificationInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.datachange.rev150519.DataChangeNotificationOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.datachange.rev150519.DataChangeNotificationOutputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.datachange.rev150519.DataChangeService;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 
 /**
  * Defines a base implementation for your provider. This class extends from a helper class
@@ -58,14 +60,14 @@ public class DataChangeProvider implements AutoCloseable, DataChangeService {
 
     protected DataBroker dataBroker;
     protected NotificationPublishService notificationService;
-    protected RpcProviderService rpcRegistry;
-    protected ObjectRegistration<DataChangeService> rpcRegistration;
+    protected RpcProviderRegistry rpcRegistry;
+    protected BindingAwareBroker.RpcRegistration<DataChangeService> rpcRegistration;
     private final DataChangeClient dataChangeClient;
 
 
     public DataChangeProvider(final DataBroker dataBroker,
 							  final NotificationPublishService notificationPublishService,
-							  final RpcProviderService rpcProviderRegistry,
+							  final RpcProviderRegistry rpcProviderRegistry,
 							  final DataChangeClient dataChangeClient) {
 
         this.LOG.info( "Creating provider for {}", APPLICATION_NAME);
@@ -79,7 +81,7 @@ public class DataChangeProvider implements AutoCloseable, DataChangeService {
 
     public void initialize(){
         LOG.info( "Initializing provider for {}", APPLICATION_NAME);
-        rpcRegistration = rpcRegistry.registerRpcImplementation(DataChangeService.class, this);
+        rpcRegistration = rpcRegistry.addRpcImplementation(DataChangeService.class, this);
         LOG.info( "Initialization complete for {}", APPLICATION_NAME);
     }
 

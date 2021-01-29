@@ -23,30 +23,30 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-api</artifactId>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>sal-binding-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-common-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-test-model</artifactId>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>sal-test-model</artifactId>
             <scope>test</scope>
         </dependency>
-<!--         <dependency> -->
-<!--             <groupId>org.opendaylight.controller</groupId> -->
-<!--             <artifactId>sal-binding-broker-impl</artifactId> -->
-<!--             <scope>test</scope> -->
-<!--         </dependency> -->
-<!--         <dependency> -->
-<!--             <groupId>org.opendaylight.controller</groupId> -->
-<!--             <artifactId>sal-binding-broker-impl</artifactId> -->
-<!--             <type>test-jar</type> -->
-<!--             <classifier>tests</classifier> -->
-<!--             <scope>test</scope> -->
-<!--         </dependency> -->
+        <dependency>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>sal-binding-broker-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>sal-binding-broker-impl</artifactId>
+            <type>test-jar</type>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>

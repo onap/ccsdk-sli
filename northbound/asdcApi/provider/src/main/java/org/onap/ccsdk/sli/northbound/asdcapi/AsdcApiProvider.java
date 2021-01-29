@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,22 +21,19 @@
 
 package org.onap.ccsdk.sli.northbound.asdcapi;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.NotificationPublishService;
-import org.opendaylight.mdsal.binding.api.ReadTransaction;
-import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
-import org.opendaylight.mdsal.common.api.CommitInfo;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
+import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.yang.gen.v1.http.xmlns.onap.org.asdc.license.model._1._0.rev160427.vf.license.model.grouping.VfLicenseModel;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.ASDCAPIService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.Artifacts;
@@ -52,12 +49,16 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.artifacts.ArtifactB
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.artifacts.ArtifactKey;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.vf.license.model.versions.VfLicenseModelVersion;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.vf.license.model.versions.VfLicenseModelVersionBuilder;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 
 /**
  * Defines a base implementation for your provider. This class extends from a helper class
@@ -103,14 +104,14 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
     private final ExecutorService executor;
     protected DataBroker dataBroker;
     protected NotificationPublishService notificationService;
-    protected RpcProviderService rpcRegistry;
+    protected RpcProviderRegistry rpcRegistry;
     private final AsdcApiSliClient asdcApiSliClient;
 
-    protected ObjectRegistration<ASDCAPIService> rpcRegistration;
+    protected BindingAwareBroker.RpcRegistration<ASDCAPIService> rpcRegistration;
 
     public AsdcApiProvider(final DataBroker dataBroker,
                            final NotificationPublishService notificationPublishService,
-                           final RpcProviderService rpcProviderRegistry,
+                           final RpcProviderRegistry rpcProviderRegistry,
                            final AsdcApiSliClient asdcApiSliClient) {
 
         LOG.info("Creating provider for {}", APPLICATION_NAME);
@@ -129,7 +130,7 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
 
         if (rpcRegistration == null) {
             if (rpcRegistry != null) {
-                rpcRegistration = rpcRegistry.registerRpcImplementation(
+                rpcRegistration = rpcRegistry.addRpcImplementation(
                         ASDCAPIService.class, this);
                 LOG.info("Initialization complete for {}", APPLICATION_NAME);
             } else {
@@ -151,7 +152,7 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
 
 
         try {
-            FluentFuture<? extends @NonNull CommitInfo> checkedFuture = t.commit();
+            CheckedFuture<Void, TransactionCommitFailedException> checkedFuture = t.submit();
             checkedFuture.get();
             LOG.info("Create Containers succeeded!: ");
 
@@ -179,7 +180,7 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
                 InstanceIdentifier.<Artifacts>builder(Artifacts.class)
                 .child(Artifact.class, new ArtifactKey(aName, aVersion)).build();
         Optional<Artifact> data = null;
-        try(ReadTransaction readTx = dataBroker.newReadOnlyTransaction()) {
+        try(ReadOnlyTransaction readTx = dataBroker.newReadOnlyTransaction()) {
             data = (Optional<Artifact>) readTx.read(LogicalDatastoreType.CONFIGURATION, artifactInstanceId).get();
         } catch (InterruptedException | ExecutionException e) {
             LOG.error("Caught Exception reading MD-SAL for ["+aName+","+ aVersion+"] " ,e);
@@ -210,7 +211,7 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
 
             tx.merge(LogicalDatastoreType.CONFIGURATION, path,
                     artifact);
-            tx.commit().get();
+            tx.submit().checkedGet();
         } catch (Exception e) {
             LOG.error("Caught exception trying to add artifact entry", e);
         }
@@ -244,7 +245,7 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
   tx.merge(LogicalDatastoreType.CONFIGURATION, path,
                 version);
-        tx.commit().get();
+        tx.submit().checkedGet();
     } catch (Exception e) {
         LOG.error(
                 "Caught exception trying to save entry to MD-SAL",
@@ -271,7 +272,7 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
 
         tx.merge(LogicalDatastoreType.CONFIGURATION, path,
                 version);
-        tx.commit().get();
+        tx.submit().checkedGet();
     } catch (Exception e) {
         LOG.error(
                 "Caught exception trying to save entry to MD-SAL",

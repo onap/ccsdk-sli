@@ -20,25 +20,6 @@
 
 package org.onap.ccsdk.sli.plugins.yangserializers.dfserializer;
 
-import static javax.xml.transform.OutputKeys.INDENT;
-import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.XmlNodeType.OBJECT_NODE;
-import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.XmlNodeType.TEXT_NODE;
-import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.MdsalPropertiesNodeUtils.getRevision;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Iterator;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.dom4j.Element;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.Namespace;
@@ -49,6 +30,27 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Iterator;
+
+import static javax.xml.transform.OutputKeys.INDENT;
+import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.XmlNodeType.OBJECT_NODE;
+import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.XmlNodeType.TEXT_NODE;
+import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.MdsalPropertiesNodeUtils.getRevision;
 
 /**
  * Utilities for data format serializer.
@@ -177,7 +179,7 @@ public final class DfSerializerUtil {
                                  parentNs.revision());
         }
 
-        Iterator<? extends Module> it;
+        Iterator<Module> it;
         Module mod;
         if (mName != null) {
             it = ctx.findModules(mName).iterator();

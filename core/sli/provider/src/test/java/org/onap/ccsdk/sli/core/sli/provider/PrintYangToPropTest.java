@@ -26,7 +26,9 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+
 import org.junit.Test;
+import org.onap.ccsdk.sli.core.sli.provider.PrintYangToProp;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput.Mode;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.TestResultsBuilder;
@@ -60,31 +62,31 @@ public class PrintYangToPropTest {
 		List<SliParameter> pList = new LinkedList<>();
 
 		SliParameterBuilder pBuilder = new SliParameterBuilder();
-        pBuilder.setParameterName("string-param");
-        pBuilder.setStringValue("hi");
-        pList.add(pBuilder.build());
-        pBuilder.setParameterName("int-param");
-        pBuilder.setIntValue(1);
-        pBuilder.setStringValue(null);
-        pList.add(pBuilder.build());
-        pBuilder.setParameterName("bool-param");
-        pBuilder.setIntValue(null);
-        pBuilder.setBooleanValue(true);
-        pList.add(pBuilder.build());
-        pBuilder.setParameterName("ipaddress-value1");
-        pBuilder.setBooleanValue(null);
-        pBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("127.0.0.1"));
-        pList.add(pBuilder.build());
-        pBuilder.setParameterName("ipaddress-value2");
-        pBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("::1"));
-        pList.add(pBuilder.build());
-        pBuilder.setParameterName("ipprefix-value1");
-        pBuilder.setIpaddressValue(null);
-        pBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("192.168.0.0/16"));
-        pList.add(pBuilder.build());
-        pBuilder.setParameterName("ipprefix-value2");
-        pBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("2001:db8:3c4d::/48"));
-        pList.add(pBuilder.build());
+		pBuilder.setParameterName("string-param");
+		pBuilder.setStringValue("hi");
+		pList.add(pBuilder.build());
+		pBuilder.setParameterName("int-param");
+		pBuilder.setIntValue(1);
+		pBuilder.setStringValue(null);
+		pList.add(pBuilder.build());
+		pBuilder.setParameterName("bool-param");
+		pBuilder.setIntValue(null);
+		pBuilder.setBooleanValue(true);
+		pList.add(pBuilder.build());
+		pBuilder.setParameterName("ipaddress-value1");
+		pBuilder.setBooleanValue(null);
+		pBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("127.0.0.1"));
+		pList.add(pBuilder.build());
+		pBuilder.setParameterName("ipaddress-value1");
+		pBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("::1"));
+		pList.add(pBuilder.build());
+		pBuilder.setParameterName("ipprefix-value1");
+		pBuilder.setIpaddressValue(null);
+		pBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("192.168.0.0/16"));
+		pList.add(pBuilder.build());
+		pBuilder.setParameterName("ipprefix-value2");
+		pBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("2001:db8:3c4d::/48"));
+		pList.add(pBuilder.build());
 
 
 
@@ -92,7 +94,7 @@ public class PrintYangToPropTest {
 
 
 		// Generate properties
-		props = MdsalHelper.toProperties(props, egBuilder);
+		props = PrintYangToProp.toProperties(props, egBuilder);
 
 		Enumeration propNames = props.propertyNames();
 
@@ -102,11 +104,11 @@ public class PrintYangToPropTest {
 		}
 
 		// Generate builder from properties just generated
-		MdsalHelper.toBuilder(props, pBuilder);
-
+		PrintYangToProp.toBuilder(props, pBuilder);
+		
 
 	}
-
+	
     @Test
     public void testWithList() {
         TestResultsBuilder resultsBuilder = new TestResultsBuilder();
@@ -123,7 +125,7 @@ public class PrintYangToPropTest {
 
         // Generate properties
         Properties props = new Properties();
-        props = MdsalHelper.toProperties(props, resultsBuilder);
+        props = PrintYangToProp.toProperties(props, resultsBuilder);
 
         Enumeration propNames = props.propertyNames();
 
@@ -133,7 +135,7 @@ public class PrintYangToPropTest {
         }
 
         // Generate builder from properties just generated
-        MdsalHelper.toBuilder(props, resultsBuilder);
+        PrintYangToProp.toBuilder(props, resultsBuilder);
 
     }
 

@@ -21,8 +21,6 @@
 
 package org.onap.ccsdk.sli.core.sliapi;
 
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -30,14 +28,19 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
+
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
-import org.opendaylight.mdsal.binding.api.NotificationPublishService;
-import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
-import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.binding.impl.AbstractForwardedDataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
+import org.opendaylight.controller.md.sal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
+import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput.Mode;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
@@ -47,13 +50,14 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.Hea
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.HealthcheckOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.HealthcheckOutputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.SLIAPIService;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.TestResults;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckOutputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.test.results.TestResult;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.test.results.TestResultBuilder;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -74,6 +78,9 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+
 /**
  * Defines a base implementation for your provider. This class extends from a
  * helper class which provides storage for the most commonly used components of
@@ -85,17 +92,17 @@ import org.slf4j.LoggerFactory;
  * src/main/java in this project (created only once during first compilation):
  *
  * <pre>
- *
+ * 
  * &#64;Override
  * public java.lang.AutoCloseable createInstance() {
- *
+ * 
  * 	final SliapiProvider provider = new SliapiProvider();
  * 	provider.setDataBroker(getDataBrokerDependency());
  * 	provider.setNotificationService(getNotificationServiceDependency());
  * 	provider.setRpcRegistry(getRpcRegistryDependency());
  * 	provider.initialize();
  * 	return new AutoCloseable() {
- *
+ * 
  * 		&#64;Override
  * 		public void close() throws Exception {
  * 			// TODO: CLOSE ANY REGISTRATION OBJECTS CREATED USING ABOVE
@@ -105,7 +112,7 @@ import org.slf4j.LoggerFactory;
  * 		}
  * 	};
  * }
- *
+ * 
  * </pre>
  */
 public class SliapiProvider implements AutoCloseable, SLIAPIService {
@@ -113,14 +120,14 @@ public class SliapiProvider implements AutoCloseable, SLIAPIService {
 	private static final Logger LOG = LoggerFactory.getLogger(SliapiProvider.class);
 	private static final String appName = "slitester";
 
-	//protected DataBroker dataBroker;
+	protected DataBroker dataBroker;
 	protected DOMDataBroker domDataBroker;
 	protected NotificationPublishService notificationService;
-	protected RpcProviderService rpcRegistry;
+	protected RpcProviderRegistry rpcRegistry;
 
 	private SvcLogicService svcLogic;
 
-	protected ObjectRegistration<SLIAPIService> rpcRegistration;
+	protected BindingAwareBroker.RpcRegistration<SLIAPIService> rpcRegistration;
 
 	private static String SLIAPI_NAMESPACE = "org:onap:ccsdk:sli:core:sliapi";
 	private static String SLIAPI_REVISION = "2016-11-10";
@@ -141,26 +148,25 @@ public class SliapiProvider implements AutoCloseable, SLIAPIService {
 		RESULTS_QNAME = QName.create(TEST_RESULT_QNAME, "results");
 	}
 
-	public SliapiProvider(DOMDataBroker dataBroker, NotificationPublishService notificationPublishService,
-	        RpcProviderService rpcProviderRegistry) {
+	public SliapiProvider(DataBroker dataBroker, NotificationPublishService notificationPublishService,
+						  RpcProviderRegistry rpcProviderRegistry) {
 		this(dataBroker, notificationPublishService, rpcProviderRegistry, findSvcLogicService());
 	}
 
-	public SliapiProvider(DOMDataBroker dataBroker, NotificationPublishService notificationPublishService,
-	        RpcProviderService rpcProviderRegistry, SvcLogicService svcLogic) {
+	public SliapiProvider(DataBroker dataBroker, NotificationPublishService notificationPublishService,
+						  RpcProviderRegistry rpcProviderRegistry, SvcLogicService svcLogic) {
 		this.LOG.info("Creating provider for " + appName);
-		//this.dataBroker = dataBroker;
+		this.dataBroker = dataBroker;
 		this.notificationService = notificationPublishService;
 		this.rpcRegistry = rpcProviderRegistry;
 		this.svcLogic = svcLogic;
-		this.domDataBroker = dataBroker;
 		initialize();
 	}
 
 	public void initialize() {
 		LOG.info("Initializing provider for " + appName);
 		// initialization code goes here.
-		rpcRegistration = rpcRegistry.registerRpcImplementation(SLIAPIService.class, this);
+		rpcRegistration = rpcRegistry.addRpcImplementation(SLIAPIService.class, this);
 
 		sdncStatusFile = System.getenv(SDNC_STATUS_FILE);
 		LOG.info("SDNC STATUS FILE = " + sdncStatusFile);
@@ -180,9 +186,11 @@ public class SliapiProvider implements AutoCloseable, SLIAPIService {
 		LOG.info("Successfully closed provider for " + appName);
 	}
 
-	public void setDataBroker(DOMDataBroker dataBroker) {
-		domDataBroker = dataBroker;
-
+	public void setDataBroker(DataBroker dataBroker) {
+		this.dataBroker = dataBroker;
+		if (dataBroker instanceof AbstractForwardedDataBroker) {
+			domDataBroker = ((AbstractForwardedDataBroker) dataBroker).getDelegate();
+		}
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("DataBroker set to " + (dataBroker == null ? "null" : NON_NULL) + ".");
 		}
@@ -195,7 +203,7 @@ public class SliapiProvider implements AutoCloseable, SLIAPIService {
 		}
 	}
 
-	public void setRpcRegistry(RpcProviderService rpcRegistry) {
+	public void setRpcRegistry(RpcProviderRegistry rpcRegistry) {
 		this.rpcRegistry = rpcRegistry;
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("RpcRegistry set to " + (rpcRegistry == null ? "null" : NON_NULL) + ".");
@@ -254,7 +262,7 @@ public class SliapiProvider implements AutoCloseable, SLIAPIService {
 		Properties parms = new Properties();
 
 		// Pass properties using names from sli-parameters
-		for (SliParameter sliParm : input.getSliParameter().values()) {
+		for (SliParameter sliParm : input.getSliParameter()) {
 
 			String propValue = "";
 
@@ -446,8 +454,7 @@ public class SliapiProvider implements AutoCloseable, SLIAPIService {
 		return (Futures.immediateFuture(rpcResult));
 	}
 
-	@Override
-    public ListenableFuture<RpcResult<VlbcheckOutput>> vlbcheck(VlbcheckInput vlbInput) {
+	public ListenableFuture<RpcResult<VlbcheckOutput>> vlbcheck(VlbcheckInput vlbInput) {
 
 		RpcResult<VlbcheckOutput> rpcResult = null;
 		SvcLogicService svcLogic = getSvcLogicService();
@@ -571,12 +578,12 @@ public class SliapiProvider implements AutoCloseable, SLIAPIService {
 		YangInstanceIdentifier testResultsPid = YangInstanceIdentifier.builder().node(TEST_RESULTS_QNAME)
 				.node(QName.create(TEST_RESULTS_QNAME, "test-result")).build();
 		YangInstanceIdentifier testResultPid = testResultsPid
-				.node(NodeIdentifierWithPredicates.of(TEST_RESULT_QNAME, resultNode.getIdentifier().asMap()));
+				.node(new NodeIdentifierWithPredicates(TEST_RESULT_QNAME, resultNode.getIdentifier().getKeyValues()));
 
 		int tries = 2;
 		while (true) {
 			try {
-				DOMDataTreeWriteTransaction wtx = domDataBroker.newWriteOnlyTransaction();
+				DOMDataWriteTransaction wtx = domDataBroker.newWriteOnlyTransaction();
 				if (merge) {
 					LOG.info("Merging test identifier " + entry.getTestIdentifier());
 					wtx.merge(storeType, testResultPid, resultNode);
@@ -584,10 +591,10 @@ public class SliapiProvider implements AutoCloseable, SLIAPIService {
 					LOG.info("Putting test identifier " + entry.getTestIdentifier());
 					wtx.put(storeType, testResultPid, resultNode);
 				}
-				wtx.commit().get();
+				wtx.submit().checkedGet();
 				LOG.trace("Update DataStore succeeded");
 				break;
-			} catch (final InterruptedException | ExecutionException e) {
+			} catch (final TransactionCommitFailedException e) {
 				if (e instanceof OptimisticLockFailedException) {
 					if (--tries <= 0) {
 						LOG.trace("Got OptimisticLockFailedException on last try - failing ");
@@ -603,40 +610,40 @@ public class SliapiProvider implements AutoCloseable, SLIAPIService {
 
 	}
 
-//	private void SaveTestResult(final TestResult entry, boolean merge, LogicalDatastoreType storeType)
-//			throws IllegalStateException {
-//		// Each entry will be identifiable by a unique key, we have to create that
-//		// identifier
-//
-//		InstanceIdentifier.InstanceIdentifierBuilder<TestResult> testResultIdBuilder = InstanceIdentifier
-//				.<TestResults>builder(TestResults.class).child(TestResult.class, entry.key());
-//		InstanceIdentifier<TestResult> path = testResultIdBuilder.build();
-//		int tries = 2;
-//		while (true) {
-//			try {
-//				WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-//				if (merge) {
-//					tx.merge(storeType, path, entry);
-//				} else {
-//					tx.put(storeType, path, entry);
-//				}
-//				tx.submit().checkedGet();
-//				LOG.trace("Update DataStore succeeded");
-//				break;
-//			} catch (final TransactionCommitFailedException e) {
-//				if (e instanceof OptimisticLockFailedException) {
-//					if (--tries <= 0) {
-//						LOG.trace("Got OptimisticLockFailedException on last try - failing ");
-//						throw new IllegalStateException(e);
-//					}
-//					LOG.trace("Got OptimisticLockFailedException - trying again ");
-//				} else {
-//					LOG.trace("Update DataStore failed");
-//					throw new IllegalStateException(e);
-//				}
-//			}
-//		}
-//	}
+	private void SaveTestResult(final TestResult entry, boolean merge, LogicalDatastoreType storeType)
+			throws IllegalStateException {
+		// Each entry will be identifiable by a unique key, we have to create that
+		// identifier
+
+		InstanceIdentifier.InstanceIdentifierBuilder<TestResult> testResultIdBuilder = InstanceIdentifier
+				.<TestResults>builder(TestResults.class).child(TestResult.class, entry.key());
+		InstanceIdentifier<TestResult> path = testResultIdBuilder.build();
+		int tries = 2;
+		while (true) {
+			try {
+				WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+				if (merge) {
+					tx.merge(storeType, path, entry);
+				} else {
+					tx.put(storeType, path, entry);
+				}
+				tx.submit().checkedGet();
+				LOG.trace("Update DataStore succeeded");
+				break;
+			} catch (final TransactionCommitFailedException e) {
+				if (e instanceof OptimisticLockFailedException) {
+					if (--tries <= 0) {
+						LOG.trace("Got OptimisticLockFailedException on last try - failing ");
+						throw new IllegalStateException(e);
+					}
+					LOG.trace("Got OptimisticLockFailedException - trying again ");
+				} else {
+					LOG.trace("Update DataStore failed");
+					throw new IllegalStateException(e);
+				}
+			}
+		}
+	}
 
 	private MapEntryNode toMapEntryNode(TestResult testResult) {
 
@@ -657,8 +664,7 @@ public class SliapiProvider implements AutoCloseable, SLIAPIService {
 		// Construct test result ContainerNode with 2 children - test-identifier leaf
 		// and results leaf-set
 		MapEntryNode testResultNode = ImmutableNodes.mapEntryBuilder()
-
-				.withNodeIdentifier(NodeIdentifierWithPredicates.of(TEST_RESULT_QNAME, TEST_ID_QNAME,
+				.withNodeIdentifier(new NodeIdentifierWithPredicates(TEST_RESULT_QNAME, TEST_ID_QNAME,
 						testResult.getTestIdentifier()))
 				.withChild(ImmutableNodes.leafNode(TEST_ID_QNAME, testResult.getTestIdentifier()))
 				.withChild(resultsNode).build();

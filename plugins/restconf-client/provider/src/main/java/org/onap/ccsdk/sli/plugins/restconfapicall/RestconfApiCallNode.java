@@ -20,48 +20,23 @@
 
 package org.onap.ccsdk.sli.plugins.restconfapicall;
 
-import static com.google.common.base.Strings.repeat;
-import static java.lang.String.format;
-import static java.lang.String.valueOf;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.onap.ccsdk.sli.plugins.restapicall.HttpMethod.DELETE;
-import static org.onap.ccsdk.sli.plugins.restapicall.HttpMethod.GET;
-import static org.onap.ccsdk.sli.plugins.restapicall.HttpMethod.PATCH;
-import static org.onap.ccsdk.sli.plugins.restapicall.HttpMethod.PUT;
-import static org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode.parseParam;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.COLON;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.COMMA;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.HEADER;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.HTTP_REQ;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.HTTP_RES;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.REQ_ERR;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.RES_CODE;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.RES_MSG;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.RES_PRE;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.getSchemaCtxFromDir;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.getUpdatedXmlReq;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.getYangParameters;
-import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.parseUrl;
-import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfListenerFactory.instance;
-import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializerUtil.FORMAT_ERR;
-import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializerUtil.UTF_HEADER;
-import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializerUtil.XML_TREE_ERR;
-import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializerUtil.getXmlWriter;
-import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.MdsalPropertiesNodeUtils.getModuleNamespace;
-import static org.osgi.framework.FrameworkUtil.getBundle;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
+
+import javax.ws.rs.core.UriBuilder;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.SocketException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -84,13 +59,50 @@ import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.Namespace;
 import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.PropertiesNodeSerializer;
 import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
 import org.opendaylight.restconf.nb.rfc8040.utils.parser.ParserIdentifier;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.google.common.base.Strings.repeat;
+import static java.lang.String.format;
+import static java.lang.String.valueOf;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.onap.ccsdk.sli.plugins.restapicall.HttpMethod.DELETE;
+import static org.onap.ccsdk.sli.plugins.restapicall.HttpMethod.GET;
+import static org.onap.ccsdk.sli.plugins.restapicall.HttpMethod.PATCH;
+import static org.onap.ccsdk.sli.plugins.restapicall.HttpMethod.PUT;
+import static org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode.parseParam;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.ATTEMPTS_MSG;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.COLON;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.COMMA;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.COMM_FAIL;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.HEADER;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.HTTP_REQ;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.HTTP_RES;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.MAX_RETRY_ERR;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.NO_MORE_RETRY;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.REQ_ERR;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.REST_API_URL;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.RES_CODE;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.RES_MSG;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.RES_PRE;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.RETRY_COUNT;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.RETRY_FAIL;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.UPDATED_URL;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.getSchemaCtxFromDir;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.getUpdatedXmlReq;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.getYangParameters;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.parseUrl;
+import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfListenerFactory.instance;
+import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializerUtil.FORMAT_ERR;
+import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializerUtil.UTF_HEADER;
+import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializerUtil.XML_TREE_ERR;
+import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializerUtil.getXmlWriter;
+import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.MdsalPropertiesNodeUtils.getModuleNamespace;
+import static org.osgi.framework.FrameworkUtil.getBundle;
 
 /**
  * Representation of a plugin to enable RESTCONF based CRUD operations from DG.
@@ -287,7 +299,7 @@ public class RestconfApiCallNode implements SvcLogicJavaPlugin {
     private InstanceIdentifierContext<?> getInsIdCtx(YangParameters params,
                                                      String uri)
             throws SvcLogicException {
-        EffectiveModelContext context = getSchemaContext(params);
+        SchemaContext context = getSchemaContext(params);
         return ParserIdentifier.toInstanceIdentifier(uri, context, null);
     }
 
@@ -299,18 +311,18 @@ public class RestconfApiCallNode implements SvcLogicJavaPlugin {
      * @return schema context
      * @throws SvcLogicException when schema context fetching fails
      */
-    private EffectiveModelContext getSchemaContext(YangParameters params)
+    private SchemaContext getSchemaContext(YangParameters params)
             throws SvcLogicException {
         if (params.dirPath != null) {
             return getSchemaCtxFromDir(params.dirPath);
         }
         BundleContext bc = getBundle(SchemaContext.class).getBundleContext();
-        EffectiveModelContext schemaContext = null;
+        SchemaContext schemaContext = null;
         if (bc != null) {
             ServiceReference reference = bc.getServiceReference(
                     SchemaContext.class);
             if (reference != null) {
-                schemaContext = (EffectiveModelContext) bc.getService(reference);
+                schemaContext = (SchemaContext) bc.getService(reference);
             }
         }
         return schemaContext;

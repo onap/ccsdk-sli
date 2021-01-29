@@ -35,8 +35,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-api</artifactId>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>sal-binding-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
@@ -48,28 +48,24 @@
         </dependency>
 
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-test-model</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-dom-api</artifactId>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>sal-test-model</artifactId>
             <scope>test</scope>
         </dependency>
 
-<!--         <dependency> -->
-<!--             <groupId>org.opendaylight.controller</groupId> -->
-<!--             <artifactId>sal-binding-broker-impl</artifactId> -->
-<!--             <scope>test</scope> -->
-<!--         </dependency> -->
-<!--         <dependency> -->
-<!--             <groupId>org.opendaylight.controller</groupId> -->
-<!--             <artifactId>sal-binding-broker-impl</artifactId> -->
-<!--             <type>test-jar</type> -->
-<!--             <classifier>tests</classifier> -->
-<!--             <scope>test</scope> -->
-<!--         </dependency> -->
+
+        <dependency>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>sal-binding-broker-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>sal-binding-broker-impl</artifactId>
+            <type>test-jar</type>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

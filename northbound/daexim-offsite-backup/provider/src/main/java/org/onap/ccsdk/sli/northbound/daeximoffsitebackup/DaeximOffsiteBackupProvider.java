@@ -21,9 +21,6 @@
 
 package org.onap.ccsdk.sli.northbound.daeximoffsitebackup;
 
-import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -47,22 +44,27 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.annotation.Nonnull;
-import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
-import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
-import org.opendaylight.mdsal.common.api.CommitInfo;
+
+import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
+import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.BackupDataInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.BackupDataOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.BackupDataOutputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.DaeximOffsiteBackupService;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.RetrieveDataInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.RetrieveDataOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.RetrieveDataOutputBuilder;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.RetrieveDataInput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,11 +86,11 @@ public class DaeximOffsiteBackupProvider implements AutoCloseable, DaeximOffsite
     private final ExecutorService executor;
     private Properties properties;
     private DataBroker dataBroker;
-    private RpcProviderService rpcRegistry;
-    private ObjectRegistration<DaeximOffsiteBackupService> rpcRegistration;
+    private RpcProviderRegistry rpcRegistry;
+    private BindingAwareBroker.RpcRegistration<DaeximOffsiteBackupService> rpcRegistration;
 
     public DaeximOffsiteBackupProvider(DataBroker dataBroker,
-            RpcProviderService rpcProviderRegistry) {
+                                       RpcProviderRegistry rpcProviderRegistry) {
         LOG.info("Creating provider for " + appName);
         this.executor = Executors.newFixedThreadPool(1);
         this.dataBroker = dataBroker;
@@ -105,7 +107,7 @@ public class DaeximOffsiteBackupProvider implements AutoCloseable, DaeximOffsite
         } catch (Exception e) {
             LOG.error("Caught Exception while trying to load properties file", e);
         }
-        rpcRegistration = rpcRegistry.registerRpcImplementation(DaeximOffsiteBackupService.class, this);
+        rpcRegistration = rpcRegistry.addRpcImplementation(DaeximOffsiteBackupService.class, this);
         LOG.info("Initialization complete for " + appName);
     }
 
@@ -171,7 +173,7 @@ public class DaeximOffsiteBackupProvider implements AutoCloseable, DaeximOffsite
     private void createContainers() {
         final WriteTransaction t = dataBroker.newReadWriteTransaction();
         try {
-            FluentFuture<? extends @NonNull CommitInfo> checkedFuture = t.commit();
+            CheckedFuture<Void, TransactionCommitFailedException> checkedFuture = t.submit();
             checkedFuture.get();
             LOG.info("Create Containers succeeded!: ");
         } catch (InterruptedException | ExecutionException e) {

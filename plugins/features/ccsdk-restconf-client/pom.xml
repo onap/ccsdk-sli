@@ -27,13 +27,6 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>restconf-client-provider</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-				<!-- let the filter module start and manage the common code -->
-				<exclusion>
-					<groupId>org.onap.logging-analytics</groupId>
-					<artifactId>logging-filter-base</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 </project>

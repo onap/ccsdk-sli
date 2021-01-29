@@ -22,7 +22,7 @@
 			<artifactId>sli-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.onap.ccsdk.sli.core</groupId>
 			<artifactId>sli-provider</artifactId>
