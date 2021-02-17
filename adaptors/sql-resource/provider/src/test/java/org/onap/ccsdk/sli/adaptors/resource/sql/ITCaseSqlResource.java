@@ -29,6 +29,7 @@ import java.util.Properties;
 
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ public class ITCaseSqlResource extends TestCase {
 	public void testExists() throws Exception {
 
 
-		Properties props = new Properties();
+		Properties props = new EnvProperties();
 		InputStream propStr = getClass().getResourceAsStream("/svclogic.properties");
 		if (propStr == null) {
 			fail("src/test/resources/svclogic.properties missing");

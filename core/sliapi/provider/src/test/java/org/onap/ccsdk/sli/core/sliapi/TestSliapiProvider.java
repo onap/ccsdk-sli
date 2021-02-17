@@ -62,6 +62,7 @@ import org.onap.ccsdk.sli.core.sli.provider.base.SetNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.SwitchNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.UpdateNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.WhileNodeExecutor;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -123,7 +124,7 @@ public class TestSliapiProvider {
 
         // Load svclogic.properties and get a SvcLogicStore
         InputStream propStr = TestSliapiProvider.class.getResourceAsStream("/svclogic.properties");
-        Properties svcprops = new Properties();
+        Properties svcprops = new EnvProperties();
         svcprops.load(propStr);
 
         SvcLogicStore store = SvcLogicStoreFactory.getSvcLogicStore(svcprops);

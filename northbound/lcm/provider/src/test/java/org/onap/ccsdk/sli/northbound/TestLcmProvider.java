@@ -20,6 +20,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicStoreFactory;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicClassResolver;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicPropertiesProviderImpl;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicServiceImpl;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -134,7 +135,7 @@ public class TestLcmProvider {
 
         // Load svclogic.properties and get a SvcLogicStore
         InputStream propStr = TestLcmProvider.class.getResourceAsStream("/svclogic.properties");
-        Properties svcprops = new Properties();
+        Properties svcprops = new EnvProperties();
         svcprops.load(propStr);
 
         SvcLogicStore store = SvcLogicStoreFactory.getSvcLogicStore(svcprops);
