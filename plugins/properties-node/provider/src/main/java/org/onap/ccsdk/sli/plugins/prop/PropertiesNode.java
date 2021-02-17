@@ -32,6 +32,7 @@ import java.util.Set;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public class PropertiesNode implements SvcLogicJavaPlugin {
 
     public void readProperties(Map<String, String> paramMap, SvcLogicContext ctx) throws SvcLogicException {
         Parameters param = getParameters(paramMap);
-        Properties prop = new Properties();
+        Properties prop = new EnvProperties();
         try {
             File file = new File(param.fileName);
             try (InputStream in = new FileInputStream(file)) {
@@ -63,14 +64,14 @@ public class PropertiesNode implements SvcLogicJavaPlugin {
                             String name = (String) key;
                             String value = prop.getProperty(name);
                             if (value != null && value.trim().length() > 0) {
-                                ctx.setAttribute(pfx + name, getObfuscatedVal(value.trim()));
+                                ctx.setAttribute(pfx + name, EnvProperties.resolveValue(value.trim()));
                                 log.info("+++ " + pfx + name + ": [" + maskPassword(pfx + name, value) + "]");
                             }
                         }
                     }
                     if (mm != null) {
                         for (Map.Entry<String, String> entry : mm.entrySet()) {
-                            ctx.setAttribute(pfx + entry.getKey(), getObfuscatedVal(entry.getValue()));
+                            ctx.setAttribute(pfx + entry.getKey(), EnvProperties.resolveValue(entry.getValue()));
                             log.info("+++ " + pfx + entry.getKey() + ": ["
                                     + maskPassword(pfx + entry.getKey(), entry.getValue()) + "]");
                         }
@@ -81,7 +82,7 @@ public class PropertiesNode implements SvcLogicJavaPlugin {
                         String name = (String) key;
                         String value = prop.getProperty(name);
                         if (value != null && value.trim().length() > 0) {
-                            ctx.setAttribute(pfx + name, getObfuscatedVal(value.trim()));
+                            ctx.setAttribute(pfx + name, EnvProperties.resolveValue(value.trim()));
                             log.info("+++ " + pfx + name + ": [" + maskPassword(pfx + name, value) + "]");
                         }
                     }
@@ -92,7 +93,8 @@ public class PropertiesNode implements SvcLogicJavaPlugin {
         }
     }
 
-    /* Unobfuscate param value */ 
+    /* Unobfuscate param value 
+     * No longer needed - use EnvProperties.resolveValue instead
     private static String getObfuscatedVal(String paramValue) {
         String resValue = paramValue;
         if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}"))
@@ -110,6 +112,7 @@ public class PropertiesNode implements SvcLogicJavaPlugin {
         }
         return resValue;
     }
+    */
 
     /*
      * Getting extension has to do the following "" --> "" "name" --> "" "name.txt" --> "txt"

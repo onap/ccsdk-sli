@@ -33,6 +33,7 @@ import org.onap.ccsdk.sli.core.utils.JREFileResolver;
 import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
 import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.CoreDefaultFileResolver;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +90,7 @@ public class SqlResourcePropertiesProviderImpl implements SqlResourcePropertiesP
         final File propertiesFile = determinePropertiesFile(this);
         if (propertiesFile != null) {
             try (FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
-                properties = new Properties();
+                properties = new EnvProperties();
                 properties.load(fileInputStream);
             } catch (final IOException e) {
                 LOG.error("Failed to load properties for file: {}", propertiesFile.toString(),

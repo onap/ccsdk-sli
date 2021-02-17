@@ -26,6 +26,8 @@ import java.io.FileInputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +40,7 @@ public class DmaapListener {
 
     public static void main(String[] args) {
 
-        Properties properties = new Properties();
+        Properties properties = new EnvProperties(); // Use EnvProperties to resolve env variables in values
         String propFileName = DMAAP_LISTENER_PROPERTIES;
         String propPath = null;
         String propDir = System.getProperty(SDNC_CONFIG_DIR);

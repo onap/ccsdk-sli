@@ -35,6 +35,7 @@ import org.onap.ccsdk.sli.core.utils.JREFileResolver;
 import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
 import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.CoreDefaultFileResolver;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,9 +70,10 @@ public class SvcLogicPropertiesProviderImpl implements SvcLogicPropertiesProvide
 	private Vector<PropertiesFileResolver> sliPropertiesFileResolvers = new Vector<>();
 
 	/**
-	 * The configuration properties for the db connection.
+	 * The configuration properties for the db connection.  Use EnvProperties class, which
+	 * extends Properties and resolves env variable references in values
 	 */
-	private Properties properties;
+	private EnvProperties properties;
 
 	/**
 	 * Set up the prioritized list of strategies for resolving dblib properties
@@ -91,7 +93,7 @@ public class SvcLogicPropertiesProviderImpl implements SvcLogicPropertiesProvide
 		final File propertiesFile = determinePropertiesFile(this);
 		if (propertiesFile != null) {
 			try (FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
-				properties = new Properties();
+				properties = new EnvProperties();
 				properties.load(fileInputStream);
 			} catch (final IOException e) {
 				log.error("Failed to load properties for file: {}", propertiesFile.toString(),
@@ -103,7 +105,7 @@ public class SvcLogicPropertiesProviderImpl implements SvcLogicPropertiesProvide
 
 			InputStream propStr = getClass().getResourceAsStream("/" + SVCLOGIC_PROP_FILE_NAME);
 			if (propStr != null) {
-				properties = new Properties();
+				properties = new EnvProperties();
 				try {
 					properties.load(propStr);
 					propStr.close();

@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.Properties;
 import javax.sql.rowset.CachedRowSet;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +63,7 @@ public class MessageWriter {
 		initialized = true;
 
 		// Read properties
-		Properties props = new Properties();
+		Properties props = new EnvProperties();
 		String propPath = System.getenv(SVCLOGIC_PROP_VAR);
 
 		if (propPath == null) {
