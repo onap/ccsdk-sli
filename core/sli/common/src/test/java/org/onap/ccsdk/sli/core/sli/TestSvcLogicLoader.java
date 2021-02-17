@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 import org.junit.Test;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 
 public class TestSvcLogicLoader {
 
@@ -16,7 +17,7 @@ public class TestSvcLogicLoader {
 
         InputStream propStr = ITCaseSvcLogicParser.class.getResourceAsStream("/svclogic.properties");
 
-        Properties props = new Properties();
+        Properties props = new EnvProperties();
 
         props.load(propStr);
 
