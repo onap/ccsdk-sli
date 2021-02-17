@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
+
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -52,7 +54,7 @@ public class NetboxProperties {
     }
 
     private void loadProps() {
-        properties = new Properties();
+        properties = new EnvProperties();
         // Try to load config from dir
         final String ccsdkConfigDir =
             System.getProperty(PROPERTIES_DIR_KEY, DEFAULT_PROPERTIES_DIR) + "/" + NETBOX_PROPERTY_FILE_NAME;

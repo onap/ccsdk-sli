@@ -43,6 +43,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ public class ITCaseSvcLogicParser {
 
 		InputStream propStr = ITCaseSvcLogicParser.class.getResourceAsStream("/svclogic.properties");
 
-		Properties props = new Properties();
+		Properties props = new EnvProperties();
 
 		props.load(propStr);
 
@@ -150,7 +151,7 @@ public class ITCaseSvcLogicParser {
 
         InputStream propStr = ITCaseSvcLogicParser.class.getResourceAsStream("/dblib.properties");
 
-        Properties props = new Properties();
+        Properties props = new EnvProperties();
 
         props.load(propStr);
 

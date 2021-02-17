@@ -81,6 +81,7 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.logging.filter.base.HttpURLConnectionMetricUtil;
 import org.onap.logging.filter.base.MetricLogClientFilter;
 import org.onap.logging.filter.base.ONAPComponents;
@@ -129,7 +130,7 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
         }
 
         try (FileInputStream in = new FileInputStream(configDir + "/" + UEB_PROPERTIES_FILE_NAME)) {
-            Properties props = new Properties();
+            Properties props = new EnvProperties();
             props.load(in);
             uebServers = props.getProperty("servers");
             log.info("UEB support enabled");

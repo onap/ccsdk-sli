@@ -48,6 +48,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.annotation.Nonnull;
 import org.eclipse.jdt.annotation.NonNull;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
@@ -112,7 +113,7 @@ public class DaeximOffsiteBackupProvider implements AutoCloseable, DaeximOffsite
     private void loadProperties() {
         LOG.info("Loading properties from " + PROPERTIES_FILE);
         if(properties == null)
-            properties = new Properties();
+            properties = new EnvProperties();
         File propertiesFile = new File(PROPERTIES_FILE);
         if(!propertiesFile.exists()) {
             LOG.warn("Properties file (" + PROPERTIES_FILE + ") not found. Using default properties.");

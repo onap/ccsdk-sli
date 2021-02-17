@@ -33,7 +33,7 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsiteb
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.RetrieveDataOutputBuilder;
 
 import org.onap.ccsdk.sli.core.sli.provider.MdsalHelper;
-
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class DaeximOffsiteBackupUtil extends MdsalHelper {
 
     public static void loadProperties() {
         File file = new File(PROPERTIES_FILE);
-        Properties properties = new Properties();
+        Properties properties = new EnvProperties();
         InputStream input = null;
         if(file.isFile() && file.canRead()) {
             try {

@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.sdc.api.consumer.IConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,7 +120,7 @@ public class SdncUebConfiguration implements IConfiguration{
 							+ propFile);
 		}
 
-		Properties props = new Properties();
+		Properties props = new EnvProperties();
 		props.load(new FileInputStream(propFile));
 
 		asdcAddress = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.asdc-address");

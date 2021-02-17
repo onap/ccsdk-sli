@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.onap.ccsdk.sli.core.utils.PathValidator;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +59,7 @@ public class SvcLogicStoreFactory {
 
 	public static SvcLogicStore getSvcLogicStore(InputStream inStr) throws SvcLogicException
 	{
-		Properties props = new Properties();
+		Properties props = new EnvProperties();
 
 		try {
 			props.load(inStr);

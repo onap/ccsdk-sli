@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ public class TestDmaapListener {
 
 	@Test
 	public void test() {
-		Properties properties = new Properties();
+		Properties properties = new EnvProperties();
 		String propFileName = DMAAP_LISTENER_PROPERTIES;
 		String propPath = null;
 		String propDir = DMAAP_LISTENER_PROPERTIES_DIR;

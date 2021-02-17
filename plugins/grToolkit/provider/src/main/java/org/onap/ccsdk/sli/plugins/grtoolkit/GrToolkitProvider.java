@@ -45,6 +45,7 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.ccsdk.sli.plugins.grtoolkit.connection.ConnectionManager;
 import org.onap.ccsdk.sli.plugins.grtoolkit.connection.ConnectionResponse;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.AdminHealth;
@@ -183,7 +184,7 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      */
     private void setProperties() {
         log.info("Loading properties from {}", PROPERTIES_FILE);
-        properties = new Properties();
+        properties = new EnvProperties();
         File propertiesFile = new File(PROPERTIES_FILE);
         if(!propertiesFile.exists()) {
             log.warn("setProperties(): Properties file not found.");

@@ -142,7 +142,19 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <DMAAP_USER>test</DMAAP_USER>
+                        <DMAAP_PASSWORD>test</DMAAP_PASSWORD>
+                        <DMAAP_AUTHKEY>ABC123</DMAAP_AUTHKEY>
+                        <ODL_USER>admin</ODL_USER>
+                        <ODL_PASSWORD>admin</ODL_PASSWORD>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

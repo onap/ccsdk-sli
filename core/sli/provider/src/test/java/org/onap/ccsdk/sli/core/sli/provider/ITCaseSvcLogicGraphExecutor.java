@@ -65,6 +65,7 @@ import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicPropertiesProvider;
 import org.onap.ccsdk.sli.core.sli.provider.base.SwitchNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.UpdateNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.WhileNodeExecutor;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +107,7 @@ public class ITCaseSvcLogicGraphExecutor {
 
         InputStream propStr = ITCaseSvcLogicGraphExecutor.class.getResourceAsStream("/svclogic.properties");
 
-        Properties svcprops = new Properties();
+        Properties svcprops = new EnvProperties();
         svcprops.load(propStr);
 
         SvcLogicStore store = SvcLogicStoreFactory.getSvcLogicStore(svcprops);
@@ -152,7 +153,7 @@ public class ITCaseSvcLogicGraphExecutor {
 
             InputStream propStr = getClass().getResourceAsStream("/svclogic.properties");
 
-            Properties svcprops = new Properties();
+            Properties svcprops = new EnvProperties();
             svcprops.load(propStr);
 
 

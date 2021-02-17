@@ -37,6 +37,7 @@ import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
 import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.BundleContextFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.CoreDefaultFileResolver;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -110,7 +111,7 @@ public class AAIServiceProvider implements UtilsProvider {
         final File propertiesFile = determinePropertiesFile();
         if (propertiesFile != null) {
             try(FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
-                properties = new Properties();
+                properties = new EnvProperties();
                 properties.load(fileInputStream);
 
                 if(properties.containsKey(AAICLIENT_PROPERTY_NAME)) {

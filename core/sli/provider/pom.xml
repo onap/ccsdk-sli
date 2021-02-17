@@ -6,7 +6,7 @@
 		<groupId>org.onap.ccsdk.parent</groupId>
 		<artifactId>binding-parent</artifactId>
 		<version>2.1.1-SNAPSHOT</version>
-		<relativePath/>
+		<relativePath />
 	</parent>
 
 	<groupId>org.onap.ccsdk.sli.core</groupId>
@@ -68,31 +68,31 @@
 			<artifactId>mdsal-binding-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc6991</artifactId>
+		<dependency>
+			<groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+			<artifactId>rfc6991</artifactId>
 			<scope>provided</scope>
-        </dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.opendaylight.bgpcep</groupId>
 			<artifactId>bgp-concepts</artifactId>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-dom-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>yang-binding</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-              <groupId>com.google.code.findbugs</groupId>
-              <artifactId>annotations</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.opendaylight.mdsal</groupId>
+			<artifactId>mdsal-dom-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.opendaylight.mdsal</groupId>
+			<artifactId>yang-binding</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>annotations</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -146,6 +146,28 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<environmentVariables>
+						<MYSQL_USER>dummyUser</MYSQL_USER>
+						<MYSQL_PASSWORD>dummyPassword</MYSQL_PASSWORD>
+						<MYSQL_DATABASE>dummyDatabase</MYSQL_DATABASE>
+					</environmentVariables>
+				</configuration>
+			</plugin>
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <MYSQL_USER>dummyUser</MYSQL_USER>
+                        <MYSQL_PASSWORD>dummyPassword</MYSQL_PASSWORD>
+                        <MYSQL_DATABASE>dummyDatabase</MYSQL_DATABASE>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 </project>

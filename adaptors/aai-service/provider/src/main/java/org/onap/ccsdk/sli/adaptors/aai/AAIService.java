@@ -81,6 +81,7 @@ import org.onap.ccsdk.sli.core.sli.MetricLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.aai.inventory.v21.GenericVnf;
 import org.onap.aai.inventory.v21.PhysicalLink;
 import org.onap.aai.inventory.v21.ResultData;
@@ -322,7 +323,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     }
 
     private static Properties getProperties(URL url) {
-        Properties properties = new Properties();
+        Properties properties = new EnvProperties();
         try {
             properties.load(url.openStream());
         } catch (IOException exc) {
@@ -491,7 +492,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         }
 
         InputStream is = null;
-        Properties props = new Properties();
+        Properties props = new EnvProperties();
 
         try {
             if(LOG.isDebugEnabled())

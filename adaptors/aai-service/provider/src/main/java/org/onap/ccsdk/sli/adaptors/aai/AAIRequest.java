@@ -53,6 +53,7 @@ import java.util.TreeSet;
 import org.apache.commons.lang.StringUtils;
 import org.onap.aai.inventory.v21.GenericVnf;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -194,7 +195,7 @@ public abstract class AAIRequest {
         try {
             Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
 
-            Properties properties = new Properties();
+            Properties properties = new EnvProperties();
             properties.load(reader);
             LOG.info("loaded " + properties.size());
 
