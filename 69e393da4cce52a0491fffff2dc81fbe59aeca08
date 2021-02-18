@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2993c801_02499d41",
+        "filename": "adaptors/mdsal-resource/provider/src/main/resources/svclogic.properties",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2021-02-18T22:18:13Z",
+      "side": 1,
+      "message": "Better to have ${MYSQL_HOST} instal of hardcoded \u0027dbhost\u0027",
+      "revId": "69e393da4cce52a0491fffff2dc81fbe59aeca08",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2bb0db41_5329aa46",
+        "filename": "adaptors/sql-resource/provider/src/main/resources/svclogic.properties",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2021-02-18T22:18:13Z",
+      "side": 1,
+      "message": "Same !",
+      "revId": "69e393da4cce52a0491fffff2dc81fbe59aeca08",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c68cb26_ba244081",
+        "filename": "adaptors/sql-resource/provider/src/test/resources/svclogic.properties",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2021-02-18T22:18:13Z",
+      "side": 1,
+      "message": "same",
+      "revId": "69e393da4cce52a0491fffff2dc81fbe59aeca08",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0a795723_0bd1a5eb",
+        "filename": "core/sli/common/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2021-02-18T22:18:13Z",
+      "side": 1,
+      "message": "can add MYSQL_HOST too may be default to \u0027dbhost\u0027\nand what if we add same to parent poms to avoid redundency ?",
+      "revId": "69e393da4cce52a0491fffff2dc81fbe59aeca08",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "11cae277_c8085007",
+        "filename": "core/sli/provider/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2021-02-18T22:18:13Z",
+      "side": 1,
+      "message": "same",
+      "revId": "69e393da4cce52a0491fffff2dc81fbe59aeca08",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "24ba18a9_f8dd8c18",
+        "filename": "core/sliapi/provider/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2021-02-18T22:18:13Z",
+      "side": 1,
+      "message": "same",
+      "revId": "69e393da4cce52a0491fffff2dc81fbe59aeca08",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc091a3b_993e6878",
+        "filename": "core/utils/provider/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2021-02-18T22:18:13Z",
+      "side": 1,
+      "message": "same",
+      "revId": "69e393da4cce52a0491fffff2dc81fbe59aeca08",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c1a7909b_e2e459ed",
+        "filename": "northbound/lcm/provider/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2021-02-18T22:18:13Z",
+      "side": 1,
+      "message": "same",
+      "revId": "69e393da4cce52a0491fffff2dc81fbe59aeca08",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
