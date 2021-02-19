@@ -10,4 +10,8 @@
 	<bean id="sliStringUtils" class="org.onap.ccsdk.sli.core.slipluginutils.SliStringUtils" />
 	<service ref="sliStringUtils"
 		interface="org.onap.ccsdk.sli.core.slipluginutils.SliStringUtils" />
+
+	<bean id="sliTopologyUtils" class="org.onap.ccsdk.sli.core.slipluginutils.SliTopologyUtils" />
+	<service ref = "sliTopologyUtils"
+		interface="org.onap.ccsdk.sli.core.slipluginutils.SliTopologyUtils" />
 </blueprint>
