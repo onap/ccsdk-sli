@@ -21,8 +21,8 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>2.1.1-SNAPSHOT</version>
-        <relativePath />
+        <version>2.1.1</version>
+        <relativePath/>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>

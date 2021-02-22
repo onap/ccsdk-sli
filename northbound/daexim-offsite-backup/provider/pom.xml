@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>2.1.1-SNAPSHOT</version>
+        <version>2.1.1</version>
         <relativePath/>
     </parent>
 
@@ -54,12 +54,12 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-common</artifactId>
-            <version>${ccsdk.sli.core.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-provider</artifactId>
-            <version>${ccsdk.sli.core.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
               <groupId>com.google.code.findbugs</groupId>
