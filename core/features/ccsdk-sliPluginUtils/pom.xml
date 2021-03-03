@@ -14,7 +14,7 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>ccsdk-sli-core :: sliPluginUtils :: ${project.artifactId}</name>
+    <name>ccsdk-sli-core :: features :: ${project.artifactId}</name>
 
     <dependencies>
 
@@ -31,6 +31,6 @@
             <artifactId>sliPluginUtils-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
- 
+
     </dependencies>
 </project>

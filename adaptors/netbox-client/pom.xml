@@ -30,7 +30,7 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>ccsdk-sli-adaptors :: netbox-client</name>
+    <name>ccsdk-sli-adaptors :: ${project.artifactId}</name>
     <description>The SDNC Adaptors for netbox IPAM as an OSGi service</description>
 
     <modules>
