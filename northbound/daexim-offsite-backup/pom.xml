@@ -14,7 +14,7 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>ccsdk-sli-northbound :: daexim-offsite-backup</name>
+    <name>ccsdk-sli-northbound :: ${project.artifactId}</name>
     <description>ODL feature used for transferring MD-SAL data to an offsite location.</description>
 
     <modules>

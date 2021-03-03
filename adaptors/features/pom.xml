@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.onap.ccsdk.parent</groupId>
-		<artifactId>odlparent-lite</artifactId>
-		<version>2.1.1</version>
-		<relativePath/>
-	</parent>
+    <parent>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>odlparent-lite</artifactId>
+        <version>2.1.1</version>
+        <relativePath/>
+    </parent>
 
-	<groupId>org.onap.ccsdk.sli.adaptors</groupId>
-	<artifactId>sliadaptors-feature-aggregator</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <groupId>org.onap.ccsdk.sli.adaptors</groupId>
+    <artifactId>sliadaptors-feature-aggregator</artifactId>
+    <version>1.2.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<name>ccsdk-sli-adaptors :: features</name>
+    <name>ccsdk-sli-adaptors :: features</name>
 
-	<modules>
-		<module>ccsdk-aai-service</module>
-		<module>ccsdk-ansible-adapter</module>
-		<module>ccsdk-base-http</module>
-		<module>ccsdk-mdsal-resource</module>
-		<module>ccsdk-messagerouter-consumer</module>
-		<module>ccsdk-messagerouter-publisher</module>
-		<module>ccsdk-netbox-client</module>
-		<module>ccsdk-resource-assignment</module>
-		<module>ccsdk-saltstack-adapter</module>
-		<module>ccsdk-sql-resource</module>
+    <modules>
+        <module>ccsdk-aai-service</module>
+        <module>ccsdk-ansible-adapter</module>
+        <module>ccsdk-base-http</module>
+        <module>ccsdk-mdsal-resource</module>
+        <module>ccsdk-messagerouter-consumer</module>
+        <module>ccsdk-messagerouter-publisher</module>
+        <module>ccsdk-netbox-client</module>
+        <module>ccsdk-resource-assignment</module>
+        <module>ccsdk-saltstack-adapter</module>
+        <module>ccsdk-sql-resource</module>
         <module>ccsdk-sli-adaptors-all</module>
         <module>features-sli-adaptors</module>
         <module>installer</module>

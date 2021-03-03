@@ -13,6 +13,8 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <name>ccsdk-sli-plugins :: ${project.artifactId}</name>
+
     <modules>
         <module>provider</module>
         <module>installer</module>

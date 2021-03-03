@@ -14,7 +14,7 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>ccsdk-sli-adaptors :: aai-service :: ${project.artifactId}</name>
+    <name>ccsdk-sli-adaptors :: ${project.artifactId}</name>
 
     <properties>
         <application.name>ccsdk-aai-service</application.name>
@@ -44,7 +44,6 @@
             <artifactId>aai-service-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
-
 
     </dependencies>
 
