@@ -14,12 +14,11 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>ccsdk-sli-northbound :: asdcApi</name>
+    <name>ccsdk-sli-northbound :: ${project.artifactId}</name>
 
     <modules>
         <module>model</module>
         <module>provider</module>
         <module>installer</module>
     </modules>
-
 </project>

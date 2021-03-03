@@ -77,7 +77,6 @@
             </exclusions>
         </dependency>
 
-
         <dependency>
             <groupId>org.onap.ccsdk.sli.northbound</groupId>
             <artifactId>${application.name}</artifactId>
@@ -91,7 +90,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
 
     </dependencies>
 
@@ -151,7 +149,7 @@
                             <useRepositoryLayout>true</useRepositoryLayout>
                             <addParentPoms>false</addParentPoms>
                             <copyPom>false</copyPom>
-                             <includeGroupIds>org.onap.ccsdk.sli.northbound</includeGroupIds>
+                            <includeGroupIds>org.onap.ccsdk.sli.northbound</includeGroupIds>
                             <scope>provided</scope>
                         </configuration>
                     </execution>

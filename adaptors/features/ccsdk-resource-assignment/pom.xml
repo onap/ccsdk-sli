@@ -14,7 +14,7 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>ccsdk-sli-adaptors :: resource-assignment :: ${project.artifactId}</name>
+    <name>ccsdk-sli-adaptors :: features :: ${project.artifactId}</name>
 
     <dependencies>
 
@@ -41,7 +41,6 @@
             <artifactId>resource-assignment-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
-
 
     </dependencies>
 </project>
