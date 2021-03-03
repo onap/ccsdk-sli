@@ -14,7 +14,7 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>ccsdk-sli-plugins :: gr-toolkit :: ${project.artifactId}</name>
+    <name>ccsdk-sli-plugins :: ${project.artifactId}</name>
 
     <dependencies>
         <dependency>
@@ -22,6 +22,5 @@
             <artifactId>rfc6991</artifactId>
         </dependency>
 
-        
     </dependencies>
 </project>

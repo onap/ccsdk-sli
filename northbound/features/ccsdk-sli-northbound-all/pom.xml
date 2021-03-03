@@ -39,6 +39,5 @@
             <classifier>features</classifier>
         </dependency>
 
-    
     </dependencies>
 </project>

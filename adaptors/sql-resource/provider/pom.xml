@@ -14,7 +14,7 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>ccsdk-sli-adaptors :: sql-resource :: ${project.artifactId}</name>
+    <name>ccsdk-sli-adaptors :: ${project.artifactId}</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -22,15 +22,15 @@
     </properties>
 
     <dependencyManagement>
-    	<dependencies>
-    		<dependency>
-  <groupId>org.onap.ccsdk.sli.core</groupId>
-  <artifactId>sli-core-artifacts</artifactId>
-  <version>${project.version}</version>
-  <type>pom</type>
-  <scope>import</scope>
-    		</dependency>
-    	</dependencies>
+        <dependencies>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.core</groupId>
+                <artifactId>sli-core-artifacts</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
     </dependencyManagement>
     <dependencies>
         <dependency>
@@ -59,10 +59,10 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
@@ -73,10 +73,10 @@
             <artifactId>dblib-provider</artifactId>
             <scope>provided</scope>
         </dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

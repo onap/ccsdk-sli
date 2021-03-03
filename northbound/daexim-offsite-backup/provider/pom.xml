@@ -14,7 +14,7 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>ccsdk-sli-northbound :: daexim-offsite-backup :: ${project.artifactId}</name>
+    <name>ccsdk-sli-northbound :: ${project.artifactId}</name>
 
     <dependencies>
         <dependency>
@@ -35,18 +35,18 @@
             <artifactId>mdsal-binding-test-model</artifactId>
             <scope>test</scope>
         </dependency>
-<!--         <dependency> -->
-<!--             <groupId>org.opendaylight.controller</groupId> -->
-<!--             <artifactId>sal-binding-broker-impl</artifactId> -->
-<!--             <scope>test</scope> -->
-<!--         </dependency> -->
-<!--         <dependency> -->
-<!--             <groupId>org.opendaylight.controller</groupId> -->
-<!--             <artifactId>sal-binding-broker-impl</artifactId> -->
-<!--             <type>test-jar</type> -->
-<!--             <classifier>tests</classifier> -->
-<!--             <scope>test</scope> -->
-<!--         </dependency> -->
+        <!--         <dependency> -->
+        <!--             <groupId>org.opendaylight.controller</groupId> -->
+        <!--             <artifactId>sal-binding-broker-impl</artifactId> -->
+        <!--             <scope>test</scope> -->
+        <!--         </dependency> -->
+        <!--         <dependency> -->
+        <!--             <groupId>org.opendaylight.controller</groupId> -->
+        <!--             <artifactId>sal-binding-broker-impl</artifactId> -->
+        <!--             <type>test-jar</type> -->
+        <!--             <classifier>tests</classifier> -->
+        <!--             <scope>test</scope> -->
+        <!--         </dependency> -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -62,8 +62,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-              <groupId>com.google.code.findbugs</groupId>
-              <artifactId>annotations</artifactId>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

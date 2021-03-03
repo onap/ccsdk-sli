@@ -14,7 +14,7 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>ccsdk-sli-adaptors :: mdsal-resource</name>
+    <name>ccsdk-sli-adaptors :: ${project.artifactId}</name>
     <description>The MD-SAL resource adaptor allows service logic to access persistent data from MD-SAL config and operational trees</description>
 
     <modules>
