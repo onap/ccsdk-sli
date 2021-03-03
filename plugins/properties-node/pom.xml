@@ -13,9 +13,10 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>ccsdk-sli-plugins :: properties-node</name>
+    <name>ccsdk-sli-plugins :: ${project.artifactId}</name>
     <description>This is an implementation of DG Execute Node that reads property file and
-    puts the properties in the DG context</description>
+        puts the properties in the DG context
+    </description>
 
     <modules>
         <module>provider</module>

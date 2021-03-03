@@ -13,7 +13,7 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>ccsdk-sli-adaptors</name>
+    <name>${project.artifactId}</name>
     <description>The CCSDK core components contains the SLI, dblib and root pom</description>
     <url>https://wiki.onap.org</url>
     <organization>
@@ -24,11 +24,11 @@
         <module>aai-service</module>
         <module>ansible-adapter</module>
         <module>saltstack-adapter</module>
-        <module>netbox-client</module>      
+        <module>netbox-client</module>
         <module>mdsal-resource</module>
         <module>resource-assignment</module>
         <module>sql-resource</module>
-	    <module>base</module>
+        <module>base</module>
         <module>message-router</module>
         <module>features</module>
         <module>artifacts</module>
@@ -100,7 +100,6 @@
                         </executions>
                     </plugin>
                 </plugins>
-
 
             </build>
 

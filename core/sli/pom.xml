@@ -14,8 +14,8 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>ccsdk-sli-core :: sli</name>
-    <description>The Service Logic Interpreter (SLI) allows service planners to design the flow of logic within the SDN controller in an XML format, without a need for custom Java code. </description>
+    <name>ccsdk-sli-core :: ${project.artifactId}</name>
+    <description>The Service Logic Interpreter (SLI) allows service planners to design the flow of logic within the SDN controller in an XML format, without a need for custom Java code.</description>
     <organization>
         <name>ONAP</name>
     </organization>

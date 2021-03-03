@@ -14,7 +14,7 @@
     <version>1.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>ccsdk-sli-adaptors :: sql-resource</name>
+    <name>ccsdk-sli-adaptors :: ${project.artifactId}</name>
     <description>The Sql resource adaptor allows service logic to read/write data from a local database using direct SQL statements</description>
 
     <modules>
