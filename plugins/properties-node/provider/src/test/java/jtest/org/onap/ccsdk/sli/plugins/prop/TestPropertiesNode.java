@@ -20,7 +20,7 @@ public class TestPropertiesNode {
     private static final Logger log = LoggerFactory.getLogger(TestPropertiesNode.class);
     @Rule
     public EnvironmentVariables environmentVariables = new EnvironmentVariables();
-    
+
     @Test
     public void testJSONFileParsing() throws SvcLogicException {
         SvcLogicContext ctx = new SvcLogicContext();
@@ -535,7 +535,7 @@ public class TestPropertiesNode {
         PropertiesNode rcn = new PropertiesNode();
         rcn.readProperties(p, ctx);
 
-        assertEquals(ctx.getAttribute("NotFileBased.<name>RESTAPI"),"Call Node - Provider</name>");
+        assertEquals(ctx.getAttribute("NotFileBased.<name>ccsdk-sli-plugins"),": properties-node-provider :: test.xml</name>");
         assertEquals(ctx.getAttribute("NotFileBased.<project"),
                      "xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                              " xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">");

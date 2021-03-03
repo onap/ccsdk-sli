@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.onap.ccsdk.parent</groupId>
-		<artifactId>odlparent-lite</artifactId>
-		<version>2.1.1</version>
-		<relativePath/>
-	</parent>
+    <parent>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>odlparent-lite</artifactId>
+        <version>2.2.0-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
 
-	<groupId>org.onap.ccsdk.sli.core</groupId>
-	<artifactId>slicore-feature-aggregator</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <groupId>org.onap.ccsdk.sli.core</groupId>
+    <artifactId>slicore-feature-aggregator</artifactId>
+    <version>1.3.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<name>ccsdk-sli-core :: features</name>
+    <name>ccsdk-sli-core :: features</name>
 
-	<modules>
-		<module>ccsdk-slicore-utils</module>
-		<module>ccsdk-dblib</module>
-		<module>ccsdk-filters</module>
-		<module>ccsdk-sli</module>
-		<module>ccsdk-sliapi</module>
-		<module>ccsdk-sliPluginUtils</module>
+    <modules>
+        <module>ccsdk-slicore-utils</module>
+        <module>ccsdk-dblib</module>
+        <module>ccsdk-filters</module>
+        <module>ccsdk-sli</module>
+        <module>ccsdk-sliapi</module>
+        <module>ccsdk-sliPluginUtils</module>
         <module>ccsdk-sli-core-all</module>
         <module>features-sli-core</module>
         <module>installer</module>
