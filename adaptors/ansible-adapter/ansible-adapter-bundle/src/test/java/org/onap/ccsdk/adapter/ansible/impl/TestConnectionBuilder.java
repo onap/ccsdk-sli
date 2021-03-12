@@ -1,8 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * onap
+ * ONAP : SLI
  * ================================================================================
- * Copyright (C) 2018 Samsung
+ * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,140 +15,221 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * ECOMP is a trademark and service mark of AT&T Intellectual Property.
  * ============LICENSE_END=========================================================
  */
 
 package org.onap.ccsdk.adapter.ansible.impl;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.onap.ccsdk.sli.adaptors.ansible.impl.ConnectionBuilder;
-import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResult;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-
-import javax.net.ssl.SSLException;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.util.Properties;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.onap.ccsdk.sli.adaptors.ansible.impl.AnsibleAdapterPropertiesProviderImpl;
+import org.onap.ccsdk.sli.adaptors.ansible.impl.ConnectionBuilder;
+import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResult;
+import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResultCodes;
+import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdapterConstants.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TestConnectionBuilder {
-    ConnectionBuilder builder;
+
+    private static String KEYSTORE_FILE;
+    private static String KEYSTORE_PSWD;
+    private static String KEYSTORE_CERTIFICATE;
+    private static String USER;
+    private static String PSWD;
+    private static String URL;
+
+    private final int SUCCESS_STATUS = 200;
+    private ConnectionBuilder connectionBuilder;
+
+    @Mock
+    private CloseableHttpClient httpClient;
+
+    @Mock
+    private HttpClientContext httpClientContext;
+
+    @Mock
+    private CloseableHttpResponse response;
+
+    @Mock
+    private HttpEntity entity;
+
+    @Mock
+    private StatusLine statusLine;
+
+    /**
+     * Load the configuration properties
+     */
+    @BeforeClass
+    public static void once() {
+        final String configFilePath = "src/test/resources/properties/ansible-adapter-test.properties".replace("/", File.separator);
+        Properties properties = new AnsibleAdapterPropertiesProviderImpl(configFilePath).getProperties();
+
+        KEYSTORE_FILE = properties.getProperty(TRUSTSTORE_PROPERTY_NAME);
+        KEYSTORE_PSWD = properties.getProperty(TRUSTSTORE_PASS_PROPERTY_NAME);
+        KEYSTORE_CERTIFICATE = properties.getProperty("org.onap.appc.adapter.ansible.cert");
+        USER = properties.getProperty("org.onap.appc.adapter.ansible.username");
+        PSWD = properties.getProperty("org.onap.appc.adapter.ansible.password");
+        URL = properties.getProperty("org.onap.appc.adapter.ansible.identity");
+    }
+
     @Before
-    public void setup()
-            throws SSLException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        builder = new ConnectionBuilder(1);
+    public void setup() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+        connectionBuilder = new ConnectionBuilder(1, 2000);
+        Whitebox.setInternalState(connectionBuilder, "httpClient", httpClient);
+        Whitebox.setInternalState(connectionBuilder, "httpContext", httpClientContext);
+        HttpResponse httpResponse = response;
+        when(httpResponse.getEntity()).thenReturn(entity);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(statusLine.getStatusCode()).thenReturn(SUCCESS_STATUS);
     }
 
-
-    @Test
-    public void testSetHttpContext() throws IllegalStateException, IllegalArgumentException {
-        String user = "testUser";
-        String pass = "testPassword";
-
-        builder.setHttpContext(user, pass);
+    @After
+    public void tearDown() {
+        connectionBuilder = null;
     }
 
     @Test
-    public void testPost() throws IllegalStateException, IllegalArgumentException {
-        String user = "testUser";
-        String pass = "testPassword";
-        String agentUrl = "test/server.com";
-        String payload = "testPayload";
+    public void testConnectionBuilder() throws KeyManagementException, KeyStoreException, CertificateException,
+            NoSuchAlgorithmException, IOException {
+        char[] trustStorePassword = KEYSTORE_PSWD.toCharArray();
+        ConnectionBuilder connectionBuilder = new ConnectionBuilder(KEYSTORE_FILE, trustStorePassword, 600000, "");
+        assertNotNull(connectionBuilder);
+    }
 
-        builder.setHttpContext(user, pass);
-        AnsibleResult result = builder.post(agentUrl, payload);
+    @Test
+    public void testConnectionBuilderWithFilePath() throws KeyManagementException, KeyStoreException,
+            CertificateException, NoSuchAlgorithmException, IOException {
+        new ConnectionBuilder(KEYSTORE_CERTIFICATE, 600000);
+    }
 
-        assertEquals(611, result.getStatusCode());
-        assertEquals(null, result.getStatusMessage());
+    @Test
+    public void testSetHttpContext() {
+        ConnectionBuilder spyConnectionBuilder = Mockito.spy(connectionBuilder);
+        spyConnectionBuilder.setHttpContext(USER, PSWD);
+        verify(spyConnectionBuilder, times(1)).setHttpContext(USER, PSWD);
+    }
+
+    @Test
+    public void testPost() throws IOException {
+        when(httpClient.execute(anyObject(), eq(httpClientContext))).thenReturn(response);
+        AnsibleResult result = connectionBuilder.post(URL, "appc");
+        assertNull(result.getStatusMessage());
+        assertEquals(SUCCESS_STATUS, result.getStatusCode());
         assertEquals("UNKNOWN", result.getResults());
     }
 
     @Test
-    public void testGet() throws IllegalStateException, IllegalArgumentException {
-        String user = "testUser";
-        String pass = "testPassword";
-        String agentUrl = "test/server.com";
+    public void testPostWithException() throws IOException {
+        when(httpClient.execute(anyObject(), eq(httpClientContext))).thenThrow(new IOException());
+        AnsibleResult result = connectionBuilder.post(URL, "appc");
+        assertEquals(AnsibleResultCodes.IO_EXCEPTION.getValue(), result.getStatusCode());
+    }
 
-        builder.setHttpContext(user, pass);
-        AnsibleResult result = builder.get(agentUrl);
-
-        assertEquals(611, result.getStatusCode());
-        assertEquals(null, result.getStatusMessage());
+    @Ignore
+    @Test
+    public void testGet() throws IOException {
+        when(httpClient.execute(anyObject(), eq(httpClientContext))).thenReturn(response);
+        AnsibleResult result = connectionBuilder.get(URL);
+        assertNull(result.getStatusMessage());
+        assertEquals(SUCCESS_STATUS, result.getStatusCode());
         assertEquals("UNKNOWN", result.getResults());
     }
 
     @Test
-    public void testGetMode()
-            throws SSLException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        String user = "testUser";
-        String pass = "testPassword";
-        String agentUrl = "test/server.com";
+    public void testGetWithException() throws IOException {
+        when(httpClient.execute(anyObject(), eq(httpClientContext))).thenThrow(new IOException());
+        AnsibleResult result = connectionBuilder.get(URL);
+        assertEquals(AnsibleResultCodes.IO_EXCEPTION.getValue(), result.getStatusCode());
+    }
 
-        builder = new ConnectionBuilder(2);
-        builder.setHttpContext(user, pass);
-        AnsibleResult result = builder.get(agentUrl);
+    @Test
+    public void testClose() {
+        connectionBuilder.close();
+    }
+
+    @Test
+    public void testGetMode() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        connectionBuilder = new ConnectionBuilder(2, 2000);
+        connectionBuilder.setHttpContext(USER, PSWD);
+        AnsibleResult result = connectionBuilder.get("test.server.com");
 
         assertEquals(611, result.getStatusCode());
-        assertEquals(null, result.getStatusMessage());
+        assertNull(result.getStatusMessage());
         assertEquals("UNKNOWN", result.getResults());
     }
 
     @Test (expected = FileNotFoundException.class)
-    public void testGetModeNoCert()
-            throws KeyStoreException, CertificateException, IOException,
-            KeyManagementException, NoSuchAlgorithmException, SvcLogicException {
-        String user = "testUser";
-        String pass = "testPassword";
-        String agentUrl = "test/server.com";
+    public void testGetModeNoCert() throws KeyStoreException, CertificateException, IOException,
+            KeyManagementException, NoSuchAlgorithmException {
         String certFile = "testCert";
 
-        builder = new ConnectionBuilder(certFile);
-        builder.setHttpContext(user, pass);
-        AnsibleResult result = builder.get(agentUrl);
+        connectionBuilder = new ConnectionBuilder(certFile, 2000);
+        connectionBuilder.setHttpContext(USER, PSWD);
+        AnsibleResult result = connectionBuilder.get(URL);
 
         assertEquals(611, result.getStatusCode());
-        assertEquals(null, result.getStatusMessage());
+        assertNull(result.getStatusMessage());
         assertEquals("UNKNOWN", result.getResults());
     }
 
     @Test
-    public void testGetModeCert()
-            throws KeyStoreException, CertificateException, IOException,
-            KeyManagementException, NoSuchAlgorithmException, SvcLogicException {
-        String user = "testUser";
-        String pass = "testPassword";
-        String agentUrl = "test/server.com";
+    public void testGetModeCert() throws KeyStoreException, CertificateException, IOException,
+            KeyManagementException, NoSuchAlgorithmException {
         String certFile = "src/test/resources/cert";
 
-        builder = new ConnectionBuilder(certFile);
-        builder.setHttpContext(user, pass);
-        AnsibleResult result = builder.get(agentUrl);
+        connectionBuilder = new ConnectionBuilder(certFile, 2000);
+        connectionBuilder.setHttpContext(USER, PSWD);
+        AnsibleResult result = connectionBuilder.get("test.server.com");
 
         assertEquals(611, result.getStatusCode());
-        assertEquals(null, result.getStatusMessage());
+        assertNull(result.getStatusMessage());
         assertEquals("UNKNOWN", result.getResults());
     }
 
     @Test (expected = IOException.class)
-    public void testGetModeStore()
-            throws KeyStoreException, CertificateException, IOException,
-            KeyManagementException, NoSuchAlgorithmException, SvcLogicException {
-        String user = "testUser";
-        String pass = "testPassword";
-        String agentUrl = "test/server.com";
+    public void testGetModeStore() throws KeyStoreException, CertificateException, IOException,
+            KeyManagementException, NoSuchAlgorithmException {
         String store = "src/test/resources/cert";
 
-        builder = new ConnectionBuilder(store, new char['t'] );
-        builder.setHttpContext(user, pass);
-        AnsibleResult result = builder.get(agentUrl);
+        connectionBuilder = new ConnectionBuilder(store, new char['t'], 2000, "1.1.1.1" );
+        connectionBuilder.setHttpContext(USER, PSWD);
+        AnsibleResult result = connectionBuilder.get(URL);
 
         assertEquals(611, result.getStatusCode());
-        assertEquals(null, result.getStatusMessage());
+        assertNull(result.getStatusMessage());
         assertEquals("UNKNOWN", result.getResults());
     }
 

@@ -34,7 +34,7 @@ public class EnvProperties extends Properties {
            String propName = (String) propNames.nextElement();
            super.setProperty(propName, EnvProperties.resolveValue(getProperty(propName)));
        }
-       
+
     }
 
     public static String resolveValue(String value) {
@@ -45,7 +45,7 @@ public class EnvProperties extends Properties {
         Pattern p = Pattern.compile("\\$\\{(\\w+)((?:\\:\\-)([^\\}]*))?\\}");
         Matcher m = p.matcher(value);
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while (m.find()) {
             String envVarName = null == m.group(1) ? m.group(2) : m.group(1);
             String envVarDefault = null == m.group(3) ? "" : m.group(3);
@@ -56,6 +56,6 @@ public class EnvProperties extends Properties {
          }
         m.appendTail(sb);
         return sb.toString();
-        
+
     }
 }

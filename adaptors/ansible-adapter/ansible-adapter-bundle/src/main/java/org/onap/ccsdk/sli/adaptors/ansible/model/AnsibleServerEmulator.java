@@ -1,11 +1,9 @@
 /*-
  * ============LICENSE_START=======================================================
- * ONAP : APPC
+ * ONAP : SLI
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
- * Copyright (C) 2017 Amdocs
- * =============================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,33 +20,23 @@
  * ============LICENSE_END=========================================================
  */
 
-
-
-/*
- * Class to emulate responses from the Ansible Server that is compliant with the APP-C Ansible Server
- * Interface. Used for jUnit tests to verify code is working. In tests it can be used
- * as a replacement for methods from ConnectionBuilder class
- */
-
 package org.onap.ccsdk.sli.adaptors.ansible.model;
 
+import com.att.eelf.configuration.EELFLogger;
+import com.att.eelf.configuration.EELFManager;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+
+import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdapterConstants.PLAYBOOK_NAME;
+import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdapterConstants.STATUS_CODE;
+import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdapterConstants.STATUS_MESSAGE;
 
 public class AnsibleServerEmulator {
 
     private final EELFLogger logger = EELFManager.getInstance().getLogger(AnsibleServerEmulator.class);
-
-    private static final String PLAYBOOK_NAME = "PlaybookName";
-    private static final String STATUS_CODE = "StatusCode";
-    private static final String STATUS_MESSAGE = "StatusMessage";
-
-    private String playbookName = "test_playbook.yaml";
 
     /**
      * Method that emulates the response from an Ansible Server
@@ -56,13 +44,14 @@ public class AnsibleServerEmulator {
      * Returns an ansible object result. The response code is always the http code 200 (i.e connection successful)
      * payload is json string as would be sent back by Ansible Server
      **/
-    public AnsibleResult Post(String agentUrl, String payload) {
+    public AnsibleResult post(String payload) {
         AnsibleResult result = new AnsibleResult();
 
         try {
             // Request must be a JSON object
 
             JSONObject message = new JSONObject(payload);
+            String playbookName = "test_playbook.yaml";
             if (message.isNull("Id")) {
                 rejectRequest(result, "Must provide a valid Id");
             } else if (message.isNull(PLAYBOOK_NAME)) {
@@ -84,9 +73,8 @@ public class AnsibleServerEmulator {
      * Server when presented with a GET request
      * Returns an ansibl object result. The response code is always the http code 200 (i.e connection successful)
      * payload is json string as would be sent back by Ansible Server
-     *
      **/
-    public AnsibleResult Get(String agentUrl) {
+    public AnsibleResult get(String agentUrl) {
 
         Pattern pattern = Pattern.compile(".*?\\?Id=(.*?)&Type.*");
         Matcher matcher = pattern.matcher(agentUrl);
@@ -134,4 +122,5 @@ public class AnsibleServerEmulator {
         response.put(STATUS_MESSAGE, "PENDING");
         result.setStatusMessage(response.toString());
     }
+
 }
