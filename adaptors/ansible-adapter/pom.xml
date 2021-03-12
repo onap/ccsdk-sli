@@ -48,7 +48,6 @@
 
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>org.onap.appc</groupId>
                 <artifactId>ansible-adapter-features</artifactId>
@@ -56,15 +55,12 @@
                 <type>xml</type>
                 <classifier>features</classifier>
             </dependency>
-
             <dependency>
                 <groupId>org.onap.appc</groupId>
                 <artifactId>ansible-adapter-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
         </dependencies>
-
     </dependencyManagement>
 
     <pluginRepositories>
@@ -74,12 +70,10 @@
             <name>JCenter Repository</name>
             <url>http://jcenter.bintray.com</url>
         </pluginRepository>
-
     </pluginRepositories>
 
     <build>
         <plugins>
-
             <!-- Black duck plugin Not required for regular builds
             <plugin> <groupId>com.blackducksoftware.integration</groupId> <artifactId>hub-maven-plugin</artifactId>
                   <version>1.4.0</version> <inherited>false</inherited> <configuration> <hubProjectName>${project.name}</hubProjectName>
@@ -94,10 +88,8 @@
                    </goals>
                </execution>
                </executions>
-
             </plugin>
             -->
-
         </plugins>
     </build>
 

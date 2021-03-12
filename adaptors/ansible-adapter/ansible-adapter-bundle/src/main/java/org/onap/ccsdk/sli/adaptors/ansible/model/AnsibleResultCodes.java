@@ -1,11 +1,9 @@
 /*-
  * ============LICENSE_START=======================================================
- * ONAP : APPC
+ * ONAP : SLI
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
- * Copyright (C) 2017 Amdocs
- * =============================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -65,7 +63,7 @@ public enum AnsibleResultCodes {
 
     AnsibleResultCodes(int value) {
         this.value = value;
-    };
+    }
 
     public int getValue() {
         return value;
@@ -77,7 +75,7 @@ public enum AnsibleResultCodes {
 
     public String getValidCodes(int type) {
         StringBuilder sb = new StringBuilder("[ ");
-        codeSets.get(type).stream().forEach(s -> sb.append(s).append(","));
+        codeSets.get(type).forEach(s -> sb.append(s).append(","));
         return sb.append("]").toString();
     }
 
@@ -87,7 +85,7 @@ public enum AnsibleResultCodes {
 
     public String getValidMessages() {
         StringBuilder sb = new StringBuilder("[ ");
-        messageSet.stream().forEach(s -> sb.append(s).append(","));
+        messageSet.forEach(s -> sb.append(s).append(","));
         return sb.append("]").toString();
     }
 }

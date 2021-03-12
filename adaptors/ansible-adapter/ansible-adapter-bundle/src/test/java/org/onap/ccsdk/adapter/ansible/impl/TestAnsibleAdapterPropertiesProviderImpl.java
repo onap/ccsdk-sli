@@ -1,8 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * onap
+ * ONAP : SLI
  * ================================================================================
- * Copyright (C) 2018 Samsung
+ * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,39 +15,49 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * ECOMP is a trademark and service mark of AT&T Intellectual Property.
  * ============LICENSE_END=========================================================
  */
 
 package org.onap.ccsdk.adapter.ansible.impl;
 
-import org.junit.Before;
+import java.io.File;
+import java.util.Properties;
 import org.junit.Test;
 import org.onap.ccsdk.sli.adaptors.ansible.impl.AnsibleAdapterPropertiesProviderImpl;
-
-import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 
 public class TestAnsibleAdapterPropertiesProviderImpl {
-    AnsibleAdapterPropertiesProviderImpl adaptor;
-    @Before
-    public void setup() throws IllegalArgumentException {
-        adaptor = new AnsibleAdapterPropertiesProviderImpl();
-    }
-
 
     @Test
     public void testGetProperties() throws IllegalStateException, IllegalArgumentException {
-        Properties prop = adaptor.getProperties();
+        Properties prop = new AnsibleAdapterPropertiesProviderImpl().getProperties();
 
-        System.out.println("All Property params : " + prop);
         assertEquals("TRUST_ALL", prop.getProperty("org.onap.appc.adapter.ansible.clientType"));
         assertEquals("org.onap.appc.appc_ansible_adapter", prop.getProperty("org.onap.appc.provider.adaptor.name"));
         assertEquals("changeit", prop.getProperty("org.onap.appc.adapter.ansible.trustStore.trustPasswd"));
-        assertEquals("${user.home},/opt/opendaylight/current/properties", prop.getProperty("org.onap.appc.bootstrap.path"));
+        assertEquals("${user.home},/opt/opendaylight/current/properties,.", prop.getProperty("org.onap.appc.bootstrap.path"));
         assertEquals("APPC", prop.getProperty("appc.application.name"));
         assertEquals("appc.properties", prop.getProperty("org.onap.appc.bootstrap.file"));
-        assertEquals("org.onap/appc/i18n/MessageResources", prop.getProperty("org.onap.appc.resources"));
+        assertEquals("org/onap/appc/i18n/MessageResources", prop.getProperty("org.onap.appc.resources"));
         assertEquals("/opt/opendaylight/tls-client/mykeystore.js", prop.getProperty("org.onap.appc.adapter.ansible.trustStore"));
     }
+
+    @Test
+    public void testGetTestProperties() throws IllegalStateException, IllegalArgumentException {
+        final String configFilePath = "src/test/resources/properties/ansible-adapter-test.properties".replace("/", File.separator);
+        Properties prop = new AnsibleAdapterPropertiesProviderImpl(configFilePath).getProperties();
+
+        assertEquals("appc", prop.getProperty("org.onap.appc.adapter.ansible.clientType"));
+        assertEquals("org.onap.appc.appc_ansible_adapter", prop.getProperty("org.onap.appc.provider.adaptor.name"));
+        assertEquals("Aa123456", prop.getProperty("org.onap.appc.adapter.ansible.trustStore.trustPasswd"));
+        assertEquals("${user.home},/opt/opendaylight/current/properties,.", prop.getProperty("org.onap.appc.bootstrap.path"));
+        assertEquals("APPC", prop.getProperty("appc.application.name"));
+        assertEquals("appc.properties", prop.getProperty("org.onap.appc.bootstrap.file"));
+        assertEquals("org/onap/appc/i18n/MessageResources", prop.getProperty("org.onap.appc.resources"));
+        assertEquals("src/test/resources/org/onap/appc/asdc-client.jks", prop.getProperty("org.onap.appc.adapter.ansible.trustStore"));
+    }
+
 }
