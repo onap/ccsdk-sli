@@ -30,7 +30,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
-import org.onap.aai.inventory.v21.*;
+import org.onap.aai.inventory.v24.*;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
@@ -87,5 +87,8 @@ public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {
     String save(AAIRequest request) throws AAIServiceException;
     boolean delete(AAIRequest request, String resourceVersion) throws AAIServiceException;
     boolean update(AAIRequest request, String resourceVersion) throws AAIServiceException;
+
+    // Bulk subnet update
+    String bulkSubnetUpdate(BulkUpdateRequest request) throws AAIServiceException;
 
 }

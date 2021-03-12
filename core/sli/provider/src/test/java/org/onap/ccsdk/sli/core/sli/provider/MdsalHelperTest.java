@@ -42,6 +42,7 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.sample.container.LoginBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.sample.container.login.CustomerAddresses;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.sample.container.login.CustomerAddressesBuilder;
+import org.opendaylight.yang.gen.v1.test.IpFragmentFlagEnumType;
 import org.opendaylight.yang.gen.v1.test.TestObjectBuilder;
 import org.opendaylight.yang.gen.v1.test.WrapperObj;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.AsNumber;
@@ -339,6 +340,50 @@ public class MdsalHelperTest extends TestCase {
     TestObjectBuilder b = new TestObjectBuilder();
     MdsalHelper.toBuilder(props, b);
     assertEquals(v6address, b.getFloatingIpV6().get(0).getValue());
+  }
+  public void testSingleIpFragmentFlagToProperties() throws Exception {
+    Properties props = new Properties(); 
+    TestObjectBuilder b = new TestObjectBuilder();
+    b.setSingleIpFragmentFlag(IpFragmentFlagEnumType.DF);
+    MdsalHelper.toProperties(props, b);
+    assertEquals("DF", props.getProperty("test-object.single-ip-fragment-flag"));
+
+  }
+
+  public void testSingleIpFragmentFlagToBuilder() throws Exception {
+    Properties props = new Properties();
+    String ipFragmentFlag = "DF";
+    props.setProperty("test-object.single-ip-fragment-flag", ipFragmentFlag);
+    TestObjectBuilder b = new TestObjectBuilder();
+    MdsalHelper.toBuilder(props, b);
+    assertEquals(ipFragmentFlag, b.getSingleIpFragmentFlag().getName());
+  }
+
+  public void testIpFragmentFlagListToProperties() throws Exception {
+    Properties props = new Properties();
+
+    TestObjectBuilder b = new TestObjectBuilder();
+    List<IpFragmentFlagEnumType> ipFragmentFlags = new ArrayList<IpFragmentFlagEnumType>();
+    ipFragmentFlags.add(IpFragmentFlagEnumType.DF);
+    b.setIpFragmentFlag(ipFragmentFlags);
+    MdsalHelper.toProperties(props, b);
+
+    System.out.println("*TRACE* Properties are:");
+    props.keySet().stream()
+    .map(key -> key + ": " + props.getProperty(key.toString()))
+    .forEach(System.out::println);
+
+    assertEquals("DF", props.getProperty("test-object.ip-fragment-flag[0]"));
+    assertEquals("1", props.getProperty("test-object.ip-fragment-flag_length"));
+  }
+
+  public void testIpFragmentFlagListToBuilder() throws Exception {
+    Properties props = new Properties();
+    props.setProperty("test-object.ip-fragment-flag_length", "1");
+    props.setProperty("test-object.ip-fragment-flag[0]", "DF");
+    TestObjectBuilder b = new TestObjectBuilder();
+    MdsalHelper.toBuilder(props, b);
+    assertEquals("DF", b.getIpFragmentFlag().get(0).getName());
   }
 
   public void testIpPrefix() throws Exception {

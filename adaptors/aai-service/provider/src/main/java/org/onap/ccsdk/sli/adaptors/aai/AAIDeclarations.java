@@ -43,9 +43,11 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -58,22 +60,29 @@ import org.apache.commons.lang.StringUtils;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.onap.ccsdk.sli.adaptors.aai.query.FormattedQueryResultList;
 import org.onap.ccsdk.sli.adaptors.aai.query.Result;
+import org.onap.ccsdk.sli.adaptors.aai.update.BulkUpdateRequestItemBody;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.aai.inventory.v21.GenericVnf;
-import org.onap.aai.inventory.v21.Image;
-import org.onap.aai.inventory.v21.Metadata;
-import org.onap.aai.inventory.v21.Metadatum;
-import org.onap.aai.inventory.v21.RelatedToProperty;
-import org.onap.aai.inventory.v21.Relationship;
-import org.onap.aai.inventory.v21.RelationshipData;
-import org.onap.aai.inventory.v21.RelationshipList;
-import org.onap.aai.inventory.v21.ResultData;
-import org.onap.aai.inventory.v21.SearchResults;
-import org.onap.aai.inventory.v21.ServiceInstance;
-import org.onap.aai.inventory.v21.Vlan;
-import org.onap.aai.inventory.v21.Vlans;
-import org.onap.aai.inventory.v21.Vserver;
+import org.onap.aai.inventory.v24.GenericVnf;
+import org.onap.aai.inventory.v24.Image;
+import org.onap.aai.inventory.v24.InventoryResponseItem;
+import org.onap.aai.inventory.v24.InventoryResponseItems;
+import org.onap.aai.inventory.v24.L3Network;
+import org.onap.aai.inventory.v24.LogicalLink;
+import org.onap.aai.inventory.v24.Metadata;
+import org.onap.aai.inventory.v24.Metadatum;
+import org.onap.aai.inventory.v24.Pnf;
+import org.onap.aai.inventory.v24.RelatedToProperty;
+import org.onap.aai.inventory.v24.Relationship;
+import org.onap.aai.inventory.v24.RelationshipData;
+import org.onap.aai.inventory.v24.RelationshipList;
+import org.onap.aai.inventory.v24.ResultData;
+import org.onap.aai.inventory.v24.SearchResults;
+import org.onap.aai.inventory.v24.ServiceInstance;
+import org.onap.aai.inventory.v24.Subnet;
+import org.onap.aai.inventory.v24.Vlan;
+import org.onap.aai.inventory.v24.Vlans;
+import org.onap.aai.inventory.v24.Vserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,6 +108,7 @@ public abstract class AAIDeclarations implements AAIClient {
     public static final String READ_TIMEOUT       = "read.timeout";
 
     public static final String TARGET_URI         = "org.onap.ccsdk.sli.adaptors.aai.uri";
+    public static final String TARGET_NARAD_URI   = "org.onap.ccsdk.sli.adaptors.narad.uri";
 
     public static final String AAI_VERSION          = "org.onap.ccsdk.sli.adaptors.aai.version";
 
@@ -134,6 +144,9 @@ public abstract class AAIDeclarations implements AAIClient {
     // node query (1602)
     public static final String QUERY_NODES_PATH          = "org.onap.ccsdk.sli.adaptors.aai.query.nodes";
 
+    // aai-specific proxy
+    public static final String HTTP_PROXY                = "org.onap.ccsdk.sli.adaptors.aai.http.proxy";
+    
     private static final String VERSION_PATTERN = "/v$/";
 
     private static final String AAI_SERVICE_EXCEPTION = "AAI Service Exception";
@@ -465,6 +478,18 @@ public abstract class AAIDeclarations implements AAIClient {
 //                params.remove("prefix");
             }
         }
+        if(params.containsKey("dsl")) {
+        	Set<Entry<String, String>> entryset = params.entrySet();
+        	Iterator<Entry<String, String>> it = entryset.iterator();
+        	while(it.hasNext()) {
+        		Entry<String, String> entry = it.next();
+        		if("dsl".equals(entry.getKey())) {
+        			String resolvedValue = entry.getValue();
+        			resolvedValue = AAIServiceUtils.processDslRequestData(resolvedValue, ctx);
+        			entry.setValue(resolvedValue);
+        		}
+        	}
+        }
         // params passed
         getLogger().debug("parms = "+ Arrays.toString(params.entrySet().toArray()));
 
@@ -569,7 +594,53 @@ public abstract class AAIDeclarations implements AAIClient {
         getLogger().debug("parms = "+ Arrays.toString(params.entrySet().toArray()));
 
         AAIRequest request = AAIRequest.createRequest(resource, nameValues);
+
+        // Special handling for bulk-subnet
+        if ("bulk-subnet".equals(resource)) {
+            BulkUpdateRequest bulkUpdateRequest = (BulkUpdateRequest) request;
+            String networkPath;
+            try {
+                networkPath = request.getRequestPath("l3-network").replace("{network-id}", nameValues.get("l3_network.network_id"));
+            } catch (MalformedURLException e) {
+                throw new SvcLogicException("Caught exception creating path to l3-network", e);
+            }
+            if (!params.containsKey("subnets")) {
+                throw new SvcLogicException("Missing mandatory parameter subnets for update to bulk-subnet resource");
+            }
+
+            if (!params.containsKey("orchestration-status")) {
+                throw new SvcLogicException("Missing mandatory parameter orchestration-status for update to bulk-subnet resource");
+            }
+            String subnetListVar = params.get("subnets");
+            String subnetLengthStr = ctx.getAttribute(subnetListVar+".subnet_length");
+            if ((subnetLengthStr == null) || (subnetLengthStr.length() == 0)) {
+                throw new SvcLogicException("subnet list length variable "+subnetListVar+"_length is unset");
+            }
+
+            String orchestrationStatus = params.get("orchestration-status");
+
+            BulkUpdateRequestItemBody subnet = new BulkUpdateRequestItemBody();
+            subnet.setOrchestrationStatus(orchestrationStatus);
+
+            int subnetLength = Integer.parseInt(subnetLengthStr);
+            for (int i = 0 ; i < subnetLength ; i++) {
+                String subnetId = ctx.getAttribute(subnetListVar+".subnet["+i+"].subnet-id");
+                String subnetPath = networkPath+"/subnets/subnet/"+subnetId+"?depth=1";
+                bulkUpdateRequest.addUpdate("patch", subnetPath, subnet);
+            }
+
+            try {
+                getExecutor().bulkUpdate(bulkUpdateRequest);
+            } catch (AAIServiceException e) {
+                throw new SvcLogicException("Cannot execute bulk update", e);
+            }
+            return QueryStatus.SUCCESS;
+        }
+
+        // Handling for non-bulk transactions
         request = new UpdateRequest(request, params);
+
+
 
         String[] arguments = request.getArgsList();
         for(String name : arguments) {
@@ -915,9 +986,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
             if(value instanceof ArrayList) {
                 ArrayList<?> array = ArrayList.class.cast(value);
-                for(int i = 0; i < array.size(); i++) {
-                    writeList(array, String.format("%s.%s", prefix, theKey), ctx);
-                }
+                writeList(array, String.format("%s.%s", prefix, theKey), ctx);
                 continue;
             }
 
@@ -1128,7 +1197,7 @@ public abstract class AAIDeclarations implements AAIClient {
                                             newValues.add(tmpValue);
                                         }
                                         if(!newValues.isEmpty()) {
-                                            Method setter = findSetterFor(resourceClass, value);
+                                        	Method setter = findSetterFor(resourceClass, value);
                                             if(setter != null) {
                                                 Object o = setter.invoke(instance, newValues);
                                             } else {
@@ -1143,7 +1212,7 @@ public abstract class AAIDeclarations implements AAIClient {
                                                 getLogger().warn(AAI_SERVICE_EXCEPTION, nsme);
                                             }
                                         }
-                                        }
+                                    }
                                     }
                                     set.remove(id);
                                 } else {
@@ -1288,7 +1357,7 @@ public abstract class AAIDeclarations implements AAIClient {
                     getLogger().debug("About to process related link of {}", relatedLink);
                     if(relatedLink != null) {
                         if(relatedLink.contains("v$"))
-                            relatedLink = relatedLink.replace(VERSION_PATTERN, "/v21/");
+                            relatedLink = relatedLink.replace(VERSION_PATTERN, "/v24/");
                         relationship.setRelatedLink(relatedLink);
                     } else {
                         Map<String, String> relParams = new HashMap<>();
@@ -1496,20 +1565,19 @@ public abstract class AAIDeclarations implements AAIClient {
     }
 
     private Method findSetterFor(Class<? extends AAIDatum> resourceClass, String value) {
-        try {
-            String setterName = "set"+StringUtils.capitalize(value);
-            for (Method method : resourceClass.getDeclaredMethods()) {
-                int modifiers = method.getModifiers();
-                if (Modifier.isPublic(modifiers) && setterName.contentEquals(method.getName())) {
-                    return method;
-                }
-            }
-        } catch(Exception exc) {
-             getLogger().warn("findSetterFor()", exc);
-        }
-        return null;
-    }
-
+    	try {
+    		String setterName = "set"+StringUtils.capitalize(value);
+    		for (Method method : resourceClass.getDeclaredMethods()) {
+    			int modifiers = method.getModifiers();
+    			if (Modifier.isPublic(modifiers) && setterName.contentEquals(method.getName())) {
+    				return method;
+    			}
+    		}
+    	} catch(Exception exc) {
+    		 getLogger().warn("findSetterFor()", exc);
+    	}
+		return null;
+	}
     private QueryStatus newModelProcessRelationshipList(Object instance, Map<String, String> params, String prefix, SvcLogicContext ctx) throws Exception {
 
         Class resourceClass = instance.getClass();

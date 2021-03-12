@@ -10,6 +10,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 import javax.ws.rs.client.ClientBuilder;
 
+import org.onap.ccsdk.sli.core.utils.common.AcceptIpAddressHostNameVerifier;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.logging.filter.base.MetricLogClientFilter;
 import org.onap.logging.filter.base.PayloadLoggingClientFilter;
@@ -32,12 +33,8 @@ public abstract class AbstractHttpAdapter {
     }
     
     private void defaultHostNameVerifier() {
-        clientBuilder.hostnameVerifier(new HostnameVerifier() {
-            @Override
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        });
+        // Perform host name verification EXCEPT if 'host' is IP address
+        clientBuilder.hostnameVerifier(new AcceptIpAddressHostNameVerifier());
     }
 
     protected void enableMetricLogging() {

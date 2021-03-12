@@ -23,9 +23,10 @@ package org.onap.ccsdk.sli.core.dblib;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Vector;
 import org.onap.ccsdk.sli.core.utils.JREFileResolver;
 import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
 import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
@@ -44,7 +45,7 @@ import org.slf4j.LoggerFactory;
  *     <li>A directory identified by the JRE argument <code>dblib.properties</code></li>
  *     <li>A <code>dblib.properties</code> file located in the karaf root directory</li>
  * </ol>
- * 
+ *
  * Encryption Support
  * <ol>
  *    <li>Uses ecryption provided by <code>AAAEncryptionService</code></li>
@@ -65,7 +66,7 @@ public class DBLIBResourceProvider {
     /**
      * A prioritized list of strategies for resolving dblib properties files.
      */
-    private Vector<PropertiesFileResolver> dblibPropertiesFileResolvers = new Vector<>();
+    private List<PropertiesFileResolver> dblibPropertiesFileResolvers = new ArrayList<>();
 
     /**
      * The configuration properties for the db connection.

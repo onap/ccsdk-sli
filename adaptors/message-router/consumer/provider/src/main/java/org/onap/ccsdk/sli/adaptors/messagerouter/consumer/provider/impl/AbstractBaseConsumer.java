@@ -36,6 +36,7 @@ import javax.net.ssl.SSLSession;
 
 import org.onap.ccsdk.sli.adaptors.messagerouter.consumer.api.ConsumerApi;
 import org.onap.ccsdk.sli.adaptors.messagerouter.consumer.api.RequestHandler;
+import org.onap.ccsdk.sli.core.utils.common.AcceptIpAddressHostNameVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,15 +164,10 @@ public abstract class AbstractBaseConsumer implements ConsumerApi {
 	httpUrlConnection.setConnectTimeout(connectTimeout);
 	httpUrlConnection.setReadTimeout(readTimeout);
 
-	// ignore hostname errors when dealing with HTTPS connections
+	// Safely ignore hostname errors if host is an ip address or localhost
 	if (httpUrlConnection instanceof HttpsURLConnection) {
 	    HttpsURLConnection conn = (HttpsURLConnection) httpUrlConnection;
-	    conn.setHostnameVerifier(new HostnameVerifier() {
-		@Override
-		public boolean verify(String arg0, SSLSession arg1) {
-		    return true;
-		}
-	    });
+	    conn.setHostnameVerifier(new AcceptIpAddressHostNameVerifier());
 	}
 	return httpUrlConnection;
     }

@@ -49,7 +49,7 @@ public class EchoRequest extends AAIRequest {
 	@Override
 	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
 
-		String requestUrl = targetUri+echoPath;
+		String requestUrl = getTargetUri()+echoPath;
 
 		if(resourceVersion != null) {
 			requestUrl = requestUrl +"?resource-version="+resourceVersion;

@@ -33,8 +33,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Before;
 import org.junit.Test;
@@ -146,6 +148,11 @@ public class DaeximOffsiteBackupProviderTest {
             @Override
             public String getTimestamp() {
                 return "Some Timestamp";
+            }
+
+            @Override
+            public @NonNull Map<Class<? extends Augmentation<RetrieveDataInput>>, Augmentation<RetrieveDataInput>> augmentations() {
+                return null;
             }
 
         };

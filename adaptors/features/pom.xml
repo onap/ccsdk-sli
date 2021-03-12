@@ -18,16 +18,25 @@
 
     <modules>
         <module>ccsdk-aai-service</module>
-        <module>ccsdk-ansible-adapter</module>
         <module>ccsdk-base-http</module>
+
+        <module>ccsdk-ansible-adaptor</module>
+        <module>ccsdk-chef-adaptor</module>
+        <module>ccsdk-iaas-adaptor</module>
+        <module>ccsdk-netconf-adaptor</module>
+        <module>ccsdk-rest-adaptor</module>
+        <module>ccsdk-saltstack-adaptor</module>
+        <module>ccsdk-ssh-adaptor</module>
+
         <module>ccsdk-mdsal-resource</module>
         <module>ccsdk-messagerouter-consumer</module>
         <module>ccsdk-messagerouter-publisher</module>
         <module>ccsdk-netbox-client</module>
+
         <module>ccsdk-resource-assignment</module>
-        <module>ccsdk-saltstack-adapter</module>
         <module>ccsdk-sql-resource</module>
         <module>ccsdk-sli-adaptors-all</module>
+
         <module>features-sli-adaptors</module>
         <module>installer</module>
     </modules>

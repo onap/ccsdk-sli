@@ -11,9 +11,11 @@ public class TestObjectBuilder implements Builder<TestObject> {
 	private List<IpAddress> _floatingIp;
 	private List<Ipv4Address> _floatingIpV4;
 	private List<Ipv6Address> _floatingIpV6;
+	private List<IpFragmentFlagEnumType> _ipFragmentFlag;
 	private IpAddress _singleIp;
 	private Ipv4Address _singleIpV4;
 	private Ipv6Address _singleIpV6;
+	private IpFragmentFlagEnumType _singleIpFragmentFlag;
 
 	public List<IpAddress> getFloatingIp() {
 		return _floatingIp;
@@ -27,6 +29,10 @@ public class TestObjectBuilder implements Builder<TestObject> {
 		return _floatingIpV6;
 	}
 
+	public List<IpFragmentFlagEnumType> getIpFragmentFlag() {
+		return _ipFragmentFlag;
+	}
+
 	public Ipv4Address getSingleIpV4() {
 		return _singleIpV4;
 	}
@@ -37,6 +43,10 @@ public class TestObjectBuilder implements Builder<TestObject> {
 
 	public IpAddress getSingleIp() {
 		return _singleIp;
+	}
+
+	public IpFragmentFlagEnumType getSingleIpFragmentFlag() {
+		return _singleIpFragmentFlag;
 	}
 
 	public TestObjectBuilder setFloatingIp(final List<IpAddress> value) {
@@ -53,6 +63,11 @@ public class TestObjectBuilder implements Builder<TestObject> {
 		this._floatingIpV6 = value;
 		return this;
 	}
+
+	public TestObjectBuilder setIpFragmentFlag(final List<IpFragmentFlagEnumType> value) {
+		this._ipFragmentFlag = value;
+		return this;
+	}
 	
 	public TestObjectBuilder setSingleIp(final IpAddress value) {
 		this._singleIp = value;
@@ -66,6 +81,11 @@ public class TestObjectBuilder implements Builder<TestObject> {
 
 	public TestObjectBuilder setSingleIpV6(final Ipv6Address value) {
 		this._singleIpV6 = value;
+		return this;
+	}
+
+	public TestObjectBuilder setSingleIpFragmentFlag(final IpFragmentFlagEnumType value) {
+		this._singleIpFragmentFlag = value;
 		return this;
 	}
 
@@ -88,9 +108,11 @@ public class TestObjectBuilder implements Builder<TestObject> {
 		private List<IpAddress> _floatingIp;
 		private List<Ipv4Address> _floatingIpV4;
 		private List<Ipv6Address> _floatingIpV6;
+		private List<IpFragmentFlagEnumType> _ipFragmentFlag;
 		private IpAddress _singleIp;
 		private Ipv4Address _singleIpV4;
 		private Ipv6Address _singleIpV6;
+		private IpFragmentFlagEnumType _singleIpFragmentFlag;
 
 		@Override
 		public List<IpAddress> getFloatingIp() {
@@ -122,13 +144,25 @@ public class TestObjectBuilder implements Builder<TestObject> {
 			return _singleIp;
 		}
 
+		@Override
+		public List<IpFragmentFlagEnumType> getIpFragmentFlag() {
+			return _ipFragmentFlag;
+		}
+
+		@Override
+		public IpFragmentFlagEnumType getSingleIpFragmentFlag() {
+			return _singleIpFragmentFlag;
+		}
+
 		private TestObjectImpl(TestObjectBuilder base) {
 			this._floatingIp = base.getFloatingIp();
 			this._floatingIpV4 = base.getFloatingIpV4();
 			this._floatingIpV6 = base.getFloatingIpV6();
+			this._ipFragmentFlag = base.getIpFragmentFlag();
 			this._singleIp = base.getSingleIp();
 			this._singleIpV4 = base.getSingleIpV4();
 			this._singleIpV6 = base.getSingleIpV6();
+			this._singleIpFragmentFlag = base.getSingleIpFragmentFlag();
 		}
 	}
 }

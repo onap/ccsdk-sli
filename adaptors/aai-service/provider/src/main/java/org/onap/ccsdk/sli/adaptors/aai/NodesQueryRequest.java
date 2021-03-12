@@ -32,7 +32,7 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.onap.aai.inventory.v21.SearchResults;
+import org.onap.aai.inventory.v24.SearchResults;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,7 +56,7 @@ public class NodesQueryRequest extends AAIRequest {
     @Override
     public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
 
-        String request_url = targetUri+nodes_search_path;
+        String request_url = getTargetUri()+nodes_search_path;
 
         request_url = processPathData(request_url, requestProperties);
 

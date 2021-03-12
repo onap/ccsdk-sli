@@ -15,7 +15,6 @@
     <packaging>feature</packaging>
 
     <name>ccsdk-sli-plugins :: features :: ${project.artifactId}</name>
-
     <!--
     <dependencies>
 

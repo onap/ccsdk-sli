@@ -24,6 +24,7 @@ import org.glassfish.jersey.media.sse.EventSource;
 import org.glassfish.jersey.media.sse.SseFeature;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.utils.common.AcceptIpAddressHostNameVerifier;
 import org.onap.ccsdk.sli.plugins.restapicall.Parameters;
 import org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode;
 import org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiCallNode;
@@ -142,7 +143,7 @@ public class RestconfDiscoveryNode implements SvcLogicDiscoveryPlugin {
             try {
                 RestapiCallNode restapi = restconfApiCallNode.getRestapiCallNode();
                 p = RestapiCallNode.getParameters(paramMap, new Parameters());
-                Client client =  ignoreSslClient().register(SseFeature.class);
+                Client client =  ignoreSslClient(p.disableHostVerification).register(SseFeature.class);
                 target = restapi.addAuthType(client, p).target(url);
             } catch (SvcLogicException e) {
                 log.error("Exception occured!", e);
@@ -167,7 +168,10 @@ public class RestconfDiscoveryNode implements SvcLogicDiscoveryPlugin {
             log.info("Closed connection to SSE source");
         }
 
-        private Client ignoreSslClient() {
+        // Note: Sonar complains about host name verification being 
+        // disabled here.  This is necessary to handle devices using self-signed
+        // certificates (where CA would be unknown) - so we are leaving this code as is.
+        private Client ignoreSslClient(boolean disableHostVerification) {
             SSLContext sslcontext = null;
 
             try {
@@ -190,7 +194,7 @@ public class RestconfDiscoveryNode implements SvcLogicDiscoveryPlugin {
                 throw new IllegalStateException(e);
             }
 
-            return ClientBuilder.newBuilder().sslContext(sslcontext).hostnameVerifier((s1, s2) -> true).build();
+            return ClientBuilder.newBuilder().sslContext(sslcontext).hostnameVerifier(new AcceptIpAddressHostNameVerifier(disableHostVerification)).build();
         }
     }
 

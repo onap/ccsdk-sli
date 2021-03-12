@@ -22,6 +22,7 @@
 package org.onap.ccsdk.sli.adaptors.resource.mdsal;
 
 import org.apache.commons.codec.binary.Base64;
+import org.onap.ccsdk.sli.core.utils.common.AcceptIpAddressHostNameVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -90,8 +91,8 @@ public class RestService {
         try {
             HttpURLConnection conn = getRestConnection(fullUrl, method);
             if (conn instanceof HttpsURLConnection) {
-                HostnameVerifier hostnameVerifier = (hostname, session) -> true;
-                ((HttpsURLConnection) conn).setHostnameVerifier(hostnameVerifier);
+                // Safely disable host name verification if host is an IP address or 'localhost'
+                ((HttpsURLConnection) conn).setHostnameVerifier(new AcceptIpAddressHostNameVerifier());
             }
 
             // Write message
@@ -134,9 +135,7 @@ public class RestService {
             LOG.info("Response body :\n{}", respString);
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);  
-            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false); 
-            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);  
             DocumentBuilder db = dbf.newDocumentBuilder();
 
             response = db.parse(new ByteArrayInputStream(respString.getBytes()));

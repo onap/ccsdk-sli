@@ -25,9 +25,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Vector;
 
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicPropertiesProvider;
@@ -67,7 +68,7 @@ public class SvcLogicPropertiesProviderImpl implements SvcLogicPropertiesProvide
 	/**
 	 * A prioritized list of strategies for resolving dblib properties files.
 	 */
-	private Vector<PropertiesFileResolver> sliPropertiesFileResolvers = new Vector<>();
+	private List<PropertiesFileResolver> sliPropertiesFileResolvers = new ArrayList<>();
 
 	/**
 	 * The configuration properties for the db connection.  Use EnvProperties class, which

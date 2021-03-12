@@ -32,7 +32,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.ProtocolException;
+import java.net.Proxy;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.URL;
@@ -71,7 +74,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider.ConnectionFactory;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.client.oauth1.ConsumerCredentials;
 import org.glassfish.jersey.client.oauth1.OAuth1ClientSupport;
@@ -81,6 +86,7 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.utils.common.AcceptIpAddressHostNameVerifier;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.logging.filter.base.HttpURLConnectionMetricUtil;
 import org.onap.logging.filter.base.MetricLogClientFilter;
@@ -237,6 +243,8 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
         p.multipartFormData = valueOf(parseParam(paramMap, "multipartFormData", false, "false"));
         p.multipartFile = parseParam(paramMap, "multipartFile", false, null);
         p.targetEntity = parseParam(paramMap, "targetEntity", false, null);
+        p.disableHostVerification = valueOf(parseParam(paramMap, "disableHostVerification", false, "true"));
+        p.proxyUrl = parseParam(paramMap, "proxyUrl", false, null);
         return p;
     }
 
@@ -477,7 +485,7 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
     protected void sendRequest(Map<String, String> paramMap, SvcLogicContext ctx, RetryPolicy retryPolicy)
         throws SvcLogicException {
 
-    	HttpResponse r = new HttpResponse();
+        HttpResponse r = new HttpResponse();
         try {
             handlePartner(paramMap);
             Parameters p = getParameters(paramMap, new Parameters());
@@ -531,7 +539,7 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
             }
         } catch (SvcLogicException e) {
             boolean shouldRetry = false;
-            if (e.getCause().getCause() instanceof SocketException) {
+            if (e.getCause() != null && (e.getCause() instanceof SocketException || (e.getCause().getCause() != null && e.getCause().getCause() instanceof SocketException))) {
                 shouldRetry = true;
             }
 
@@ -606,7 +614,7 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
 
             String var1 = template.substring(i1 + 2, i2);
             String value1 = format == Format.XML ? XmlJsonUtil.getXml(mm, var1) : XmlJsonUtil.getJson(mm, var1);
-            if (value1 == null || value1.trim().length() == 0) {
+            if (value1 == null) {
                 // delete the whole element (line)
                 int i3 = template.lastIndexOf('\n', i1);
                 if (i3 < 0) {
@@ -788,17 +796,43 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
      */
     public HttpResponse sendHttpRequest(String request, Parameters p) throws SvcLogicException {
 
+        ClientConfig config = new ClientConfig();
+        if(!StringUtils.isEmpty(p.proxyUrl)) {
+            try {
+                URL proxyUrl = new URL(p.proxyUrl);
+                HttpUrlConnectorProvider cp = new HttpUrlConnectorProvider();
+                config.connectorProvider(cp);
+                final Proxy proxy = 
+                    new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyUrl.getHost(), proxyUrl.getPort()));
+
+                cp.connectionFactory(new ConnectionFactory() {
+                    @Override
+                    public HttpURLConnection getConnection(URL url) throws IOException {
+                        return (HttpURLConnection) url.openConnection(proxy);
+                    }
+                });
+            } catch (MalformedURLException e) {
+                throw new SvcLogicException(requestPostingException + e.getLocalizedMessage(), e);
+            }
+        }
+
         SSLContext ssl = null;
         if (p.ssl && p.restapiUrl.startsWith("https")) {
             ssl = createSSLContext(p);
         }
-        Client client;
-        if (ssl != null) {
+
+        ClientBuilder builder = 
+            ClientBuilder.newBuilder().hostnameVerifier(new AcceptIpAddressHostNameVerifier());
+
+        if (ssl != null) { 
             HttpsURLConnection.setDefaultSSLSocketFactory(ssl.getSocketFactory());
-            client = ClientBuilder.newBuilder().sslContext(ssl).hostnameVerifier((s, sslSession) -> true).build();
-        } else {
-            client = ClientBuilder.newBuilder().hostnameVerifier((s, sslSession) -> true).build();
+            builder = builder.sslContext(ssl);  
         }
+        if (config != null) {
+            builder = builder.withConfig(config);
+        }
+
+        Client client = builder.build();
 
         setClientTimeouts(client);
         // Needed to support additional HTTP methods such as PATCH
@@ -821,7 +855,6 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
         }
 
         if (!p.skipSending && !p.multipartFormData) {
-
             Invocation.Builder invocationBuilder = webTarget.request(contentType).accept(accept);
 
             if (p.format == Format.NONE) {
@@ -847,7 +880,6 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
                 if (request == null) {
                     response = invocationBuilder.method(p.httpMethod.toString());
                 } else {
-                    log.info("Sending request below to url " + p.restapiUrl);
                     log.info(request);
                     response = invocationBuilder.method(p.httpMethod.toString(), entity(request, contentType));
                 }
@@ -865,7 +897,6 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
                 r.body = response.readEntity(String.class);
             }
         } else if (!p.skipSending && p.multipartFormData) {
-
             WebTarget wt = client.register(MultiPartFeature.class).target(p.restapiUrl);
 
             MultiPart multiPart = new MultiPart();
@@ -924,7 +955,7 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
 
     protected SSLContext createSSLContext(Parameters p) {
         try (FileInputStream in = new FileInputStream(p.keyStoreFileName)) {
-            HttpsURLConnection.setDefaultHostnameVerifier((string, ssls) -> true);
+            HttpsURLConnection.setDefaultHostnameVerifier(new AcceptIpAddressHostNameVerifier(p.disableHostVerification));
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             KeyStore ks = KeyStore.getInstance("PKCS12");
             char[] pwd = p.keyStorePassword.toCharArray();
