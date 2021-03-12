@@ -1,11 +1,9 @@
 /*-
  * ============LICENSE_START=======================================================
- * ONAP : APPC
+ * ONAP : SLI
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
- * Copyright (C) 2017 Amdocs
- * =============================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,7 +29,6 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 
 /**
  * This interface defines the operations that the Ansible adapter exposes.
- *
  */
 public interface AnsibleAdapter extends SvcLogicJavaPlugin {
     /**
@@ -52,4 +49,5 @@ public interface AnsibleAdapter extends SvcLogicJavaPlugin {
 
     /* Method to get output of a playbook execution request */
     void reqExecOutput(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
+
 }
