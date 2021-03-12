@@ -1,11 +1,9 @@
 /*-
  * ============LICENSE_START=======================================================
- * ONAP : APPC
+ * ONAP : SLI
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
- * Copyright (C) 2017 Amdocs
- * =============================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,9 +22,16 @@
 
 package org.onap.ccsdk.sli.adaptors.ansible.impl;
 
+import com.att.eelf.configuration.EELFLogger;
+import com.att.eelf.configuration.EELFManager;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdapter;
@@ -37,21 +42,13 @@ import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResultCodes;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleServerEmulator;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.onap.ccsdk.sli.core.utils.encryption.EncryptionTool;
 
 /**
  * This class implements the {@link AnsibleAdapter} interface. This interface defines the behaviors
  * that our service provides.
  */
 public class AnsibleAdapterImpl implements AnsibleAdapter {
-
-
-    /**
-     * The constant used to define the service name in the mapped diagnostic context
-     */
-    @SuppressWarnings("nls")
-    public static final String MDC_SERVICE = "service";
 
     /**
      * The constant for the status code for a failed outcome
@@ -74,27 +71,29 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
     private static final String RESULT_CODE_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.result.code";
     private static final String MESSAGE_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.message";
     private static final String RESULTS_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.results";
+    private static final String OUTPUT_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.output";
     private static final String ID_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.Id";
     private static final String LOG_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.log";
-    private static final String OUTPUT_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.output";
 
     private static final String CLIENT_TYPE_PROPERTY_NAME = "org.onap.appc.adapter.ansible.clientType";
     private static final String TRUSTSTORE_PROPERTY_NAME = "org.onap.appc.adapter.ansible.trustStore";
-    private static final String TRUSTPASSD_PROPERTY_NAME = "org.onap.appc.adapter.ansible.trustStore.trustPasswd";
-
-    private static final String PASSD = "Password";
-
+    private static final String TRUSTPASSWD_PROPERTY_NAME = "org.onap.appc.adapter.ansible.trustStore.trustPasswd";
+    private static final String TIMEOUT_PROPERTY_NAME = "org.onap.appc.adapter.ansible.timeout";
+    private static final String POLL_INTERVAL_PROPERTY_NAME = "org.onap.appc.adapter.ansible.pollInterval";
+    private static final String SOCKET_TIMEOUT_PROPERTY_NAME = "org.onap.appc.adapter.ansible.socketTimeout";
+    private static final String PASSWORD = "Password";
+    private static final String APPC_PROPS = "/appc.properties";
+    private static final String SDNC_CONFIG_DIR = "SDNC_CONFIG_DIR";
+    private static final String PROPDIR = System.getenv(SDNC_CONFIG_DIR);
+    private static final String SERVERIP = "ServerIP";
     /**
      * The logger to be used
      */
     private static final EELFLogger logger = EELFManager.getInstance().getLogger(AnsibleAdapterImpl.class);
-
-
-    /**
-     * Connection object
-     **/
-    private ConnectionBuilder httpClient;
-
+    private Properties props;
+    private int defaultTimeout = 600 * 1000;
+    private int defaultSocketTimeout = 60 * 1000;
+    private int defaultPollInterval = 60 * 1000;
     /**
      * Ansible API Message Handlers
      **/
@@ -114,14 +113,22 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
      * This default constructor is used as a work around because the activator wasn't getting called
      */
     public AnsibleAdapterImpl() {
-        initialize(new AnsibleAdapterPropertiesProviderImpl());
+        initialize(new AnsibleAdapterPropertiesProviderImpl(false));
     }
+
+    /**
+     * Instantiates a new Ansible adapter.
+     *
+     * @param propProvider the prop provider
+     */
     public AnsibleAdapterImpl(AnsibleAdapterPropertiesProvider propProvider) {
         initialize(propProvider);
     }
 
     /**
      * Used for jUnit test and testing interface
+     *
+     * @param mode the mode
      */
     public AnsibleAdapterImpl(boolean mode) {
         testMode = mode;
@@ -133,21 +140,15 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
      * Returns the symbolic name of the adapter
      *
      * @return The adapter name
-     * @see org.onap.appc.adapter.rest.AnsibleAdapter#getAdapterName()
      */
     @Override
     public String getAdapterName() {
         return ADAPTER_NAME;
     }
 
-    /**
-     * @param rc Method posts info to Context memory in case of an error and throws a
-     *        SvcLogicException causing SLI to register this as a failure
-     */
     @SuppressWarnings("static-method")
     private void doFailure(SvcLogicContext svcLogic, int code, String message) throws SvcLogicException {
-
-        svcLogic.setStatus(OUTCOME_FAILURE);
+        svcLogic.markFailed();
         svcLogic.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(code));
         svcLogic.setAttribute(MESSAGE_ATTRIBUTE_NAME, message);
 
@@ -158,13 +159,49 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
      * initialize the Ansible adapter based on default and over-ride configuration data
      */
     private void initialize(AnsibleAdapterPropertiesProvider propProvider) {
-
-
         Properties props = propProvider.getProperties();
-
         // Create the message processor instance
         messageProcessor = new AnsibleMessageParser();
 
+        //continuing for checking defaultTimeout
+        try {
+            String timeoutStr = props.getProperty(TIMEOUT_PROPERTY_NAME);
+            defaultTimeout = Integer.parseInt(timeoutStr) * 1000;
+        } catch (Exception e) {
+            defaultTimeout = 600 * 1000;
+            logger.error("Error while reading time out property", e);
+        }
+        //continuing for checking defaultSocketTimeout
+        try {
+            String timeoutStr = props.getProperty(SOCKET_TIMEOUT_PROPERTY_NAME);
+            defaultSocketTimeout = Integer.parseInt(timeoutStr) * 1000;
+        } catch (Exception e) {
+            defaultSocketTimeout = 60 * 1000;
+            logger.error("Error while reading socket time out property", e);
+        }
+        //continuing for checking defaultPollInterval
+        try {
+            String timeoutStr = props.getProperty(POLL_INTERVAL_PROPERTY_NAME);
+            defaultPollInterval = Integer.parseInt(timeoutStr) * 1000;
+        } catch (Exception e) {
+            defaultPollInterval = 60 * 1000;
+            logger.error("Error while reading poll interval property", e);
+        }
+        logger.info("Initialized Ansible Adapter");
+    }
+
+    private ConnectionBuilder getHttpConn(int timeout, String serverIP) {
+        String path = PROPDIR + APPC_PROPS;
+        File propFile = new File(path);
+        Properties props = new Properties();
+        InputStream input;
+        try {
+            input = new FileInputStream(propFile);
+            props.load(input);
+        } catch (Exception ex) {
+            // TODO Auto-generated catch block
+            logger.error("Error while reading appc.properties file" + ex.getMessage());
+        }
         // Create the http client instance
         // type of client is extracted from the property file parameter
         // org.onap.appc.adapter.ansible.clientType
@@ -173,7 +210,7 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
         // 2. TRUST_CERT (trust only those whose certificates have been stored in the trustStore file)
         // 3. DEFAULT (trust only well known certificates). This is standard behavior to which it will
         // revert. To be used in PROD
-
+        ConnectionBuilder httpClientLocal = null;
         try {
             String clientType = props.getProperty(CLIENT_TYPE_PROPERTY_NAME);
             logger.info("Ansible http client type set to " + clientType);
@@ -181,23 +218,24 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
             if ("TRUST_ALL".equals(clientType)) {
                 logger.info(
                         "Creating http client to trust ALL ssl certificates. WARNING. This should be done only in dev environments");
-                httpClient = new ConnectionBuilder(1);
+                httpClientLocal = new ConnectionBuilder(1, timeout);
             } else if ("TRUST_CERT".equals(clientType)) {
                 // set path to keystore file
                 String trustStoreFile = props.getProperty(TRUSTSTORE_PROPERTY_NAME);
-                String key = props.getProperty(TRUSTPASSD_PROPERTY_NAME);
-                char[] trustStorePasswd = key.toCharArray();
+                String key = props.getProperty(TRUSTPASSWD_PROPERTY_NAME);
+                char[] trustStorePasswd = EncryptionTool.getInstance().decrypt(key).toCharArray();
                 logger.info("Creating http client with trustmanager from " + trustStoreFile);
-                httpClient = new ConnectionBuilder(trustStoreFile, trustStorePasswd);
+                httpClientLocal = new ConnectionBuilder(trustStoreFile, trustStorePasswd, timeout, serverIP);
             } else {
                 logger.info("Creating http client with default behaviour");
-                httpClient = new ConnectionBuilder(0);
+                httpClientLocal = new ConnectionBuilder(0, timeout);
             }
         } catch (Exception e) {
-            logger.error("Error Initializing Ansible Adapter due to Unknown Exception", e);
+            logger.error("Error Getting HTTP Connection Builder due to Unknown Exception", e);
         }
 
-        logger.info("Initialized Ansible Adapter");
+        logger.info("Got HTTP Connection Builder");
+        return httpClientLocal;
     }
 
     // Public Method to post request to execute playbook. Posts the following back
@@ -207,7 +245,6 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
     //  org.onap.appc.adapter.ansible.req.Id : a unique uuid to reference the request
     @Override
     public void reqExec(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException {
-
         String playbookName = StringUtils.EMPTY;
         String payload = StringUtils.EMPTY;
         String agentUrl = StringUtils.EMPTY;
@@ -215,33 +252,55 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
         String password = StringUtils.EMPTY;
         String id = StringUtils.EMPTY;
 
-        JSONObject jsonPayload;
-
         try {
             // create json object to send request
-            jsonPayload = messageProcessor.reqMessage(params);
+            JSONObject jsonPayload = messageProcessor.reqMessage(params);
 
+            logger.info("Initial Payload  = " + jsonPayload.toString());
             agentUrl = (String) jsonPayload.remove("AgentUrl");
             user = (String) jsonPayload.remove("User");
-            password = (String) jsonPayload.remove(PASSD);
+            password = (String) jsonPayload.remove(PASSWORD);
+            if (StringUtils.isNotBlank(password)) {
+                password = EncryptionTool.getInstance().decrypt(password);
+            }
             id = jsonPayload.getString("Id");
+            String timeout = jsonPayload.getString("Timeout");
+            if (StringUtils.isBlank(timeout)) {
+                timeout = "600";
+            }
+
+            String autoNodeList = (String) jsonPayload.remove("AutoNodeList");
+            if (Boolean.parseBoolean(autoNodeList)) {
+                JSONArray generatedNodeList = generateNodeList(params, ctx);
+                if (generatedNodeList.length() > 0) {
+                    jsonPayload.put("NodeList", generatedNodeList);
+                    jsonPayload.put("InventoryNames", "VM");
+                } else {
+                    doFailure(ctx, AnsibleResultCodes.INVALID_PAYLOAD.getValue(),
+                            "Auto generation of Node List Failed - no elements on the list");
+                }
+            } else {
+                logger.debug("Auto Node List is DISABLED");
+            }
+
             payload = jsonPayload.toString();
-            logger.info("Updated Payload  = " + payload);
+            ctx.setAttribute("AnsibleTimeout", timeout);
+            logger.info("Updated Payload  = " + payload + " timeout = " + timeout);
         } catch (SvcLogicException e) {
             logger.error(APPC_EXCEPTION_CAUGHT, e);
             doFailure(ctx, AnsibleResultCodes.INVALID_PAYLOAD.getValue(),
                     "Error constructing request for execution of playbook due to missing mandatory parameters. Reason = "
-                            + e.getMessage());
+                    + e.getMessage());
         } catch (JSONException e) {
             logger.error("JSONException caught", e);
             doFailure(ctx, AnsibleResultCodes.INVALID_PAYLOAD.getValue(),
                     "Error constructing request for execution of playbook due to invalid JSON block. Reason = "
-                            + e.getMessage());
+                    + e.getMessage());
         } catch (NumberFormatException e) {
             logger.error("NumberFormatException caught", e);
             doFailure(ctx, AnsibleResultCodes.INVALID_PAYLOAD.getValue(),
                     "Error constructing request for execution of playbook due to invalid parameter values. Reason = "
-                            + e.getMessage());
+                    + e.getMessage());
         }
 
         int code = -1;
@@ -249,26 +308,37 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
 
         try {
             // post the test request
-            logger.info("Posting request = " + payload + " to url = " + agentUrl);
+            logger.info("Posting ansible request = " + payload + " to url = " + agentUrl);
             AnsibleResult testResult = postExecRequest(agentUrl, payload, user, password);
+            if (testResult != null) {
+                logger.info("Received response on ansible post request " + testResult.getStatusMessage());
+                // Process if HTTP was successful
+                if (testResult.getStatusCode() == 200) {
+                    testResult = messageProcessor.parsePostResponse(testResult.getStatusMessage());
+                } else {
+                    doFailure(ctx, testResult.getStatusCode(),
+                            "Error posting request. Reason = " + testResult.getStatusMessage());
+                }
 
-            // Process if HTTP was successful
-            if (testResult.getStatusCode() == 200) {
-                testResult = messageProcessor.parsePostResponse(testResult.getStatusMessage());
+                code = testResult.getStatusCode();
+                message = testResult.getStatusMessage();
+                String output = testResult.getOutput();
+                ctx.setAttribute(OUTPUT_ATTRIBUTE_NAME, output);
+                String serverIp = testResult.getServerIp();
+                if (StringUtils.isBlank(serverIp)) {
+                    ctx.setAttribute(SERVERIP, serverIp);
+                } else {
+                    ctx.setAttribute(SERVERIP, "");
+                }
+                // Check status of test request returned by Agent
+                if (code == AnsibleResultCodes.PENDING.getValue()) {
+                    logger.info(String.format("Submission of Test %s successful.", playbookName));
+                    // test request accepted. We are in asynchronous case
+                } else {
+                    doFailure(ctx, code, "Request for execution of playbook rejected. Reason = " + message);
+                }
             } else {
-                doFailure(ctx, testResult.getStatusCode(),
-                        "Error posting request. Reason = " + testResult.getStatusMessage());
-            }
-
-            code = testResult.getStatusCode();
-            message = testResult.getStatusMessage();
-
-            // Check status of test request returned by Agent
-            if (code == AnsibleResultCodes.PENDING.getValue()) {
-                logger.info(String.format("Submission of Test %s successful.", playbookName));
-                // test request accepted. We are in asynchronous case
-            } else {
-                doFailure(ctx, code, "Request for execution of playbook rejected. Reason = " + message);
+                doFailure(ctx, code, "Ansible Test result is null");
             }
         } catch (SvcLogicException e) {
             logger.error(APPC_EXCEPTION_CAUGHT, e);
@@ -282,57 +352,177 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
     }
 
     /**
+     * Method is used to automatically generate NodeList section base on the svc context
+     */
+    private JSONArray generateNodeList(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException {
+        String vfModuleId = params.get("vf-module-id");
+        String vnfcName = params.get("vnfc-name");
+        String vServerId = params.get("vserver-id");
+        String vnfcType = params.get("vnfc-type");
+        logger.info("GENERATING NODE LIST");
+        JSONArray result = new JSONArray();
+
+        if (vServerId != null && !vServerId.equals("")) {
+            logger.debug("Auto Node List filtering parameter vserver-id " + vServerId);
+        } else {
+            vServerId = null;
+        }
+        if (vnfcName != null && !vnfcName.equals("")) {
+            logger.debug("Auto Node List filtering parameter vnfc-name " + vnfcName);
+        } else {
+            vnfcName = null;
+        }
+        if (vnfcType != null && !vnfcType.equals("")) {
+            logger.debug("Auto Node List filtering parameter vnfc-type " + vnfcType);
+        } else {
+            vnfcType = null;
+        }
+        if (vfModuleId != null && !vfModuleId.equals("")) {
+            logger.debug("Auto Node List filtering parameter vf-module-id " + vfModuleId);
+        } else {
+            vfModuleId = null;
+        }
+
+        Map<String, JSONObject> candidates = new HashMap<>();
+        for (int i = 0; ; i++) {
+            String vmKey = "tmp.vnfInfo.vm[" + i + "]";
+            logger.info("Looking for attributes of: " + vmKey);
+            if (ctx.getAttribute(vmKey + ".vnfc-name") != null) {
+                String debugText = "Auto Node List candidate ";
+                String vmVnfcName = ctx.getAttribute(vmKey + ".vnfc-name");
+                String vmVnfcIpv4Address = ctx.getAttribute(vmKey + ".vnfc-ipaddress-v4-oam-vip");
+                String vmVnfcType = ctx.getAttribute(vmKey + ".vnfc-type");
+
+                if (vmVnfcName != null && vmVnfcIpv4Address != null && vmVnfcType != null
+                    && !vmVnfcName.equals("") && !vmVnfcIpv4Address.equals("") && !vmVnfcType.equals("")) {
+                    if (vServerId != null) {
+                        String vmVserverId = ctx.getAttribute(vmKey + ".vserver-id");
+                        if (vmVserverId == null || !vmVserverId.equals(vServerId)) {
+                            logger.debug(debugText + vmVnfcName + " dropped. vserver-id mismatch");
+                            continue;
+                        }
+                    }
+                    if (vfModuleId != null) {
+                        String vmVfModuleId = ctx.getAttribute(vmKey + ".vf-module-id");
+                        if (vmVfModuleId == null || !vmVfModuleId.equals(vfModuleId)) {
+                            logger.debug(debugText + vmVnfcName + " dropped. vf-module-id mismatch");
+                            continue;
+                        }
+                    }
+                    if (vnfcName != null && !vmVnfcName.equals(vnfcName)) {
+                        logger.debug(debugText + vmVnfcName + " dropped. vnfc-name mismatch");
+                        continue;
+                    }
+                    if (vnfcType != null && !vmVnfcType.equals(vnfcType)) {
+                        logger.debug(debugText + vmVnfcType + " dropped. vnfc-type mismatch");
+                        continue;
+                    }
+
+                    logger.info(debugText + vmVnfcName + " [" + vmVnfcIpv4Address + "," + vmVnfcType + "]");
+
+                    JSONObject vnfTypeCandidates;
+                    JSONArray vmList;
+                    if (!candidates.containsKey(vmVnfcType)) {
+                        vnfTypeCandidates = new JSONObject();
+                        vmList = new JSONArray();
+                        vnfTypeCandidates.put("site", "site");
+                        vnfTypeCandidates.put("vnfc-type", vmVnfcType);
+                        vnfTypeCandidates.put("vm-info", vmList);
+                        candidates.put(vmVnfcType, vnfTypeCandidates);
+                    } else {
+                        vnfTypeCandidates = candidates.get(vmVnfcType);
+                        vmList = (JSONArray) vnfTypeCandidates.get("vm-info");
+                    }
+
+                    JSONObject candidate = new JSONObject();
+                    candidate.put("ne_id", vmVnfcName);
+                    candidate.put("fixed_ip_address", vmVnfcIpv4Address);
+                    vmList.put(candidate);
+                } else {
+                    logger.warn("Incomplete information for Auto Node List candidate " + vmKey);
+                }
+            } else {
+                break;
+            }
+        }
+
+        for (JSONObject vnfcCandidates : candidates.values()) {
+            result.put(vnfcCandidates);
+        }
+
+        logger.info("GENERATING NODE LIST COMPLETED");
+        return result;
+    }
+
+    /**
      * Public method to query status of a specific request It blocks till the Ansible Server
      * responds or the session times out (non-Javadoc)
      *
      * @see org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdapter#reqExecResult(java.util.Map,
-     *      org.onap.ccsdk.sli.core.sli.SvcLogicContext)
+     * org.onap.ccsdk.sli.core.sli.SvcLogicContext)
      */
     @Override
     public void reqExecResult(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException {
-
         // Get URI
-        String reqUri = StringUtils.EMPTY;
+        String reqUri;
 
         try {
-            reqUri = messageProcessor.reqUriResult(params);
-            logger.info("Got uri ", reqUri );
+            String serverIp = ctx.getAttribute(SERVERIP);
+            if (StringUtils.isNotBlank(serverIp)) {
+                reqUri = messageProcessor.reqUriResultWithIP(params, serverIp);
+            } else {
+                reqUri = messageProcessor.reqUriResult(params);
+            }
+            logger.info("Got uri {}", reqUri);
         } catch (SvcLogicException e) {
             logger.error(APPC_EXCEPTION_CAUGHT, e);
             doFailure(ctx, AnsibleResultCodes.INVALID_PAYLOAD.getValue(),
                     "Error constructing request to retrieve result due to missing parameters. Reason = "
-                            + e.getMessage());
+                    + e.getMessage());
             return;
         } catch (NumberFormatException e) {
             logger.error("NumberFormatException caught", e);
             doFailure(ctx, AnsibleResultCodes.INVALID_PAYLOAD.getValue(),
                     "Error constructing request to retrieve result due to invalid parameters value. Reason = "
-                            + e.getMessage());
+                    + e.getMessage());
             return;
         }
 
-        int code = -1;
-        String message = StringUtils.EMPTY;
+        int code;
+        String message;
+        String output;
+        String configData;
         String results = StringUtils.EMPTY;
-
+        String finalResponse = StringUtils.EMPTY;
         try {
             // Try to retrieve the test results (modify the URL for that)
-            AnsibleResult testResult = queryServer(reqUri, params.get("User"), params.get(PASSD));
+            AnsibleResult testResult = queryServer(reqUri, params.get("User"),
+                    EncryptionTool.getInstance().decrypt(params.get(PASSWORD)), ctx);
             code = testResult.getStatusCode();
             message = testResult.getStatusMessage();
 
-            if (code == 200) {
-                logger.info("Parsing response from Server = " + message);
+            if (code == 200 || code == 400 || "FINISHED".equalsIgnoreCase(message)) {
+                logger.info("Parsing response from ansible Server = " + message);
                 // Valid HTTP. process the Ansible message
                 testResult = messageProcessor.parseGetResponse(message);
                 code = testResult.getStatusCode();
                 message = testResult.getStatusMessage();
                 results = testResult.getResults();
+                output = testResult.getOutput();
+                configData = testResult.getConfigData();
+                if ((StringUtils.isBlank(output)) || (output.trim().equalsIgnoreCase("{}"))) {
+                    finalResponse = results;
+                } else {
+                    finalResponse = output;
+                }
+                logger.info("configData from ansible's response = " + configData);
+                ctx.setAttribute("device-running-config", configData);
             }
-
             logger.info("Request response = " + message);
         } catch (SvcLogicException e) {
             logger.error(APPC_EXCEPTION_CAUGHT, e);
+            ctx.setAttribute(RESULTS_ATTRIBUTE_NAME, results);
+            ctx.setAttribute(OUTPUT_ATTRIBUTE_NAME, finalResponse);
             doFailure(ctx, AnsibleResultCodes.UNKNOWN_EXCEPTION.getValue(),
                     "Exception encountered retrieving result : " + e.getMessage());
             return;
@@ -348,25 +538,27 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
             logger.info(String.format("Ansible Request  %s finished with Result %s, Message = %s", params.get("Id"),
                     OUTCOME_FAILURE, message));
             ctx.setAttribute(RESULTS_ATTRIBUTE_NAME, results);
+            ctx.setAttribute(OUTPUT_ATTRIBUTE_NAME, finalResponse);
             doFailure(ctx, code, message);
             return;
         }
 
+        // In case of 200, 400, FINISHED return 400
         ctx.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(400));
         ctx.setAttribute(MESSAGE_ATTRIBUTE_NAME, message);
         ctx.setAttribute(RESULTS_ATTRIBUTE_NAME, results);
-        ctx.setStatus(OUTCOME_SUCCESS);
+        ctx.setAttribute(OUTPUT_ATTRIBUTE_NAME, finalResponse);
+        ctx.markSuccess();
     }
 
     /**
      * Public method to get logs from playbook execution for a specific request
-     *
+     * <p>
      * It blocks till the Ansible Server responds or the session times out very similar to
      * reqExecResult logs are returned in the DG context variable org.onap.appc.adapter.ansible.log
      */
     @Override
     public void reqExecLog(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException {
-
         String reqUri = StringUtils.EMPTY;
         try {
             reqUri = messageProcessor.reqUriLog(params);
@@ -376,14 +568,14 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
             doFailure(ctx, AnsibleResultCodes.INVALID_PAYLOAD.getValue(), e.getMessage());
         }
 
-        String message = StringUtils.EMPTY;
         try {
             // Try to retrieve the test results (modify the url for that)
-            AnsibleResult testResult = queryServer(reqUri, params.get("User"), params.get(PASSD));
-            message = testResult.getStatusMessage();
+            AnsibleResult testResult = queryServer(reqUri, params.get("User"),
+                    EncryptionTool.getInstance().decrypt(params.get(PASSWORD)), ctx);
+            String message = testResult.getStatusMessage();
             logger.info("Request output = " + message);
             ctx.setAttribute(LOG_ATTRIBUTE_NAME, message);
-            ctx.setStatus(OUTCOME_SUCCESS);
+            ctx.markSuccess();
         } catch (Exception e) {
             logger.error("Exception caught", e);
             doFailure(ctx, AnsibleResultCodes.UNKNOWN_EXCEPTION.getValue(),
@@ -393,7 +585,7 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
 
     /**
      * Public method to get output from playbook execution for a specific request
-     *
+     * <p>
      * It blocks till the Ansible Server responds or the session times out very similar to
      * reqExecResult and output is returned in the DG context variable org.onap.appc.adapter.ansible.output
      */
@@ -409,14 +601,15 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
             doFailure(ctx, AnsibleResultCodes.INVALID_PAYLOAD.getValue(), e.getMessage());
         }
 
-        String message = StringUtils.EMPTY;
+        String message;
         try {
             // Try to retrieve the test results (modify the url for that)
-            AnsibleResult testResult = queryServer(reqUri, params.get("User"), params.get(PASSD));
+            AnsibleResult testResult = queryServer(reqUri, params.get("User"),
+                    EncryptionTool.getInstance().decrypt(params.get(PASSWORD)), ctx);
             message = testResult.getStatusMessage();
             logger.info("Request output = " + message);
             ctx.setAttribute(OUTPUT_ATTRIBUTE_NAME, message);
-            ctx.setStatus(OUTCOME_SUCCESS);
+            ctx.markSuccess();
         } catch (Exception e) {
             logger.error("Exception caught", e);
             doFailure(ctx, AnsibleResultCodes.UNKNOWN_EXCEPTION.getValue(),
@@ -429,13 +622,16 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
      */
     private AnsibleResult postExecRequest(String agentUrl, String payload, String user, String password) {
 
-        AnsibleResult testResult;
-
+        AnsibleResult testResult = null;
+        ConnectionBuilder httpClientLocal = getHttpConn(defaultSocketTimeout, "");
         if (!testMode) {
-            httpClient.setHttpContext(user, password);
-            testResult = httpClient.post(agentUrl, payload);
+            if (httpClientLocal != null) {
+                httpClientLocal.setHttpContext(user, password);
+                testResult = httpClientLocal.post(agentUrl, payload);
+                httpClientLocal.close();
+            }
         } else {
-            testResult = testServer.Post(agentUrl, payload);
+            testResult = testServer.post(payload);
         }
         return testResult;
     }
@@ -443,18 +639,50 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
     /**
      * Method to query Ansible server
      */
-    private AnsibleResult queryServer(String agentUrl, String user, String password) {
+    private AnsibleResult queryServer(String agentUrl, String user, String password, SvcLogicContext ctx) {
 
-        AnsibleResult testResult;
+        AnsibleResult testResult = new AnsibleResult();
+        int timeout;
+        try {
+            timeout = Integer.parseInt(ctx.getAttribute("AnsibleTimeout")) * 1000;
+        } catch (Exception e) {
+            timeout = defaultTimeout;
+        }
+        long endTime = System.currentTimeMillis() + timeout;
 
-        logger.info("Querying url = " + agentUrl);
+        while (System.currentTimeMillis() < endTime) {
+            String serverIP = ctx.getAttribute(SERVERIP);
+            ConnectionBuilder httpClientLocal = getHttpConn(defaultSocketTimeout, serverIP);
+            logger.info("Querying ansible GetResult URL = " + agentUrl);
 
-        if (!testMode) {
-            testResult = httpClient.get(agentUrl);
-        } else {
-            testResult = testServer.Get(agentUrl);
+            if (!testMode) {
+                if (httpClientLocal != null) {
+                    httpClientLocal.setHttpContext(user, password);
+                    testResult = httpClientLocal.get(agentUrl);
+                    httpClientLocal.close();
+                }
+            } else {
+                testResult = testServer.get(agentUrl);
+            }
+            if (testResult.getStatusCode() != AnsibleResultCodes.IO_EXCEPTION.getValue()
+                && testResult.getStatusCode() != AnsibleResultCodes.PENDING.getValue()) {
+                break;
+            }
+
+            try {
+                Thread.sleep(defaultPollInterval);
+            } catch (InterruptedException ex) {
+                logger.error("Thread Interrupted Exception", ex);
+                Thread.currentThread().interrupt();
+            }
+
+        }
+        if (testResult.getStatusCode() == AnsibleResultCodes.PENDING.getValue()) {
+            testResult.setStatusCode(AnsibleResultCodes.IO_EXCEPTION.getValue());
+            testResult.setStatusMessage("Request timed out");
         }
 
         return testResult;
     }
+
 }

@@ -20,12 +20,26 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.sli.adaptors.ansible;
+package org.onap.ccsdk.adapter.ansible.model;
 
-import java.util.Properties;
+import org.junit.Before;
+import org.junit.Test;
+import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResult;
 
-public interface AnsibleAdapterPropertiesProvider {
+import static org.junit.Assert.assertEquals;
 
-    Properties getProperties();
+public class TestAnsibleResult {
+    private AnsibleResult ansibleResult;
+
+    @Before
+    public void setUp() {
+        ansibleResult = new AnsibleResult(10, "message", "result", "outputData");
+    }
+
+    @Test
+    public void testServerIp() {
+        ansibleResult.setServerIp("10.0.9.87");
+        assertEquals("10.0.9.87", ansibleResult.getServerIp());
+    }
 
 }
