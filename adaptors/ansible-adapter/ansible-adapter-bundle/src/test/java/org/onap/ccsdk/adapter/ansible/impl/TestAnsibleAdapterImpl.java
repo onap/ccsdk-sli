@@ -1,11 +1,9 @@
 /*-
  * ============LICENSE_START=======================================================
- * ONAP : APPC
+ * ONAP : SLI
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
- * Copyright (C) 2017 Amdocs
- * =============================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,43 +22,88 @@
 
 package org.onap.ccsdk.adapter.ansible.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Properties;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.onap.ccsdk.sli.adaptors.ansible.impl.AnsibleAdapterImpl;
+import org.onap.ccsdk.sli.adaptors.ansible.impl.AnsibleAdapterPropertiesProviderImpl;
+import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleMessageParser;
+import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResult;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.powermock.reflect.Whitebox;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TestAnsibleAdapterImpl {
 
-    private final String PENDING = "100";
-    private final String SUCCESS = "400";
-    private String message = "{\"Results\":{\"192.168.1.10\":{\"Id\":\"101\",\"StatusCode\":200,\"StatusMessage\":\"SUCCESS\"}},\"StatusCode\":200,\"StatusMessage\":\"FINISHED\"}";
+    private static final String RESULT_CODE_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.result.code";
+    private static final String LOG_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.log";
+    private static final String STATUS_CODE = "StatusCode";
+    private static final String STATUS_MESSAGE = "StatusMessage";
+    private static final String PENDING = "100";
+    private static final String SUCCESS = "SUCCESS";
+    private static final String MESSAGE_ATTRIBUTE_NAME = "SUCCESS";
+    private static final String AGENT_URL = "https://192.168.1.1";
+
+    private static String KEYSTORE_PASSWORD;
+    private static Properties properties;
+    private boolean testMode = true;
 
     private AnsibleAdapterImpl adapter;
-    private String TestId;
-    private boolean testMode = true;
+    private AnsibleResult result;
+    private AnsibleAdapterImpl spyAdapter;
     private Map<String, String> params;
     private SvcLogicContext svcContext;
+    private JSONObject jsonPayload;
 
+    @Mock
+    private AnsibleMessageParser messageProcessor;
 
+    @BeforeClass
+    public static void once() {
+        properties = new AnsibleAdapterPropertiesProviderImpl().getProperties();
+        KEYSTORE_PASSWORD = properties.getProperty("org.onap.appc.adapter.ansible.trustStore.trustPasswd");
+    }
+
+    /**
+     * Use reflection to locate fields and methods so that they can be manipulated
+     * during the test to change the internal state accordingly.
+     */
     @Before
-    public void setup() throws IllegalArgumentException {
+    public void setup() {
         testMode = true;
         svcContext = new SvcLogicContext();
         adapter = new AnsibleAdapterImpl(testMode);
-
         params = new HashMap<>();
-        params.put("AgentUrl", "https://192.168.1.1");
-        params.put("User", "test");
-        params.put("Password", "test");
+        params.put("AgentUrl", AGENT_URL);
+        jsonPayload = new JSONObject();
+        jsonPayload.put("Id", "100");
+        jsonPayload.put("User", "test");
+        jsonPayload.put("Password", "test");
+        jsonPayload.put("PlaybookName", "test_playbook.yaml");
+        jsonPayload.put("Timeout", "60000");
+        jsonPayload.put("AgentUrl", AGENT_URL);
+        result = new AnsibleResult();
+        result.setStatusMessage("Success");
+        result.setResults("Success");
+        result.setOutput("{}");
+        Whitebox.setInternalState(adapter, "messageProcessor", messageProcessor);
+        spyAdapter = Mockito.spy(adapter);
     }
 
     @After
@@ -72,76 +115,131 @@ public class TestAnsibleAdapterImpl {
     }
 
     @Test
-    public void reqExec_shouldSetPending() throws IllegalStateException, IllegalArgumentException {
-
-        params.put("PlaybookName", "test_playbook.yaml");
-
-        try {
-            adapter.reqExec(params, svcContext);
-            String status = svcContext.getAttribute("org.onap.appc.adapter.ansible.result.code");
-            TestId = svcContext.getAttribute("org.onap.appc.adapter.ansible.result.Id");
-            System.out.println("Comparing " + PENDING + " and " + status);
-            assertEquals(PENDING, status);
-        } catch (SvcLogicException e) {
-            String status = svcContext.getAttribute("org.onap.appc.adapter.ansible.result.code");
-            fail(e.getMessage() + " Code = " + status);
-        } catch (Exception e) {
-            fail(e.getMessage() + " Unknown exception encountered ");
-        }
+    public void reqExec_shouldSetPending() throws SvcLogicException {
+        result.setStatusCode(Integer.parseInt(PENDING));
+        when(messageProcessor.reqMessage(params)).thenReturn(jsonPayload);
+        when(messageProcessor.parsePostResponse(anyString())).thenReturn(result);
+        spyAdapter.reqExec(params, svcContext);
+        assertEquals(PENDING, svcContext.getAttribute(RESULT_CODE_ATTRIBUTE_NAME));
     }
 
-    @Test
-    public void reqExecResult_shouldSetSuccess() throws IllegalStateException, IllegalArgumentException {
-
+    @Test(expected = SvcLogicException.class)
+    public void reqExecResult_shouldSetSuccess() throws SvcLogicException {
         params.put("Id", "100");
+        result.setStatusMessage(SUCCESS);
+        when(messageProcessor.reqUriResult(params)).thenReturn(AGENT_URL);
+        when(messageProcessor.parseGetResponse(anyString())).thenReturn(result);
+        spyAdapter.reqExecResult(params, svcContext);
+        assertEquals(SUCCESS, svcContext.getAttribute(MESSAGE_ATTRIBUTE_NAME));
+    }
+    @Test(expected = SvcLogicException.class)
+    public void reqExecResult_Failure() throws SvcLogicException {
+        params.put("Id", "100");
+        result.setStatusCode(100);
+        result.setStatusMessage("Failed");
+        JSONObject cData = new JSONObject();
+        cData.put("GatewayInfo", "Radius");
+        result.setConfigData(cData.toString());
+        result.setOutput(cData.toString());
+        when(messageProcessor.reqUriResult(params)).thenReturn(AGENT_URL);
+        when(messageProcessor.parseGetResponse(anyString())).thenReturn(result);
+        adapter.reqExecResult(params, svcContext);
+    }
 
-        for (String ukey : params.keySet()) {
-            System.out.println(String.format("Ansible Parameter %s = %s", ukey, params.get(ukey)));
-        }
+    @Test(expected = SvcLogicException.class)
+    public void reqExecResult_SvcLogicException() throws SvcLogicException {
+        when(messageProcessor.reqUriResult(params)).thenThrow(new SvcLogicException());
+        adapter.reqExecResult(params, svcContext);
+    }
 
-        try {
-            adapter.reqExecResult(params, svcContext);
-            String status = svcContext.getAttribute("org.onap.appc.adapter.ansible.result.code");
-            assertEquals(SUCCESS, status);
-        } catch (SvcLogicException e) {
-            String status = svcContext.getAttribute("org.onap.appc.adapter.ansible.result.code");
-            fail(e.getMessage() + " Code = " + status);
-        } catch (Exception e) {
-            fail(e.getMessage() + " Unknown exception encountered ");
-        }
+    @Test(expected = SvcLogicException.class)
+    public void reqExecResult_numberFormatException()
+            throws IllegalStateException, IllegalArgumentException, SvcLogicException {
+        when(messageProcessor.reqUriResult(params)).thenThrow(new NumberFormatException());
+        adapter.reqExecResult(params, svcContext);
     }
 
     @Test
-    public void reqExecLog_shouldSetMessage() throws IllegalStateException, IllegalArgumentException {
-
+    public void reqExecLog_shouldSetMessage() throws SvcLogicException {
         params.put("Id", "101");
+        when(messageProcessor.reqUriLog(params)).thenReturn(AGENT_URL);
+        adapter.reqExecLog(params, svcContext);
+        String message = getResponseMessage();
+        assertEquals(message, svcContext.getAttribute(LOG_ATTRIBUTE_NAME));
+    }
 
-        try {
-            adapter.reqExecLog(params, svcContext);
-            String status = svcContext.getAttribute("org.onap.appc.adapter.ansible.log");
-            assertEquals(message, status);
-        } catch (SvcLogicException e) {
-            String status = svcContext.getAttribute("org.onap.appc.adapter.ansible.log");
-            fail(e.getMessage() + " Code = " + status);
-        } catch (Exception e) {
-            fail(e.getMessage() + " Unknown exception encountered ");
-        }
+    private String getResponseMessage() {
+        JSONObject response = new JSONObject();
+        response.put(STATUS_CODE, 200);
+        response.put(STATUS_MESSAGE, "FINISHED");
+        JSONObject results = new JSONObject();
+
+        JSONObject vmResults = new JSONObject();
+        vmResults.put(STATUS_CODE, 200);
+        vmResults.put(STATUS_MESSAGE, "SUCCESS");
+        vmResults.put("Id", "");
+        results.put("192.168.1.10", vmResults);
+
+        response.put("Results", results);
+        return response.toString();
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecException()
+            throws IllegalStateException, IllegalArgumentException, SvcLogicException {
+        when(messageProcessor.reqUriLog(params)).thenThrow(new SvcLogicException("Appc Exception"));
+        adapter.reqExecLog(params, svcContext);
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExec_SvcLogicException()
+            throws IllegalStateException, IllegalArgumentException, SvcLogicException {
+        when(messageProcessor.reqMessage(params)).thenThrow(new SvcLogicException());
+        adapter.reqExec(params, svcContext);
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExec_JsonException()
+            throws IllegalStateException, IllegalArgumentException, SvcLogicException {
+        when(messageProcessor.reqMessage(params)).thenThrow(new JSONException("Json Exception"));
+        adapter.reqExec(params, svcContext);
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExec_NumberFormatException()
+            throws IllegalStateException, IllegalArgumentException, SvcLogicException {
+        when(messageProcessor.reqMessage(params)).thenThrow(new NumberFormatException("Numbre Format Exception"));
+        adapter.reqExec(params, svcContext);
     }
 
     @Test
-    public void reqExecOutput_shouldSetMessage() throws IllegalStateException, IllegalArgumentException {
-
-        params.put("Id", "101");
-
-        try {
-            adapter.reqExecOutput(params, svcContext);
-            String status = svcContext.getAttribute("org.onap.appc.adapter.ansible.output");
-            assertEquals(message, status);
-        } catch (SvcLogicException e) {
-            String status = svcContext.getAttribute("org.onap.appc.adapter.ansible.output");
-            fail(e.getMessage() + " Code = " + status);
-        } catch (Exception e) {
-            fail(e.getMessage() + " Unknown exception encountered ");
-        }
+    public void testInitializeWithDefault() {
+        properties.setProperty("org.onap.appc.adapter.ansible.clientType", "");
+        adapter = new AnsibleAdapterImpl();
+        assertNotNull(adapter);
     }
+
+    @Test
+    public void testInitializeWithTrustAll() {
+        properties.setProperty("org.onap.appc.adapter.ansible.clientType", "TRUST_ALL");
+        adapter = new AnsibleAdapterImpl();
+        assertNotNull(adapter);
+    }
+
+    @Test
+    public void testInitializeWithTrustCert() {
+        properties.setProperty("org.onap.appc.adapter.ansible.clientType", "TRUST_CERT");
+        properties.setProperty("org.onap.appc.adapter.ansible.trustStore.trustPasswd", KEYSTORE_PASSWORD);
+        adapter = new AnsibleAdapterImpl();
+        assertNotNull(adapter);
+    }
+
+    @Test
+    public void testInitializeWithException() {
+        properties.setProperty("org.onap.appc.adapter.ansible.clientType", "TRUST_CERT");
+        properties.setProperty("org.onap.appc.adapter.ansible.trustStore.trustPasswd", "appc");
+        adapter = new AnsibleAdapterImpl();
+        assertNotNull(adapter);
+    }
+
 }
