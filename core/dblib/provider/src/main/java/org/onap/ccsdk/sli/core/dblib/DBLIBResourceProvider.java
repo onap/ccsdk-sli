@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  *     <li>A directory identified by the JRE argument <code>dblib.properties</code></li>
  *     <li>A <code>dblib.properties</code> file located in the karaf root directory</li>
  * </ol>
- * 
+ *
  * Encryption Support
  * <ol>
  *    <li>Uses ecryption provided by <code>AAAEncryptionService</code></li>

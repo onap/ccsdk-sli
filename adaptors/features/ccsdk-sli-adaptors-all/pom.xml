@@ -26,15 +26,15 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ccsdk-ansible-adapter</artifactId>
+            <artifactId>ccsdk-ansible-adaptor</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
-        <!-- saltstack-adapter needs to be changed to remove dependency on app-c code
+        <!-- saltstack-adaptor needs to be changed to remove dependency on app-c code
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ccsdk-saltstack-adapter</artifactId>
+            <artifactId>ccsdk-saltstack-adaptor</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
