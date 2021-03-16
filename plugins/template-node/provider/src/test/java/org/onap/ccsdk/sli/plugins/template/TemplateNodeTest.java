@@ -2,10 +2,11 @@ package org.onap.ccsdk.sli.plugins.template;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
@@ -64,7 +65,7 @@ public class TemplateNodeTest {
     public void withProperties() throws Exception {
         System.setProperty(TemplateNode.PROPERTIES_DIR_KEY, "src/test/resources");
         TemplateNode t = new TemplateNode();
-        Vector<String> loader = (Vector<String>) t.ve.getProperty(RuntimeConstants.RESOURCE_LOADER);
+        List<String> loader = (List<String>) t.ve.getProperty(RuntimeConstants.RESOURCE_LOADER);
         assertTrue(loader.contains("class"));
         assertEquals("/home/my/example", t.ve.getProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH));
         assertEquals("true", t.ve.getProperty(RuntimeConstants.FILE_RESOURCE_LOADER_CACHE));
@@ -75,11 +76,11 @@ public class TemplateNodeTest {
     public void withNoProperties() throws Exception {
         System.setProperty(TemplateNode.PROPERTIES_DIR_KEY, "i/do/not/exist");
         TemplateNode t = new TemplateNode();
-        Vector<String> loader = (Vector<String>) t.ve.getProperty(RuntimeConstants.RESOURCE_LOADER);
+        List<String> loader = (List<String>) t.ve.getProperty(RuntimeConstants.RESOURCE_LOADER);
         assertTrue(loader.contains("file"));
         assertEquals("/opt/onap/sdnc/restapi/templates", t.ve.getProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH));
         assertEquals("false", t.ve.getProperty(RuntimeConstants.FILE_RESOURCE_LOADER_CACHE));
-        assertEquals(null, t.ve.getProperty("custom.property"));
+        assertNull(t.ve.getProperty("custom.property"));
     }
 
 }

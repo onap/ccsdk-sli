@@ -24,6 +24,8 @@
 
 package org.onap.ccsdk.sli.adaptors.saltstack.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.onap.ccsdk.sli.adaptors.saltstack.SaltstackAdaptorPropertiesProvider;
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.utils.JREFileResolver;
@@ -40,7 +42,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Vector;
 
 /**
  * Responsible for determining the properties file to use and instantiating the
@@ -69,7 +70,7 @@ public class SaltstackAdaptorPropertiesProviderImpl implements SaltstackAdaptorP
     /**
      * A prioritized list of strategies for resolving sql-resource properties files.
      */
-    private Vector<PropertiesFileResolver> saltstackAdaptorPropertiesFileResolvers = new Vector<>();
+    private List<PropertiesFileResolver> saltstackAdaptorPropertiesFileResolvers = new ArrayList<>();
 
     /**
      * The configuration properties for the db connection.
