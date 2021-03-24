@@ -299,7 +299,10 @@ public class MdsalHelper {
                             if (!isAccessible) {
                                 m.setAccessible(true);
                             }
-                            Object retList = Map.class.isAssignableFrom(returnType)?new ArrayList(((Map) m.invoke(fromObj)).values()):m.invoke(fromObj);
+                            Object retList = m.invoke(fromObj);
+                            if ((retList != null) && Map.class.isAssignableFrom(returnType)) {
+                                retList = new ArrayList(((Map)retList).values());
+                            }
                             //due duplicated getters with Map and List(deprecated) stop if already mapped
                             if(!hasAlreadyKeys(props,propNamePfx + "." + fieldName)) {
 
