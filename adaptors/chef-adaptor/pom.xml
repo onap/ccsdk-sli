@@ -3,7 +3,7 @@
   ============LICENSE_START=======================================================
   ONAP : APPC
   ================================================================================
-  Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
   ================================================================================
   Copyright (C) 2017 Amdocs
   =============================================================================
@@ -19,11 +19,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  ECOMP is a trademark and service mark of AT&T Intellectual Property.
   ============LICENSE_END=========================================================
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -34,43 +32,37 @@
     </parent>
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-    <artifactId>ansible-adaptor</artifactId>
+    <artifactId>chef-adaptor</artifactId>
     <version>1.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>ccsdk-sli-adaptors :: ${project.artifactId}</name>
-    <description>Abstractions to interact with Ansible server via REST</description>
+    <description>
+        Abstraction to connect to and utilize the services of cloud providers such as OpenStack or VMWare.
+    </description>
 
     <modules>
-        <module>ansible-adaptor-bundle</module>
-        <module>ansible-adaptor-installer</module>
+        <module>chef-adaptor-bundle</module>
+        <module>chef-adaptor-installer</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.onap.appc</groupId>
-                <artifactId>ansible-adaptor-features</artifactId>
+                <groupId>org.onap.ccsdk.sli.adaptors</groupId>
+                <artifactId>chef-adaptor-features</artifactId>
                 <version>${project.version}</version>
                 <type>xml</type>
                 <classifier>features</classifier>
             </dependency>
+
             <dependency>
-                <groupId>org.onap.appc</groupId>
-                <artifactId>ansible-adaptor-bundle</artifactId>
+                <groupId>org.onap.ccsdk.sli.adaptors</groupId>
+                <artifactId>chef-adaptor-bundle</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <pluginRepositories>
-        <!-- Black Duck plugin dependencies -->
-        <pluginRepository>
-            <id>JCenter</id>
-            <name>JCenter Repository</name>
-            <url>http://jcenter.bintray.com</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <reporting>
         <plugins>

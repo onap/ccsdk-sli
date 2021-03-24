@@ -24,6 +24,7 @@
         <module>aai-service</module>
         <module>ansible-adaptor</module>
         <module>saltstack-adaptor</module>
+        <module>chef-adaptor</module>
         <module>netbox-client</module>
         <module>mdsal-resource</module>
         <module>resource-assignment</module>
