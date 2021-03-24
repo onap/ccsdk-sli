@@ -19,6 +19,7 @@
     <modules>
         <module>ccsdk-aai-service</module>
         <module>ccsdk-ansible-adaptor</module>
+        <module>ccsdk-chef-adaptor</module>
         <module>ccsdk-base-http</module>
         <module>ccsdk-mdsal-resource</module>
         <module>ccsdk-messagerouter-consumer</module>
