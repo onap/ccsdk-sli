@@ -39,6 +39,13 @@
             </dependency>
             <dependency>
                 <groupId>org.onap.ccsdk.sli.adaptors</groupId>
+                <artifactId>ccsdk-chef-adaptor</artifactId>
+                <version>${project.version}</version>
+                <type>xml</type>
+                <classifier>feature</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.adaptors</groupId>
                 <artifactId>ccsdk-mdsal-resource</artifactId>
                 <version>${project.version}</version>
                 <type>xml</type>
