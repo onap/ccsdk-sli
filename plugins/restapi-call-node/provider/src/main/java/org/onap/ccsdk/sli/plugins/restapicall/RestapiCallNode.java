@@ -531,7 +531,7 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
             }
         } catch (SvcLogicException e) {
             boolean shouldRetry = false;
-            if (e.getCause().getCause() instanceof SocketException) {
+            if (e.getCause() != null && (e.getCause() instanceof SocketException || (e.getCause().getCause() != null && e.getCause().getCause() instanceof SocketException))) {
                 shouldRetry = true;
             }
 
