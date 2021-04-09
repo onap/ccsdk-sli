@@ -17,7 +17,6 @@
     <name>ccsdk-sli-adaptors :: features :: ${project.artifactId}</name>
 
     <dependencies>
-
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>ccsdk-sli</artifactId>
@@ -26,7 +25,6 @@
             <classifier>features</classifier>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>chef-adaptor-bundle</artifactId>
@@ -38,6 +36,5 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
     </dependencies>
 </project>

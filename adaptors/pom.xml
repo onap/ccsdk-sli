@@ -22,15 +22,19 @@
 
     <modules>
         <module>aai-service</module>
+        <module>base</module>
+
         <module>ansible-adaptor</module>
-        <module>saltstack-adaptor</module>
         <module>chef-adaptor</module>
-        <module>netbox-client</module>
+        <module>saltstack-adaptor</module>
+        <module>ssh-adaptor</module>
+
+        <module>message-router</module>
         <module>mdsal-resource</module>
+        <module>netbox-client</module>
         <module>resource-assignment</module>
         <module>sql-resource</module>
-        <module>base</module>
-        <module>message-router</module>
+
         <module>features</module>
         <module>artifacts</module>
     </modules>

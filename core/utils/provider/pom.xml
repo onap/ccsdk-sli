@@ -32,6 +32,10 @@
             <artifactId>org.osgi.core</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.att.eelf</groupId>
+            <artifactId>eelf-core</artifactId>
+        </dependency>
 
         <!-- Testing Dependencies -->
         <dependency>
