@@ -29,6 +29,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode;
 import org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiCallNode;
+import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -104,8 +105,9 @@ public class TestRestconfDiscoveryNode {
             throws SvcLogicException{
         SvcLogicContext ctx = new SvcLogicContext();
         Map<String, String> p = new HashMap<>();
+
         RestconfDiscoveryNode rdn = new RestconfDiscoveryNode(
-                new RestconfApiCallNode(new RestapiCallNode()));
+                new RestconfApiCallNode(new RestapiCallNode(), new YangParserFactoryImpl()));
         rdn.establishSubscription(p, ctx);
     }
 
@@ -115,7 +117,7 @@ public class TestRestconfDiscoveryNode {
         ctx.setAttribute("restapi-result.response-code", "200");
         ctx.setAttribute("response-code", "404");
         RestconfDiscoveryNode rdn = new RestconfDiscoveryNode(
-                new RestconfApiCallNode(new RestapiCallNode()));
+                new RestconfApiCallNode(new RestapiCallNode(), new YangParserFactoryImpl()));
         assertThat(rdn.getResponseCode("restapi-result", ctx),
                    is("200"));
         assertThat(rdn.getResponseCode(null, ctx),
@@ -131,7 +133,7 @@ public class TestRestconfDiscoveryNode {
         ctx.setAttribute("ietf-subscribed-notifications:establish-subscripti" +
                                  "on.output.identifier", "89");
         RestconfDiscoveryNode rdn = new RestconfDiscoveryNode(
-                new RestconfApiCallNode(new RestapiCallNode()));
+                new RestconfApiCallNode(new RestapiCallNode(), new YangParserFactoryImpl()));
         assertThat(rdn.getOutputIdentifier("restapi-result", ctx),
                    is("89"));
     }
@@ -142,7 +144,7 @@ public class TestRestconfDiscoveryNode {
                 "futh9ho6eofy3wjsap7wqktemlqm4bbsmnar3vrtbyrzukbv5itd6m1cftldpjarny" +
                 "le3sdcqq9hftc4lebz464b5ffxmlbvg9";
         RestconfDiscoveryNode rdn = new RestconfDiscoveryNode(
-                new RestconfApiCallNode(new RestapiCallNode()));
+                new RestconfApiCallNode(new RestapiCallNode(), new YangParserFactoryImpl()));
 
         assertThat(rdn.getTokenId(customHttpHeaders),
                    is("x-ik2ps4ikvzupbx0486ft1ebzs7rt85futh9ho6eofy3wjsap7wqkt" +
