@@ -5,6 +5,7 @@
  * Copyright (C) 2018 Huawei Technologies Co., Ltd. All rights reserved.
  *
  * Modifications Copyright © 2018 IBM.
+ * Modifications Copyright (c) 2021 AT&T
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,18 +25,13 @@ package org.onap.ccsdk.sli.plugins.restconfapicall;
 
 import static org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode.getParameters;
 import static org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode.parseParam;
-import static org.opendaylight.yangtools.yang.model.repo.api.StatementParserMode.DEFAULT_MODE;
 import static org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource.forFile;
-import static org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors.defaultReactor;
-import static org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource.create;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -43,10 +39,10 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.plugins.restapicall.HttpMethod;
 import org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.YangParameters;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParser;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
-import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
 
 /**
  * Utilities for restconf api call node.
@@ -188,27 +184,24 @@ public final class RestconfApiUtils {
      * @return YANG schema context
      * @throws SvcLogicException when YANG file reading fails
      */
-    static EffectiveModelContext getSchemaCtxFromDir(String di)
+    static EffectiveModelContext getSchemaCtxFromDir(YangParserFactory parserFactory, String di)
             throws SvcLogicException {
         Path d = Paths.get(di);
         File dir = d.toFile();
         List<File> yangFiles = new LinkedList<>();
         getYangFiles(dir, yangFiles);
-        final Collection<YangStatementStreamSource> sources =
-                new ArrayList<>(yangFiles.size());
+        YangParser parser = parserFactory.createParser();
         for (File file : yangFiles) {
             try {
-                sources.add(create(forFile(file)));
+                parser.addSource(forFile(file));
             } catch (IOException | YangSyntaxErrorException e) {
                 throw new SvcLogicException(YANG_FILE_ERR + e.getMessage(), e);
             }
         }
 
-        final CrossSourceStatementReactor.BuildAction reactor = defaultReactor()
-                .newBuild(DEFAULT_MODE).addSources(sources);
         try {
-            return reactor.buildEffective();
-        } catch (ReactorException e) {
+            return parser.buildEffectiveModel();
+        } catch (YangParserException e) {
             throw new SvcLogicException(YANG_FILE_ERR + e.getMessage(), e);
         }
     }

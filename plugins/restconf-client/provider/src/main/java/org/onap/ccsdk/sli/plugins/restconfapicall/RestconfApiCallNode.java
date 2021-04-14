@@ -3,6 +3,7 @@
  * ONAP - CCSDK
  * ================================================================================
  * Copyright (C) 2018 Huawei Technologies Co., Ltd. All rights reserved.
+ * Modifications Copyright (c) 2021 AT&T
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +49,6 @@ import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializ
 import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializerUtil.XML_TREE_ERR;
 import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializerUtil.getXmlWriter;
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.MdsalPropertiesNodeUtils.getModuleNamespace;
-import static org.osgi.framework.FrameworkUtil.getBundle;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -85,10 +85,9 @@ import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.PropertiesNodeSer
 import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
 import org.opendaylight.restconf.nb.rfc8040.utils.parser.ParserIdentifier;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,7 +108,24 @@ public class RestconfApiCallNode implements SvcLogicJavaPlugin {
     private RestapiCallNode restapiCallNode;
 
     /**
-     * Creates an instance of restconf api call node with restapi call node.
+     * Yang parser factory
+     */
+    private YangParserFactory parserFactory;
+
+
+    /**
+     * Creates an instance of restconf api call node with restapi call node, within OSGi
+     *
+     * @param r restapi call node
+     */
+    public RestconfApiCallNode(RestapiCallNode r, YangParserFactory parserFactory) {
+        this.restapiCallNode = r;
+        this.parserFactory = parserFactory;
+    }
+
+
+    /**
+     * Creates an instance of restconf api call node with restapi call node, outside OSGi
      *
      * @param r restapi call node
      */
@@ -124,6 +140,25 @@ public class RestconfApiCallNode implements SvcLogicJavaPlugin {
     public RestapiCallNode getRestapiCallNode() {
         return restapiCallNode;
     }
+
+
+    /**
+     * Returns the yang parser factory instance
+     * @return
+     */
+    public YangParserFactory getParserFactory() {
+        return parserFactory;
+    }
+
+    /**
+     * set the yang parser factory instance
+     * @return
+     */
+    public void setParserFactory(YangParserFactory parserFactory) {
+        this.parserFactory = parserFactory;
+    }
+
+
 
     /**
      * Sends the restconf request using the parameters map and the memory
@@ -299,21 +334,17 @@ public class RestconfApiCallNode implements SvcLogicJavaPlugin {
      * @return schema context
      * @throws SvcLogicException when schema context fetching fails
      */
-    private EffectiveModelContext getSchemaContext(YangParameters params)
-            throws SvcLogicException {
-        if (params.dirPath != null) {
-            return getSchemaCtxFromDir(params.dirPath);
-        }
-        BundleContext bc = getBundle(SchemaContext.class).getBundleContext();
-        EffectiveModelContext schemaContext = null;
-        if (bc != null) {
-            ServiceReference reference = bc.getServiceReference(
-                    SchemaContext.class);
-            if (reference != null) {
-                schemaContext = (EffectiveModelContext) bc.getService(reference);
+    private EffectiveModelContext getSchemaContext(YangParameters params) throws SvcLogicException {
+        try {
+
+            if (params.dirPath != null) {
+                return getSchemaCtxFromDir(getParserFactory(), params.dirPath);
+            } else {
+                return (getParserFactory().createParser().buildEffectiveModel());
             }
+        } catch (YangParserException e) {
+            throw new SvcLogicException("Caught exception creating yang model context", e);
         }
-        return schemaContext;
     }
 
     /**

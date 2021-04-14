@@ -28,8 +28,15 @@
                interface="org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode"
                ext:proxy-method="classes"/>
 
+    <reference xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0"
+               id="yangParserFactory"
+               interface="org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory"
+               ext:proxy-method="classes"/>
+           
+
     <bean id="restconfapiCallNodeProvider" class="org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiCallNode" >
         <argument ref="restapiCallNodeProvider"/>
+        <argument ref="yangParserFactory"/>
     </bean>
 
     <bean id="restconfDiscoveryNodeProvider" class="org.onap.ccsdk.sli.plugins.restconfdiscovery.RestconfDiscoveryNode" >
