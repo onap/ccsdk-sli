@@ -33,6 +33,8 @@ import org.onap.ccsdk.sli.plugins.restapicall.HttpResponse;
 import org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode;
 import org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiCallNode;
 import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -64,6 +66,8 @@ public class IdentifierValidationTest {
 
     private RestapiCallNode restApi;
 
+    private YangParserFactory parserFactory;
+
     private DfCaptor dfCaptor;
 
     /**
@@ -79,6 +83,7 @@ public class IdentifierValidationTest {
         p.put("responsePrefix", "response");
         p.put("skipSending", "true");
         restApi = new RestapiCallNode();
+        parserFactory = new YangParserFactoryImpl();
         restconf = mock(RestconfApiCallNode.class);
         dfCaptor = new DfCaptor();
         createMethodMocks();
@@ -91,6 +96,7 @@ public class IdentifierValidationTest {
      */
     private void createMethodMocks() throws SvcLogicException {
         doReturn(restApi).when(restconf).getRestapiCallNode();
+        doReturn(parserFactory).when(restconf).getParserFactory();
         doCallRealMethod().when(restconf).sendRequest(
                 any(Map.class), any(SvcLogicContext.class));
         doCallRealMethod().when(restconf).sendRequest(
