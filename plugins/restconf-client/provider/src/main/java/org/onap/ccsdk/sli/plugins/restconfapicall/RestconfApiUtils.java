@@ -26,7 +26,7 @@ import static org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode.getParamete
 import static org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode.parseParam;
 import static org.opendaylight.yangtools.yang.model.repo.api.StatementParserMode.DEFAULT_MODE;
 import static org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource.forFile;
-import static org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors.defaultReactor;
+import static org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors.defaultReactorBuilder;
 import static org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource.create;
 import java.io.File;
 import java.io.IOException;
@@ -204,8 +204,10 @@ public final class RestconfApiUtils {
             }
         }
 
-        final CrossSourceStatementReactor.BuildAction reactor = defaultReactor()
-                .newBuild(DEFAULT_MODE).addSources(sources);
+        final CrossSourceStatementReactor.BuildAction reactor =
+            defaultReactorBuilder().build()
+                .newBuild(DEFAULT_MODE)
+                .addSources(sources);
         try {
             return reactor.buildEffective();
         } catch (ReactorException e) {
