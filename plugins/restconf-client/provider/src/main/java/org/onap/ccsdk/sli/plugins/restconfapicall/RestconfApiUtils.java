@@ -204,8 +204,10 @@ public final class RestconfApiUtils {
             }
         }
 
-        final CrossSourceStatementReactor.BuildAction reactor = defaultReactor()
-                .newBuild(DEFAULT_MODE).addSources(sources);
+        final CrossSourceStatementReactor.BuildAction reactor =
+            defaultReactorBuilder().build()
+                .newBuild(DEFAULT_MODE)
+                .addSources(sources);
         try {
             return reactor.buildEffective();
         } catch (ReactorException e) {
