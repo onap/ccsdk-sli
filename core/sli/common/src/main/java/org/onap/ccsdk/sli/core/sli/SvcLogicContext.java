@@ -22,6 +22,9 @@
 package org.onap.ccsdk.sli.core.sli;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.google.gson.*;
 import org.slf4j.Logger;
@@ -292,19 +295,207 @@ public class SvcLogicContext {
         return getAttribute(sbuff.toString());
     }
 
+    /**
+     * Retriveing the Json object string of current context memory, but only for keys have the provided prefix.
+     * @param pfx String prefex
+     * @return
+     */
     public String toJsonString(String pfx) {
-        JsonParser jp = new JsonParser();
+        if (pfx.endsWith(".")) {
+            pfx.substring(0, pfx.length()-1);
+        }
+        return toJsonString(k -> k.startsWith(pfx),
+                            k -> k.split(pfx + ".")[1]);
+    }
 
-        String jsonString = this.toJsonString();
-        JsonObject jsonRoot = (JsonObject) jp.parse(jsonString);
-        JsonObject targetJson = jsonRoot.getAsJsonObject(pfx);
-        if (targetJson == null) {
-            return("");
+    /**
+     * toJsonString method that accepts two lambda; this method provides a flexible way for
+     * selectively retriveing context memory
+     * <p>
+     * @param predicate lambda that determines whether or not current key is included
+     * @param preprocessor lambda that defines the pre-process operation on current key
+     * @throws Exception
+     */
+    public String toJsonString(Predicate<String> predicate, Function<String, String> preprocessor)  {
+
+        JsonObject root = new JsonObject();
+        JsonElement lastJsonObject = root;
+        JsonElement currJsonLeaf = root;
+        Map<String, String> filteredAttributes = attributes.keySet().stream()
+                .filter(predicate)
+                .collect( Collectors.toMap(x -> preprocessor.apply(x) , x -> getAttribute(x)) );
+
+        if (filteredAttributes.size() < 1){
+            return "";
+        }
+
+        String attrName = null;
+        String attrVal = null;
+        // Sort properties so that arrays will be reconstructed in proper order
+        TreeMap<String, String> sortedAttributes = new TreeMap<>(new Comparator<String>(
+        ) {
+            @Override
+            public int compare(String a, String b){
+                int aLength = a.length();
+                int bLength = b.length();
+                int minSize = Math.min(aLength, bLength);
+                char aChar, bChar;
+                boolean aNumber, bNumber;
+                boolean asNumeric = false;
+                int lastNumericCompare = 0;
+                for (int i = 0; i < minSize; i++) {
+                    aChar = a.charAt(i);
+                    bChar = b.charAt(i);
+                    aNumber = aChar >= '0' && aChar <= '9';
+                    bNumber = bChar >= '0' && bChar <= '9';
+                    if (asNumeric)
+                        if (aNumber && bNumber) {
+                            if (lastNumericCompare == 0)
+                                lastNumericCompare = aChar - bChar;
+                        } else if (aNumber)
+                            return 1;
+                        else if (bNumber)
+                            return -1;
+                        else if (lastNumericCompare == 0) {
+                            if (aChar != bChar)
+                                return aChar - bChar;
+                            asNumeric = false;
+                        } else
+                            return lastNumericCompare;
+                    else if (aNumber && bNumber) {
+                        asNumeric = true;
+                        if (lastNumericCompare == 0)
+                            lastNumericCompare = aChar - bChar;
+                    } else if (aChar != bChar)
+                        return aChar - bChar;
+                }
+                if (asNumeric)
+                    if (aLength > bLength && a.charAt(bLength) >= '0' && a.charAt(bLength) <= '9') // as number
+                        return 1;  // a has bigger size, thus b is smaller
+                    else if (bLength > aLength && b.charAt(aLength) >= '0' && b.charAt(aLength) <= '9') // as number
+                        return -1;  // b has bigger size, thus a is smaller
+                    else if (lastNumericCompare == 0)
+                        return aLength - bLength;
+                    else
+                        return lastNumericCompare;
+                else
+                    return aLength - bLength;
+            }
+        });
+        sortedAttributes.putAll(filteredAttributes);
+
+        // Loop through properties, sorted by key
+        for (Map.Entry<String, String> entry : sortedAttributes.entrySet()) {
+            attrName = entry.getKey();
+            attrVal = entry.getValue();
+
+            currJsonLeaf = root;
+            String curFieldName = null;
+            JsonArray curArray = null;
+            lastJsonObject = null;
+            boolean addNeeded = false;
+
+            // Split property names by period and iterate through parts
+            for (String attrNamePart : attrName.split("\\.")) {
+
+                // Add last object found to JSON tree.  Need to handle
+                // this way because last element found (leaf) needs to be
+                // assigned the property value.
+                if (lastJsonObject != null) {
+                    if (addNeeded) {
+                        if (currJsonLeaf.isJsonArray()) {
+                            ((JsonArray) currJsonLeaf).add(lastJsonObject);
+                        } else {
+                            ((JsonObject) currJsonLeaf).add(curFieldName, lastJsonObject);
+                        }
+                    }
+                    currJsonLeaf = (JsonObject) lastJsonObject;
+                }
+                addNeeded = false;
+                // See if current level should be a JsonArray or JsonObject based on
+                // whether name part contains square brackets.
+                if (!attrNamePart.contains("[")) {
+                    // This level should be inserted as a JsonObject
+                    curFieldName = attrNamePart;
+                    lastJsonObject = ((JsonObject) currJsonLeaf).get(curFieldName);
+                    if (lastJsonObject == null) {
+                        lastJsonObject = new JsonObject();
+                        addNeeded = true;
+                    } else if (!lastJsonObject.isJsonObject()) {
+                        LOG.error("Unexpected condition - expecting to find JsonObject, but found " + lastJsonObject.getClass().getName());
+                        lastJsonObject = new JsonObject();
+                        addNeeded = true;
+                    }
+                } else {
+                    // This level should be inserted as a JsonArray.
+
+                    String[] curFieldNameParts = attrNamePart.split("[\\[\\]]");
+                    curFieldName = curFieldNameParts[0];
+                    int curIndex = Integer.parseInt(curFieldNameParts[1]);
+
+
+                    curArray = ((JsonObject) currJsonLeaf).getAsJsonArray(curFieldName);
+
+                    if (curArray == null) {
+                        // This is the first time we see this array.
+                        // Create a new JsonArray and add it to current
+                        // leaf
+                        curArray = new JsonArray();
+                        ((JsonObject) currJsonLeaf).add(curFieldName, curArray);
+                    }
+
+                    // Current leaf should point to the JsonArray for this level.
+                    // lastJsonObject should point to the array item entry to append
+                    // the next level to - which is a new one if the index value
+                    // isn't the end of the current array.
+                    currJsonLeaf = curArray;
+                    if (curArray.size() == curIndex + 1) {
+                        lastJsonObject = curArray.get(curArray.size() - 1);
+                    } else {
+                        lastJsonObject = new JsonObject();
+                        addNeeded = true;
+                    }
+                }
+            }
+
+            // Done parsing property name.  Add the value of this
+            // property to the current json leaf, either as a property
+            // or as a string (if the current leaf is a JsonArray)
+
+            if (!curFieldName.endsWith("_length")) {
+                if (currJsonLeaf.isJsonArray()) {
+                    if ("true".equals(attrVal) || "false".equals(attrVal)) {
+                        ((JsonArray) currJsonLeaf).add(Boolean.valueOf(attrVal));
+                    } else if ("null".equals(attrVal)) {
+                        ((JsonArray) currJsonLeaf).add(new JsonNull());
+                    } else {
+                        ((JsonArray) currJsonLeaf).add(attrVal);
+                    }
+                } else {
+                    if (("true".equals(attrVal) || "false".equals(attrVal))) {
+                        ((JsonObject) currJsonLeaf).addProperty(curFieldName, Boolean.valueOf(attrVal));
+                    } else if ("null".equals(attrVal)){
+
+                        ((JsonObject) currJsonLeaf).add(curFieldName, new JsonNull());
+                    } else {
+                        ((JsonObject) currJsonLeaf).addProperty(curFieldName, attrVal);
+                    }
+                }
+            }
+        }
+        if (root == null){
+            return "";
         } else {
-            return(targetJson.toString());
+            return root.toString();
         }
     }
 
+    /**
+     * toJsonString method that retrieves the complete context memory. Make sure there is no
+     * corrupted context memory record, otherwise the JSON restoration could fail.
+     * <p>
+     * @throws Exception
+    */
     public String toJsonString() {
         JsonObject root = new JsonObject();
         JsonElement lastJsonObject = root;
