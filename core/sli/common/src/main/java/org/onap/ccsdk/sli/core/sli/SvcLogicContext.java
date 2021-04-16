@@ -22,6 +22,9 @@
 package org.onap.ccsdk.sli.core.sli;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.google.gson.*;
 import org.slf4j.Logger;
@@ -292,20 +295,68 @@ public class SvcLogicContext {
         return getAttribute(sbuff.toString());
     }
 
+    /**
+     * Retriveing the Json object string of current context memory, but only for keys have the provided prefix.
+     * @param pfx String prefex
+     * @return
+     */
     public String toJsonString(String pfx) {
-        JsonParser jp = new JsonParser();
-
-        String jsonString = this.toJsonString();
-        JsonObject jsonRoot = (JsonObject) jp.parse(jsonString);
-        JsonObject targetJson = jsonRoot.getAsJsonObject(pfx);
-        if (targetJson == null) {
-            return("");
-        } else {
-            return(targetJson.toString());
+        if (!pfx.endsWith(".")) {
+            pfx = pfx + ".";
         }
+
+        String finalPfx = pfx;
+        return toJsonString(k -> k.startsWith(finalPfx),
+                            k -> k.split(finalPfx)[1]);
     }
 
+    /**
+     * toJsonString method that accepts two lambda; this method provides a flexible way for
+     * selectively retriveing context memory
+     * <p>
+     * @param predicate lambda that determines whether or not current key is included
+     * @param preprocessor lambda that defines the pre-process operation on current key
+     * @throws Exception
+     */
+    public String toJsonString(Predicate<String> predicate, Function<String, String> preprocessor) {
+        Map<String, String> filteredAttributes = attributes.keySet().stream()
+                .filter(predicate)
+                .collect( Collectors.toMap(x -> preprocessor.apply(x) , x -> getAttribute(x)) );
+
+        if (filteredAttributes.size() < 1){
+            return "";
+        }
+
+        return convertAttrsToJsonString(filteredAttributes);
+    }
+
+    /**
+     * toJsonString method that retrieves the complete context memory. Make sure there is no
+     * corrupted context memory record, otherwise the JSON restoration could fail.
+     * <p>
+     * @throws Exception
+    */
     public String toJsonString() {
+        return convertAttrsToJsonString(attributes);
+    }
+
+    public void printProperties(Properties props) {
+        securePrinter.printProperties(props);
+    }
+
+    public void printAttributes() {
+        securePrinter.printAttributes(attributes);
+    }
+
+    public void printProperties(Properties props, String subpath) {
+        securePrinter.printProperties(props, subpath);
+    }
+
+    public void printAttributes(String subpath) {
+        securePrinter.printAttributes(attributes, subpath);
+    }
+
+    private String convertAttrsToJsonString(Map<String, String> attrs) {
         JsonObject root = new JsonObject();
         JsonElement lastJsonObject = root;
         JsonElement currJsonLeaf = root;
@@ -364,7 +415,7 @@ public class SvcLogicContext {
                     return aLength - bLength;
             }
         });
-        sortedAttributes.putAll(attributes);
+        sortedAttributes.putAll(attrs);
 
         // Loop through properties, sorted by key
         for (Map.Entry<String, String> entry : sortedAttributes.entrySet()) {
@@ -467,21 +518,5 @@ public class SvcLogicContext {
         }
 
         return (root.toString());
-    }
-
-    public void printProperties(Properties props) {
-        securePrinter.printProperties(props);
-    }
-
-    public void printAttributes() {
-        securePrinter.printAttributes(attributes);
-    }
-
-    public void printProperties(Properties props, String subpath) {
-        securePrinter.printProperties(props, subpath);
-    }
-
-    public void printAttributes(String subpath) {
-        securePrinter.printAttributes(attributes, subpath);
     }
 }

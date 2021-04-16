@@ -4,23 +4,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.slipluginutils.SliPluginUtils;
-import org.onap.ccsdk.sli.core.slipluginutils.SliPluginUtils_ctxSortList;
-import org.onap.ccsdk.sli.core.slipluginutils.SliTopologyUtils;
-import org.onap.ccsdk.sli.core.slipluginutils.slitopologyutils.JsonParserHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Map;
+
 
 import static org.junit.Assert.assertTrue;
 
 public class SliTopologyUtilsTest {
     private SvcLogicContext ctx;
-    private static final Logger LOG = LoggerFactory.getLogger(SliPluginUtils_ctxSortList.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SliTopologyUtils.class);
     private HashMap<String, String> param;
     private SliTopologyUtils topologyUtil = new SliTopologyUtils();
     @Before
@@ -28,48 +24,53 @@ public class SliTopologyUtilsTest {
         //Loading test logicallinks and pnfs
         this.ctx = new SvcLogicContext();
         param = new HashMap<String, String>();
-        String fileName1 = "src/test/resources/Pnfs.json";
-        String fileName2 = "src/test/resources/LogicalLinks.json";
-        try {
-            byte[] encoded = Files.readAllBytes(Paths.get(fileName1));
-            String fileString = new String(encoded, "UTF-8");
-            String pp1 = "Pnfs.";
-            Map<String, String> mm = null;
-            mm = JsonParserHelper.convertToProperties(fileString);
-            if (mm != null) {
-                for (Map.Entry<String, String> entry : mm.entrySet()) {
-                    ctx.setAttribute(pp1 + entry.getKey(), entry.getValue());
+        String fileName = "src/test/resources/3domain.dump";
+
+        try (FileInputStream fstr = new FileInputStream(new File(fileName));
+             InputStreamReader is = new InputStreamReader(fstr,StandardCharsets.UTF_8);
+             BufferedReader br = new BufferedReader(is))
+        {
+            String line;
+            while ((line = br.readLine()) != null){
+                if (! line.startsWith("#")){
+                    String [] curpair = line.split("\\s=\\s");
+                    if (curpair.length == 2){
+                        ctx.setAttribute(curpair[0], curpair[1]);
+                    } else if (curpair.length == 1){
+                        //ctx.setAttribute(curpair[0], "");
+                        //LOG.info("Ignore empty (value) context memory record format {}", line);
+                    } else {
+                        //LOG.info("Ignore incorrect context memory record format {}", line);
+                    }
                 }
             }
-
-            encoded = Files.readAllBytes(Paths.get(fileName2));
-            fileString = new String(encoded, "UTF-8");
-            String pp2 = "LogicalLinks.";
-            mm = null;
-            mm = JsonParserHelper.convertToProperties(fileString);
-            if (mm != null) {
-                for (Map.Entry<String, String> entry : mm.entrySet()) {
-                    ctx.setAttribute(pp2 + entry.getKey(), entry.getValue());
-                }
-            }
-
-        } catch (Exception e ){
-            LOG.trace("Failed to read topology json files" +  e.getMessage());
+            //SliPluginUtils.logContextMemory(ctx, LOG, SliPluginUtils.LogLevel.INFO);
+        } catch (Exception e) {
+            throw new SvcLogicException("Cannot read context from file " + fileName, e);
         }
     }
 
     @Test
-    public void computePath()  throws SvcLogicException {
+    public void testComputePath()  throws SvcLogicException {
 
-        param.put("pnfs-pfx", "Pnfs");
-        param.put("links-pfx", "LogicalLinks");
+        param.put("pnfs-pfx", "ccsdkTopopnfs");
+        param.put("links-pfx", "ccsdkTopologicalLinks");
         param.put("response-pfx", "prefix");
-        param.put("output-end-to-end-path", "true");
-        param.put("src-node","networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.2" );
-        param.put("dst-node", "networkId-providerId-10-clientId-0-topologyId-1-nodeId-10.1.1.4");
+        param.put("output-end-to-end-path", "false");
+
+        param.put("src-node","networkId-providerId-30-clientId-0-topologyId-1-nodeId-10.3.1.1" );
+        param.put("dst-node", "networkId-providerId-50-clientId-0-topologyId-1-nodeId-10.5.1.4");
 
         SliTopologyUtils.computePath(param, ctx);
-        SliPluginUtils.logContextMemory(ctx, LOG, SliPluginUtils.LogLevel.TRACE);
+        //SliPluginUtils.logContextMemory(ctx, LOG, SliPluginUtils.LogLevel.INFO);
         assertTrue(Integer.parseInt(this.ctx.getAttribute("prefix.solutions_length") ) > 0);
+        LOG.info("Computation finished");
+
+        for (String key: this.ctx.getAttributeKeySet()){
+            if (key.startsWith("prefix")){
+                LOG.info("Results: {} : {}" , key, this.ctx.getAttribute(key));
+            }
+        }
+
     }
 }

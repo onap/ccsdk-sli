@@ -35,9 +35,7 @@ import org.onap.ccsdk.sli.core.slipluginutils.slitopologyutils.topology.LogicalL
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SliTopologyUtils implements SvcLogicJavaPlugin {
     private static final Logger LOG = LoggerFactory.getLogger(SliTopologyUtils.class);
@@ -66,14 +64,17 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
      * @throws SvcLogicException
      */
     public static String computePath(Map<String, String> parameters, SvcLogicContext ctx ) throws SvcLogicException {
-        try{
-            LOG.debug( "ENTERING Execute Node \"computePath\"" );
 
+        LOG.debug( "ENTERING Execute Node \"computePath\"" );
+        boolean outputFullPath = false;
+        Graph<Pnf, LogicalLink> graph;
+        Pnf src;
+        Pnf dst;
+
+        try{
             // Validate, Log, & read parameters
             checkParameters(parameters, new String[]{ "pnfs-pfx", "links-pfx",
                     "src-node", "dst-node", "response-pfx"}, LOG);
-
-            boolean outputFullPath = false;
             String outputEndToEnd = parameters.get("output-end-to-end-path");
 
             if (outputEndToEnd != null && outputEndToEnd.equals("true")){
@@ -81,8 +82,8 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
                 LOG.debug( "OutputEndToEndPath enabled");
             }
 
-            String pnfsStr = ctx.toJsonString(parameters.get("pnfs-pfx"));
-            String lkStr = ctx.toJsonString(parameters.get("links-pfx"));
+            String pnfsStr = ctx.toJsonString( parameters.get("pnfs-pfx"));
+            String lkStr = ctx.toJsonString( parameters.get("links-pfx"));
 
             if (pnfsStr.isEmpty()){
                 LOG.warn("Pnf Array attributes are empty");
@@ -109,27 +110,33 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
             JsonArray pnfArr = ((JsonObject) jp.parse(pnfsStr)).getAsJsonArray("pnf");
             JsonArray lkArr = ((JsonObject) jp.parse(lkStr)).getAsJsonArray("logical-link");
             LOG.debug("Creating graph with {} pnf(s) and {} link(s)", pnfArr.size(), lkArr.size());
-            Graph<Pnf, LogicalLink> graph = buildGraph(pnfArr, lkArr);
+            graph = buildGraph(pnfArr, lkArr);
 
-            Pnf src = new Pnf(srcNodeStr);
-            Pnf dst = new Pnf(dstNodeStr);
+            src = new Pnf(srcNodeStr);
+            dst = new Pnf(dstNodeStr);
 
             if (!graph.getVertexes().contains(src) || !graph.getVertexes().contains(dst)){
                 LOG.warn("Src or Dst node doesn't exist");
                 throw new Exception("Src or Dst node doesn't exist");
             }
 
+        } catch( Exception e ) {
+            throw new SvcLogicException( "An error occurred in the computePath Execute node; failed to process the" +
+                    "given params for path computation", e );
+        }
+
+        try {
             DijkstraGraphSearch.Result result =
-                        new DijkstraGraphSearch<Pnf, LogicalLink>().search(graph, src, dst,null, -1);
+                    new DijkstraGraphSearch<Pnf, LogicalLink>().search(graph, src, dst, null, -1);
             LOG.debug("Path Computing results: {}", result.paths().toString());
 
-            if (result.paths().size() > 0){
+            if (result.paths().size() > 0) {
                 JsonObject root = new JsonObject();
                 JsonArray solnList = new JsonArray();
 
                 Path<Pnf, LogicalLink> path = (Path<Pnf, LogicalLink>) result.paths().iterator().next();
                 for (LogicalLink logicalLink : path.edges()) {
-                    if ( ((OtnLink) logicalLink.underlayLink()).isInnerDomain() && !outputFullPath ){
+                    if (!outputFullPath && ((OtnLink) logicalLink.underlayLink()).isInnerDomain()) {
                         //Ignore inner domain links
                     } else {
                         JsonObject curLink = new JsonObject();
@@ -164,11 +171,11 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
                 LOG.debug("SliTopologyUtils: no valid path found.");
                 return NOT_FOUND_CONSTANT;
             }
-
-        } catch( Exception e ) {
-            throw new SvcLogicException( "An error occurred in the computePath Execute node", e );
+        } catch (Exception e){
+            throw new SvcLogicException( "An error occurred in the computePath Execute node; failed to execute the graph " +
+                    "computation", e );
         } finally {
-            LOG.debug( "EXITING Execute Node \"computePath\"" );
+            LOG.debug( "Exiting Execute Node \"computePath\"" );
         }
     }
 
@@ -223,7 +230,7 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
                         }
                     }
 
-                    if (pnfNameStrList.size() == 2 && pnfNameStrList.size() == 2){
+                    if (pnfNameStrList.size() == 2 && pInterfaceStrList.size() == 2){
                         String pnf1NameStr = pnfNameStrList.get(0);
                         String pnf2NameStr = pnfNameStrList.get(1);
                         String pI1NameStr = pInterfaceStrList.get(0);
