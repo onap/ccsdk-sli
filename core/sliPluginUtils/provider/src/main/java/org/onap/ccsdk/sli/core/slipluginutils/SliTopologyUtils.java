@@ -22,6 +22,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -35,9 +36,7 @@ import org.onap.ccsdk.sli.core.slipluginutils.slitopologyutils.topology.LogicalL
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SliTopologyUtils implements SvcLogicJavaPlugin {
     private static final Logger LOG = LoggerFactory.getLogger(SliTopologyUtils.class);
@@ -66,14 +65,17 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
      * @throws SvcLogicException
      */
     public static String computePath(Map<String, String> parameters, SvcLogicContext ctx ) throws SvcLogicException {
-        try{
-            LOG.debug( "ENTERING Execute Node \"computePath\"" );
 
+        LOG.debug( "ENTERING Execute Node \"computePath\"" );
+        boolean outputFullPath = false;
+        Graph<Pnf, LogicalLink> graph;
+        Pnf src;
+        Pnf dst;
+
+        try{
             // Validate, Log, & read parameters
             checkParameters(parameters, new String[]{ "pnfs-pfx", "links-pfx",
                     "src-node", "dst-node", "response-pfx"}, LOG);
-
-            boolean outputFullPath = false;
             String outputEndToEnd = parameters.get("output-end-to-end-path");
 
             if (outputEndToEnd != null && outputEndToEnd.equals("true")){
@@ -81,8 +83,8 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
                 LOG.debug( "OutputEndToEndPath enabled");
             }
 
-            String pnfsStr = ctx.toJsonString(parameters.get("pnfs-pfx"));
-            String lkStr = ctx.toJsonString(parameters.get("links-pfx"));
+            String pnfsStr = toJsonString(ctx, parameters.get("pnfs-pfx"));
+            String lkStr = toJsonString(ctx, parameters.get("links-pfx"));
 
             if (pnfsStr.isEmpty()){
                 LOG.warn("Pnf Array attributes are empty");
@@ -109,27 +111,33 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
             JsonArray pnfArr = ((JsonObject) jp.parse(pnfsStr)).getAsJsonArray("pnf");
             JsonArray lkArr = ((JsonObject) jp.parse(lkStr)).getAsJsonArray("logical-link");
             LOG.debug("Creating graph with {} pnf(s) and {} link(s)", pnfArr.size(), lkArr.size());
-            Graph<Pnf, LogicalLink> graph = buildGraph(pnfArr, lkArr);
+            graph = buildGraph(pnfArr, lkArr);
 
-            Pnf src = new Pnf(srcNodeStr);
-            Pnf dst = new Pnf(dstNodeStr);
+            src = new Pnf(srcNodeStr);
+            dst = new Pnf(dstNodeStr);
 
             if (!graph.getVertexes().contains(src) || !graph.getVertexes().contains(dst)){
                 LOG.warn("Src or Dst node doesn't exist");
                 throw new Exception("Src or Dst node doesn't exist");
             }
 
+        } catch( Exception e ) {
+            throw new SvcLogicException( "An error occurred in the computePath Execute node; failed to process the" +
+                    "given params for path computation", e );
+        }
+
+        try {
             DijkstraGraphSearch.Result result =
-                        new DijkstraGraphSearch<Pnf, LogicalLink>().search(graph, src, dst,null, -1);
+                    new DijkstraGraphSearch<Pnf, LogicalLink>().search(graph, src, dst, null, -1);
             LOG.debug("Path Computing results: {}", result.paths().toString());
 
-            if (result.paths().size() > 0){
+            if (result.paths().size() > 0) {
                 JsonObject root = new JsonObject();
                 JsonArray solnList = new JsonArray();
 
                 Path<Pnf, LogicalLink> path = (Path<Pnf, LogicalLink>) result.paths().iterator().next();
                 for (LogicalLink logicalLink : path.edges()) {
-                    if ( ((OtnLink) logicalLink.underlayLink()).isInnerDomain() && !outputFullPath ){
+                    if (!outputFullPath && ((OtnLink) logicalLink.underlayLink()).isInnerDomain()) {
                         //Ignore inner domain links
                     } else {
                         JsonObject curLink = new JsonObject();
@@ -164,12 +172,188 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
                 LOG.debug("SliTopologyUtils: no valid path found.");
                 return NOT_FOUND_CONSTANT;
             }
-
-        } catch( Exception e ) {
-            throw new SvcLogicException( "An error occurred in the computePath Execute node", e );
+        } catch (Exception e){
+            throw new SvcLogicException( "An error occurred in the computePath Execute node; failed to execute the graph " +
+                    "computation", e );
         } finally {
-            LOG.debug( "EXITING Execute Node \"computePath\"" );
+            LOG.debug( "Exiting Execute Node \"computePath\"" );
         }
+    }
+
+    private static String toJsonString(SvcLogicContext ctx, String pfx){
+
+        JsonObject root = new JsonObject();
+        JsonElement lastJsonObject = root;
+        JsonElement currJsonLeaf = root;
+        HashMap<String, String> localAttributes = new HashMap<>();
+        int pfxlen = pfx.length();
+        for (String key: ctx.getAttributeKeySet()){
+            if (key.startsWith(pfx)){
+                String truncKey = key.substring(pfxlen+1);
+                localAttributes.put(truncKey, ctx.getAttribute(key));
+            }
+        }
+
+        if (localAttributes.size() < 1){
+            return "";
+        }
+
+        String attrName = null;
+        String attrVal = null;
+        // Sort properties so that arrays will be reconstructed in proper order
+        TreeMap<String, String> sortedAttributes = new TreeMap<>(new Comparator<String>(
+        ) {
+            @Override
+            public int compare(String a, String b){
+                int aLength = a.length();
+                int bLength = b.length();
+                int minSize = Math.min(aLength, bLength);
+                char aChar, bChar;
+                boolean aNumber, bNumber;
+                boolean asNumeric = false;
+                int lastNumericCompare = 0;
+                for (int i = 0; i < minSize; i++) {
+                    aChar = a.charAt(i);
+                    bChar = b.charAt(i);
+                    aNumber = aChar >= '0' && aChar <= '9';
+                    bNumber = bChar >= '0' && bChar <= '9';
+                    if (asNumeric)
+                        if (aNumber && bNumber) {
+                            if (lastNumericCompare == 0)
+                                lastNumericCompare = aChar - bChar;
+                        } else if (aNumber)
+                            return 1;
+                        else if (bNumber)
+                            return -1;
+                        else if (lastNumericCompare == 0) {
+                            if (aChar != bChar)
+                                return aChar - bChar;
+                            asNumeric = false;
+                        } else
+                            return lastNumericCompare;
+                    else if (aNumber && bNumber) {
+                        asNumeric = true;
+                        if (lastNumericCompare == 0)
+                            lastNumericCompare = aChar - bChar;
+                    } else if (aChar != bChar)
+                        return aChar - bChar;
+                }
+                if (asNumeric)
+                    if (aLength > bLength && a.charAt(bLength) >= '0' && a.charAt(bLength) <= '9') // as number
+                        return 1;  // a has bigger size, thus b is smaller
+                    else if (bLength > aLength && b.charAt(aLength) >= '0' && b.charAt(aLength) <= '9') // as number
+                        return -1;  // b has bigger size, thus a is smaller
+                    else if (lastNumericCompare == 0)
+                        return aLength - bLength;
+                    else
+                        return lastNumericCompare;
+                else
+                    return aLength - bLength;
+            }
+        });
+        sortedAttributes.putAll(localAttributes);
+
+        // Loop through properties, sorted by key
+        for (Map.Entry<String, String> entry : sortedAttributes.entrySet()) {
+            attrName = entry.getKey();
+            attrVal = entry.getValue();
+
+            currJsonLeaf = root;
+            String curFieldName = null;
+            JsonArray curArray = null;
+            lastJsonObject = null;
+            boolean addNeeded = false;
+
+            // Split property names by period and iterate through parts
+            for (String attrNamePart : attrName.split("\\.")) {
+
+                // Add last object found to JSON tree.  Need to handle
+                // this way because last element found (leaf) needs to be
+                // assigned the property value.
+                if (lastJsonObject != null) {
+                    if (addNeeded) {
+                        if (currJsonLeaf.isJsonArray()) {
+                            ((JsonArray) currJsonLeaf).add(lastJsonObject);
+                        } else {
+                            ((JsonObject) currJsonLeaf).add(curFieldName, lastJsonObject);
+                        }
+                    }
+                    currJsonLeaf = (JsonObject) lastJsonObject;
+                }
+                addNeeded = false;
+                // See if current level should be a JsonArray or JsonObject based on
+                // whether name part contains square brackets.
+                if (!attrNamePart.contains("[")) {
+                    // This level should be inserted as a JsonObject
+                    curFieldName = attrNamePart;
+                    lastJsonObject = ((JsonObject) currJsonLeaf).get(curFieldName);
+                    if (lastJsonObject == null) {
+                        lastJsonObject = new JsonObject();
+                        addNeeded = true;
+                    } else if (!lastJsonObject.isJsonObject()) {
+                        LOG.error("Unexpected condition - expecting to find JsonObject, but found " + lastJsonObject.getClass().getName());
+                        lastJsonObject = new JsonObject();
+                        addNeeded = true;
+                    }
+                } else {
+                    // This level should be inserted as a JsonArray.
+
+                    String[] curFieldNameParts = attrNamePart.split("[\\[\\]]");
+                    curFieldName = curFieldNameParts[0];
+                    int curIndex = Integer.parseInt(curFieldNameParts[1]);
+
+
+                    curArray = ((JsonObject) currJsonLeaf).getAsJsonArray(curFieldName);
+
+                    if (curArray == null) {
+                        // This is the first time we see this array.
+                        // Create a new JsonArray and add it to current
+                        // leaf
+                        curArray = new JsonArray();
+                        ((JsonObject) currJsonLeaf).add(curFieldName, curArray);
+                    }
+
+                    // Current leaf should point to the JsonArray for this level.
+                    // lastJsonObject should point to the array item entry to append
+                    // the next level to - which is a new one if the index value
+                    // isn't the end of the current array.
+                    currJsonLeaf = curArray;
+                    if (curArray.size() == curIndex + 1) {
+                        lastJsonObject = curArray.get(curArray.size() - 1);
+                    } else {
+                        lastJsonObject = new JsonObject();
+                        addNeeded = true;
+                    }
+                }
+            }
+
+            // Done parsing property name.  Add the value of this
+            // property to the current json leaf, either as a property
+            // or as a string (if the current leaf is a JsonArray)
+
+            if (!curFieldName.endsWith("_length")) {
+                if (currJsonLeaf.isJsonArray()) {
+                    if ("true".equals(attrVal) || "false".equals(attrVal)) {
+                        ((JsonArray) currJsonLeaf).add(Boolean.valueOf(attrVal));
+                    } else if ("null".equals(attrVal)) {
+                        ((JsonArray) currJsonLeaf).add(new JsonNull());
+                    } else {
+                        ((JsonArray) currJsonLeaf).add(attrVal);
+                    }
+                } else {
+                    if (("true".equals(attrVal) || "false".equals(attrVal))) {
+                        ((JsonObject) currJsonLeaf).addProperty(curFieldName, Boolean.valueOf(attrVal));
+                    } else if ("null".equals(attrVal)){
+
+                        ((JsonObject) currJsonLeaf).add(curFieldName, new JsonNull());
+                    } else {
+                        ((JsonObject) currJsonLeaf).addProperty(curFieldName, attrVal);
+                    }
+                }
+            }
+        }
+
+        return (root.toString());
     }
 
     private static Graph<Pnf, LogicalLink> buildGraph(JsonArray pnfs, JsonArray llks) {
@@ -223,7 +407,7 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
                         }
                     }
 
-                    if (pnfNameStrList.size() == 2 && pnfNameStrList.size() == 2){
+                    if (pnfNameStrList.size() == 2 && pInterfaceStrList.size() == 2){
                         String pnf1NameStr = pnfNameStrList.get(0);
                         String pnf2NameStr = pnfNameStrList.get(1);
                         String pI1NameStr = pInterfaceStrList.get(0);
