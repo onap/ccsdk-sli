@@ -63,7 +63,7 @@ public class AnsibleAdaptorPropertiesProviderImpl implements AnsibleAdaptorPrope
     /**
      * The name of the properties file for database configuration
      */
-    private static final String ANSIBLE_Adaptor_PROPERTIES = "ansible-adaptor.properties";
+    private static final String ANSIBLE_ADAPTOR_PROPERTIES = "ansible-adaptor.properties";
 
     /**
      * A prioritized list of strategies for resolving sql-resource properties files.
@@ -102,7 +102,7 @@ public class AnsibleAdaptorPropertiesProviderImpl implements AnsibleAdaptorPrope
             }
         } else {
             // Try to read properties as resource
-            InputStream propStr = getClass().getResourceAsStream("/" + ANSIBLE_Adaptor_PROPERTIES);
+            InputStream propStr = getClass().getResourceAsStream("/" + ANSIBLE_ADAPTOR_PROPERTIES);
             if (propStr != null) {
                 properties = new EnvProperties();
                 try {
@@ -115,7 +115,7 @@ public class AnsibleAdaptorPropertiesProviderImpl implements AnsibleAdaptorPrope
         }
         if (properties == null) {
             reportFailure(new ConfigurationException(
-                    "Missing configuration properties resource(3): " + ANSIBLE_Adaptor_PROPERTIES));
+                    "Missing configuration properties resource(3): " + ANSIBLE_ADAPTOR_PROPERTIES));
             LOG.info("Defaulting org.onap.appc.adaptor.ansible.clientType to TRUST_ALL");
             properties = new Properties();
             properties.setProperty("org.onap.appc.adaptor.ansible.clientType", "TRUST_ALL");
@@ -137,7 +137,7 @@ public class AnsibleAdaptorPropertiesProviderImpl implements AnsibleAdaptorPrope
         }
         if (properties == null) {
             reportFailure(new ConfigurationException(
-                    "Missing configuration properties resource(3): " + ANSIBLE_Adaptor_PROPERTIES));
+                    "Missing configuration properties resource(3): " + ANSIBLE_ADAPTOR_PROPERTIES));
             LOG.info("Defaulting org.onap.appc.adaptor.ansible.clientType to TRUST_ALL");
             properties = new Properties();
             properties.setProperty("org.onap.appc.adaptor.ansible.clientType", "TRUST_ALL");
@@ -196,7 +196,7 @@ public class AnsibleAdaptorPropertiesProviderImpl implements AnsibleAdaptorPrope
      */
     File determinePropertiesFile() {
         for (final PropertiesFileResolver propertiesFileResolver : ansibleAdaptorPropertiesFileResolvers) {
-            final Optional<File> fileOptional = propertiesFileResolver.resolveFile(ANSIBLE_Adaptor_PROPERTIES);
+            final Optional<File> fileOptional = propertiesFileResolver.resolveFile(ANSIBLE_ADAPTOR_PROPERTIES);
             if (fileOptional.isPresent()) {
                 return reportSuccess(propertiesFileResolver.getSuccessfulResolutionMessage(), fileOptional);
             }

@@ -130,7 +130,7 @@ public class NetboxClientImplTest {
 
     @After
     public void tearDown() throws IOException {
-        httpClient.close();
+        HttpClient.close();
     }
 
     @Test
