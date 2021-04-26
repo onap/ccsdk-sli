@@ -56,7 +56,7 @@ public class AnsibleAdaptorImpl implements AnsibleAdaptor {
      * Adaptor Name
      */
     private static final String Adaptor_NAME = "Ansible Adaptor";
-    private static final String APPC_EXCEPTION_CAUGHT = "APPCException caught";
+    private static final String SVC_LOGIC_EXCEPTION_CAUGHT = "SvcLogicException caught";
 
     /**
      * The logger to be used
@@ -254,7 +254,7 @@ public class AnsibleAdaptorImpl implements AnsibleAdaptor {
             ctx.setAttribute("AnsibleTimeout", timeout);
             logger.info("Updated Payload = {} timeout = {}", payload, timeout);
         } catch (SvcLogicException e) {
-            logger.error(APPC_EXCEPTION_CAUGHT, e);
+            logger.error(SVC_LOGIC_EXCEPTION_CAUGHT, e);
             doFailure(ctx, AnsibleResultCodes.INVALID_PAYLOAD.getValue(),
                     "Error constructing request for execution of playbook due to missing mandatory parameters. Reason = "
                     + e.getMessage());
@@ -302,7 +302,7 @@ public class AnsibleAdaptorImpl implements AnsibleAdaptor {
                 doFailure(ctx, code, "Ansible Test result is null");
             }
         } catch (SvcLogicException e) {
-            logger.error(APPC_EXCEPTION_CAUGHT, e);
+            logger.error(SVC_LOGIC_EXCEPTION_CAUGHT, e);
             doFailure(ctx, AnsibleResultCodes.UNKNOWN_EXCEPTION.getValue(),
                     "Exception encountered when posting request for execution of playbook. Reason = " + e.getMessage());
         }
@@ -418,7 +418,7 @@ public class AnsibleAdaptorImpl implements AnsibleAdaptor {
             }
             logger.info("Got uri {}", reqUri);
         } catch (SvcLogicException e) {
-            logger.error(APPC_EXCEPTION_CAUGHT, e);
+            logger.error(SVC_LOGIC_EXCEPTION_CAUGHT, e);
             doFailure(ctx, AnsibleResultCodes.INVALID_PAYLOAD.getValue(),
                     "Error constructing request to retrieve result due to missing parameters. Reason = "
                     + e.getMessage());
@@ -463,7 +463,7 @@ public class AnsibleAdaptorImpl implements AnsibleAdaptor {
             }
             logger.info("Request response = " + message);
         } catch (SvcLogicException e) {
-            logger.error(APPC_EXCEPTION_CAUGHT, e);
+            logger.error(SVC_LOGIC_EXCEPTION_CAUGHT, e);
             ctx.setAttribute(RESULTS_ATTRIBUTE_NAME, results);
             ctx.setAttribute(OUTPUT_ATTRIBUTE_NAME, finalResponse);
             doFailure(ctx, AnsibleResultCodes.UNKNOWN_EXCEPTION.getValue(),

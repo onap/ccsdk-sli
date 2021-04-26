@@ -225,7 +225,7 @@ public class ConnectionBuilder implements Closeable {
     public void close() {
         try {
             if (httpClient != null) {
-                httpClient.close();
+                HttpClient.close();
             }
         } catch (IOException e) {
             logger.error("Caught IOException during httpClient close", e);
