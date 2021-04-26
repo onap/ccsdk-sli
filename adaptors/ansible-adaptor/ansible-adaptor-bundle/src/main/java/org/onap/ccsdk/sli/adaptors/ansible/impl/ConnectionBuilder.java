@@ -173,7 +173,7 @@ public class ConnectionBuilder implements Closeable {
             postObj.setEntity(bodyParams);
             postObj.addHeader("Content-type", "application/json");
 
-            HttpResponse response = httpClient.execute(postObj, httpContext);
+            HttpResponse response = HttpClient.execute(postObj, httpContext);
             HttpEntity entity = response.getEntity();
             String responseOutput = entity != null ? EntityUtils.toString(entity) : null;
             int responseCode = response.getStatusLine().getStatusCode();
@@ -196,7 +196,7 @@ public class ConnectionBuilder implements Closeable {
 
         try {
             HttpGet getObj = new HttpGet(agentUrl);
-            HttpResponse response = httpClient.execute(getObj, httpContext);
+            HttpResponse response = HttpClient.execute(getObj, httpContext);
             HttpEntity entity = response.getEntity();
             String responseOutput = entity != null ? EntityUtils.toString(entity) : null;
             int responseCode = response.getStatusLine().getStatusCode();
@@ -225,7 +225,7 @@ public class ConnectionBuilder implements Closeable {
     public void close() {
         try {
             if (httpClient != null) {
-                httpClient.close();
+                HttpClient.close();
             }
         } catch (IOException e) {
             logger.error("Caught IOException during httpClient close", e);

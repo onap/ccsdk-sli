@@ -62,7 +62,7 @@ public class SaltstackAdaptorImpl implements SaltstackAdaptor {
     @SuppressWarnings("nls")
     public static final String OUTCOME_SUCCESS = "success";
     public static final String CONNECTION_RETRY = "withRetry";
-    private static final String APPC_EXCEPTION_CAUGHT = "APPCException caught";
+    private static final String APPC_EXCEPTION_CAUGHT = "SvcLogicException caught";
     /**
      * Adaptor Name
      */
