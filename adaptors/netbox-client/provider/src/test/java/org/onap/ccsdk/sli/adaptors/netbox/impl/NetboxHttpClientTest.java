@@ -70,7 +70,7 @@ public class NetboxHttpClientTest {
         String expectedUrl = "/testPost";
         givenThat(post(urlEqualTo(expectedUrl)).willReturn(ok()));
 
-        httpClient.post(expectedUrl, "");
+        HttpClient.post(expectedUrl, "");
 
         verify(postRequestedFor(urlEqualTo(expectedUrl))
             .withHeader(ACCEPT, equalTo(APPLICATION_JSON))
@@ -81,7 +81,7 @@ public class NetboxHttpClientTest {
     public void deleteTest() throws IOException {
         String expectedUrl = "/testDelete";
         givenThat(delete(urlEqualTo(expectedUrl)).willReturn(ok()));
-        httpClient.delete(expectedUrl);
+        HttpClient.delete(expectedUrl);
         verify(deleteRequestedFor(urlEqualTo(expectedUrl))
             .withHeader(ACCEPT, equalTo(APPLICATION_JSON))
             .withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON)));
