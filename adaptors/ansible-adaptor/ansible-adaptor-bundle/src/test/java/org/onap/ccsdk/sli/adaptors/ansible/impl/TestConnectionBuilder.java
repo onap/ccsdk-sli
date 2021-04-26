@@ -144,7 +144,7 @@ public class TestConnectionBuilder {
 
     @Test
     public void testPost() throws IOException {
-        when(httpClient.execute(anyObject(), eq(httpClientContext))).thenReturn(response);
+        when(HttpClient.execute(anyObject(), eq(httpClientContext))).thenReturn(response);
         AnsibleResult result = connectionBuilder.post(URL, "appc");
         assertNull(result.getStatusMessage());
         assertEquals(SUCCESS_STATUS, result.getStatusCode());
@@ -153,7 +153,7 @@ public class TestConnectionBuilder {
 
     @Test
     public void testPostWithException() throws IOException {
-        when(httpClient.execute(anyObject(), eq(httpClientContext))).thenThrow(new IOException());
+        when(HttpClient.execute(anyObject(), eq(httpClientContext))).thenThrow(new IOException());
         AnsibleResult result = connectionBuilder.post(URL, "appc");
         assertEquals(AnsibleResultCodes.IO_EXCEPTION.getValue(), result.getStatusCode());
     }
@@ -161,7 +161,7 @@ public class TestConnectionBuilder {
     @Ignore
     @Test
     public void testGet() throws IOException {
-        when(httpClient.execute(anyObject(), eq(httpClientContext))).thenReturn(response);
+        when(HttpClient.execute(anyObject(), eq(httpClientContext))).thenReturn(response);
         AnsibleResult result = connectionBuilder.get(URL);
         assertNull(result.getStatusMessage());
         assertEquals(SUCCESS_STATUS, result.getStatusCode());
@@ -170,7 +170,7 @@ public class TestConnectionBuilder {
 
     @Test
     public void testGetWithException() throws IOException {
-        when(httpClient.execute(anyObject(), eq(httpClientContext))).thenThrow(new IOException());
+        when(HttpClient.execute(anyObject(), eq(httpClientContext))).thenThrow(new IOException());
         AnsibleResult result = connectionBuilder.get(URL);
         assertEquals(AnsibleResultCodes.IO_EXCEPTION.getValue(), result.getStatusCode());
     }

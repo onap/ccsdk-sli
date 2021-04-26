@@ -95,7 +95,7 @@ public class ChefApiClientImpl implements ChefApiClient {
             if (httpClient == null) {
                 return ChefResponse.create(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Could not create http client for chef");
             }
-            HttpResponse response = httpClient.execute(chefRequest.build());
+            HttpResponse response = HttpClient.execute(chefRequest.build());
             int statusCode = response.getStatusLine().getStatusCode();
             HttpEntity httpEntity = response.getEntity();
             String responseBody = EntityUtils.toString(httpEntity);

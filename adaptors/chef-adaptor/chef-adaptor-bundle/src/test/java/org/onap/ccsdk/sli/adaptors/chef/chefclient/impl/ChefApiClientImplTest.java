@@ -139,7 +139,7 @@ public class ChefApiClientImplTest {
         HttpResponse httpResponse = mock(HttpResponse.class);
         given(httpResponse.getStatusLine()).willReturn(statusLine);
         given(httpResponse.getEntity()).willReturn(new StringEntity("Successful Response String"));
-        given(httpClient.execute(argThat(new HttpRequestBaseMatcher(methodName))))
+        given(HttpClient.execute(argThat(new HttpRequestBaseMatcher(methodName))))
                 .willReturn(httpResponse);
 
         // WHEN
@@ -158,7 +158,7 @@ public class ChefApiClientImplTest {
                 .willReturn(HEADERS);
 
         String expectedErrorMsg = "HttpClient call failed";
-        given(httpClient.execute(argThat(new HttpRequestBaseMatcher("GET"))))
+        given(HttpClient.execute(argThat(new HttpRequestBaseMatcher("GET"))))
                 .willThrow(new IOException(expectedErrorMsg));
 
         // WHEN
