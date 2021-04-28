@@ -39,11 +39,11 @@ paths:
         200:
           description: "sli.api.TestResults"
           schema:
-            $ref: "#/definitions/sli.api.TestResults"
             originalRef: "#/definitions/sli.api.TestResults"
+            $ref: "#/definitions/sli.api.TestResults"
           responseSchema:
-            $ref: "#/definitions/sli.api.TestResults"
             originalRef: "#/definitions/sli.api.TestResults"
+            $ref: "#/definitions/sli.api.TestResults"
     post:
       tags:
       - "SLI-API"
@@ -54,8 +54,8 @@ paths:
         description: "sli.api.TestResults to be added to list"
         required: false
         schema:
-          $ref: "#/definitions/sli.api.TestResults"
           originalRef: "#/definitions/sli.api.TestResults"
+          $ref: "#/definitions/sli.api.TestResults"
       responses:
         400:
           description: "Internal error"
@@ -73,8 +73,8 @@ paths:
         description: "sli.api.TestResults to be added or updated"
         required: false
         schema:
-          $ref: "#/definitions/sli.api.TestResults"
           originalRef: "#/definitions/sli.api.TestResults"
+          $ref: "#/definitions/sli.api.TestResults"
       responses:
         400:
           description: "Internal error"
@@ -101,8 +101,8 @@ paths:
         description: "sli.api.testresults.TestResult to be added to list"
         required: false
         schema:
-          $ref: "#/definitions/sli.api.testresults.TestResult"
           originalRef: "#/definitions/sli.api.testresults.TestResult"
+          $ref: "#/definitions/sli.api.testresults.TestResult"
       responses:
         400:
           description: "Internal error"
@@ -127,11 +127,11 @@ paths:
         200:
           description: "sli.api.testresults.TestResult"
           schema:
-            $ref: "#/definitions/sli.api.testresults.TestResult"
             originalRef: "#/definitions/sli.api.testresults.TestResult"
+            $ref: "#/definitions/sli.api.testresults.TestResult"
           responseSchema:
-            $ref: "#/definitions/sli.api.testresults.TestResult"
             originalRef: "#/definitions/sli.api.testresults.TestResult"
+            $ref: "#/definitions/sli.api.testresults.TestResult"
     post:
       tags:
       - "SLI-API"
@@ -147,8 +147,8 @@ paths:
         description: "sli.api.testresults.TestResult to be added to list"
         required: false
         schema:
-          $ref: "#/definitions/sli.api.testresults.TestResult"
           originalRef: "#/definitions/sli.api.testresults.TestResult"
+          $ref: "#/definitions/sli.api.testresults.TestResult"
       responses:
         400:
           description: "Internal error"
@@ -171,8 +171,8 @@ paths:
         description: "sli.api.testresults.TestResult to be added or updated"
         required: false
         schema:
-          $ref: "#/definitions/sli.api.testresults.TestResult"
           originalRef: "#/definitions/sli.api.testresults.TestResult"
+          $ref: "#/definitions/sli.api.testresults.TestResult"
       responses:
         400:
           description: "Internal error"
@@ -207,11 +207,11 @@ paths:
         200:
           description: "sli.api.TestResults"
           schema:
-            $ref: "#/definitions/sli.api.TestResults"
             originalRef: "#/definitions/sli.api.TestResults"
+            $ref: "#/definitions/sli.api.TestResults"
           responseSchema:
-            $ref: "#/definitions/sli.api.TestResults"
             originalRef: "#/definitions/sli.api.TestResults"
+            $ref: "#/definitions/sli.api.TestResults"
   /operational/SLI-API:test-results/SLI-API:test-result/{test-identifier}/:
     get:
       tags:
@@ -229,11 +229,11 @@ paths:
         200:
           description: "sli.api.testresults.TestResult"
           schema:
-            $ref: "#/definitions/sli.api.testresults.TestResult"
             originalRef: "#/definitions/sli.api.testresults.TestResult"
+            $ref: "#/definitions/sli.api.testresults.TestResult"
           responseSchema:
-            $ref: "#/definitions/sli.api.testresults.TestResult"
             originalRef: "#/definitions/sli.api.testresults.TestResult"
+            $ref: "#/definitions/sli.api.testresults.TestResult"
   /operations/SLI-API:execute-graph/:
     post:
       tags:
@@ -245,19 +245,19 @@ paths:
         schema:
           properties:
             input:
-              $ref: "#/definitions/sli.api.executegraph.Input"
               originalRef: "#/definitions/sli.api.executegraph.Input"
+              $ref: "#/definitions/sli.api.executegraph.Input"
       responses:
         400:
           description: "Internal error"
         200:
           description: "Correct response"
           schema:
-            $ref: "#/definitions/sli.api.ExecuteGraph"
             originalRef: "#/definitions/sli.api.ExecuteGraph"
+            $ref: "#/definitions/sli.api.ExecuteGraph"
           responseSchema:
-            $ref: "#/definitions/sli.api.ExecuteGraph"
             originalRef: "#/definitions/sli.api.ExecuteGraph"
+            $ref: "#/definitions/sli.api.ExecuteGraph"
         201:
           description: "No response"
   /operations/SLI-API:healthcheck/:
@@ -271,11 +271,11 @@ paths:
         200:
           description: "Correct response"
           schema:
-            $ref: "#/definitions/sli.api.Healthcheck"
             originalRef: "#/definitions/sli.api.Healthcheck"
+            $ref: "#/definitions/sli.api.Healthcheck"
           responseSchema:
-            $ref: "#/definitions/sli.api.Healthcheck"
             originalRef: "#/definitions/sli.api.Healthcheck"
+            $ref: "#/definitions/sli.api.Healthcheck"
         201:
           description: "No response"
   /operations/SLI-API:vlbcheck/:
@@ -289,11 +289,11 @@ paths:
         200:
           description: "Correct response"
           schema:
-            $ref: "#/definitions/sli.api.Vlbcheck"
             originalRef: "#/definitions/sli.api.Vlbcheck"
+            $ref: "#/definitions/sli.api.Vlbcheck"
           responseSchema:
-            $ref: "#/definitions/sli.api.Vlbcheck"
             originalRef: "#/definitions/sli.api.Vlbcheck"
+            $ref: "#/definitions/sli.api.Vlbcheck"
         201:
           description: "No response"
 definitions:
@@ -301,14 +301,14 @@ definitions:
     type: "object"
     properties:
       output:
-        $ref: "#/definitions/sli.api.ResponseFields"
         originalRef: "#/definitions/sli.api.ResponseFields"
+        $ref: "#/definitions/sli.api.ResponseFields"
   sli.api.Healthcheck:
     type: "object"
     properties:
       output:
-        $ref: "#/definitions/sli.api.ResponseFields"
         originalRef: "#/definitions/sli.api.ResponseFields"
+        $ref: "#/definitions/sli.api.ResponseFields"
   sli.api.ModeEnumeration:
     type: "string"
     enum:
@@ -344,27 +344,27 @@ definitions:
       test-result:
         type: "array"
         items:
-          $ref: "#/definitions/sli.api.testresults.TestResult"
           originalRef: "#/definitions/sli.api.testresults.TestResult"
+          $ref: "#/definitions/sli.api.testresults.TestResult"
   sli.api.Vlbcheck:
     type: "object"
     properties:
       output:
-        $ref: "#/definitions/sli.api.ResponseFields"
         originalRef: "#/definitions/sli.api.ResponseFields"
+        $ref: "#/definitions/sli.api.ResponseFields"
   sli.api.executegraph.Input:
     type: "object"
     properties:
       mode:
-        $ref: "#/definitions/sli.api.ModeEnumeration"
         originalRef: "#/definitions/sli.api.ModeEnumeration"
+        $ref: "#/definitions/sli.api.ModeEnumeration"
       module-name:
         type: "string"
       sli-parameter:
         type: "array"
         items:
-          $ref: "#/definitions/sli.api.ParameterSetting"
           originalRef: "#/definitions/sli.api.ParameterSetting"
+          $ref: "#/definitions/sli.api.ParameterSetting"
       rpc-name:
         type: "string"
   sli.api.testresults.TestResult:

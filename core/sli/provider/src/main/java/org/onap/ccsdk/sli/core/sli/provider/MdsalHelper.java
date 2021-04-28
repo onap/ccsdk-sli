@@ -177,7 +177,31 @@ public class MdsalHelper {
                 toProperties(props, pfx + "[" + i + "]", fromList.get(i), fromClass, useLegacyEnumerationMapping);
             }
             props.setProperty(pfx + "_length", Integer.toString(fromList.size()));
+        } else if (fromClass.isEnum())
+        {
+            try {
+                if (useLegacyEnumerationMapping) {
+                    Method m = fromClass.getMethod(getStringValueMethod(simpleTypeName), null);
+                    boolean isAccessible = m.isAccessible();
+                    if (!isAccessible) {
+                        m.setAccessible(true);
+                    }
+                    Object retValue = m.invoke(fromObj);
 
+                    if (!isAccessible) {
+                        m.setAccessible(false);
+                    }
+                    String propVal = retValue.toString();
+                    props.setProperty(pfx, mapEnumeratedValue(pfx, propVal));
+                } else {
+                    Method method = fromClass.getMethod("getName");
+                    String yangValue = (String) method.invoke(fromObj);
+                    props.setProperty(pfx, yangValue);
+                }
+            } catch (Exception e) {
+                LOG.error("Caught exception trying to convert value returned by " + fromClass.getName()
+                        + ".getValue() to Properties entry", e);
+            }   
         }  else if (isYangGenerated(fromClass)) {
             // Class is yang generated.
 
@@ -509,6 +533,18 @@ public class MdsalHelper {
                         toObj.add(Dscp.getDefaultInstance(curValue));
                         foundValue = true;
                     }
+                } else if (elemType.isEnum()) {
+                    String curValue = props.getProperty(curBase, "");
+                    Object elemObj = null;
+
+                    try {
+                        elemObj = Enum.valueOf(elemType, toJavaEnum(curValue));
+                    } catch (Exception e) {
+                        LOG.error("Caught exception trying to convert field " + curBase + " to enum "
+                                + elemType.getName(), e);
+                    }
+                    toObj.add(elemObj);
+                    foundValue = true;
                 } else {
                     String builderName = elemType.getName() + "Builder";
                     try {

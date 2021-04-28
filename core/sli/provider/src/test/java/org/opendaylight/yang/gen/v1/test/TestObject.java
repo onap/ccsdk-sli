@@ -10,8 +10,10 @@ public interface TestObject {
     List<IpAddress> getFloatingIp();
     List<Ipv4Address> getFloatingIpV4();
     List<Ipv6Address> getFloatingIpV6();
+    List<IpFragmentFlagEnumType> getIpFragmentFlag();
     Ipv4Address getSingleIpV4();
     Ipv6Address getSingleIpV6();
     IpAddress getSingleIp();
+    IpFragmentFlagEnumType getSingleIpFragmentFlag();
 
 }
