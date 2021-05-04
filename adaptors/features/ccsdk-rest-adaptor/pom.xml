@@ -9,15 +9,20 @@
         <relativePath/>
     </parent>
 
-    <groupId>org.onap.ccsdk.sli.plugins</groupId>
-    <artifactId>ccsdk-sshapi-call-node</artifactId>
+    <groupId>org.onap.ccsdk.sli.adaptors</groupId>
+    <artifactId>ccsdk-rest-adaptor</artifactId>
     <version>1.3.0-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>ccsdk-sli-plugins :: features :: ${project.artifactId}</name>
-    <!--
-    <dependencies>
+    <name>ccsdk-sli-adaptors :: features :: ${project.artifactId}</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>odl-mdsal-broker</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>ccsdk-sli</artifactId>
@@ -27,9 +32,8 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>sshapi-call-node-provider</artifactId>
+            <artifactId>rest-adaptor-bundle</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
-    -->
 </project>

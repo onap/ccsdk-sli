@@ -36,14 +36,19 @@
 
     <name>ccsdk-sli-adaptors :: ${project.artifactId}</name>
 
+    <modules>
+        <module>netconf-adaptor-bundle</module>
+        <module>netconf-adaptor-installer</module>
+    </modules>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.onap.ccsdk.sli.adaptors</groupId>
                 <artifactId>ccsdk-netconf-adaptor</artifactId>
-                <classifier>features</classifier>
-                <type>xml</type>
                 <version>${project.version}</version>
+                <type>xml</type>
+                <classifier>features</classifier>
             </dependency>
             <dependency>
                 <groupId>org.onap.ccsdk.sli.adaptors</groupId>
@@ -52,10 +57,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <modules>
-        <module>netconf-adaptor-bundle</module>
-        <module>netconf-adaptor-installer</module>
-    </modules>
-
 </project>

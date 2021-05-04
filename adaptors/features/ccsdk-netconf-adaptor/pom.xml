@@ -26,9 +26,9 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>ccsdk-dblib</artifactId>
+            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
