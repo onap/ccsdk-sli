@@ -1,0 +1,5 @@
+---
+distribution_type: 'maven'
+version: '1.2.3'
+project: 'ccsdk-sli'
+log_dir: 'ccsdk-sli-maven-stage-honolulu/3/'
