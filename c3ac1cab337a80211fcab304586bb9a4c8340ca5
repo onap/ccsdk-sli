@@ -1,0 +1,9 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Guillaume Lambert <guillaume.lambert@orange.com>
+Code-Review+1: Eric Debeau <eric.debeau@orange.com>
+Code-Review+2: Dan Timoney <dtimoney@att.com>
+Submitted-by: Dan Timoney <dtimoney@att.com>
+Submitted-at: Wed, 12 May 2021 12:33:32 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/ccsdk/sli/+/120588
+Project: ccsdk/sli
+Branch: refs/heads/honolulu
