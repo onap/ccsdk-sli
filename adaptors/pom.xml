@@ -26,6 +26,7 @@
 
         <module>ansible-adaptor</module>
         <module>chef-adaptor</module>
+        <module>iaas-adaptor</module>
         <module>netconf-adaptor</module>
         <module>rest-adaptor</module>
         <module>saltstack-adaptor</module>
