@@ -19,7 +19,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.ali.adaptors.saltstack.model;
+package org.onap.ccsdk.sli.adaptors.saltstack.model;
 
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;

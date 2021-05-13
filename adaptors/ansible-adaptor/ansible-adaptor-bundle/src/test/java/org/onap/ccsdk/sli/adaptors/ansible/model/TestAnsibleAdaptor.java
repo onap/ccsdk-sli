@@ -20,7 +20,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.ali.adaptors.ansible.model;
+package org.onap.ccsdk.sli.adaptors.ansible.model;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

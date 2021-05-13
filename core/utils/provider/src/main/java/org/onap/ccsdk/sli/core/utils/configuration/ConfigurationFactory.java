@@ -124,7 +124,7 @@ public final class ConfigurationFactory {
     /**
      * The default properties resource to be loaded
      */
-    private static final String DEFAULT_PROPERTIES = "org/onap/appc/default.properties";
+    private static final String DEFAULT_PROPERTIES = "default.properties";
 
     /**
      * This collection allows for special configurations to be created and maintained, organized by
@@ -301,8 +301,7 @@ public final class ConfigurationFactory {
         /*
          * Load the defaults (if any are present)
          */
-        InputStream in = Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream(DEFAULT_PROPERTIES);
+        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(DEFAULT_PROPERTIES);
         if (in != null) {
             logger.info(Msg.LOADING_DEFAULTS, DEFAULT_PROPERTIES);
             try {

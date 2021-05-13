@@ -20,7 +20,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.ali.adaptors.ansible.impl;
+package org.onap.ccsdk.sli.adaptors.ansible.impl;
 
 import java.io.File;
 import java.util.Properties;

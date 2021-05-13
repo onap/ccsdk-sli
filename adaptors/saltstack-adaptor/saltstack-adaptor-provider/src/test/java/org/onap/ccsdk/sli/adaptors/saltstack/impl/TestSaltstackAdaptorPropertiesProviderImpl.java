@@ -22,7 +22,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.ali.adaptors.saltstack.impl;
+package org.onap.ccsdk.sli.adaptors.saltstack.impl;
 
 import org.junit.After;
 import org.junit.Before;
