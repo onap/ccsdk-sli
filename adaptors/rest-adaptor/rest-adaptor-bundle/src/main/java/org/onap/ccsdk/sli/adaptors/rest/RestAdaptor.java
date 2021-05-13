@@ -87,10 +87,10 @@ public interface RestAdaptor extends SvcLogicJavaPlugin {
      * @return The <code>Server</code> object that represents the VM being restarted. The returned server object can be
      *         inspected for the final state of the server once the restart has been completed. The method does not
      *         return until the restart has either completed or has failed.
-     * @throws APPCException
+     * @throws SvcLogicException
      *             If the server cannot be restarted for some reason
      */
-    //  Server restartServer(Map<String, String> properties, SvcLogicContext context) throws APPCException;
+    //  Server restartServer(Map<String, String> properties, SvcLogicContext context) throws SvcLogicException;
 
     /**
      * This method is used to stop the indicated server
@@ -117,10 +117,10 @@ public interface RestAdaptor extends SvcLogicJavaPlugin {
      * @return The <code>Server</code> object that represents the VM being stopped. The returned server object can be
      *         inspected for the final state of the server once the stop has been completed. The method does not return
      *         until the stop has either completed or has failed.
-     * @throws APPCException
+     * @throws SvcLogicException
      *             If the server cannot be stopped for some reason
      */
-    //Server stopServer(Map<String, String> properties, SvcLogicContext context) throws APPCException;
+    //Server stopServer(Map<String, String> properties, SvcLogicContext context) throws SvcLogicException;
 
     /**
      * This method is used to start the indicated server
@@ -147,10 +147,10 @@ public interface RestAdaptor extends SvcLogicJavaPlugin {
      * @return The <code>Server</code> object that represents the VM being started. The returned server object can be
      *         inspected for the final state of the server once the start has been completed. The method does not return
      *         until the start has either completed or has failed.
-     * @throws APPCException
+     * @throws SvcLogicException
      *             If the server cannot be started for some reason
      */
-    // Server startServer(Map<String, String> properties, SvcLogicContext context) throws APPCException;
+    // Server startServer(Map<String, String> properties, SvcLogicContext context) throws SvcLogicException;
 
     /**
      * This method is used to rebuild the indicated server
@@ -177,10 +177,10 @@ public interface RestAdaptor extends SvcLogicJavaPlugin {
      * @return The <code>Server</code> object that represents the VM being rebuilt. The returned server object can be
      *         inspected for the final state of the server once the rebuild has been completed. The method does not
      *         return until the rebuild has either completed or has failed.
-     * @throws APPCException
+     * @throws SvcLogicException
      *             If the server cannot be rebuilt for some reason
      */
-    //   Server rebuildServer(Map<String, String> properties, SvcLogicContext context) throws APPCException;
+    //   Server rebuildServer(Map<String, String> properties, SvcLogicContext context) throws SvcLogicException;
 
     /**
      * Returns the symbolic name of the adaptor
@@ -189,9 +189,9 @@ public interface RestAdaptor extends SvcLogicJavaPlugin {
      */
     String getAdaptorName();
 
-    // Server evacuateServer(Map<String, String> params, SvcLogicContext ctx) throws APPCException;
+    // Server evacuateServer(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
 
-    //Server migrateServer(Map<String, String> params, SvcLogicContext ctx) throws APPCException;
+    //Server migrateServer(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
 
     void commonGet(Map<String, String> params, SvcLogicContext ctx);
 
