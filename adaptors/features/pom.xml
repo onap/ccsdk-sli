@@ -22,6 +22,7 @@
 
         <module>ccsdk-ansible-adaptor</module>
         <module>ccsdk-chef-adaptor</module>
+        <module>ccsdk-iaas-adaptor</module>
         <module>ccsdk-netconf-adaptor</module>
         <module>ccsdk-rest-adaptor</module>
         <module>ccsdk-saltstack-adaptor</module>
