@@ -148,8 +148,8 @@ public class DaeximOffsiteBackupProviderTest {
                 return "Some Timestamp";
             }
 
-
         };
+
         try {
             assertNotNull(provider.retrieveData(input));
         }
