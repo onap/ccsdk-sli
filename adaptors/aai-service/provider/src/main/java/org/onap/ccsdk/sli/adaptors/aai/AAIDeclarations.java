@@ -915,9 +915,10 @@ public abstract class AAIDeclarations implements AAIClient {
 
             if(value instanceof ArrayList) {
                 ArrayList<?> array = ArrayList.class.cast(value);
-                for(int i = 0; i < array.size(); i++) {
+//                for(int i = 0; i < array.size(); i++) {
                     writeList(array, String.format("%s.%s", prefix, theKey), ctx);
-                }
+//                }
+// Hesam changed the above two lines
                 continue;
             }
 
