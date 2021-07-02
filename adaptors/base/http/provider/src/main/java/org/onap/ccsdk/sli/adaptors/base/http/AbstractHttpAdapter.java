@@ -9,6 +9,8 @@ import java.util.Properties;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 import javax.ws.rs.client.ClientBuilder;
+
+import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.logging.filter.base.MetricLogClientFilter;
 import org.onap.logging.filter.base.PayloadLoggingClientFilter;
 import org.slf4j.Logger;
@@ -69,7 +71,7 @@ public abstract class AbstractHttpAdapter {
         if (propDir == null || propDir.length() < 1) {
             propDir = SDNC_CONFIG_DIR_DEFAULT;
         }
-        Properties properties = new Properties();
+        Properties properties = new EnvProperties();
         // forward slash is checked to support path src/test/resources on windows machine
         if (!propDir.endsWith(File.separator) && !propDir.endsWith("/")) {
             propDir = propDir + File.separator;
