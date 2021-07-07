@@ -22,11 +22,53 @@
             <artifactId>ccsdk-aai-service</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
-            <classifier>features</classifier>
+            <classifier>feature</classifier>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-ansible-adaptor</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>feature</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-base-http</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>feature</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-chef-adaptor</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>feature</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-mdsal-resource</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>feature</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}.messagerouter</groupId>
+            <artifactId>ccsdk-messagerouter-publisher</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-netbox-client</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>feature</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-resource-assignment</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
@@ -40,41 +82,12 @@
             <classifier>features</classifier>
         </dependency>
         -->
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ccsdk-netbox-client</artifactId>
-            <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ccsdk-mdsal-resource</artifactId>
-            <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ccsdk-resource-assignment</artifactId>
-            <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-sql-resource</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}.messagerouter</groupId>
-            <artifactId>ccsdk-messagerouter-publisher</artifactId>
-            <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
+            <classifier>feature</classifier>
         </dependency>
     </dependencies>
 </project>

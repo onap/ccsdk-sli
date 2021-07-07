@@ -45,22 +45,20 @@
                 <classifier>feature</classifier>
             </dependency>
             <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>ccsdk-sshapi-call-node</artifactId>
+                <version>${project.version}</version>
+                <type>xml</type>
+                <classifier>features</classifier>
+            </dependency>
+            <dependency>
                 <groupId>org.onap.ccsdk.sli.plugins</groupId>
                 <artifactId>ccsdk-template-node</artifactId>
                 <version>${project.version}</version>
                 <type>xml</type>
                 <classifier>feature</classifier>
             </dependency>
-            <dependency>
-                <groupId>org.onap.ccsdk.sli.plugins</groupId>
-                <artifactId>fabric-discovery-plugin-provider</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.onap.ccsdk.sli.plugins</groupId>
-                <artifactId>fabric-discovery-plugin-installer</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.onap.ccsdk.sli.plugins</groupId>
                 <artifactId>properties-node-provider</artifactId>
@@ -89,6 +87,16 @@
             <dependency>
                 <groupId>org.onap.ccsdk.sli.plugins</groupId>
                 <artifactId>restconf-client-installer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.plugins</groupId>
+                <artifactId>sshapi-call-node-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.plugins</groupId>
+                <artifactId>sshapi-call-node-installer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
