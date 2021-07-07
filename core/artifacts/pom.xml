@@ -46,13 +46,6 @@
             </dependency>
             <dependency>
                 <groupId>org.onap.ccsdk.sli.core</groupId>
-                <artifactId>ccsdk-sli-core-all</artifactId>
-                <version>${project.version}</version>
-                <type>xml</type>
-                <classifier>features</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.onap.ccsdk.sli.core</groupId>
                 <artifactId>ccsdk-sliapi</artifactId>
                 <version>${project.version}</version>
                 <type>xml</type>
@@ -110,6 +103,11 @@
             <dependency>
                 <groupId>org.onap.ccsdk.sli.core</groupId>
                 <artifactId>sli-provider-base</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.core</groupId>
+                <artifactId>sli-installer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

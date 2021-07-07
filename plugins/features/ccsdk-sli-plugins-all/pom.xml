@@ -24,7 +24,6 @@
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-restapi-call-node</artifactId>
@@ -32,7 +31,6 @@
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-restconf-client</artifactId>
@@ -40,18 +38,16 @@
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ccsdk-template-node</artifactId>
+            <artifactId>ccsdk-sshapi-call-node</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ccsdk-sshapi-call-node</artifactId>
+            <artifactId>ccsdk-template-node</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>

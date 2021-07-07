@@ -38,13 +38,6 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ccsdk-slicore-utils</artifactId>
-            <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-dblib</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
@@ -67,6 +60,13 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-sliapi</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-slicore-utils</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
