@@ -28,21 +28,21 @@
                 <artifactId>ccsdk-asdcApi</artifactId>
                 <version>${project.version}</version>
                 <type>xml</type>
-                <classifier>feature</classifier>
+                <classifier>features</classifier>
             </dependency>
             <dependency>
                 <groupId>org.onap.ccsdk.sli.northbound</groupId>
                 <artifactId>ccsdk-dataChange</artifactId>
                 <version>${project.version}</version>
                 <type>xml</type>
-                <classifier>feature</classifier>
+                <classifier>features</classifier>
             </dependency>
             <dependency>
                 <groupId>org.onap.ccsdk.sli.northbound</groupId>
                 <artifactId>ccsdk-lcm</artifactId>
                 <version>${project.version}</version>
                 <type>xml</type>
-                <classifier>feature</classifier>
+                <classifier>features</classifier>
             </dependency>
             <dependency>
                 <groupId>org.onap.ccsdk.sli.northbound</groupId>
