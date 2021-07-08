@@ -40,13 +40,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ccsdk-chef-adaptor</artifactId>
-            <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-mdsal-resource</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
