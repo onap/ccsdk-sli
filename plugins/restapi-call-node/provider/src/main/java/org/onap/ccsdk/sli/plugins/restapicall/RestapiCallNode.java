@@ -81,6 +81,7 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.utils.common.AcceptIpAddressHostNameVerifier;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.logging.filter.base.HttpURLConnectionMetricUtil;
 import org.onap.logging.filter.base.MetricLogClientFilter;
@@ -795,9 +796,9 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
         Client client;
         if (ssl != null) {
             HttpsURLConnection.setDefaultSSLSocketFactory(ssl.getSocketFactory());
-            client = ClientBuilder.newBuilder().sslContext(ssl).hostnameVerifier((s, sslSession) -> true).build();
+            client = ClientBuilder.newBuilder().sslContext(ssl).hostnameVerifier(new AcceptIpAddressHostNameVerifier()).build();
         } else {
-            client = ClientBuilder.newBuilder().hostnameVerifier((s, sslSession) -> true).build();
+            client = ClientBuilder.newBuilder().hostnameVerifier(new AcceptIpAddressHostNameVerifier()).build();
         }
 
         setClientTimeouts(client);
@@ -924,7 +925,7 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
 
     protected SSLContext createSSLContext(Parameters p) {
         try (FileInputStream in = new FileInputStream(p.keyStoreFileName)) {
-            HttpsURLConnection.setDefaultHostnameVerifier((string, ssls) -> true);
+            HttpsURLConnection.setDefaultHostnameVerifier(new AcceptIpAddressHostNameVerifier());
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             KeyStore ks = KeyStore.getInstance("PKCS12");
             char[] pwd = p.keyStorePassword.toCharArray();
