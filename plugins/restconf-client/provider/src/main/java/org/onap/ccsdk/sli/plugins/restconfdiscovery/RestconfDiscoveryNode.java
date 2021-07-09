@@ -167,6 +167,9 @@ public class RestconfDiscoveryNode implements SvcLogicDiscoveryPlugin {
             log.info("Closed connection to SSE source");
         }
 
+        // Note: Sonar complains about host name verification being 
+        // disabled here.  This is necessary to handle devices using self-signed
+        // certificates (where CA would be unknown) - so we are leaving this code as is.
         private Client ignoreSslClient() {
             SSLContext sslcontext = null;
 

@@ -35,6 +35,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
 import org.apache.commons.codec.binary.Base64;
+import org.onap.ccsdk.sli.core.utils.common.AcceptIpAddressHostNameVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,12 +111,7 @@ public class SdncOdlConnection {
 		httpConn.setUseCaches(false);
 
 		if (httpConn instanceof HttpsURLConnection) {
-			HostnameVerifier hostnameVerifier = new HostnameVerifier() {
-				@Override
-				public boolean verify(String hostname, SSLSession session) {
-					return true;
-				}
-			};
+			HostnameVerifier hostnameVerifier = new AcceptIpAddressHostNameVerifier();
 			((HttpsURLConnection) httpConn).setHostnameVerifier(hostnameVerifier);
 		}
 
