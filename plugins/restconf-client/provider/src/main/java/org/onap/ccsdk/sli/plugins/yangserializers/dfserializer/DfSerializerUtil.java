@@ -31,6 +31,8 @@ import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
+
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -123,8 +125,11 @@ public final class DfSerializerUtil {
     public static Writer getXmlWriter(String input, String indent)
             throws SvcLogicException {
         try {
-            Transformer transformer = TransformerFactory.newInstance()
-                    .newTransformer();
+            TransformerFactory factory = javax.xml.transform.TransformerFactory.newInstance();
+            // Remediate XML external entity vulnerabilty - prohibit the use of all protocols by external entities:
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+            Transformer transformer = factory.newTransformer();
             transformer.setOutputProperty(INDENT, YES);
             transformer.setOutputProperty(INDENT_XMLNS, indent);
             StreamResult result = new StreamResult(new StringWriter());
@@ -146,9 +151,12 @@ public final class DfSerializerUtil {
      */
     private static Document parseXml(String in) throws SvcLogicException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db;
+
         try {
-            db = dbf.newDocumentBuilder();
+            // To remediate XML external entity vulnerability, completely disable external entities declarations:
+            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+             dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            DocumentBuilder db = dbf.newDocumentBuilder();
             InputSource is = new InputSource(new StringReader(in));
             return db.parse(is);
         } catch (SAXException | IOException | ParserConfigurationException e) {
