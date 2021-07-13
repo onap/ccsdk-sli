@@ -85,6 +85,8 @@ public class VNFOperationalStateValidatorImpl implements OperationalStateValidat
         List<Map.Entry> entryList = null;
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        // Remediate XML external entity vulnerabilty - prohibit the use of all protocols by external entities:
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document document = builder.parse(new ByteArrayInputStream(xmlText.getBytes(StandardCharsets.UTF_8)));
 
