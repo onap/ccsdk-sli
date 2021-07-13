@@ -62,6 +62,9 @@ public final class XmlParser {
         Handler handler = new Handler(listNameList);
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
+            // To remediate XML external entity vulnerability, completely disable external entities declarations:
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             SAXParser saxParser = factory.newSAXParser();
             InputStream in = new ByteArrayInputStream(s.getBytes());
             saxParser.parse(in, handler);
