@@ -36,6 +36,8 @@ public class ResourceRequest {
     public int rangeMaxOverride;
     public boolean rangeForceNewNumbers;
     public boolean rangeNextInSequence;
+    public int rangeRequestedCount;
+    public boolean rangeSequential;
     public boolean replace;
     public String requestType;
     public String serviceModel;

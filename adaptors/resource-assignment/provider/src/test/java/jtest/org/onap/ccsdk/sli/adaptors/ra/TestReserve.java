@@ -961,4 +961,40 @@ public class TestReserve {
         Assert.assertTrue(st == QueryStatus.SUCCESS);
         Assert.assertTrue(dataSetup.checkRangeItem(resourceName, assetId, "SI::" + entityId + "_test::VPE-Core2::1", "1002"));
     }
+
+    @Test
+    public void test015() throws Exception {
+        String t = "015";
+        log.info("============== reserve " + t + " ================================");
+        log.info("=== Test allocating >1 numbers using range-requested-count parameter");
+
+        String entityId = "reserve" + t;
+        String targetId = "port-id-1";
+        String resourceName = "vlan-id-filter";
+
+        String assetId = "Site::" + targetId;
+
+        dataSetup.cleanup();
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("ra-input.service-model", "MY-SERV-MODEL");
+        ctx.setAttribute("ra-input.endpoint-position", "VPE-Core2");
+        ctx.setAttribute("ra-input.check-only", "false");
+
+        ctx.setAttribute("ra-input.resource-name", resourceName);
+        ctx.setAttribute("ra-input.range-requested-count", "2");
+        ctx.setAttribute("ra-input.range-sequential", "true");
+
+        ctx.setAttribute("ra-input.reservation-entity-type", "SI");
+        ctx.setAttribute("ra-input.reservation-entity-id", entityId + "_test");
+        ctx.setAttribute("ra-input.reservation-entity-version", "1");
+
+        ctx.setAttribute("ra-input.reservation-target-id", targetId);
+        ctx.setAttribute("ra-input.reservation-target-type", "Site");
+
+        QueryStatus st = resourceAllocator.reserve("NetworkCapacity", null, null, null, ctx);
+
+        Assert.assertTrue(st == QueryStatus.SUCCESS);
+        Assert.assertTrue(dataSetup.checkRangeItem(resourceName, assetId, "SI::" + entityId + "_test::VPE-Core2::1", "1002,1003"));
+    }
 }
