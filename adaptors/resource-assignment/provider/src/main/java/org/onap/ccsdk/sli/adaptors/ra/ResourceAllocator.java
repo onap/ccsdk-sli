@@ -457,6 +457,10 @@ public class ResourceAllocator implements SvcLogicResource {
         rr.rangeForceNewNumbers = Boolean.parseBoolean(rangeForceNewNumbersStr);
         String rangeNextInSequenceStr = getParam(ctx, "range-next-in-sequence", false, "false");
         rr.rangeNextInSequence = Boolean.parseBoolean(rangeNextInSequenceStr);
+        String rangeRequestedCountStr = getParam(ctx, "range-requested-count", false, "1");
+        rr.rangeRequestedCount = Integer.parseInt(rangeRequestedCountStr);
+        String rangeSequentialStr = getParam(ctx, "range-sequential", false, "false");
+        rr.rangeSequential = Boolean.parseBoolean(rangeSequentialStr);
         String replaceStr = getParam(ctx, "replace", false, "true");
         rr.replace = Boolean.parseBoolean(replaceStr);
         rr.applicationId = getParam(ctx, "application-id", false, "SDNC");
