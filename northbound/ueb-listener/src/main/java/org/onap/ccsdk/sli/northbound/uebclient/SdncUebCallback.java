@@ -1194,9 +1194,10 @@ public class SdncUebCallback implements INotificationCallback {
 
                     outFile = File.createTempFile("tmp", "xml");
                     TransformerFactory factory = TransformerFactory.newInstance();
-                    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);  
-                    //factory.setFeature("http://xml.org/sax/features/external-general-entities", false); -- breaks transform
-                    //factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);                   
+                    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                    // To remediate XML external entity vulnerability, completely disable external entities declarations:
+                    factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                    factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");               
                     Source xslt = new StreamSource(new File(xsltPath));
                     Transformer transformer = factory.newTransformer(xslt);
                     Source text = new StreamSource(inFile);
