@@ -134,8 +134,11 @@ public class DbAllocationRule implements AllocationRule {
         ar.assetId = resourceTarget.resourceTargetType + "::" + resourceTarget.resourceTargetId;
         ar.requestedNumbers = StrUtil.listInt(resourceRequest.rangeRequestedNumbers,
                 "Invalid value for requested-numbers");
-        if (ar.requestedNumbers != null) {
+        if (ar.requestedNumbers != null && !ar.requestedNumbers.isEmpty()) {
             ar.requestedCount = ar.requestedNumbers.size();
+        } else {
+            ar.requestedCount = resourceRequest.rangeRequestedCount;
+            ar.sequential = resourceRequest.rangeSequential;
         }
         ar.excludeNumbers = StrUtil.listInt(resourceRequest.rangeExcludeNumbers, "Invalid value for exclude-numbers");
         ar.reverseOrder = resourceRequest.rangeReverseOrder;
@@ -212,8 +215,11 @@ public class DbAllocationRule implements AllocationRule {
         ar.assetId = resourceTarget.resourceTargetType + "::" + resourceTarget.resourceTargetId;
         ar.requestedNumbers = StrUtil.listInt(resourceRequest.rangeRequestedNumbers,
                 "Invalid value for requested-numbers");
-        if (ar.requestedNumbers != null) {
+        if (ar.requestedNumbers != null && !ar.requestedNumbers.isEmpty()) {
             ar.requestedCount = ar.requestedNumbers.size();
+        } else {
+            ar.requestedCount = resourceRequest.rangeRequestedCount;
+            ar.sequential = resourceRequest.rangeSequential;
         }
         ar.excludeNumbers = StrUtil.listInt(resourceRequest.rangeExcludeNumbers, "Invalid value for exclude-numbers");
         ar.reverseOrder = resourceRequest.rangeReverseOrder;
