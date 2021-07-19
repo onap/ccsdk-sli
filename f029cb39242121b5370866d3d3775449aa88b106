@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "efeee63d_c894ec58",
+        "filename": "northbound/daexim-offsite-backup/provider/src/main/java/org/onap/ccsdk/sli/northbound/daeximoffsitebackup/DaeximOffsiteBackupProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2021-07-19T23:10:35Z",
+      "side": 1,
+      "message": "can directly have newFile.getCanonicalPath() in if instead of a new variable",
+      "revId": "f029cb39242121b5370866d3d3775449aa88b106",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
