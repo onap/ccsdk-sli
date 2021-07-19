@@ -333,6 +333,11 @@ public class DaeximOffsiteBackupProvider implements AutoCloseable, DaeximOffsite
         while(zipEntry != null){
             String fileName = zipEntry.getName();
             File newFile = new File(DAEXIM_DIR + fileName);
+            // To remediate zip slip vulnerability, ensure file has the expected canonical path
+            String canonicalDestinationPath = newFile.getCanonicalPath();
+            if (!canonicalDestinationPath.startsWith(DAEXIM_DIR)) {
+                throw new IOException("Entry is outside of the target directory");
+            }
             FileOutputStream fos = new FileOutputStream(newFile);
             int len;
             while ((len = zis.read(bytes)) > 0) {
