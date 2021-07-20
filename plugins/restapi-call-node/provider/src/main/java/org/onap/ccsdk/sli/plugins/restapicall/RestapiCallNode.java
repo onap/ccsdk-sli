@@ -238,6 +238,7 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
         p.multipartFormData = valueOf(parseParam(paramMap, "multipartFormData", false, "false"));
         p.multipartFile = parseParam(paramMap, "multipartFile", false, null);
         p.targetEntity = parseParam(paramMap, "targetEntity", false, null);
+        p.disableHostVerification = valueOf(parseParam(paramMap, "disableHostVerification", false, "true"));
         return p;
     }
 
@@ -925,7 +926,7 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
 
     protected SSLContext createSSLContext(Parameters p) {
         try (FileInputStream in = new FileInputStream(p.keyStoreFileName)) {
-            HttpsURLConnection.setDefaultHostnameVerifier(new AcceptIpAddressHostNameVerifier());
+            HttpsURLConnection.setDefaultHostnameVerifier(new AcceptIpAddressHostNameVerifier(p.disableHostVerification));
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             KeyStore ks = KeyStore.getInstance("PKCS12");
             char[] pwd = p.keyStorePassword.toCharArray();
