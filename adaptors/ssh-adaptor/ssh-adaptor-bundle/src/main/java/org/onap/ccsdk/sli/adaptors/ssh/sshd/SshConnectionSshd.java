@@ -93,7 +93,7 @@ class SshConnectionSshd implements SshConnection {
             }
             if (keyFile != null) {
                 KeyPairProvider keyPairProvider = new FileKeyPairProvider(Paths.get(keyFile));
-                KeyPair keyPair = keyPairProvider.loadKeys().iterator().next();
+                KeyPair keyPair = keyPairProvider.loadKeys(clientSession).iterator().next();
                 clientSession.addPublicKeyIdentity(keyPair);
             }
             AuthFuture authFuture = clientSession.auth();

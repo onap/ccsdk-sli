@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import org.apache.sshd.common.util.OsUtils;
 import org.apache.sshd.server.SshServer;
+import org.apache.sshd.server.ServerFactoryManager;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.scp.ScpCommandFactory;
 import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory;
@@ -216,7 +217,8 @@ public class SshAdaptorTest {
         sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(Paths.get(System.getProperty("java.io.tmpdir") + "/key.ser")));
         sshd.setPasswordAuthenticator((username, password, session) -> (SSH_USERNAME.equals(username) && SSH_PASSWORD.equals(password)));
         sshd.setPublickeyAuthenticator((username, key, session) -> false);
-        sshd.getProperties().put(SshServer.WELCOME_BANNER, "Welcome to SSHD\n");
+        // SshServer.WELCOME_BANNER no longer exists in apache sshd 2.7.0
+        // sshd.getProperties().put(SshServer.WELCOME_BANNER, "Welcome to SSHD\n");
         startServer0();
         try {
             Thread.sleep(1000);
