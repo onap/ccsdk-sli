@@ -54,4 +54,5 @@ public class Parameters {
     public String multipartFile;
     public String targetEntity;
     public boolean disableHostVerification;
+    public String proxyUrl;
 }
