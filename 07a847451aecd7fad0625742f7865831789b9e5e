@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "28c714cf_06fa1e58",
+        "filename": "core/sli/provider/src/main/java/org/onap/ccsdk/sli/core/sli/provider/MdsalHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2021-09-23T15:24:14Z",
+      "side": 1,
+      "message": "does it really need to call setProperty with classname ?",
+      "revId": "07a847451aecd7fad0625742f7865831789b9e5e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
