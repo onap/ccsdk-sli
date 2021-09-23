@@ -163,8 +163,7 @@ public class MdsalHelper {
                     } else if ("PortNumber".equals(simpleTypeName)) {
                         propVal = String.valueOf(retValue);
                     }
-                    LOG.debug(SETTING_PROPERTY + pfx + " to " + propVal);
-                    props.setProperty(pfx, propVal);
+                    setProperty(props, pfx, propVal);
                 }
             } catch (Exception e) {
                 LOG.error("Caught exception trying to convert value returned by " + fromClass.getName()
@@ -176,7 +175,7 @@ public class MdsalHelper {
             for (int i = 0; i < fromList.size(); i++) {
                 toProperties(props, pfx + "[" + i + "]", fromList.get(i), fromClass, useLegacyEnumerationMapping);
             }
-            props.setProperty(pfx + "_length", Integer.toString(fromList.size()));
+            setProperty(props, pfx + "_length", Integer.toString(fromList.size()));
         } else if (fromClass.isEnum())
         {
             try {
@@ -192,11 +191,11 @@ public class MdsalHelper {
                         m.setAccessible(false);
                     }
                     String propVal = retValue.toString();
-                    props.setProperty(pfx, mapEnumeratedValue(pfx, propVal));
+                    setProperty(props, pfx, mapEnumeratedValue(pfx, propVal));
                 } else {
                     Method method = fromClass.getMethod("getName");
                     String yangValue = (String) method.invoke(fromObj);
-                    props.setProperty(pfx, yangValue);
+                    setProperty(props, pfx, yangValue);
                 }
             } catch (Exception e) {
                 LOG.error("Caught exception trying to convert value returned by " + fromClass.getName()
@@ -271,11 +270,11 @@ public class MdsalHelper {
                                     String propName = propNamePfx + "." + fieldName;
                                     if (useLegacyEnumerationMapping) {
                                         propVal = retValue.toString();
-                                        props.setProperty(propName, mapEnumeratedValue(fieldName, propVal));
+                                        setProperty(props, propName, mapEnumeratedValue(fieldName, propVal));
                                     } else {
                                         Method method = retValue.getClass().getMethod("getName");
                                         String yangValue = (String) method.invoke(retValue);
-                                        props.setProperty(propName, yangValue);
+                                        setProperty(props, propName, yangValue);
                                     }
 
                                 }
@@ -366,9 +365,7 @@ public class MdsalHelper {
                                 } else {
                                     propVal = propValObj.toString();
                                 }
-                                LOG.debug(SETTING_PROPERTY + propName + " to " + propVal);
-                                props.setProperty(propName, propVal);
-
+                                setProperty(props, propName, propVal);
                             }
                         } catch (Exception e) {
                             if (m.getName().equals("getKey")) {
@@ -388,7 +385,7 @@ public class MdsalHelper {
             // "getValue", then
             // set value identified by "prefix" to that one value.
             if ((numGetters == 1) && ("getValue".equals(lastGetterName)) || isYangScalarType(fromObj)) {// || isYangTypeObject(fromObj)) {
-                props.setProperty(propNamePfx, propVal);
+            	setProperty(props, propNamePfx, propVal);
             }
         } else {
             // Class is not yang generated and not a list
@@ -405,8 +402,7 @@ public class MdsalHelper {
             } else {
                 fromVal = fromObj.toString();
             }
-            LOG.debug(SETTING_PROPERTY + pfx + " to " + fromVal);
-            props.setProperty(pfx, fromVal);
+            setProperty(props, pfx, fromVal);
         }
 
         return (props);
@@ -1357,6 +1353,11 @@ public class MdsalHelper {
             LOG.info("yangMappingProperties did not contain the key " + mappingKey + " returning the original value.");
             return propertyValue;
         }
+    }
+    
+    private static void setProperty(Properties props, String key, String value) {
+        LOG.debug(SETTING_PROPERTY + key + " to " + value);
+        props.setProperty(key, value);
     }
 
 }
