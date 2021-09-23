@@ -16,6 +16,24 @@
       "revId": "07a847451aecd7fad0625742f7865831789b9e5e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "73c033be_9d966236",
+        "filename": "core/sli/provider/src/main/java/org/onap/ccsdk/sli/core/sli/provider/MdsalHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1219
+      },
+      "writtenOn": "2021-09-23T16:39:46Z",
+      "side": 1,
+      "message": "No it doesn\u0027t need to have the class name I changed it",
+      "parentUuid": "28c714cf_06fa1e58",
+      "revId": "07a847451aecd7fad0625742f7865831789b9e5e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
