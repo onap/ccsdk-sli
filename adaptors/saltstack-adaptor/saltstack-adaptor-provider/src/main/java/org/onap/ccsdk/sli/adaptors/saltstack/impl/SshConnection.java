@@ -43,7 +43,7 @@ import com.att.eelf.configuration.EELFManager;
 /**
  * Implementation of SshConnection interface based on Apache MINA SSHD library.
  */
-class SshConnection {
+public class SshConnection {
 
     private static final EELFLogger logger = EELFManager.getInstance().getApplicationLogger();
 
