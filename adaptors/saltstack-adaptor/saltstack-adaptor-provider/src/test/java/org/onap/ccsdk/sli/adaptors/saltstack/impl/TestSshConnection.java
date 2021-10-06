@@ -22,7 +22,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.adapter.impl;
+package org.onap.ccsdk.sli.adaptors.saltstack.impl;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,12 +32,14 @@ import org.onap.ccsdk.sli.adaptors.saltstack.impl.SshConnection;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 
 public class TestSshConnection {
 
 private SshConnection sshConnection;
+private Properties params;
 
 
     @Before
@@ -47,8 +49,8 @@ private SshConnection sshConnection;
         String User = "test";
         String Password = "test";
         sshConnection = new SshConnection(HostName, Port, User, Password);
+        params = new Properties();
     }
-
 
     @Test(expected=NullPointerException.class)
     public void reqConnect_exitStatusFailed() {
@@ -61,6 +63,12 @@ private SshConnection sshConnection;
         sshConnection.setExecTimeout(10);
         int outcome = 999;
         try {
+            params.put("org.onap.appc.adaptor.saltstack.clientType", "SSH_CERT");
+            params.put("org.onap.appc.adaptor.saltstack.host", "test");
+            params.put("org.onap.appc.adaptor.saltstack.port", "10");
+            params.put("org.onap.appc.adaptor.saltstack.userName", "test");
+            params.put("org.onap.appc.adaptor.saltstack.userPasswd", "test");
+            params.put("org.onap.appc.adaptor.saltstack.sshKey", "test");
             OutputStream res = new FileOutputStream("test.out");
             outcome = sshConnection.execCommandWithPty("ls",res);
             assertEquals(1,outcome);
@@ -71,6 +79,12 @@ private SshConnection sshConnection;
 
     @Test(expected=NullPointerException.class)
     public void reqDisconnect_exitStatusFailed() {
+        params.put("org.onap.appc.adaptor.saltstack.clientType", "SSH_CERT");
+        params.put("org.onap.appc.adaptor.saltstack.host", "test");
+        params.put("org.onap.appc.adaptor.saltstack.port", "10");
+        params.put("org.onap.appc.adaptor.saltstack.userName", "test");
+        params.put("org.onap.appc.adaptor.saltstack.userPasswd", "test");
+        params.put("org.onap.appc.adaptor.saltstack.sshKey", "test");
         sshConnection.setExecTimeout(10);
         sshConnection.disconnect();
     }
@@ -80,6 +94,12 @@ private SshConnection sshConnection;
         sshConnection.setExecTimeout(10);
         int outcome=999;
         try {
+            params.put("org.onap.appc.adaptor.saltstack.clientType", "SSH_CERT");
+            params.put("org.onap.appc.adaptor.saltstack.host", "test");
+            params.put("org.onap.appc.adaptor.saltstack.port", "10");
+            params.put("org.onap.appc.adaptor.saltstack.userName", "test");
+            params.put("org.onap.appc.adaptor.saltstack.userPasswd", "test");
+            params.put("org.onap.appc.adaptor.saltstack.sshKey", "test");
             OutputStream res = new FileOutputStream("test.out");
             OutputStream resErr = new FileOutputStream("test.out");
             outcome = sshConnection.execCommand("ls",res, resErr);
