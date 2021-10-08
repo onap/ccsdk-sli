@@ -614,7 +614,7 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
 
             String var1 = template.substring(i1 + 2, i2);
             String value1 = format == Format.XML ? XmlJsonUtil.getXml(mm, var1) : XmlJsonUtil.getJson(mm, var1);
-            if (value1 == null || value1.trim().length() == 0) {
+            if (value1 == null) {
                 // delete the whole element (line)
                 int i3 = template.lastIndexOf('\n', i1);
                 if (i3 < 0) {
