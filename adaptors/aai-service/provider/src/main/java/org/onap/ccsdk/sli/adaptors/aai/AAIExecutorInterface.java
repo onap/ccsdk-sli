@@ -24,10 +24,13 @@
  */
 package org.onap.ccsdk.sli.adaptors.aai;
 
+import org.onap.ccsdk.sli.adaptors.aai.update.BulkUpdateResponseData;
+
 public interface AAIExecutorInterface {
 	public String get(AAIRequest request) throws AAIServiceException;
 	public String post(AAIRequest request) throws AAIServiceException;
 	public Boolean delete(AAIRequest request, String resourceVersion) throws AAIServiceException;
 	public Object query(AAIRequest request, Class clas) throws AAIServiceException;
 	public Boolean patch(AAIRequest request, String resourceVersion) throws AAIServiceException;
+	public String bulkUpdate(BulkUpdateRequest request) throws AAIServiceException;
 }
