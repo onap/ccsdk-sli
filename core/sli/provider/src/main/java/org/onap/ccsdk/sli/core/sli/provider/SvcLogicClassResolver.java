@@ -21,7 +21,13 @@
 
 package org.onap.ccsdk.sli.core.sli.provider;
 
+import java.nio.file.WatchKey;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
 import org.onap.ccsdk.sli.core.sli.SvcLogicAdaptor;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.sli.SvcLogicRecorder;
@@ -37,7 +43,27 @@ import org.slf4j.LoggerFactory;
 public class SvcLogicClassResolver implements SvcLogicResolver {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SvcLogicClassResolver.class);
+	private static final String CLASS_RESOLVER_PROPERTIES="classresolver.properties";
+	private static final String ALLOWED_PACKAGES = "org.onap.ccsdk.sli.allowed.packages";
 	private static HashMap<String, SvcLogicAdaptor> adaptorMap = new HashMap<>();
+	List<String> allowedPackages = new ArrayList<String>();
+
+	public SvcLogicClassResolver() {
+		// Initialize list of allowed package names
+		Properties props = new Properties();
+		try {
+			props.load(SvcLogicClassResolver.class.getResourceAsStream(CLASS_RESOLVER_PROPERTIES));
+			String allowedPackagesProp = props.getProperty(ALLOWED_PACKAGES, "org.onap.ccsdk.sli");
+			String[] allowedPackageArray = allowedPackagesProp.split(",");
+			for (int i = 0 ; i < allowedPackageArray.length ; i++) {
+				allowedPackages.add(allowedPackageArray[i]);
+			}
+		} catch (Exception e)
+		{
+			LOG.warn("Caught exception trying to load properties file {}", CLASS_RESOLVER_PROPERTIES, e);
+			allowedPackages.add("org.onap.ccsdk.sli");
+		}
+	}
 
 	public void registerAdaptor(SvcLogicAdaptor adaptor) {
 		String name = adaptor.getClass().getName();
@@ -75,6 +101,11 @@ public class SvcLogicClassResolver implements SvcLogicResolver {
 		if (bundle == null) {
 			// Running outside OSGi container (e.g. jUnit). Use Reflection
 			// to resolve class
+			if (!isAllowedClassName(className)) {
+				LOG.error("Could not resolve class {} - invalid class name", className);
+				return null;
+			}
+			
 			try {
 				return (Class.forName(className).newInstance());
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
@@ -95,6 +126,22 @@ public class SvcLogicClassResolver implements SvcLogicResolver {
 			}
 		}
 	}
+
+	private boolean isAllowedClassName(String className) {
+		if (className == null) {
+			return false;
+		}
+	
+		Iterator<String> packageIter = allowedPackages.iterator();
+		while (packageIter.hasNext()) {
+			if (className.startsWith(packageIter.next()+".")) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 
 	@Override
 	public SvcLogicResource getSvcLogicResource(String resourceName) {

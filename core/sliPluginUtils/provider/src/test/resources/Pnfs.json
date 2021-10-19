@@ -537,8 +537,8 @@
       }
     },
     {
-      "pnf-name": "networkId-providerId-20-clientId-0-topologyId-2-nodeId-10.2.1.4",
-      "pnf-id": "10.2.1.4",
+      "pnf-name": "networkId-providerId-20-clientId-0-topologyId-2-nodeId-10.2.1.5",
+      "pnf-id": "10.2.1.5",
       "in-maint": true,
       "resource-version": "1612592907394",
       "admin-status": "up",
@@ -730,8 +730,8 @@
       }
     },
     {
-      "pnf-name": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4",
-      "pnf-id": "10.2.1.4",
+      "pnf-name": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5",
+      "pnf-id": "10.2.1.5",
       "in-maint": true,
       "resource-version": "1612592893537",
       "admin-status": "up",
@@ -741,22 +741,22 @@
           {
             "related-to": "tunnel-termination-point",
             "relationship-label": "tosca.relationships.network.BindsTo",
-            "related-link": "/aai/v21/network/tunnel-termination-points/tunnel-termination-point/networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4-ttpId-MjI%3D",
+            "related-link": "/aai/v21/network/tunnel-termination-points/tunnel-termination-point/networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5-ttpId-MjI%3D",
             "relationship-data": [
               {
                 "relationship-key": "tunnel-termination-point.ttp-id",
-                "relationship-value": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4-ttpId-MjI="
+                "relationship-value": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5-ttpId-MjI="
               }
             ]
           },
           {
             "related-to": "tunnel-termination-point",
             "relationship-label": "tosca.relationships.network.BindsTo",
-            "related-link": "/aai/v21/network/tunnel-termination-points/tunnel-termination-point/networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4-ttpId-MTI%3D",
+            "related-link": "/aai/v21/network/tunnel-termination-points/tunnel-termination-point/networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5-ttpId-MTI%3D",
             "relationship-data": [
               {
                 "relationship-key": "tunnel-termination-point.ttp-id",
-                "relationship-value": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4-ttpId-MTI="
+                "relationship-value": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5-ttpId-MTI="
               }
             ]
           },

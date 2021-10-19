@@ -2,16 +2,15 @@
  * ============LICENSE_START=======================================================
  * openECOMP : SDN-C
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights
+ * Copyright (C) 2021 AT&T Intellectual Property. All rights
  * 			reserved.
- * Modifications Copyright (C) 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,39 +19,47 @@
  * ============LICENSE_END=========================================================
  */
 /**
- * @author Rich Tabedzki
+ * @author Dan Timoney
  *
  */
 package org.onap.ccsdk.sli.adaptors.aai;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.onap.ccsdk.sli.adaptors.aai.data.EchoResponse;
+import org.onap.ccsdk.sli.adaptors.aai.update.BulkUpdateRequestData;
+import org.onap.ccsdk.sli.adaptors.aai.update.BulkUpdateRequestItemBody;
+import org.onap.ccsdk.sli.adaptors.aai.update.BulkUpdateResponseData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class EchoRequest extends AAIRequest {
 
+public class BulkUpdateRequest extends AAIRequest {
 
+	private final String generic_search_path;
 
-	private final String echoPath;
+	public static final String FORMAT = "format";
 
-	public EchoRequest() {
-		echoPath = "/aai/util/echo";
+	public BulkUpdateRequest() {
+		generic_search_path = "/aai/v24/bulk/single-transaction";
+		setRequestObject(new BulkUpdateRequestData());
 	}
 
 
 	@Override
 	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
 
-		String requestUrl = getTargetUri()+echoPath;
+		String requestUrl = getTargetUri()+generic_search_path;
 
-		if(resourceVersion != null) {
-			requestUrl = requestUrl +"?resource-version="+resourceVersion;
+		String formatQuery = requestProperties.getProperty(FORMAT);
+
+		if(formatQuery != null) {
+			requestUrl = requestUrl +"?format="+formatQuery;
 		}
 		URL httpReqUrl =	new URL(requestUrl);
 
@@ -70,10 +77,10 @@ public class EchoRequest extends AAIRequest {
 	@Override
 	public String toJSONString() {
 		ObjectMapper mapper = getObjectMapper();
-		EchoResponse tenant = (EchoResponse)requestDatum;
+		BulkUpdateRequestData bulkUpdateRequest = (BulkUpdateRequestData)requestDatum;
 		String jsonText = null;
 		try {
-			jsonText = mapper.writeValueAsString(tenant);
+			jsonText = mapper.writeValueAsString(bulkUpdateRequest);
 		} catch (JsonProcessingException exc) {
 			handleException(this, exc);
 			return null;
@@ -84,14 +91,39 @@ public class EchoRequest extends AAIRequest {
 
 	@Override
 	public String[] getArgsList() {
-		String[] args = {};
+		String[] args = {FORMAT};
 		return args;
 	}
 
 
 	@Override
 	public Class<? extends AAIDatum> getModelClass() {
-		return EchoResponse.class;
+		return BulkUpdateRequestData.class;
+	}
+
+
+	public static String processPathData(String requestUrl, Properties requestProperties) throws UnsupportedEncodingException {
+		return requestUrl;
+	}
+	
+	@Override
+	public AAIDatum jsonStringToObject(String jsonData) throws IOException {
+		if(jsonData == null) {
+			return null;
+		}
+
+		AAIDatum response = null;
+		ObjectMapper mapper = getObjectMapper();
+		response = mapper.readValue(jsonData, BulkUpdateResponseData.class);
+		return response;
+	}
+
+	protected boolean expectsDataFromPUTRequest() {
+		return true;
+	}
+
+	public void addUpdate(String action, String uri, BulkUpdateRequestItemBody body) {
+		((BulkUpdateRequestData) requestDatum).addRequestItem(action, uri, body);
 	}
 
 }

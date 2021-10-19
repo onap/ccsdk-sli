@@ -314,11 +314,11 @@
       "link-id": "10.1.1.4-12"
     },
     {
-      "link-name": "networkId-providerId-20-clientId-0-topologyId-1-linkId-10.2.1.4-22",
+      "link-name": "networkId-providerId-20-clientId-0-topologyId-1-linkId-10.2.1.5-22",
       "in-maint": false,
       "link-type": "point-to-point",
       "resource-version": "1612592904374",
-      "link-id": "10.2.1.4-22"
+      "link-id": "10.2.1.5-22"
     },
     {
       "link-name": "networkId-providerId-10-clientId-0-topologyId-1-linkId-10.1.1.1-14",
@@ -412,15 +412,15 @@
           {
             "related-to": "p-interface",
             "relationship-label": "tosca.relationships.network.LinksTo",
-            "related-link": "/aai/v21/network/pnfs/pnf/networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4/p-interfaces/p-interface/networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4-ltpId-12",
+            "related-link": "/aai/v21/network/pnfs/pnf/networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5/p-interfaces/p-interface/networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5-ltpId-12",
             "relationship-data": [
               {
                 "relationship-key": "pnf.pnf-name",
-                "relationship-value": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4"
+                "relationship-value": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5"
               },
               {
                 "relationship-key": "p-interface.interface-name",
-                "relationship-value": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4-ltpId-12"
+                "relationship-value": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5-ltpId-12"
               }
             ],
             "related-to-property": [
@@ -681,15 +681,15 @@
           {
             "related-to": "p-interface",
             "relationship-label": "tosca.relationships.network.LinksTo",
-            "related-link": "/aai/v21/network/pnfs/pnf/networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4/p-interfaces/p-interface/networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4-ltpId-22",
+            "related-link": "/aai/v21/network/pnfs/pnf/networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5/p-interfaces/p-interface/networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5-ltpId-22",
             "relationship-data": [
               {
                 "relationship-key": "pnf.pnf-name",
-                "relationship-value": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4"
+                "relationship-value": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5"
               },
               {
                 "relationship-key": "p-interface.interface-name",
-                "relationship-value": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.4-ltpId-22"
+                "relationship-value": "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.5-ltpId-22"
               }
             ],
             "related-to-property": [
@@ -722,11 +722,11 @@
       }
     },
     {
-      "link-name": "networkId-providerId-20-clientId-0-topologyId-1-linkId-10.2.1.4-12",
+      "link-name": "networkId-providerId-20-clientId-0-topologyId-1-linkId-10.2.1.5-12",
       "in-maint": false,
       "link-type": "point-to-point",
       "resource-version": "1612592904030",
-      "link-id": "10.2.1.4-12"
+      "link-id": "10.2.1.5-12"
     }
   ]
 }
