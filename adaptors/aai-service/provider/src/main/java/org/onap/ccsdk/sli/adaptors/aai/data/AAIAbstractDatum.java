@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 						reserved.
+ * 			reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,30 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-/**
- * @author Rich Tabedzki
- *
- */
-package org.onap.ccsdk.sli.adaptors.aai;
 
-import org.onap.ccsdk.sli.adaptors.aai.update.BulkUpdateResponseData;
+package org.onap.ccsdk.sli.adaptors.aai.data;
 
-public interface AAIExecutorInterface {
-	public String get(AAIRequest request) throws AAIServiceException;
-	public String post(AAIRequest request) throws AAIServiceException;
-	public Boolean delete(AAIRequest request, String resourceVersion) throws AAIServiceException;
-	public Object query(AAIRequest request, Class clas) throws AAIServiceException;
-	public Boolean patch(AAIRequest request, String resourceVersion) throws AAIServiceException;
-	public String bulkUpdate(BulkUpdateRequest request) throws AAIServiceException;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+	"related-nodes"
+})
+public class AAIAbstractDatum implements AAIDatum {
+	@JsonProperty("related-nodes")
+	private List<RelatedNode> relatedNodes = null;
+
+	@JsonProperty("related-nodes")
+	public List<RelatedNode> getRelatedNodes() {
+		return relatedNodes;
+	}
+
+	@JsonProperty("related-nodes")
+	public void setRelatedNodes(List<RelatedNode> relatedNodes) {
+		this.relatedNodes = relatedNodes;
+	}
 }

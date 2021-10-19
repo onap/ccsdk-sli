@@ -56,7 +56,7 @@ public class NodesQueryRequest extends AAIRequest {
     @Override
     public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
 
-        String request_url = targetUri+nodes_search_path;
+        String request_url = getTargetUri()+nodes_search_path;
 
         request_url = processPathData(request_url, requestProperties);
 

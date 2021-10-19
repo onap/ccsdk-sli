@@ -45,11 +45,21 @@ public class TestMdsalResourcePropertiesProviderImpl {
 
         System.out.println("All Default Properties : " + prop);
 
+        String sdncUser = System.getenv("ODL_USER");
+        if ((sdncUser == null) || (sdncUser.length() == 0)) {
+            sdncUser = "admin";
+        }
+
+        String sdncPassword = System.getenv("ODL_PASSWORD");
+        if ((sdncPassword == null) || (sdncUser.length() == 0)) {
+            sdncPassword = "Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U";
+        }
+
         assertEquals("localhost",prop.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-host"));
-        assertEquals("Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U",prop.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-passwd"));
+        assertEquals(sdncPassword,prop.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-passwd"));
         assertEquals("http",prop.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-protocol"));
         assertEquals("8181",prop.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-port"));
-        assertEquals("admin",prop.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-user"));
+        assertEquals(sdncUser,prop.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-user"));
     }
 
 

@@ -4,6 +4,8 @@
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 			reserved.
+ * Modifications Copyright (C) 2018 IBM.
+ * Modifications Copyright (C) 2019 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,68 +26,107 @@
  */
 package org.onap.ccsdk.sli.adaptors.aai;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
+import org.onap.ccsdk.sli.adaptors.aai.query.DslNaradQueryRequestData;
+import org.onap.ccsdk.sli.adaptors.aai.query.FormattedQueryResultList;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class PathRequest extends AAIRequest {
-	
-	private final  Class<? extends AAIDatum> classType;
-	
-	public static final String RESOURCE_PATH = "resource-path";
 
-	public PathRequest(Class<?> type) {
-		classType = (Class<? extends AAIDatum>)type;
+public class DslNaradQueryRequest extends AAIRequest {
+
+	private final String generic_search_path;
+
+	public static final String FORMAT = "format";
+
+
+	public DslNaradQueryRequest() {
+		generic_search_path = "/narad/v24/dsl";
 	}
 
-	
+
 	@Override
 	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
 
-		String request_url = getTargetUri() + "{resource-path}";
-		
-		String encoded_vnf = requestProperties.getProperty(RESOURCE_PATH);
-		request_url = request_url.replace("{resource-path}", encoded_vnf) ;
-		
-		URL http_req_url =	new URL(request_url);
+		String requestUrl = getTargetUri()+generic_search_path;
 
-		aaiService.LOGwriteFirstTrace(method, http_req_url.toString());
-		
-		return http_req_url;
+		requestUrl = processPathData(requestUrl, requestProperties);
+
+		String formatQuery = requestProperties.getProperty(FORMAT);
+
+		if(formatQuery != null) {
+			requestUrl = requestUrl +"?format="+formatQuery;
+		}
+		URL httpReqUrl =	new URL(requestUrl);
+
+		aaiService.LOGwriteFirstTrace(method, httpReqUrl.toString());
+
+		return httpReqUrl;
 	}
-	
+
 	@Override
 	public URL getRequestQueryUrl(String method) throws UnsupportedEncodingException, MalformedURLException {
-		return this.getRequestUrl(method, null);
+		return getRequestUrl(method, null);
 	}
 
 
 	@Override
 	public String toJSONString() {
 		ObjectMapper mapper = getObjectMapper();
-		String json_text = null;
+		DslNaradQueryRequestData tenant = (DslNaradQueryRequestData)requestDatum;
+		String jsonText = null;
 		try {
-			json_text = mapper.writeValueAsString(classType);
+			jsonText = mapper.writeValueAsString(tenant);
 		} catch (JsonProcessingException exc) {
 			handleException(this, exc);
 			return null;
 		}
-		return json_text;
+		return jsonText;
 	}
+
 
 	@Override
 	public String[] getArgsList() {
-		String[] args = {RESOURCE_PATH};
+		String[] args = {FORMAT};
 		return args;
+	}
+
+
+	@Override
+	public Class<? extends AAIDatum> getModelClass() {
+		return DslNaradQueryRequestData.class;
+	}
+
+
+	public static String processPathData(String requestUrl, Properties requestProperties) throws UnsupportedEncodingException {
+		return requestUrl;
 	}
 	
 	@Override
-	public Class<? extends AAIDatum> getModelClass() {
-		return classType;
+	public AAIDatum jsonStringToObject(String jsonData) throws IOException {
+		if(jsonData == null) {
+			return null;
+		}
+
+		AAIDatum response = null;
+		ObjectMapper mapper = getObjectMapper();
+		response = mapper.readValue(jsonData, FormattedQueryResultList.class);
+		return response;
 	}
+
+	protected boolean expectsDataFromPUTRequest() {
+		return true;
+	}
+	
+    public String getTargetUri() {
+        return targetNaradUri;
+    }
+
 }

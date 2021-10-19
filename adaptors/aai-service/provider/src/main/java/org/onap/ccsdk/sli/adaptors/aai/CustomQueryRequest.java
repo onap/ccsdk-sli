@@ -59,7 +59,7 @@ public class CustomQueryRequest extends AAIRequest {
 	@Override
 	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
 
-		String requestUrl = targetUri+generic_search_path;
+		String requestUrl = getTargetUri()+generic_search_path;
 
 		requestUrl = processPathData(requestUrl, requestProperties);
 
