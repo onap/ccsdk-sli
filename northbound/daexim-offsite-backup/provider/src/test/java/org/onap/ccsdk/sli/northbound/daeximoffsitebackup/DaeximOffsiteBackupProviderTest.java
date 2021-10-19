@@ -149,12 +149,11 @@ public class DaeximOffsiteBackupProviderTest {
             public String getTimestamp() {
                 return "Some Timestamp";
             }
-
+            
             @Override
             public @NonNull Map<Class<? extends Augmentation<RetrieveDataInput>>, Augmentation<RetrieveDataInput>> augmentations() {
                 return null;
             }
-
         };
 
         try {

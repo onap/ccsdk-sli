@@ -6,6 +6,8 @@ import java.util.Properties;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.ccsdk.sli.adaptors.aai.update.BulkUpdateRequestItemBody;
+
 import static org.junit.Assert.assertNotNull;
 
 public class AAIClientRESTExecutorTest {
@@ -94,7 +96,23 @@ public class AAIClientRESTExecutorTest {
         assertNotNull(nameValues);
     }
 
+    @Test
+    public void testBulkUpdate() {
+        
+        BulkUpdateRequest request = new BulkUpdateRequest();
+        BulkUpdateRequestItemBody body = new BulkUpdateRequestItemBody();
+        body.setOrchestrationStatus("active");
 
+        request.addUpdate("patch", "https://localhost/test", body);
+        
+
+
+        try {
+            aaiExecute.bulkUpdate(request);
+        } catch (AAIServiceException e) {
+            
+        }
+    }
 
     @Test
     public void testLOGwriteFirstTrace() {

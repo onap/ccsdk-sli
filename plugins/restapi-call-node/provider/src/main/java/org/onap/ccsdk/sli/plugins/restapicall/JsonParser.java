@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -118,9 +121,27 @@ public final class JsonParser {
                     Object o = wm.get(key);
                     wm.remove(key);
 
-                    if (o instanceof Boolean || o instanceof Number || o instanceof String) {
+                    if (o instanceof Boolean || o instanceof Number ) {
                         mm.put(key, o.toString());
                         log.info("Added property: {} : {}", key, o.toString());
+                    } else if (o instanceof String) {
+                        String value = o.toString();
+                        Pattern p = Pattern.compile("\\$\\{(\\w+)((?:\\:\\-)([^\\}]*))?\\}");
+                        Matcher m = p.matcher(value);
+                
+                        StringBuffer sb = new StringBuffer();
+                        while (m.find()) {
+                            String envVarName = null == m.group(1) ? m.group(2) : m.group(1);
+                            String envVarDefault = null == m.group(3) ? "" : m.group(3);
+                            String envVarValue = System.getenv(envVarName);
+                
+                            m.appendReplacement(sb,
+                                null == envVarValue ? Matcher.quoteReplacement(envVarDefault) : Matcher.quoteReplacement(envVarValue));
+                         }
+                        m.appendTail(sb);
+                        value = sb.toString();
+                        mm.put(key, value);
+                        log.info("Added property: {} : {}", key, value);
                     } else if (o instanceof JSONObject) {
                         JSONObject jo = (JSONObject) o;
                         Iterator<String> i = jo.keys();
