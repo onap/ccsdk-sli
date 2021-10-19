@@ -36,6 +36,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
@@ -57,6 +58,7 @@ import org.onap.ccsdk.sli.adaptors.aai.data.ErrorResponse;
 import org.onap.ccsdk.sli.adaptors.aai.data.RequestError;
 import org.onap.ccsdk.sli.adaptors.aai.data.ResourceVersion;
 import org.onap.ccsdk.sli.adaptors.aai.data.ServiceException;
+import org.onap.ccsdk.sli.adaptors.aai.update.BulkUpdateResponseData;
 import org.onap.ccsdk.sli.core.sli.MetricLogger;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.slf4j.Logger;
@@ -64,6 +66,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.EnglishReasonPhraseCatalog;
 
 /**
@@ -228,18 +232,20 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             if(request.getRequestObject() != null) {
                 requestUrl = request.getRequestUrl(HttpMethod.POST, null);
                 requestUrl = appendDepth(requestUrl, request);
+                LOG.info(String.format("%s : %s", HttpMethod.GET, requestUrl.toString()));
                 con = getConfiguredConnection(requestUrl, HttpMethod.POST);
                 String json_text = request.toJSONString();
                 LOGwriteDateTrace("data", json_text);
-                logMetricRequest("POST "+requestUrl.getPath(), json_text, requestUrl.getPath());
+                logMetricRequest("POST "+requestUrl.toString(), json_text, requestUrl.toString());
                 OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
                 osw.write(json_text);
                 osw.flush();
             } else {
                 requestUrl = request.getRequestUrl(HttpMethod.GET, null);
                 requestUrl = appendDepth(requestUrl, request);
+                LOG.info(String.format("%s : %s", HttpMethod.GET, requestUrl.toString()));
                 con = getConfiguredConnection(requestUrl, HttpMethod.GET);
-                logMetricRequest("GET "+requestUrl.getPath(), "", requestUrl.getPath());
+                logMetricRequest("GET "+requestUrl.toString(), "", requestUrl.toString());
             }
 
             // Check for errors
@@ -374,15 +380,17 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
 
             URL requestUrl = request.getRequestUrl(HttpMethod.PUT, resourceVersion);
             HttpURLConnection con = getConfiguredConnection(requestUrl, HttpMethod.PUT);
-            ObjectMapper mapper = AAIService.getObjectMapper();
             String jsonText = request.toJSONString();
-
             LOGwriteDateTrace("data", jsonText);
-            logMetricRequest("PUT "+requestUrl.getPath(), jsonText, requestUrl.getPath());
 
-            OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-            osw.write(jsonText);
-            osw.flush();
+            if(jsonText!=null) {
+	            OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
+	            osw.write(jsonText);
+	            osw.flush();
+	            osw.close();
+            }
+            logMetricRequest("PUT "+requestUrl.toString(), jsonText, requestUrl.toString());
+
 
             // Check for errors
             int responseCode = con.getResponseCode();
@@ -405,6 +413,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             logMetricResponse(responseCode, responseMessage);
 
             // Process the response
+            ObjectMapper mapper = AAIService.getObjectMapper();
             BufferedReader reader;
             String line = null;
             reader = new BufferedReader( new InputStreamReader( inputStream ) );
@@ -688,6 +697,92 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
         }
     }
 
+       /**
+     * Returns an String that contains JSON data returned from the AAI Server.
+     * <p>
+     * This method always returns immediately, whether or not the
+     * data exists.
+     *
+     * @param  request  an instance of AAIRequiest representing
+     *                 the request made by DirectedGraph node.
+     * @return      the JSON based representation of data instance requested.
+     * @see         String
+     */
+    @Override
+    public String bulkUpdate(BulkUpdateRequest request) throws AAIServiceException {
+        InputStream inputStream = null;
+
+        try {
+            URL requestUrl = request.getRequestUrl(HttpMethod.POST, null);
+            HttpURLConnection con = getConfiguredConnection(requestUrl, HttpMethod.POST);
+            String jsonText = request.toJSONString();
+            LOGwriteDateTrace("data", jsonText);
+
+            if(jsonText!=null) {
+	            OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
+	            osw.write(jsonText);
+	            osw.flush();
+	            osw.close();
+            }
+            logMetricRequest("POST "+requestUrl.toString(), jsonText, requestUrl.toString());
+
+
+            // Check for errors
+            int responseCode = con.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
+                inputStream = con.getInputStream();
+            } else {
+                inputStream = con.getErrorStream();
+            }
+            String responseMessage = null;
+            try {
+            	responseMessage = con.getResponseMessage();
+            } catch(Exception exc) {
+            	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            } finally {
+            	if(responseMessage == null)
+            		responseMessage = NOT_PROVIDED;
+            }
+
+            LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
+            logMetricResponse(responseCode, responseMessage);
+
+            // Process the response
+            ObjectMapper mapper = AAIService.getObjectMapper();
+            BufferedReader reader;
+            String line = null;
+            reader = new BufferedReader( new InputStreamReader( inputStream ) );
+            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while( ( line = reader.readLine() ) != null ) {
+                    stringBuilder.append( line );
+                }
+                LOGwriteEndingTrace(responseCode, responseMessage, (stringBuilder.length() > 0) ? stringBuilder.toString() : "{no-data}");
+                return stringBuilder.toString();
+            } else {
+                ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
+                LOGwriteEndingTrace(responseCode, responseMessage, mapper.writeValueAsString(errorresponse));
+
+                throw new AAIServiceException(responseCode, errorresponse);
+            }
+        } catch(AAIServiceException aaiexc) {
+            throw aaiexc;
+        } catch (Exception exc) {
+            LOG.warn("AAIRequestExecutor.post", exc);
+            throw new AAIServiceException(exc);
+        } finally {
+            try {
+                if(inputStream != null)
+                inputStream.close();
+            } catch (Exception exc) {
+                LOG.warn("AAIRequestExecutor.post", exc);
+            }
+        }
+    }
+
     /**
      *
      * @param httpReqUrl
@@ -712,6 +807,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
                 "PATCH".equalsIgnoreCase(method) ? "application/merge-patch+json" : "application/json");
         con.setRequestProperty("X-FromAppId", applicationId);
         con.setRequestProperty("X-TransactionId", TransactionIdTracker.getNextTransactionId());
+        con.setRequestProperty("X-DslApiVersion", "V2");
         String mlId = ml.getRequestID();
         if (mlId != null && !mlId.isEmpty()) {
             LOG.debug(String.format("MetricLogger requestId = %s", mlId));
@@ -732,20 +828,28 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
         return con;
     }
 
-    private URL appendDepth(URL requestUrl, AAIRequest request) throws MalformedURLException {
+    private URL appendDepth(URL requestUrl, AAIRequest request) throws MalformedURLException, URISyntaxException {
+        final String NODES_ONLY = "nodes-only";
+        URIBuilder builder = new URIBuilder(requestUrl.toURI());
+        // PROCESS nodes-only option
+        if (request.requestProperties.containsKey(NODES_ONLY)) {
+            if(request.requestProperties.containsKey(NODES_ONLY)) {
+                String nodesOnly = request.requestProperties.getProperty(NODES_ONLY);
+                if(nodesOnly != null && !nodesOnly.isEmpty()) {
+                    builder.setParameter(NODES_ONLY, nodesOnly);
+                }
+            }
+            // do not add depth by default with nodes-only
+            if(!request.requestProperties.containsKey("depth")) {
+                return builder.build().toURL();
+            }
+        }
 
         String depth = request.requestProperties.getProperty("depth", "1");
-        String path = requestUrl.toString();
-        if(path.contains("?depth=") || path.contains("&depth=")) {
-            return requestUrl;
-        } else {
-            if(path.contains("?")) {
-                path = String.format("%s&depth=%s", path, depth);
-            } else {
-                path = String.format("%s?depth=%s", path, depth);
-            }
-            return new URL(path);
-        }
+        
+        builder.setParameter("depth", depth);
+        
+        return builder.build().toURL();
     }
 
     public void logMetricRequest(String targetServiceName, String msg, String path){

@@ -239,5 +239,11 @@ public class GenericVnfTest {
             return Boolean.TRUE;
         }
 
+        @Override
+        public String bulkUpdate(BulkUpdateRequest request) throws AAIServiceException {
+
+            return "success";
+        }
+
     }
 }

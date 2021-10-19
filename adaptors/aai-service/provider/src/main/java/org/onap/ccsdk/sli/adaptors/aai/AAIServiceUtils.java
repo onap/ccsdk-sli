@@ -39,6 +39,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.annotation.XmlType;
 
@@ -198,6 +200,10 @@ public class AAIServiceUtils {
         if (term.startsWith("$") && (ctx != null)) {
             // Resolve any index variables.
 
+            if(resolveCtxVariable(term.substring(1), ctx) == null) {
+                LOG.warn(String.format("The variable %s resolved to a null", term));
+                return "ERROR_NULL_VALUE";
+            }
             term = ("'" + resolveCtxVariable(term.substring(1), ctx) + "'");
             if (term.contains(VERSION_PATTERN) && (ctx != null)) {
                 return term.replace(VERSION_PATTERN, AAIRequest.getSupportedAAIVersion());
@@ -327,7 +333,10 @@ public class AAIServiceUtils {
     public static boolean isValidFormat(String resource, Map<String, String> nameValues) {
 
         switch(resource){
-    case "custom-query":
+        case "bulk-subnet":
+        case "custom-query":
+        case "dsl-query":
+        case "dsl-narad-query":
         case "formatted-query":
         case "generic-query":
         case "nodes-query":
@@ -345,11 +354,18 @@ public class AAIServiceUtils {
         Set<String> keys = nameValues.keySet();
         for(String key : keys) {
             if(!key.contains(".")) {
-                if("depth".equals(key) || "related-to".equals(key) || "related_to".equals(key) || "related-link".equals(key) || "related_link".equals(key) || "selflink".equals(key) || "resource_path".equals(key))
+                if("depth".equals(key) || "nodes-only".equals(key) || "nodes_only".equals(key) || "related-to".equals(key) || "related_to".equals(key) || "related-link".equals(key) || "related_link".equals(key) || "selflink".equals(key) || "resource_path".equals(key))
                     continue;
                 else {
                     getLogger().warn(String.format("key '%s' is incompatible with resource type '%s'", key, resource));
+                    getLogger().warn("The valid format is {resource-type}.{primary-key} = ...");
+//                    return false;
                 }
+            }
+
+            if(nameValues.get(key) ==  null || "ERROR_NULL_VALUE".equalsIgnoreCase(nameValues.get(key))) {
+                LOG.warn(String.format("The value is null/unresolved for key of %s. Processing aborted.", key));
+                return false;
             }
         }
         return true;
@@ -361,7 +377,10 @@ public class AAIServiceUtils {
         }
 
         switch(resource){
+        case "bulk-subnet":
         case "custom-query":
+        case "dsl-query":
+        case "dsl-narad-query":
         case "formatted-query":
         case "generic-query":
         case "nodes-query":
@@ -390,5 +409,44 @@ public class AAIServiceUtils {
             }
         }
         return tags.contains(resource);
+    }
+
+    public static String processDslRequestData(final String value, SvcLogicContext ctx) {
+        String subjectToChange = value;
+        
+        Pattern p = Pattern.compile("\\$([a-zA-Z\\d-\\.]*)");
+        Matcher m = p.matcher(value);
+
+        boolean secondPass = false;
+        
+        while (m.find()) {
+            final String reference = m.group();
+            String resolved = resolveTerm(reference, ctx);
+            final String indexedReference = String.format("[%s]", reference);
+            if (subjectToChange.contains(indexedReference)   && resolved.startsWith("'") && resolved.endsWith("'")) {
+                resolved = resolved.substring(1, resolved.length() - 1);
+            }
+            if(resolved != null && !resolved.isEmpty() && !"ERROR_NULL_VALUE".equalsIgnoreCase(resolved)) {
+                LOG.info("{} - {}", reference, resolved);
+                subjectToChange = subjectToChange.replace(reference, resolved);
+            } else {
+                LOG.info("{} - {} enabling second pass", reference, resolved);
+                secondPass = true;
+            }
+        }
+
+        if(secondPass) {
+            p = Pattern.compile("\\$([\\[\\]\\.a-zA-Z\\d-]*)");
+            m = p.matcher(subjectToChange);
+            while (m.find()) {
+                final String reference = m.group();
+                String resolved = resolveTerm(reference, ctx);
+                LOG.info("{} - {}", reference, resolved);
+                if(resolved != null && !resolved.isEmpty() && !"ERROR_NULL_VALUE".equalsIgnoreCase(resolved))
+                    subjectToChange = subjectToChange.replace(reference, resolved);
+            }
+        }
+
+        return subjectToChange;
     }
 }

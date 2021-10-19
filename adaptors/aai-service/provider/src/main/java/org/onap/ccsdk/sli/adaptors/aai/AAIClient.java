@@ -88,4 +88,7 @@ public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {
     boolean delete(AAIRequest request, String resourceVersion) throws AAIServiceException;
     boolean update(AAIRequest request, String resourceVersion) throws AAIServiceException;
 
+    // Bulk subnet update
+    String bulkSubnetUpdate(BulkUpdateRequest request) throws AAIServiceException;
+
 }
