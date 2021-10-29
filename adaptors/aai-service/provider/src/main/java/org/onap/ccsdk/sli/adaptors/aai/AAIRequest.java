@@ -53,10 +53,6 @@ import java.util.TreeSet;
 import org.apache.commons.lang.StringUtils;
 import org.onap.aai.inventory.v24.GenericVnf;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +65,7 @@ public abstract class AAIRequest {
     protected static final Logger LOG = LoggerFactory.getLogger(AAIRequest.class);
 
     protected static final String TARGET_URI = "org.onap.ccsdk.sli.adaptors.aai.uri";
+    protected static final String TARGET_NARAD_URI = "org.onap.ccsdk.sli.adaptors.narad.uri";
 
     protected static final String MASTER_REQUEST = "master-request";
 
@@ -77,7 +74,8 @@ public abstract class AAIRequest {
     public static final String DEPTH = "depth";
 
     protected static Properties configProperties;
-    protected final String targetUri;
+    private final String targetUri;
+    protected final String targetNaradUri;
     protected static AAIService aaiService;
 
     protected AAIDatum requestDatum;
@@ -116,6 +114,8 @@ public abstract class AAIRequest {
         }
 
         switch(resoource){
+        case "bulk-subnet":
+             return new BulkUpdateRequest();
         case "generic-query":
             return new GenericQueryRequest();
         case "nodes-query":
@@ -123,6 +123,10 @@ public abstract class AAIRequest {
         case "custom-query":
         case "formatted-query":
             return new CustomQueryRequest();
+        case "dsl-query":
+            return new DslQueryRequest();
+        case "dsl-narad-query":
+            return new DslNaradQueryRequest();
         case "echo":
         case "test":
             return new EchoRequest();
@@ -163,39 +167,15 @@ public abstract class AAIRequest {
         AAIRequest.configProperties = props;
         AAIRequest.aaiService = aaiService;
 
-        InputStream in = null;
-
         try
         {
-            LOG.info("Loading aai-path.properties via OSGi");
             URL url = null;
-            Bundle bundle = FrameworkUtil.getBundle(AAIService.class);
-            if(bundle != null) {
-                BundleContext ctx = bundle.getBundleContext();
-                if(ctx == null)
-                    return;
-
-                url = ctx.getBundle().getResource(AAIService.PATH_PROPERTIES);
-            } else {
                 url = aaiService.getClass().getResource("/aai-path.properties");
-            }
 
-            in = url.openStream();
-        }
-        catch (NoClassDefFoundError|Exception e) {
-            LOG.info("Loading aai-path.properties from jar");
-            in = AAIRequest.class.getResourceAsStream("/aai-path.properties");
-
-        }
-
-        if (in == null) {
-            return;
-        }
-
-        try {
+            InputStream in = url.openStream();
             Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
 
-            Properties properties = new EnvProperties();
+            Properties properties = new Properties();
             properties.load(reader);
             LOG.info("loaded " + properties.size());
 
@@ -219,7 +199,7 @@ public abstract class AAIRequest {
                     bs.set(bitIndex);
                 }
                 String path = properties.getProperty(key);
-                LOG.trace(String.format("bitset %s\t\t%s", bs.toString(), path));
+                LOG.info(String.format("bitset %s\t\t%s", bs.toString(), path));
                 bitsetPaths.put(bs, path);
             }
             LOG.info("loaded " + resourceNames.toString());
@@ -232,6 +212,13 @@ public abstract class AAIRequest {
 
     public AAIRequest() {
         targetUri    = configProperties.getProperty(TARGET_URI);
+        String tmpNarad = targetUri;
+        if(configProperties.containsKey(TARGET_NARAD_URI)) {
+        	tmpNarad = configProperties.getProperty(TARGET_NARAD_URI);
+        	if(tmpNarad == null || tmpNarad.length() == 0)
+        		tmpNarad = targetUri;
+        }
+        targetNaradUri = tmpNarad;
     }
 
     public void addRequestProperty(String key, String value) {

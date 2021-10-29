@@ -55,7 +55,7 @@ public class SelfLinkRequest extends AAIRequest {
 		try {
 			URI uri = new URI(request_url);
 			if(uri.getHost() == null) {
-				request_url = targetUri + request_url;
+				request_url = getTargetUri() + request_url;
 			}
 		} catch(Exception exc) {
 			LOG.error("SelfLinkRequest.getRequestUrl", exc);

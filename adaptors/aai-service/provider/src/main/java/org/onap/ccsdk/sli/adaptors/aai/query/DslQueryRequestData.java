@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 						reserved.
+ * 			reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,48 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-/**
- * @author Rich Tabedzki
- *
- */
-package org.onap.ccsdk.sli.adaptors.aai;
 
-import org.onap.ccsdk.sli.adaptors.aai.update.BulkUpdateResponseData;
+package org.onap.ccsdk.sli.adaptors.aai.query;
 
-public interface AAIExecutorInterface {
-	public String get(AAIRequest request) throws AAIServiceException;
-	public String post(AAIRequest request) throws AAIServiceException;
-	public Boolean delete(AAIRequest request, String resourceVersion) throws AAIServiceException;
-	public Object query(AAIRequest request, Class clas) throws AAIServiceException;
-	public Boolean patch(AAIRequest request, String resourceVersion) throws AAIServiceException;
-	public String bulkUpdate(BulkUpdateRequest request) throws AAIServiceException;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "dsl"
+})
+@XmlRootElement(name = "dsl-request")
+public class DslQueryRequestData implements AAIDatum {
+
+	@JsonProperty("dsl")
+	private String dsl;
+
+	@JsonProperty("dsl")
+	public String getDsl() {
+		return dsl;
+	}
+
+	@JsonProperty("dsl")
+	public void setDsl(String dsl) {
+		this.dsl = dsl;
+	}
+	
+    @Override
+    public String toString()
+    {
+        return " [dsl = "+dsl+"]";
+    }
+
+    public String getResourceVersion() {
+        return null;
+    }
+
 }
