@@ -1,203 +1,203 @@
 [
-  {
-    "id": "d86e7ee4.ee3f1",
-    "type": "method",
-    "name": "saltstack-adaptor-1.0",
-    "xml": "<method rpc='saltstack-adaptor-1.0-exe-nonSLS' mode='sync'>\n",
-    "comments": "",
-    "outputs": 1,
-    "x": 492,
-    "y": 216,
-    "z": "5945fc3c.78efc4",
-    "wires": [
-      [
-        "38662e01.1d3c22"
-      ]
-    ]
-  },
-  {
-    "id": "9997883e.ec9028",
-    "type": "service-logic",
-    "name": "APPC 2.0.1",
-    "module": "APPC",
-    "version": "2.0.1",
-    "comments": "",
-    "xml": "<service-logic xmlns='http://www.onap.org/sdnc/svclogic' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='APPC' version='2.0.1'>",
-    "outputs": 1,
-    "x": 283,
-    "y": 289,
-    "z": "5945fc3c.78efc4",
-    "wires": [
-      [
-        "d86e7ee4.ee3f1"
-      ]
-    ]
-  },
-  {
-    "id": "d40bf650.8338e8",
-    "type": "returnFailure",
-    "name": "return failure",
-    "xml": "<return status='failure'>\n<parameter name='error-code' value='200' />\n<parameter name='error-message' value='`$org.openecomp.appc.adaptor.saltstack.message`' />\n<parameter name='output.status.results' value='`$org.openecomp.appc.adaptor.saltstack.results`' />\n",
-    "comments": "",
-    "x": 1007,
-    "y": 373,
-    "z": "5945fc3c.78efc4",
-    "wires": []
-  },
-  {
-    "id": "38662e01.1d3c22",
-    "type": "execute",
-    "name": "execute",
-    "xml": "<execute plugin='org.openecomp.appc.adaptor.saltstack.SaltstackAdaptor' method='reqExecCommand' >\n                        <parameter name='HostName' value='`$AgentUrl`'/>\n                        <parameter name='Port' value='`$Port`'/>\n                        <parameter name='User' value='`$User`'/>\n                        <parameter name='Password' value='`$Password`'/>\n                        <parameter name='Id' value='test1'/>\n                        <parameter name='Cmd' value='cd /srv/salt; ls -l'/>\n                        <parameter name='SlsExec' value='false'/>\n                        <parameter name='Timeout' value='`$Timeout`'/>\n",
-    "comments": "",
-    "outputs": 1,
-    "x": 700,
-    "y": 212,
-    "z": "5945fc3c.78efc4",
-    "wires": [
-      [
-        "7b75e382.6344dc",
-        "6f108926.d7baf8"
-      ]
-    ]
-  },
-  {
-    "id": "24fb9f79.a6c6c",
-    "type": "switchNode",
-    "name": "switch",
-    "xml": "<switch test=\"`$org.onap.appc.adaptor.saltstack.result.code`\">\n",
-    "comments": "",
-    "outputs": 1,
-    "x": 486,
-    "y": 372,
-    "z": "5945fc3c.78efc4",
-    "wires": [
-      [
-        "c526c44.c850738",
-        "9c394980.2a56a8"
-      ]
-    ]
-  },
-  {
-    "id": "c526c44.c850738",
-    "type": "other",
-    "name": "outcome",
-    "xml": "<outcome value='Other'>\n",
-    "comments": "",
-    "outputs": 1,
-    "x": 675,
-    "y": 371,
-    "z": "5945fc3c.78efc4",
-    "wires": [
-      [
-        "d40bf650.8338e8"
-      ]
-    ]
-  },
-  {
-    "id": "7b75e382.6344dc",
-    "type": "failure",
-    "name": "failure",
-    "xml": "<outcome value='failure'>\n",
-    "comments": "",
-    "outputs": 1,
-    "x": 951,
-    "y": 210,
-    "z": "5945fc3c.78efc4",
-    "wires": [
-      [
-        "d40bf650.8338e8"
-      ]
-    ]
-  },
-  {
-    "id": "6f108926.d7baf8",
-    "type": "other",
-    "name": "other",
-    "xml": "<outcome value='Other'>\n",
-    "comments": "",
-    "outputs": 1,
-    "x": 298,
-    "y": 378,
-    "z": "5945fc3c.78efc4",
-    "wires": [
-      [
-        "24fb9f79.a6c6c"
-      ]
-    ]
-  },
-  {
-    "id": "9c394980.2a56a8",
-    "type": "success",
-    "name": "success",
-    "xml": "<outcome value='200'>\n",
-    "comments": "",
-    "outputs": 1,
-    "x": 667,
-    "y": 460,
-    "z": "5945fc3c.78efc4",
-    "wires": [
-      [
-        "1f81a3db.54cd1c"
-      ]
-    ]
-  },
-  {
-    "id": "1f81a3db.54cd1c",
-    "type": "returnSuccess",
-    "name": "return success",
-    "xml": "<return status='success'>\n<parameter name='output.status.code' value='`$org.openecomp.appc.adaptor.saltstack.result.code`' />\n<parameter name='output.status.message' value='`$org.openecomp.appc.adaptor.saltstack.message`'/>\n<parameter name='output.status.results' value = '`$org.openecomp.appc.adaptor.saltstack.results`'/>\n",
-    "comments": "",
-    "x": 887,
-    "y": 460,
-    "z": "5945fc3c.78efc4",
-    "wires": []
-  },
-  {
-    "id": "fcad80f8.ba2d9",
-    "type": "dgstart",
-    "name": "DGSTART",
-    "outputs": 1,
-    "x": 261,
-    "y": 189,
-    "z": "5945fc3c.78efc4",
-    "wires": [
-      [
-        "9997883e.ec9028"
-      ]
-    ]
-  },
-  {
-    "id": "b86e624d.49f0f",
-    "type": "comment",
-    "name": "SaltStack Adaptor DG",
-    "info": "",
-    "comments": "",
-    "x": 630,
-    "y": 75,
-    "z": "5945fc3c.78efc4",
-    "wires": []
-  },
-  {
-    "id": "83c0578d.061f98",
-    "type": "comment",
-    "name": "request-method = reqExecCommand, req-action = \"execute a single non SLS command\"",
-    "info": "",
-    "comments": "",
-    "x": 650,
-    "y": 155,
-    "z": "5945fc3c.78efc4",
-    "wires": []
-  },
-  {
-    "id": "f104feb6.558f7",
-    "type": "comment",
-    "name": "Assumptions for this DG",
-    "info": "Here we assume, the saltstack server is the example-vagrant based server. Where, the master saltstact controlls minion1 and minion2. ",
-    "comments": "",
-    "x": 627,
-    "y": 115,
-    "z": "5945fc3c.78efc4",
-    "wires": []
-  }
+	{
+		"id": "32c92369.4418fc",
+		"type": "method",
+		"name": "saltstack-adaptor-1.0",
+		"xml": "<method rpc='saltstack-adaptor-1.0-exe-nonSLS' mode='sync'>\n",
+		"comments": "",
+		"outputs": 1,
+		"x": 358,
+		"y": 7088.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": [
+			[
+				"b796dcc8.645f7"
+			]
+		]
+	},
+	{
+		"id": "5d7193ca.62154c",
+		"type": "service-logic",
+		"name": "APPC 2.0.1",
+		"module": "APPC",
+		"version": "2.0.1",
+		"comments": "",
+		"xml": "<service-logic xmlns='http://www.onap.org/sdnc/svclogic' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='APPC' version='2.0.1'>",
+		"outputs": 1,
+		"x": 149,
+		"y": 7161.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": [
+			[
+				"32c92369.4418fc"
+			]
+		]
+	},
+	{
+		"id": "8eeaddc3.15ca7",
+		"type": "returnFailure",
+		"name": "return failure",
+		"xml": "<return status='failure'>\n<parameter name='error-code' value='200' />\n<parameter name='error-message' value='`$org.openecomp.appc.adaptor.saltstack.message`' />\n<parameter name='output.status.results' value='`$org.openecomp.appc.adaptor.saltstack.results`' />\n",
+		"comments": "",
+		"x": 873,
+		"y": 7245.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": []
+	},
+	{
+		"id": "b796dcc8.645f7",
+		"type": "execute",
+		"name": "execute",
+		"xml": "<execute plugin='org.openecomp.appc.adaptor.saltstack.SaltstackAdaptor' method='reqExecCommand' >\n                        <parameter name='HostName' value='`$AgentUrl`'/>\n                        <parameter name='Port' value='`$Port`'/>\n                        <parameter name='User' value='`$User`'/>\n                        <parameter name='Password' value='`$Password`'/>\n                        <parameter name='Id' value='test1'/>\n                        <parameter name='Cmd' value='cd /srv/salt; ls -l'/>\n                        <parameter name='SlsExec' value='false'/>\n                        <parameter name='Timeout' value='`$Timeout`'/>\n",
+		"comments": "",
+		"outputs": 1,
+		"x": 566,
+		"y": 7084.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": [
+			[
+				"ad998758.0ecc58",
+				"976845db.fea8d8"
+			]
+		]
+	},
+	{
+		"id": "d17d41d0.313b5",
+		"type": "switchNode",
+		"name": "switch",
+		"xml": "<switch test=\"`$org.onap.appc.adaptor.saltstack.result.code`\">\n",
+		"comments": "",
+		"outputs": 1,
+		"x": 352,
+		"y": 7244.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": [
+			[
+				"d73af763.cb7778",
+				"9f96d94b.2e7658"
+			]
+		]
+	},
+	{
+		"id": "d73af763.cb7778",
+		"type": "other",
+		"name": "outcome",
+		"xml": "<outcome value='Other'>\n",
+		"comments": "",
+		"outputs": 1,
+		"x": 541,
+		"y": 7243.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": [
+			[
+				"8eeaddc3.15ca7"
+			]
+		]
+	},
+	{
+		"id": "ad998758.0ecc58",
+		"type": "failure",
+		"name": "failure",
+		"xml": "<outcome value='failure'>\n",
+		"comments": "",
+		"outputs": 1,
+		"x": 817,
+		"y": 7082.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": [
+			[
+				"8eeaddc3.15ca7"
+			]
+		]
+	},
+	{
+		"id": "976845db.fea8d8",
+		"type": "other",
+		"name": "other",
+		"xml": "<outcome value='Other'>\n",
+		"comments": "",
+		"outputs": 1,
+		"x": 164,
+		"y": 7250.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": [
+			[
+				"d17d41d0.313b5"
+			]
+		]
+	},
+	{
+		"id": "9f96d94b.2e7658",
+		"type": "success",
+		"name": "success",
+		"xml": "<outcome value='200'>\n",
+		"comments": "",
+		"outputs": 1,
+		"x": 533,
+		"y": 7332.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": [
+			[
+				"c1dfbf92.806ef"
+			]
+		]
+	},
+	{
+		"id": "c1dfbf92.806ef",
+		"type": "returnSuccess",
+		"name": "return success",
+		"xml": "<return status='success'>\n<parameter name='output.status.code' value='`$org.openecomp.appc.adaptor.saltstack.result.code`' />\n<parameter name='output.status.message' value='`$org.openecomp.appc.adaptor.saltstack.message`'/>\n<parameter name='output.status.results' value = '`$org.openecomp.appc.adaptor.saltstack.results`'/>\n",
+		"comments": "",
+		"x": 753,
+		"y": 7332.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": []
+	},
+	{
+		"id": "2a9aacea.7d2f94",
+		"type": "dgstart",
+		"name": "DGSTART",
+		"outputs": 1,
+		"x": 127,
+		"y": 7061.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": [
+			[
+				"5d7193ca.62154c"
+			]
+		]
+	},
+	{
+		"id": "d0a45cd.913bea",
+		"type": "comment",
+		"name": "SaltStack Adaptor DG",
+		"info": "",
+		"comments": "",
+		"x": 496,
+		"y": 6947.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": []
+	},
+	{
+		"id": "d1dc0fec.c80df",
+		"type": "comment",
+		"name": "request-method = reqExecCommand, req-action = \"execute a single non SLS command\"",
+		"info": "",
+		"comments": "",
+		"x": 516,
+		"y": 7027.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": []
+	},
+	{
+		"id": "ff042c47.a50c4",
+		"type": "comment",
+		"name": "Assumptions for this DG",
+		"info": "Here we assume, the saltstack server is the example-vagrant based server. Where, the master saltstact controlls minion1 and minion2. ",
+		"comments": "",
+		"x": 493,
+		"y": 6987.2001953125,
+		"z": "c817b245.e1acf",
+		"wires": []
+	}
 ]
