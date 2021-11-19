@@ -613,8 +613,13 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
             }
 
             String var1 = template.substring(i1 + 2, i2);
+            boolean keepEmpty = var1.startsWith("~");
             String value1 = format == Format.XML ? XmlJsonUtil.getXml(mm, var1) : XmlJsonUtil.getJson(mm, var1);
+<<<<<<< HEAD   (fdb473 Release version 1.3.2 of ccsdk/sli)
             if (value1 == null || value1.trim().length() == 0) {
+=======
+            if (value1 == null || (value1.trim().length() == 0 && !keepEmpty)) {
+>>>>>>> CHANGE (d4c076 Restapi-call-node: Support for "" values in JSON)
                 // delete the whole element (line)
                 int i3 = template.lastIndexOf('\n', i1);
                 if (i3 < 0) {

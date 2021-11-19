@@ -51,6 +51,12 @@ public final class XmlJsonUtil {
     }
 
     public static String getJson(Map<String, String> varmap, String var) {
+        boolean keepEmpty = false;
+        if (var.startsWith("~")) {
+            var = var.substring(1);
+            keepEmpty = true;
+        }
+
         boolean escape = true;
         if (var.startsWith("'")) {
             var = var.substring(1);
@@ -64,7 +70,7 @@ public final class XmlJsonUtil {
         }
 
         Object o = createStructure(varmap, var);
-        return generateJson(o, escape, quotes);
+        return generateJson(o, escape, quotes, keepEmpty);
     }
 
     private static Object createStructure(Map<String, String> flatmap, String var) {
@@ -286,11 +292,11 @@ public final class XmlJsonUtil {
 
         return null;
     }
-    private static String generateJson(Object o, boolean escape, boolean quotes) {
+    private static String generateJson(Object o, boolean escape, boolean quotes, boolean keepEmpty) {
         if (o == null) {
             return null;
         }
-        if (o instanceof String && ((String) o).length() == 0) {
+        if (o instanceof String && ((String) o).length() == 0 && !keepEmpty) {
             return null;
         }
 
