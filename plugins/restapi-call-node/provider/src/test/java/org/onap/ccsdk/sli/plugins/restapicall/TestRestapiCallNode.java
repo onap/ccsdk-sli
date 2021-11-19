@@ -601,4 +601,59 @@ public class TestRestapiCallNode {
         assertTrue(RestapiCallNode.containsMultipleUrls("https://wiki.onap.org/test=4,5,6,http://localhost:7001/test=1,2,3,http://wiki.onap.org/test=7,8,9,10"));
     }
 
+    @Test
+    public void testKeepEmptyValue() throws Exception {
+        log.info("================= Testing keeping empty values =======================");
+
+        String template = "{\n" +
+            "   \"name1\": \"value1\",\n" +
+            "   \"name2\": ${empty},\n" +
+            "   \"name3\": ${~empty},\n" +
+            "   \"name4\": {\n" +
+            "       \"name41\": \"value41\",\n" +
+            "       \"name42\": ${~empty},\n" +
+            "       \"name43\": ${~not_empty}\n" +
+            "   },\n" +
+            "   \"name5\": {\n"+
+            "       \"name51\": ${~empty},\n"+
+            "       \"name52\": ${empty}\n"+
+            "   },\n" +
+            "   \"name6\": {\n"+
+            "       \"name61\": ${empty},\n"+
+            "       \"name62\": ${empty}\n"+
+            "   },\n" +
+            "   \"name7\": \"${\"not_empty}\",\n" +
+            "   \"name8\": \"${~\"not_empty}\",\n" +
+            "   \"name9\": \"${\"empty}\",\n" +
+            "   \"name10\": \"${~\"empty}\"\n" +
+            "}";
+
+        String expect = "{\n" +
+            "   \"name1\": \"value1\",\n" +
+            "   \"name3\": \"\",\n" +
+            "   \"name4\": {\n" +
+            "       \"name41\": \"value41\",\n" +
+            "       \"name42\": \"\",\n" +
+            "       \"name43\": \"some value\"\n" +
+            "   },\n" +
+            "   \"name5\": {\n" +
+            "       \"name51\": \"\"\n" +
+            "   },\n" +
+            "   \"name7\": \"some value\",\n" +
+            "   \"name8\": \"some value\",\n" +
+            "   \"name10\": \"\"\n" +
+            "}";
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("empty", "");
+        ctx.setAttribute("not_empty", "some value");
+        
+        RestapiCallNode rcn = new RestapiCallNode();
+        String req = rcn.buildXmlJsonRequest(ctx, template, Format.JSON);
+        
+        log.info("Result:\n" + req);
+        log.info("==================================================================");
+
+        assertEquals(expect, req);
+    }
 }
