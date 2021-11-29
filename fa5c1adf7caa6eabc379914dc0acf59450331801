@@ -1,0 +1,8 @@
+Code-Review+1: Stan Bonev <stanimir.bonev@att.com>
+Code-Review+2: Dan Timoney <dtimoney@att.com>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Submitted-by: Dan Timoney <dtimoney@att.com>
+Submitted-at: Mon, 29 Nov 2021 18:08:29 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/ccsdk/sli/+/125803
+Project: ccsdk/sli
+Branch: refs/heads/istanbul
