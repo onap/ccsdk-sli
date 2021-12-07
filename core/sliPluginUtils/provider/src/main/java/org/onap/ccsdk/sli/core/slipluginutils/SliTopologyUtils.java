@@ -27,6 +27,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.slipluginutils.slitopologyutils.JsonParserHelper;
+import org.onap.ccsdk.sli.core.slipluginutils.slitopologyutils.graph.BhandariGraphSearch;
 import org.onap.ccsdk.sli.core.slipluginutils.slitopologyutils.graph.DijkstraGraphSearch;
 import org.onap.ccsdk.sli.core.slipluginutils.slitopologyutils.graph.Graph;
 import org.onap.ccsdk.sli.core.slipluginutils.slitopologyutils.graph.Path;
@@ -36,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+
 
 public class SliTopologyUtils implements SvcLogicJavaPlugin {
     private static final Logger LOG = LoggerFactory.getLogger(SliTopologyUtils.class);
@@ -179,6 +181,260 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
         }
     }
 
+    /**
+     * Provides disjoint paths computation functionality to Directed Graphs.
+     * <p>
+     * @param parameters HashMap<String,String> of parameters passed by the DG to this function
+     * <table border="1">
+     * 	<thead><th>parameter</th><th>Mandatory/Optional</th><th>description</th></thead>
+     * 	<tbody>
+     * 		<tr><td>pnfs-pfx</td><td>Mandatory</td><td>Prefix in context memory to get the pnf attributes from.</td></tr>
+     * 		<tr><td>links-pfx</td><td>Mandatory</td><td>Prefix in context memory to get the link attributes from.</td></tr>
+     * 		<tr><td>src-node</td><td>Mandatory</td><td>Source pnf name.</td></tr>
+     * 		<tr><td>dst-node</td><td>Mandatory</td><td>Destination pnf name.</td></tr>
+     * 		<tr><td>dst-node-backup</td><td>Optional</td><td>Destination backup pnf name.</td></tr>
+     * 		<tr><td>require-backuppath</td><td>Mandatory</td><td>If true, output primary and secondary paths.</td></tr>
+     * 		<tr><td>response-pfx</td><td>Mandatory</td><td>Prefix in context memory to populate the resulting attributes in.</td></tr>
+     * 		<tr><td>output-end-to-end-path</td><td>Optional</td><td>true or false to output end to end full path. If not included, only output cross domain path</td></tr>
+     * 	</tbody>
+     * </table>
+     * @param ctx Reference to context memory
+     * @throws SvcLogicException
+     */
+    public static String computePaths(Map<String, String> parameters, SvcLogicContext ctx ) throws SvcLogicException {
+
+        LOG.debug( "ENTERING Execute Node \"computePaths (v2)\"" );
+        boolean outputFullPath = false;
+        boolean requireSecondaryPath = false;
+        boolean isDifferentDst = false;
+        Graph<Pnf, LogicalLink> graph;
+        Pnf src;
+        Pnf dst;
+        Pnf dst2 = null;
+
+        try{
+            // Validate, Log, & read parameters
+            checkParameters(parameters, new String[]{ "pnfs-pfx", "links-pfx",
+                    "src-node", "dst-node", "response-pfx"}, LOG);
+            String outputEndToEnd = parameters.get("output-end-to-end-path");
+            String pnfsStr = ctx.toJsonString( parameters.get("pnfs-pfx"));
+            String lkStr = ctx.toJsonString( parameters.get("links-pfx"));
+            String srcNodeStr = parameters.get("src-node");
+            String dstNodeStr = parameters.get("dst-node");
+            String requireBackupPath = parameters.get("require-backuppath");
+            String dstNodeBackupStr = parameters.get("dst-node-backup");
+
+            if (outputEndToEnd != null && outputEndToEnd.equals("true")){
+                outputFullPath = true;
+                LOG.debug( "OutputEndToEndPath enabled");
+            }
+
+            if (requireBackupPath != null && requireBackupPath.equals("true")){
+                requireSecondaryPath = true;
+                LOG.debug( "RequiredBackupPath enabled");
+            }
+
+            if (pnfsStr.isEmpty()){
+                LOG.warn("Pnf Array attributes are empty");
+                throw new Exception( "Pnf Array attributes are empty");
+            }
+
+            if (lkStr.isEmpty()){
+                LOG.warn("Logical-links Array attributes are empty");
+                throw new Exception( "Logical-links Array attributes are empty");
+            }
+
+            LOG.debug("Pnf Json String is: {}", pnfsStr);
+
+            if( srcNodeStr.isEmpty() || dstNodeStr.isEmpty()){
+                LOG.warn("Src or Dst node is empty");
+                throw new Exception("Src or Dst node is empty");
+            }
+
+            JsonParser jp = new JsonParser();
+
+            JsonArray pnfArr = ((JsonObject) jp.parse(pnfsStr)).getAsJsonArray("pnf");
+            JsonArray lkArr = ((JsonObject) jp.parse(lkStr)).getAsJsonArray("logical-link");
+            LOG.debug("Creating graph with {} pnf(s) and {} link(s)", pnfArr.size(), lkArr.size());
+            graph = buildGraph(pnfArr, lkArr);
+
+
+            src = new Pnf(srcNodeStr);
+            dst = new Pnf(dstNodeStr);
+
+            if (!graph.getVertexes().contains(src) || !graph.getVertexes().contains(dst)){
+                LOG.warn("Src or Dst node doesn't exist");
+                throw new Exception("Src or Dst node doesn't exist");
+            }
+
+            if( dstNodeBackupStr != null && !dstNodeBackupStr.isEmpty()){
+                dst2 = new Pnf(dstNodeBackupStr);
+                if (!graph.getVertexes().contains(dst2)){
+                    LOG.warn("Backup Dst node doesn't exist");
+                    throw new Exception("Backup Dst node doesn't exist");
+                }
+                isDifferentDst = true;
+                appendDummyNode(graph, dst, dst2);
+            }
+        } catch( Exception e ) {
+            throw new SvcLogicException( "An error occurred in the computePath Execute node; failed to process the" +
+                    "given params for path computation", e );
+        }
+
+        try {
+            if (requireSecondaryPath){
+                //Disjoint paths compuation using Bhandari Algorithm
+                BhandariGraphSearch.DisjointPathResult result;
+                if (!isDifferentDst){
+                    result =
+                            new BhandariGraphSearch<Pnf, LogicalLink>()
+                                    .searchForDisjointPath(graph, src, dst, null, -1);
+                } else {
+                    result =
+                            new BhandariGraphSearch<Pnf, LogicalLink>()
+                                    .searchForDisjointPath(graph, src, new Pnf("FAKEPNF"), null, -1);
+                }
+
+
+                if (result != null && result.paths().size() == 2){
+                    JsonObject root = new JsonObject();
+                    JsonArray oneSolnList = new JsonArray();
+                    JsonArray otherSolnList = new JsonArray();
+                    boolean hasPrime = false;
+                    Iterator<Path<Pnf, LogicalLink>> pathIter = result.paths().iterator();
+                    Path<Pnf, LogicalLink> one = pathIter.next();
+                    Path<Pnf, LogicalLink> other = pathIter.next();
+                    for (LogicalLink logicalLink : one.edges()){
+                        if (logicalLink.underlayLink().type() == Link.Type.DUMMY){
+                            continue;
+                        }
+                        if (logicalLink.dst().equals(dst)){
+                            hasPrime = true;
+                        }
+                        if (!outputFullPath && ((OtnLink) logicalLink.underlayLink()).isInnerDomain()) {
+                            //Ignore inner domain links
+                        } else {
+                            JsonObject curLink = new JsonObject();
+
+                            String srcNode = logicalLink.src().toString();
+                            String dstNode = logicalLink.dst().toString();
+                            String srcPInterface = ((OtnLink) logicalLink.underlayLink()).src().pInterfaceName().getName();
+                            String dstPInterface = ((OtnLink) logicalLink.underlayLink()).dst().pInterfaceName().getName();
+                            String linkName = ((OtnLink) logicalLink.underlayLink()).linkName();
+                            curLink.addProperty("src_node", srcNode);
+                            curLink.addProperty("dst_node", dstNode);
+                            curLink.addProperty("src_pinterface", srcPInterface);
+                            curLink.addProperty("dst_pinterface", dstPInterface);
+                            curLink.addProperty("original_link", linkName);
+
+                            oneSolnList.add(curLink);
+                        }
+                    }
+                    if (hasPrime){
+                        root.add("solutions", oneSolnList);
+                    } else {
+                        root.add("secondarySolutions", oneSolnList);
+                    }
+
+                    for (LogicalLink logicalLink : other.edges()){
+                        if (logicalLink.underlayLink().type() == Link.Type.DUMMY){
+                            continue;
+                        }
+                        if (!outputFullPath && ((OtnLink) logicalLink.underlayLink()).isInnerDomain()) {
+                            //Ignore inner domain links
+                        } else {
+                            JsonObject curLink = new JsonObject();
+                            String srcNode = logicalLink.src().toString();
+                            String dstNode = logicalLink.dst().toString();
+                            String srcPInterface = ((OtnLink) logicalLink.underlayLink()).src().pInterfaceName().getName();
+                            String dstPInterface = ((OtnLink) logicalLink.underlayLink()).dst().pInterfaceName().getName();
+                            String linkName = ((OtnLink) logicalLink.underlayLink()).linkName();
+                            curLink.addProperty("src_node", srcNode);
+                            curLink.addProperty("dst_node", dstNode);
+                            curLink.addProperty("src_pinterface", srcPInterface);
+                            curLink.addProperty("dst_pinterface", dstPInterface);
+                            curLink.addProperty("original_link", linkName);
+
+                            otherSolnList.add(curLink);
+                        }
+                    }
+                    if (hasPrime){
+                        root.add("secondarySolutions", otherSolnList);
+                    } else {
+                        root.add("solutions", otherSolnList);
+                    }
+                    LOG.debug("Path computing results: {}", root.toString());
+                    //Write result back to context memory;
+                    String pp = parameters.get("response-pfx").isEmpty() ? "" : parameters.get("response-pfx") + ".";
+                    Map<String, String> mm = null;
+                    mm = JsonParserHelper.convertToProperties(root.toString());
+                    if (mm != null) {
+                        for (Map.Entry<String, String> entry : mm.entrySet()) {
+                            ctx.setAttribute(pp + entry.getKey(), entry.getValue());
+                        }
+                    }
+                    return SUCCESS_CONSTANT;
+                } else {
+                    LOG.debug("SliTopologyUtils: no valid path found.");
+                    return NOT_FOUND_CONSTANT;
+                }
+
+            } else {
+                //Single path compuation using Dijkstra
+                DijkstraGraphSearch.Result result =
+                        new DijkstraGraphSearch<Pnf, LogicalLink>().search(graph, src, dst, null, -1);
+                LOG.debug("Path computing results: {}", result.paths().toString());
+
+                if (result.paths().size() > 0) {
+                    JsonObject root = new JsonObject();
+                    JsonArray solnList = new JsonArray();
+
+                    Path<Pnf, LogicalLink> path = (Path<Pnf, LogicalLink>) result.paths().iterator().next();
+                    for (LogicalLink logicalLink : path.edges()) {
+                        if (!outputFullPath && ((OtnLink) logicalLink.underlayLink()).isInnerDomain()) {
+                            //Ignore inner domain links
+                        } else {
+                            JsonObject curLink = new JsonObject();
+                            String srcNode = logicalLink.src().toString();
+                            String dstNode = logicalLink.dst().toString();
+                            String srcPInterface = ((OtnLink) logicalLink.underlayLink()).src().pInterfaceName().getName();
+                            String dstPInterface = ((OtnLink) logicalLink.underlayLink()).dst().pInterfaceName().getName();
+                            String linkName = ((OtnLink) logicalLink.underlayLink()).linkName();
+                            curLink.addProperty("src_node", srcNode);
+                            curLink.addProperty("dst_node", dstNode);
+                            curLink.addProperty("src_pinterface", srcPInterface);
+                            curLink.addProperty("dst_pinterface", dstPInterface);
+                            curLink.addProperty("original_link", linkName);
+
+                            solnList.add(curLink);
+                        }
+                    }
+                    root.add("solutions", solnList);
+                    //Write result back to context memory;
+                    String pp = parameters.get("response-pfx").isEmpty() ? "" : parameters.get("response-pfx") + ".";
+                    Map<String, String> mm = null;
+                    mm = JsonParserHelper.convertToProperties(root.toString());
+                    if (mm != null) {
+                        for (Map.Entry<String, String> entry : mm.entrySet()) {
+                            ctx.setAttribute(pp + entry.getKey(), entry.getValue());
+                        }
+                    }
+                    LOG.debug("SliTopologyUtils: path computation succeeds in finding the shortest path;" +
+                            " result has been written back into context memory.");
+                    return SUCCESS_CONSTANT;
+                } else {
+                    LOG.debug("SliTopologyUtils: no valid path found.");
+                    return NOT_FOUND_CONSTANT;
+                }
+            }
+
+        } catch (Exception e){
+            throw new SvcLogicException( "An error occurred in the computePath Execute node; failed to execute the graph " +
+                    "computation", e );
+        } finally {
+            LOG.debug( "Exiting Execute Node \"computePath\"" );
+        }
+    }
     private static Graph<Pnf, LogicalLink> buildGraph(JsonArray pnfs, JsonArray llks) {
         ImmutableSet.Builder pnfSetBlder = ImmutableSet.builder();
         ImmutableSet.Builder lkSetBlder = ImmutableSet.builder();
@@ -257,7 +513,16 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
         }
         return new Graph<Pnf, LogicalLink>(pnfSetBlder.build(), lkSetBlder.build());
     }
-
+    private static void appendDummyNode(Graph<Pnf, LogicalLink> gt, Pnf...pnfs) {
+        if (pnfs != null){
+            Pnf fakePnf = new Pnf("FAKEPNF");
+            for (Pnf pnf: pnfs){
+                gt.addVertex(fakePnf);
+                gt.addEdge(new LogicalLink(pnf, fakePnf, new DummyLink()));
+                gt.addEdge(new LogicalLink(fakePnf, pnf, new DummyLink()));
+            }
+        }
+    }
     /**
      * Throws an exception and writes an error to the log file if a required
      * parameters is not found in the parametersMap.

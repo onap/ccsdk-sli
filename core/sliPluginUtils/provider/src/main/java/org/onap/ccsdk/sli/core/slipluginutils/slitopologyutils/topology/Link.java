@@ -4,7 +4,8 @@ public interface Link {
 
     enum Type {
         OTN,
-        ETH
+        ETH,
+        DUMMY
     }
 
     PInterface src();
@@ -12,4 +13,6 @@ public interface Link {
     PInterface dst();
 
     boolean isInnerDomain();
+
+    Type type();
 }
