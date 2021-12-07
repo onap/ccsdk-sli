@@ -24,7 +24,7 @@ public class SliTopologyUtilsTest {
         //Loading test logicallinks and pnfs
         this.ctx = new SvcLogicContext();
         param = new HashMap<String, String>();
-        String fileName = "src/test/resources/3domain.dump";
+        String fileName = "src/test/resources/context.txt";
 
         try (FileInputStream fstr = new FileInputStream(new File(fileName));
              InputStreamReader is = new InputStreamReader(fstr,StandardCharsets.UTF_8);
@@ -56,10 +56,10 @@ public class SliTopologyUtilsTest {
         param.put("pnfs-pfx", "ccsdkTopopnfs");
         param.put("links-pfx", "ccsdkTopologicalLinks");
         param.put("response-pfx", "prefix");
-        param.put("output-end-to-end-path", "true");
+        param.put("output-end-to-end-path", "false");
 
-        param.put("src-node","networkId-providerId-30-clientId-0-topologyId-1-nodeId-10.3.1.3" );
-        param.put("dst-node", "networkId-providerId-50-clientId-0-topologyId-1-nodeId-10.5.1.2");
+        param.put("src-node","networkId-providerId-10-clientId-0-topologyId-1-nodeId-10.1.1.1" );
+        param.put("dst-node", "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.2");
 
         SliTopologyUtils.computePath(param, ctx);
         //SliPluginUtils.logContextMemory(ctx, LOG, SliPluginUtils.LogLevel.INFO);
@@ -71,6 +71,35 @@ public class SliTopologyUtilsTest {
                 LOG.info("Results: {} : {}" , key, this.ctx.getAttribute(key));
             }
         }
+    }
+
+
+    //@Test
+    public void testComputePaths()  throws SvcLogicException {
+
+        param.put("pnfs-pfx", "ccsdkTopopnfs");
+        param.put("links-pfx", "ccsdkTopologicalLinks");
+        param.put("response-pfx", "prefix");
+        param.put("output-end-to-end-path", "false");
+        param.put("require-backuppath", "true");
+        param.put("src-node","networkId-providerId-10-clientId-0-topologyId-1-nodeId-10.1.1.1" );
+        param.put("dst-node", "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.2");
+        param.put("dst-node-backup", "networkId-providerId-20-clientId-0-topologyId-1-nodeId-10.2.1.3");
+
+        SliTopologyUtils.computePaths(param, ctx);
+        //SliPluginUtils.logContextMemory(ctx, LOG, SliPluginUtils.LogLevel.INFO);
+        assertTrue(Integer.parseInt(this.ctx.getAttribute("prefix.solutions_length") ) > 0);
+        assertTrue(Integer.parseInt(this.ctx.getAttribute("prefix.secondarySolutions_length") ) > 0);
+        LOG.info(this.ctx.getAttribute("prefix.secondarySolutions[0].original_link"));
+        for (String key: this.ctx.getAttributeKeySet()){
+            if (key.startsWith("prefix")){
+                LOG.info("Results: {} : {}" , key, this.ctx.getAttribute(key));
+            }
+        }
+        assertTrue(this.ctx.getAttribute("prefix.secondarySolutions[0].original_link").equals("networkId-providerId-10-clientId-0-topologyId-1-linkId-10.1.1.3-8"));
+
+        LOG.info("Computation finished");
+
 
     }
 }

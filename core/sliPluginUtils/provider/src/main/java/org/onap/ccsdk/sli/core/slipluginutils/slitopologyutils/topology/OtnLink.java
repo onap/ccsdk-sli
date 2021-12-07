@@ -43,6 +43,11 @@ public class OtnLink implements Link{
     }
 
     @Override
+    public Type type() {
+        return type;
+    }
+
+    @Override
     public boolean equals(Object o){
         if (this == o) {
             return true;
