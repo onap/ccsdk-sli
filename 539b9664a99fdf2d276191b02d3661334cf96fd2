@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4418efc8_5a0e23fb",
+        "filename": "northbound/ueb-listener/src/main/java/org/onap/ccsdk/sli/northbound/uebclient/SdncUebConfiguration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2021-12-09T14:37:57Z",
+      "side": 1,
+      "message": "asdcUserHttps variable is undeclared - you need this line above, around line 60:\n\nprivate String asdcUserHttps \u003d null;",
+      "range": {
+        "startLine": 132,
+        "startChar": 2,
+        "endLine": 132,
+        "endChar": 14
+      },
+      "revId": "539b9664a99fdf2d276191b02d3661334cf96fd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
