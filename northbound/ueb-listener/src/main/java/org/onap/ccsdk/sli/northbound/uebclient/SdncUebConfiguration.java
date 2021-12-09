@@ -129,6 +129,8 @@ public class SdncUebConfiguration implements IConfiguration{
 		environmentName = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.environment-name");
 		password = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.password");
 		user = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.user");
+		asdcUseHttps = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.use-https", "true");
+
 
 		sdncUser = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.sdnc-user");
 		sdncPasswd = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.sdnc-passwd");
@@ -308,6 +310,11 @@ public class SdncUebConfiguration implements IConfiguration{
 	public Boolean isUseHttpsWithDmaap() {
 		return false;
 	}
+
+	@Override
+    public Boolean isUseHttpsWithSDC() {
+        return Boolean.parseBoolean(asdcUseHttps);
+    }
 
     @Override
     public List<String> getMsgBusAddress() {
