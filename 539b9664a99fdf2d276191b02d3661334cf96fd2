@@ -22,6 +22,30 @@
       "revId": "539b9664a99fdf2d276191b02d3661334cf96fd2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "772ed690_98d73cce",
+        "filename": "northbound/ueb-listener/src/main/java/org/onap/ccsdk/sli/northbound/uebclient/SdncUebConfiguration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 2319
+      },
+      "writtenOn": "2021-12-09T16:39:12Z",
+      "side": 1,
+      "message": "you\u0027re right, I do too much python ;)",
+      "parentUuid": "4418efc8_5a0e23fb",
+      "range": {
+        "startLine": 132,
+        "startChar": 2,
+        "endLine": 132,
+        "endChar": 14
+      },
+      "revId": "539b9664a99fdf2d276191b02d3661334cf96fd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
