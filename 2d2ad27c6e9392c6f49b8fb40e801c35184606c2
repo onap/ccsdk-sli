@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "23d79fe2_652c5ef4",
+        "filename": "northbound/ueb-listener/src/main/java/org/onap/ccsdk/sli/northbound/uebclient/SdncUebConfiguration.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2021-12-09T17:33:22Z",
+      "side": 1,
+      "message": "Typo - should be asdcUseHttps (no \u0027r\u0027)",
+      "range": {
+        "startLine": 59,
+        "startChar": 16,
+        "endLine": 59,
+        "endChar": 29
+      },
+      "revId": "2d2ad27c6e9392c6f49b8fb40e801c35184606c2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
