@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2</version>
         <relativePath/>
     </parent>
 
@@ -82,6 +82,31 @@
             <artifactId>spring-cloud-contract-wiremock</artifactId>
             <version>1.2.4.RELEASE</version>
             <scope>test</scope>
+        </dependency>
+        <!--  log4j dependencies are needed to override derived version in wiremock -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+            <scope>test</scope>
+            <version>${log4j2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <scope>test</scope>
+            <version>${log4j2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <scope>test</scope>
+            <version>${log4j2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <scope>test</scope>
+            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
