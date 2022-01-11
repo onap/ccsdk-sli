@@ -11,7 +11,7 @@
 
     <groupId>org.onap.ccsdk.sli.northbound</groupId>
     <artifactId>dataChange-provider</artifactId>
-    <version>1.3.4-SNAPSHOT</version>
+    <version>1.3.5-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-northbound :: ${project.artifactId}</name>
