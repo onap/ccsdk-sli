@@ -18,7 +18,7 @@ info:
     Relating to IETF Documents\n(http://trustee.ietf.org/license-info).\n\nThis version\
     \ of this YANG module is part of RFC 6991; see\nthe RFC itself for full legal\
     \ notices."
-  version: "1.3.3-SNAPSHOT"
+  version: "1.3.5-SNAPSHOT"
   title: "SLI-API,ietf-yang-types,ietf-inet-types API"
 consumes:
 - "application/json"
@@ -38,10 +38,10 @@ paths:
           description: "Internal error"
         200:
           description: "sli.api.TestResults"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.TestResults"
             $ref: "#/definitions/sli.api.TestResults"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.TestResults"
             $ref: "#/definitions/sli.api.TestResults"
     post:
@@ -126,10 +126,10 @@ paths:
           description: "Internal error"
         200:
           description: "sli.api.testresults.TestResult"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.testresults.TestResult"
             $ref: "#/definitions/sli.api.testresults.TestResult"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.testresults.TestResult"
             $ref: "#/definitions/sli.api.testresults.TestResult"
     post:
@@ -206,10 +206,10 @@ paths:
           description: "Internal error"
         200:
           description: "sli.api.TestResults"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.TestResults"
             $ref: "#/definitions/sli.api.TestResults"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.TestResults"
             $ref: "#/definitions/sli.api.TestResults"
   /operational/SLI-API:test-results/SLI-API:test-result/{test-identifier}/:
@@ -228,10 +228,10 @@ paths:
           description: "Internal error"
         200:
           description: "sli.api.testresults.TestResult"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.testresults.TestResult"
             $ref: "#/definitions/sli.api.testresults.TestResult"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.testresults.TestResult"
             $ref: "#/definitions/sli.api.testresults.TestResult"
   /operations/SLI-API:execute-graph/:
@@ -252,10 +252,10 @@ paths:
           description: "Internal error"
         200:
           description: "Correct response"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.ExecuteGraph"
             $ref: "#/definitions/sli.api.ExecuteGraph"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.ExecuteGraph"
             $ref: "#/definitions/sli.api.ExecuteGraph"
         201:
@@ -270,10 +270,10 @@ paths:
           description: "Internal error"
         200:
           description: "Correct response"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.Healthcheck"
             $ref: "#/definitions/sli.api.Healthcheck"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.Healthcheck"
             $ref: "#/definitions/sli.api.Healthcheck"
         201:
@@ -288,10 +288,10 @@ paths:
           description: "Internal error"
         200:
           description: "Correct response"
-          responseSchema:
+          schema:
             originalRef: "#/definitions/sli.api.Vlbcheck"
             $ref: "#/definitions/sli.api.Vlbcheck"
-          schema:
+          responseSchema:
             originalRef: "#/definitions/sli.api.Vlbcheck"
             $ref: "#/definitions/sli.api.Vlbcheck"
         201:
