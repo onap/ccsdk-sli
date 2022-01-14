@@ -63,26 +63,20 @@ import org.onap.ccsdk.sli.adaptors.aai.query.Result;
 import org.onap.ccsdk.sli.adaptors.aai.update.BulkUpdateRequestItemBody;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.aai.inventory.v24.GenericVnf;
-import org.onap.aai.inventory.v24.Image;
-import org.onap.aai.inventory.v24.InventoryResponseItem;
-import org.onap.aai.inventory.v24.InventoryResponseItems;
-import org.onap.aai.inventory.v24.L3Network;
-import org.onap.aai.inventory.v24.LogicalLink;
-import org.onap.aai.inventory.v24.Metadata;
-import org.onap.aai.inventory.v24.Metadatum;
-import org.onap.aai.inventory.v24.Pnf;
-import org.onap.aai.inventory.v24.RelatedToProperty;
-import org.onap.aai.inventory.v24.Relationship;
-import org.onap.aai.inventory.v24.RelationshipData;
-import org.onap.aai.inventory.v24.RelationshipList;
-import org.onap.aai.inventory.v24.ResultData;
-import org.onap.aai.inventory.v24.SearchResults;
-import org.onap.aai.inventory.v24.ServiceInstance;
-import org.onap.aai.inventory.v24.Subnet;
-import org.onap.aai.inventory.v24.Vlan;
-import org.onap.aai.inventory.v24.Vlans;
-import org.onap.aai.inventory.v24.Vserver;
+import org.onap.aai.inventory.v25.GenericVnf;
+import org.onap.aai.inventory.v25.Image;
+import org.onap.aai.inventory.v25.Metadata;
+import org.onap.aai.inventory.v25.Metadatum;
+import org.onap.aai.inventory.v25.RelatedToProperty;
+import org.onap.aai.inventory.v25.Relationship;
+import org.onap.aai.inventory.v25.RelationshipData;
+import org.onap.aai.inventory.v25.RelationshipList;
+import org.onap.aai.inventory.v25.ResultData;
+import org.onap.aai.inventory.v25.SearchResults;
+import org.onap.aai.inventory.v25.ServiceInstance;
+import org.onap.aai.inventory.v25.Vlan;
+import org.onap.aai.inventory.v25.Vlans;
+import org.onap.aai.inventory.v25.Vserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,7 +140,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
     // aai-specific proxy
     public static final String HTTP_PROXY                = "org.onap.ccsdk.sli.adaptors.aai.http.proxy";
-    
+
     private static final String VERSION_PATTERN = "/v$/";
 
     private static final String AAI_SERVICE_EXCEPTION = "AAI Service Exception";
@@ -490,6 +484,7 @@ public abstract class AAIDeclarations implements AAIClient {
         		}
         	}
         }
+
         // params passed
         getLogger().debug("parms = "+ Arrays.toString(params.entrySet().toArray()));
 
@@ -594,7 +589,7 @@ public abstract class AAIDeclarations implements AAIClient {
         getLogger().debug("parms = "+ Arrays.toString(params.entrySet().toArray()));
 
         AAIRequest request = AAIRequest.createRequest(resource, nameValues);
-
+        
         // Special handling for bulk-subnet
         if ("bulk-subnet".equals(resource)) {
             BulkUpdateRequest bulkUpdateRequest = (BulkUpdateRequest) request;
@@ -607,7 +602,6 @@ public abstract class AAIDeclarations implements AAIClient {
             if (!params.containsKey("subnets")) {
                 throw new SvcLogicException("Missing mandatory parameter subnets for update to bulk-subnet resource");
             }
-
             if (!params.containsKey("orchestration-status")) {
                 throw new SvcLogicException("Missing mandatory parameter orchestration-status for update to bulk-subnet resource");
             }
@@ -616,19 +610,15 @@ public abstract class AAIDeclarations implements AAIClient {
             if ((subnetLengthStr == null) || (subnetLengthStr.length() == 0)) {
                 throw new SvcLogicException("subnet list length variable "+subnetListVar+"_length is unset");
             }
-
             String orchestrationStatus = params.get("orchestration-status");
-
             BulkUpdateRequestItemBody subnet = new BulkUpdateRequestItemBody();
             subnet.setOrchestrationStatus(orchestrationStatus);
-
             int subnetLength = Integer.parseInt(subnetLengthStr);
             for (int i = 0 ; i < subnetLength ; i++) {
                 String subnetId = ctx.getAttribute(subnetListVar+".subnet["+i+"].subnet-id");
                 String subnetPath = networkPath+"/subnets/subnet/"+subnetId+"?depth=1";
                 bulkUpdateRequest.addUpdate("patch", subnetPath, subnet);
             }
-
             try {
                 getExecutor().bulkUpdate(bulkUpdateRequest);
             } catch (AAIServiceException e) {
@@ -639,8 +629,6 @@ public abstract class AAIDeclarations implements AAIClient {
 
         // Handling for non-bulk transactions
         request = new UpdateRequest(request, params);
-
-
 
         String[] arguments = request.getArgsList();
         for(String name : arguments) {
@@ -1197,7 +1185,7 @@ public abstract class AAIDeclarations implements AAIClient {
                                             newValues.add(tmpValue);
                                         }
                                         if(!newValues.isEmpty()) {
-                                        	Method setter = findSetterFor(resourceClass, value);
+                                            Method setter = findSetterFor(resourceClass, value);
                                             if(setter != null) {
                                                 Object o = setter.invoke(instance, newValues);
                                             } else {
@@ -1212,7 +1200,7 @@ public abstract class AAIDeclarations implements AAIClient {
                                                 getLogger().warn(AAI_SERVICE_EXCEPTION, nsme);
                                             }
                                         }
-                                    }
+                                        }
                                     }
                                     set.remove(id);
                                 } else {
@@ -1357,7 +1345,7 @@ public abstract class AAIDeclarations implements AAIClient {
                     getLogger().debug("About to process related link of {}", relatedLink);
                     if(relatedLink != null) {
                         if(relatedLink.contains("v$"))
-                            relatedLink = relatedLink.replace(VERSION_PATTERN, "/v24/");
+                            relatedLink = relatedLink.replace(VERSION_PATTERN, "/v25/");
                         relationship.setRelatedLink(relatedLink);
                     } else {
                         Map<String, String> relParams = new HashMap<>();
@@ -1565,19 +1553,20 @@ public abstract class AAIDeclarations implements AAIClient {
     }
 
     private Method findSetterFor(Class<? extends AAIDatum> resourceClass, String value) {
-    	try {
-    		String setterName = "set"+StringUtils.capitalize(value);
-    		for (Method method : resourceClass.getDeclaredMethods()) {
-    			int modifiers = method.getModifiers();
-    			if (Modifier.isPublic(modifiers) && setterName.contentEquals(method.getName())) {
-    				return method;
-    			}
-    		}
-    	} catch(Exception exc) {
-    		 getLogger().warn("findSetterFor()", exc);
-    	}
-		return null;
-	}
+        try {
+            String setterName = "set"+StringUtils.capitalize(value);
+            for (Method method : resourceClass.getDeclaredMethods()) {
+                int modifiers = method.getModifiers();
+                if (Modifier.isPublic(modifiers) && setterName.contentEquals(method.getName())) {
+                    return method;
+                }
+            }
+        } catch(Exception exc) {
+             getLogger().warn("findSetterFor()", exc);
+        }
+        return null;
+    }
+
     private QueryStatus newModelProcessRelationshipList(Object instance, Map<String, String> params, String prefix, SvcLogicContext ctx) throws Exception {
 
         Class resourceClass = instance.getClass();

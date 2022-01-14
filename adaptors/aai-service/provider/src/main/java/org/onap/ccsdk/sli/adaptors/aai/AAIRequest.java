@@ -51,7 +51,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.onap.aai.inventory.v24.GenericVnf;
+import org.onap.aai.inventory.v25.GenericVnf;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -476,6 +476,6 @@ public abstract class AAIRequest {
     }
  
     public static final String getSupportedAAIVersion() {
-        return configProperties.getProperty(AAIDeclarations.AAI_VERSION, "/v24/");
+        return configProperties.getProperty(AAIDeclarations.AAI_VERSION, "/v25/");
     }
 }
