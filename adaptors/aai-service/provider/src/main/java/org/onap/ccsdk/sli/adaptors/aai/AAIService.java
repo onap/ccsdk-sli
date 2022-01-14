@@ -38,9 +38,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -75,11 +73,6 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.onap.aai.inventory.v24.GenericVnf;
-import org.onap.aai.inventory.v24.PhysicalLink;
-import org.onap.aai.inventory.v24.ResultData;
-import org.onap.aai.inventory.v24.SearchResults;
-import org.onap.aai.inventory.v24.Vserver;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.onap.ccsdk.sli.adaptors.aai.data.ErrorResponse;
 import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;
@@ -89,6 +82,11 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
+import org.onap.aai.inventory.v25.GenericVnf;
+import org.onap.aai.inventory.v25.PhysicalLink;
+import org.onap.aai.inventory.v25.ResultData;
+import org.onap.aai.inventory.v25.SearchResults;
+import org.onap.aai.inventory.v25.Vserver;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,10 +133,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     // authentication credentials
     private String userName;
     private String userPassword;
-
-    // proxy
-    private String proxyHost;
-    private int proxyPort;
 
     // runtime
     private final boolean runtimeOSGI;
@@ -236,16 +230,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         props.getProperty(SITE_PAIR_SET_PATH);
 
         queryNodesPath = props.getProperty(QUERY_NODES_PATH);
-
-        String httpProxy = props.getProperty(HTTP_PROXY, "none");
-        if (!httpProxy.isEmpty() && !"none".equalsIgnoreCase(httpProxy)) {
-            String proxyParts[] = httpProxy.split(":");
-            proxyHost = proxyParts[0];
-            proxyPort = (proxyParts.length > 1) && (proxyParts[1] != null) && (!proxyParts[1].isEmpty()) ? Integer.parseInt(proxyParts[1]) : -1;
-        } else {
-            proxyHost = null;
-            proxyPort = -1;
-        }
 
         String iche = props.getProperty(CERTIFICATE_HOST_ERROR);
         boolean host_error = false;
@@ -364,13 +348,8 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
      * @throws Exception
      */
     protected HttpURLConnection getConfiguredConnection(URL http_req_url, String method) throws Exception {
-        HttpURLConnection con;
-        if (proxyPort > -1) {
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
-            con = (HttpURLConnection) http_req_url.openConnection(proxy);
-        } else {
-            con = (HttpURLConnection) http_req_url.openConnection();
-        }
+        HttpURLConnection con = (HttpURLConnection) http_req_url.openConnection();
+
         // Set up the connection properties
         con.setRequestProperty( "Connection", "close" );
         con.setDoInput(true);
@@ -383,8 +362,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         con.setRequestProperty( "Content-Type",  "PATCH".equalsIgnoreCase(method) ? "application/merge-patch+json" : "application/json" );
         con.setRequestProperty("X-FromAppId", applicationId);
         con.setRequestProperty("X-TransactionId",TransactionIdTracker.getNextTransactionId());
-        con.setRequestProperty("X-DslApiVersion", "V2");
-
         String mlId = ml.getRequestID();
         if(mlId != null && !mlId.isEmpty()) {
             LOG.debug(String.format("MetricLogger requestId = %s", mlId));
@@ -1072,7 +1049,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
                 String data_type = datum.getResourceType();
                 String resourceLink = datum.getResourceLink();
                 if(!resourceLink.isEmpty() && !resourceLink.toLowerCase().startsWith("http")) {
-                    resourceLink = (new EchoRequest()).getTargetUri() + resourceLink;
+                    resourceLink = (new EchoRequest()).targetUri + resourceLink;
                 }
                 entity = new URL(resourceLink);
             }
@@ -1378,8 +1355,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
         switch(normResource){
         case "custom-query":
-        case "dsl-query":
-        case "dsl-narad-query":
         case "formatted-query":
         case "generic-query":
         case "nodes-query":
@@ -1408,8 +1383,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
         switch(normResource){
         case "custom-query":
-        case "dsl-query":
-        case "dsl-narad-query":
         case "formatted-query":
         case "generic-query":
         case "nodes-query":
@@ -1438,8 +1411,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
         switch(normResource){
         case "custom-query":
-        case "dsl-query":
-        case "dsl-narad-query":
         case "formatted-query":
         case "generic-query":
         case "nodes-query":
@@ -1467,10 +1438,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         String normResource = resource.split(":")[0];
 
         switch(normResource){
-        case "bulk-subnet":
         case "custom-query":
-        case "dsl-query":
-        case "dsl-narad-query":
         case "formatted-query":
         case "generic-query":
         case "nodes-query":
@@ -1575,12 +1543,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     @Override
     public boolean delete(AAIRequest request, String resourceVersion) throws AAIServiceException {
         return executor.delete(request, resourceVersion);
-    }
-
-    @Override
-    public String bulkSubnetUpdate(BulkUpdateRequest request) throws AAIServiceException {
-        
-        return executor.bulkUpdate(request);
     }
 
 }
