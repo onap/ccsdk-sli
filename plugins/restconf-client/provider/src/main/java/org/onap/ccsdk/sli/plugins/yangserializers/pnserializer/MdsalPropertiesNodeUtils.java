@@ -28,23 +28,20 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.Optional;
+
+import com.sun.xml.txw2.annotation.XmlNamespace;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.sli.provider.YangUtils;
 import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
 import org.opendaylight.restconf.common.errors.RestconfDocumentedException;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
-import org.opendaylight.yangtools.yang.data.impl.schema.SchemaUtils;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.util.ParserStreamUtils;
 import org.opendaylight.yangtools.yang.data.util.codec.IdentityCodecUtil;
-import org.opendaylight.yangtools.yang.model.api.AnyxmlSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
+import org.opendaylight.yangtools.yang.model.api.*;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -447,14 +444,15 @@ public final class MdsalPropertiesNodeUtils {
             return null;
         }
 
-        QName qname =  QName.create(namespace.moduleNs(),
+
+        QName qname =  QName.create(XMLNamespace.of(namespace.moduleNs().toString()),
                                     Revision.of(namespace.revision()), name);
 
         // YANG RPC will not be instance of DataSchemaNode
         if (curSchema instanceof DataSchemaNode) {
             Deque<DataSchemaNode> schemaNodeDeque = ParserStreamUtils.
                     findSchemaNodeByNameAndNamespace(((DataSchemaNode)
-                            curSchema), name, namespace.moduleNs());
+                            curSchema), name, XMLNamespace.of(namespace.moduleNs().toString()));
             if (schemaNodeDeque.isEmpty()) {
                 // could not find schema node
                 return null;
@@ -467,10 +465,12 @@ public final class MdsalPropertiesNodeUtils {
             }
 
             // node is child of Choice/case
-            return SchemaUtils.findSchemaForChild(((ChoiceSchemaNode) schemaNode),
+
+
+            return YangUtils.findSchemaForChild(((ChoiceSchemaNode) schemaNode),
                                                   qname);
         } else {
-            return SchemaUtils.findDataChildSchemaByQName(curSchema, qname);
+            return YangUtils.findDataChildSchemaByQName(curSchema, qname);
         }
     }
 
