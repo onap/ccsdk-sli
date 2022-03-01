@@ -258,7 +258,7 @@ public class SliapiProvider implements AutoCloseable, SLIAPIService {
 
 			String propValue = "";
 
-			Boolean boolval = sliParm.isBooleanValue();
+			Boolean boolval = sliParm.getBooleanValue();
 
 			if (boolval != null) {
 				propValue = boolval.toString();
