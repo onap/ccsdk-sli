@@ -45,6 +45,7 @@ import org.dom4j.Element;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.Namespace;
 import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.PropertiesNode;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -190,13 +191,8 @@ public final class DfSerializerUtil {
         if (mName != null) {
             it = ctx.findModules(mName).iterator();
         } else {
-            URI modUri = null;
-            try {
-               modUri = new URI(mUri);
-            } catch (URISyntaxException e) {
-                throw new SvcLogicException(URI_ERR, e);
-            }
-            it = ctx.findModules(modUri).iterator();
+
+            it = ctx.findModules(XMLNamespace.of(mUri)).iterator();
         }
 
         if (!it.hasNext()) {

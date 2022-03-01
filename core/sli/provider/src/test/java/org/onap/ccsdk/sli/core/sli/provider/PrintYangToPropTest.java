@@ -23,17 +23,21 @@
 package org.onap.ccsdk.sli.core.sli.provider;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput.Mode;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.TestResultsBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterKey;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.test.results.TestResult;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.test.results.TestResultBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.test.results.TestResultKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
 import org.slf4j.Logger;
@@ -57,38 +61,38 @@ public class PrintYangToPropTest {
 		egBuilder.setModuleName("my-module");
 		egBuilder.setRpcName("my-rpc");
 
-		List<SliParameter> pList = new LinkedList<>();
+		Map<SliParameterKey, SliParameter> pMap = new HashMap<>();
 
 		SliParameterBuilder pBuilder = new SliParameterBuilder();
         pBuilder.setParameterName("string-param");
         pBuilder.setStringValue("hi");
-        pList.add(pBuilder.build());
+        pMap.put(new SliParameterKey(pBuilder.getParameterName()), pBuilder.build());
         pBuilder.setParameterName("int-param");
         pBuilder.setIntValue(1);
         pBuilder.setStringValue(null);
-        pList.add(pBuilder.build());
+        pMap.put(new SliParameterKey(pBuilder.getParameterName()), pBuilder.build());
         pBuilder.setParameterName("bool-param");
         pBuilder.setIntValue(null);
         pBuilder.setBooleanValue(true);
-        pList.add(pBuilder.build());
+        pMap.put(new SliParameterKey(pBuilder.getParameterName()), pBuilder.build());
         pBuilder.setParameterName("ipaddress-value1");
         pBuilder.setBooleanValue(null);
         pBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("127.0.0.1"));
-        pList.add(pBuilder.build());
+        pMap.put(new SliParameterKey(pBuilder.getParameterName()), pBuilder.build());
         pBuilder.setParameterName("ipaddress-value2");
         pBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("::1"));
-        pList.add(pBuilder.build());
+        pMap.put(new SliParameterKey(pBuilder.getParameterName()), pBuilder.build());
         pBuilder.setParameterName("ipprefix-value1");
         pBuilder.setIpaddressValue(null);
         pBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("192.168.0.0/16"));
-        pList.add(pBuilder.build());
+        pMap.put(new SliParameterKey(pBuilder.getParameterName()), pBuilder.build());
         pBuilder.setParameterName("ipprefix-value2");
         pBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("2001:db8:3c4d::/48"));
-        pList.add(pBuilder.build());
+        pMap.put(new SliParameterKey(pBuilder.getParameterName()), pBuilder.build());
 
 
 
-		egBuilder.setSliParameter(pList);
+		egBuilder.setSliParameter(pMap);
 
 
 		// Generate properties
@@ -113,12 +117,12 @@ public class PrintYangToPropTest {
         TestResultBuilder resultBuilder = new TestResultBuilder();
 
         // Set builder with values
-        List<TestResult> resultList = new LinkedList<>();
+        Map<TestResultKey, TestResult> resultList = new HashMap<>();
         resultBuilder.setTestIdentifier("test1");
         List<String> results = new LinkedList<>();
         results.add("pass");
         resultBuilder.setResults(results);
-        resultList.add(resultBuilder.build());
+        resultList.put(new TestResultKey(resultBuilder.getTestIdentifier()), resultBuilder.build());
         resultsBuilder.setTestResult(resultList);
 
         // Generate properties

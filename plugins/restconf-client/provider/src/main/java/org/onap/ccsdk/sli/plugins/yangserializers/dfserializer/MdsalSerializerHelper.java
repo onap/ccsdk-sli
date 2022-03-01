@@ -52,8 +52,8 @@ import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.NodeType.M
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.NodeType.MULTI_INSTANCE_NODE;
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.NodeType.SINGLE_INSTANCE_LEAF_NODE;
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.NodeType.SINGLE_INSTANCE_NODE;
-import static org.opendaylight.yangtools.yang.data.impl.schema.SchemaUtils.findDataChildSchemaByQName;
-import static org.opendaylight.yangtools.yang.data.impl.schema.SchemaUtils.findSchemaForChild;
+import static org.onap.ccsdk.sli.core.sli.provider.YangUtils.findDataChildSchemaByQName;
+import static org.onap.ccsdk.sli.core.sli.provider.YangUtils.findSchemaForChild;
 import static org.opendaylight.yangtools.yang.data.util.ParserStreamUtils.findSchemaNodeByNameAndNamespace;
 
 /**

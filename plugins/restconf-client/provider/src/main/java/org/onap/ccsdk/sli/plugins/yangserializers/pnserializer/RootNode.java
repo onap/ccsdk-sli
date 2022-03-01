@@ -35,7 +35,7 @@ import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.MdsalPrope
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.MdsalPropertiesNodeUtils.resolveName;
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.NodeType.MULTI_INSTANCE_HOLDER_NODE;
 import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.NodeType.MULTI_INSTANCE_LEAF_HOLDER_NODE;
-import static org.opendaylight.yangtools.yang.data.impl.schema.SchemaUtils.findCorrespondingAugment;
+import static org.onap.ccsdk.sli.core.sli.provider.YangUtils.findCorrespondingAugment;
 
 /**
  * Abstraction of node representing properties data tree.
