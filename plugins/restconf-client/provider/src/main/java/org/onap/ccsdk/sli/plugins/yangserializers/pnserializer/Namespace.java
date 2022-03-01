@@ -20,14 +20,15 @@
 
 package org.onap.ccsdk.sli.plugins.yangserializers.pnserializer;
 
-import java.net.URI;
+
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 
 /**
  * Representation of YANG namespace.
  */
 public class Namespace {
     private String moduleName;
-    private URI moduleNs;
+    private XMLNamespace moduleNs;
     private String revision;
 
     /**
@@ -38,7 +39,7 @@ public class Namespace {
      * @param moduleNs module namespace
      * @param revision revision
      */
-    public Namespace(String modulename, URI moduleNs, String revision) {
+    public Namespace(String modulename, XMLNamespace moduleNs, String revision) {
         this.moduleName = modulename;
         this.moduleNs = moduleNs;
         this.revision = revision;
@@ -67,7 +68,7 @@ public class Namespace {
      *
      * @return module namespace
      */
-    public URI moduleNs() {
+    public XMLNamespace moduleNs() {
         return moduleNs;
     }
 
@@ -76,7 +77,7 @@ public class Namespace {
      *
      * @param moduleNs module namespace
      */
-    public void moduleNs(URI moduleNs) {
+    public void moduleNs(XMLNamespace moduleNs) {
         this.moduleNs = moduleNs;
     }
 

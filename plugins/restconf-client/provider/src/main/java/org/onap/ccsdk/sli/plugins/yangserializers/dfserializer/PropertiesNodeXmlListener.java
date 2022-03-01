@@ -30,6 +30,7 @@ import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.Namespace;
 import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.PropertiesNode;
 import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.PropertiesNodeListener;
 import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.RootNode;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 
 import java.io.Writer;
 import java.net.URI;
@@ -211,7 +212,7 @@ public class PropertiesNodeXmlListener implements PropertiesNodeListener {
      */
     private void setValueWithNs(Element element, LeafNode node) {
         Namespace valNs = node.valueNs();
-        URI modNs = (valNs == null) ? null : valNs.moduleNs();
+        XMLNamespace modNs = (valNs == null) ? null : valNs.moduleNs();
         String val = node.value();
         if (modNs != null) {
             element.addNamespace(XML_PREFIX, modNs.toString());
