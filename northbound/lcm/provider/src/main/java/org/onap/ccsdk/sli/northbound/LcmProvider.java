@@ -38,6 +38,7 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1038,7 +1039,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 
 		if (input == null) {
 			LOG.debug("Rejecting " +rpcName+ " because of invalid input");
-			statusBuilder.setCode(LcmResponseCode.REJECT_INVALID_INPUT.getValue());
+			statusBuilder.setCode(Uint16.valueOf(LcmResponseCode.REJECT_INVALID_INPUT.getValue()));
 			statusBuilder.setMessage("REJECT - INVALID INPUT.  Missing input");
 			CommonHeaderBuilder hBuilder = new CommonHeaderBuilder();
 			hBuilder.setApiVer("1");
@@ -1069,14 +1070,14 @@ public class LcmProvider implements AutoCloseable, LCMService {
 				catch (Exception e)
 				{
 					LOG.error("Caught exception executing service logic for "+ rpcName, e);
-					statusBuilder.setCode(LcmResponseCode.FAILURE_DG_FAILURE.getValue());
+					statusBuilder.setCode(Uint16.valueOf(LcmResponseCode.FAILURE_DG_FAILURE.getValue()));
 					statusBuilder.setMessage("FAILURE - DG FAILURE ("+e.getMessage()+")");
 					throw new LcmRpcInvocationException(statusBuilder.build(), hBuilder.build());
 				}
 			} else {
 				LOG.error("No service logic active for LCM: '" + rpcName + "'");
 
-				statusBuilder.setCode(LcmResponseCode.REJECT_DG_NOT_FOUND.getValue());
+				statusBuilder.setCode(Uint16.valueOf(LcmResponseCode.REJECT_DG_NOT_FOUND.getValue()));
 				statusBuilder.setMessage("FAILURE - DG not found for action "+rpcName);
 				throw new LcmRpcInvocationException(statusBuilder.build(), hBuilder.build());
 			}
@@ -1085,7 +1086,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		{
 			LOG.error("Caught exception looking for service logic", e);
 
-			statusBuilder.setCode(LcmResponseCode.FAILURE_DG_FAILURE.getValue());
+			statusBuilder.setCode(Uint16.valueOf(LcmResponseCode.FAILURE_DG_FAILURE.getValue()));
 			statusBuilder.setMessage("FAILURE - Unexpected error looking for DG ("+e.getMessage()+")");
 			throw new LcmRpcInvocationException(statusBuilder.build(), hBuilder.build());
 		}
@@ -1100,6 +1101,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		if (payloadValue != null) {
 			payload = new Payload(payloadValue);
 		}
+
 
 		String statusCode = sBuilder.getCode().toString();
 

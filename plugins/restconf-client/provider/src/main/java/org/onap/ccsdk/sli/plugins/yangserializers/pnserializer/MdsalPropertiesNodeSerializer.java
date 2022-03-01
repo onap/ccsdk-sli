@@ -40,7 +40,9 @@ import static org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.NodeType.S
 import java.util.HashMap;
 import java.util.Map;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.sli.provider.YangUtils;
 import org.opendaylight.restconf.common.errors.RestconfDocumentedException;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
@@ -143,7 +145,7 @@ public class MdsalPropertiesNodeSerializer extends PropertiesNodeSerializer<Sche
     }
 
     private RootNode createRootNode(String lastNodeName, String rootUri) {
-        Module m = SchemaContextUtil.findParentModule(schemaCtx(), curSchema);
+        Module m = YangUtils.findParentModule(schemaCtx(), curSchema);
         Namespace ns = new Namespace(m.getName(), m.getNamespace(),
                                      getRevision(m.getRevision()));
         return new RootNode(lastNodeName, ns, schemaNode(), rootUri);

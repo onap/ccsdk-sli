@@ -27,11 +27,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.Future;
 import org.junit.After;
 import org.junit.Before;
@@ -72,6 +68,7 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.Hea
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.SLIAPIService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterKey;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterBuilder;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 
@@ -173,20 +170,23 @@ public class TestSliapiProvider {
         inputBuilder.setMode(ExecuteGraphInput.Mode.Sync);
         inputBuilder.setModuleName("sli");
         inputBuilder.setRpcName("healthcheck");
-        List<SliParameter> pList = new LinkedList<>();
+        Map<SliParameterKey, SliParameter> pMap = new LinkedHashMap<>();
         SliParameterBuilder pBuilder = new SliParameterBuilder();
         pBuilder.setParameterName("int-parameter");
         pBuilder.setIntValue(1);
-        pList.add(pBuilder.build());
+        SliParameter sliParm = pBuilder.build();
+        pMap.put(sliParm.key(), sliParm);
         pBuilder.setParameterName("bool-parameter");
         pBuilder.setIntValue(null);
         pBuilder.setBooleanValue(true);
-        pList.add(pBuilder.build());
+        sliParm = pBuilder.build();
+        pMap.put(sliParm.key(), sliParm);
         pBuilder.setParameterName("str-parameter");
         pBuilder.setBooleanValue(null);
         pBuilder.setStringValue("value");
-        pList.add(pBuilder.build());
-        inputBuilder.setSliParameter(pList);
+        sliParm = pBuilder.build();
+        pMap.put(sliParm.key(), sliParm);
+        inputBuilder.setSliParameter(pMap);
         provider.executeGraph(inputBuilder.build());
 
 
@@ -194,20 +194,23 @@ public class TestSliapiProvider {
         inputBuilder.setMode(ExecuteGraphInput.Mode.Sync);
         inputBuilder.setModuleName("sli");
         inputBuilder.setRpcName("no-such-graph");
-        pList = new LinkedList<>();
+        pMap = new LinkedHashMap<>();
         pBuilder = new SliParameterBuilder();
         pBuilder.setParameterName("int-parameter");
         pBuilder.setIntValue(1);
-        pList.add(pBuilder.build());
+        sliParm = pBuilder.build();
+        pMap.put(sliParm.key(), sliParm);
         pBuilder.setParameterName("bool-parameter");
         pBuilder.setIntValue(null);
         pBuilder.setBooleanValue(true);
-        pList.add(pBuilder.build());
+        sliParm = pBuilder.build();
+        pMap.put(sliParm.key(), sliParm);
         pBuilder.setParameterName("str-parameter");
         pBuilder.setBooleanValue(null);
         pBuilder.setStringValue("value");
-        pList.add(pBuilder.build());
-        inputBuilder.setSliParameter(pList);
+        sliParm = pBuilder.build();
+        pMap.put(sliParm.key(), sliParm);
+        inputBuilder.setSliParameter(pMap);
         provider.executeGraph(inputBuilder.build());
 
         assertTrue(provider.vlbcheck(mock(VlbcheckInput.class)) instanceof Future<?>);

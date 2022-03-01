@@ -84,6 +84,7 @@ import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.Namespace;
 import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.PropertiesNodeSerializer;
 import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
 import org.opendaylight.restconf.nb.rfc8040.utils.parser.ParserIdentifier;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
@@ -479,7 +480,7 @@ public class RestconfApiCallNode implements SvcLogicJavaPlugin {
      * @throws SvcLogicException when XML parsing fails
      */
     private String getXmlReqForPutOp(String req, String nodeName,
-                                     URI modNs) throws SvcLogicException {
+                                     XMLNamespace modNs) throws SvcLogicException {
         req = getUpdatedXmlReq(req, nodeName, modNs.toString());
         Document oldDoc;
         try {
