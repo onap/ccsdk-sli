@@ -24,24 +24,23 @@ package org.onap.ccsdk.sli.core.sli.provider;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.Inet6Address;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput.Mode;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterKey;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.Builtin.SampleBits;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.Builtin.SampleEnumeration;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.Builtin.SampleUnion;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.Percentage;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.SampleContainer;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.SampleContainerBuilder;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.sample.container.LoginBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.sample.container.*;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.sample.container.login.CustomerAddresses;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.sample.container.login.CustomerAddressesBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.sample.container.login.CustomerAddressesKey;
 import org.opendaylight.yang.gen.v1.test.IpFragmentFlagEnumType;
 import org.opendaylight.yang.gen.v1.test.TestObjectBuilder;
 import org.opendaylight.yang.gen.v1.test.WrapperObj;
@@ -64,7 +63,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
-import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import junit.framework.TestCase;
@@ -92,45 +91,53 @@ public class MdsalHelperTest extends TestCase {
 
     ExecuteGraphInputBuilder execBuilder = new ExecuteGraphInputBuilder();
     SliParameterBuilder parmBuilder = new SliParameterBuilder();
-    List<SliParameter> params = new LinkedList<SliParameter>();
+    Map<SliParameterKey, SliParameter> params = new HashMap<>();
 
     parmBuilder.setParameterName("boolean-parm");
     parmBuilder.setBooleanValue(Boolean.TRUE);
-    params.add(parmBuilder.build());
+    SliParameter newParm = parmBuilder.build();
+    params.put(newParm.key(), newParm);
 
     parmBuilder.setParameterName("int-parm");
     parmBuilder.setBooleanValue(null);
     parmBuilder.setIntValue(1);
-    params.add(parmBuilder.build());
+    newParm = parmBuilder.build();
+    params.put(newParm.key(), newParm);
 
     parmBuilder.setParameterName("str-parm");
     parmBuilder.setIntValue(null);
     parmBuilder.setStringValue("hello");
-    params.add(parmBuilder.build());
+    newParm = parmBuilder.build();
+    params.put(newParm.key(), newParm);
 
     parmBuilder.setParameterName("ipaddress4-parm");
     parmBuilder.setStringValue(null);
     parmBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("127.0.0.1"));
-    params.add(parmBuilder.build());
+    newParm = parmBuilder.build();
+    params.put(newParm.key(), newParm);
 
     parmBuilder.setParameterName("ipaddress6-parm");
     parmBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("ef::1"));
-    params.add(parmBuilder.build());
+    newParm = parmBuilder.build();
+    params.put(newParm.key(), newParm);
 
     parmBuilder.setParameterName("ipprefix-parm");
     parmBuilder.setIpaddressValue(null);
     parmBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("10.0.0.0/24"));
-    params.add(parmBuilder.build());
+    newParm = parmBuilder.build();
+    params.put(newParm.key(), newParm);
 
     parmBuilder.setParameterName("portnumber-parm");
     parmBuilder.setIpprefixValue(null);
     parmBuilder.setPortNumber(PortNumber.getDefaultInstance("8080"));
-    params.add(parmBuilder.build());
+    newParm = parmBuilder.build();
+    params.put(newParm.key(), newParm);
 
     parmBuilder.setParameterName("dcsp-parm");
     parmBuilder.setPortNumber(null);
     parmBuilder.setDscp(Dscp.getDefaultInstance("57"));
-    params.add(parmBuilder.build());
+    newParm = parmBuilder.build();
+    params.put(newParm.key(), newParm);
 
     execBuilder.setMode(Mode.Sync);
     execBuilder.setModuleName("my-module");
@@ -574,7 +581,8 @@ public class MdsalHelperTest extends TestCase {
 
   public void testToPropertiesWithuInt8() throws Exception {
     SampleContainerBuilder sampleBuilder = new SampleContainerBuilder();
-    Short myShort = new Short("255");
+
+    Uint8 myShort = Uint8.valueOf("255");
     sampleBuilder.setSampleUint8(myShort);
     Properties props = new Properties();
     MdsalHelper.toProperties(props, sampleBuilder);
@@ -583,7 +591,7 @@ public class MdsalHelperTest extends TestCase {
 
   public void testToPropertiesWithuInt16() throws Exception {
     SampleContainerBuilder sampleBuilder = new SampleContainerBuilder();
-    Integer myInt = new Integer("65535");
+    Uint16 myInt = Uint16.valueOf("65535");
     sampleBuilder.setSampleUint16(myInt);
     Properties props = new Properties();
     MdsalHelper.toProperties(props, sampleBuilder);
@@ -592,7 +600,7 @@ public class MdsalHelperTest extends TestCase {
 
   public void testToPropertiesWithuInt32() throws Exception {
     SampleContainerBuilder sampleBuilder = new SampleContainerBuilder();
-    Long myLong = new Long("4294967295");
+    Uint32 myLong = Uint32.valueOf("4294967295");
     sampleBuilder.setSampleUint32(myLong);
     Properties props = new Properties();
     MdsalHelper.toProperties(props, sampleBuilder);
@@ -601,7 +609,7 @@ public class MdsalHelperTest extends TestCase {
 
   public void testToPropertiesWithuInt64() throws Exception {
     SampleContainerBuilder sampleBuilder = new SampleContainerBuilder();
-    BigInteger myBigInt = new BigInteger("2432902008176640000");
+    Uint64 myBigInt = Uint64.valueOf("2432902008176640000");
     sampleBuilder.setSampleUint64(myBigInt);
     Properties props = new Properties();
     MdsalHelper.toProperties(props, sampleBuilder);
@@ -628,7 +636,7 @@ public class MdsalHelperTest extends TestCase {
     SampleContainerBuilder sampleBuilder = new SampleContainerBuilder();
     Properties props = new Properties();
 
-    Short myShort = new Short("99");
+    Uint8 myShort = Uint8.valueOf("99");
     Percentage myPercent = new Percentage(myShort);
     sampleBuilder.setPercentCompleted(myPercent);
     MdsalHelper.toProperties(props, sampleBuilder);
@@ -661,21 +669,21 @@ public class MdsalHelperTest extends TestCase {
     SampleContainerBuilder sampleBuilder = new SampleContainerBuilder();
     LoginBuilder lb = new LoginBuilder();
     lb.setMessage("WELCOME!");
-    List<CustomerAddresses> addresses = new ArrayList<CustomerAddresses>();
+    Map<CustomerAddressesKey, CustomerAddresses> addresses = new LinkedHashMap<>();
     CustomerAddressesBuilder cab = new CustomerAddressesBuilder();
     cab.setAddressName("home");
     cab.setState("NJ");
     cab.setStreetAddress("yellowbrick road");
 
     CustomerAddresses addressOne = cab.build();
-    addresses.add(addressOne);
+    addresses.put(addressOne.key(), addressOne);
 
     cab.setAddressName("vacation house");
     cab.setState("FL");
     cab.setStreetAddress("ocean ave");
 
     CustomerAddresses addressTwo = cab.build();
-    addresses.add(addressTwo);
+    addresses.put(addressTwo.key(), addressTwo);
 
     lb.setCustomerAddresses(addresses);
     sampleBuilder.setLogin(lb.build());
@@ -766,6 +774,13 @@ public class MdsalHelperTest extends TestCase {
     props.put("sample-container.ipv6-prefix", "2001:db8:aaaa:1111::100/64");
     props.put("sample-container.ipv6-prefix.value", "2001:db8:aaaa:1111::100/64");
     props.put("sample-container.port-number", "2");
+    props.put("sample-container.ip-address-list[0].ip-addr", "127.0.0.1");
+    props.put("sample-container.ip-address-list[1].ip-addr", "10.20.0.1");
+    props.put("sample-container.ip-address-list_length", 2);
+    props.put("sample-container.ip-address-leaf-list[0]", "127.0.0.1");
+    props.put("sample-container.ip-address-names[0].ip-addr", "127.0.0.1");
+    props.put("sample-container.ip-address-names[0].fqdn", "localhost");
+
     props.put("sample-container.uri", "http://wiki.onap.org:8080");
     props.put("sample-container.uri.value", "http://wiki.onap.org:8080");
     SampleContainerBuilder sampleBuilder = new SampleContainerBuilder();
@@ -790,6 +805,23 @@ public class MdsalHelperTest extends TestCase {
     assertEquals(Ipv6Prefix.getDefaultInstance("2001:db8:aaaa:1111::100/64"), result.getIpv6Prefix());
     assertEquals(PortNumber.getDefaultInstance("2"), result.getPortNumber());
     assertEquals(Uri.getDefaultInstance("http://wiki.onap.org:8080"), result.getUri());
+    Map<IpAddressListKey, IpAddressList> ipAddrList = result.getIpAddressList();
+
+    Iterator<IpAddressList> ipAddrIter = ipAddrList.values().iterator();
+    assertEquals(true, ipAddrIter.hasNext());
+    assertEquals("127.0.0.1", ipAddrIter.next().getIpAddr().stringValue());
+    assertEquals(true, ipAddrIter.hasNext());
+    assertEquals("10.20.0.1", ipAddrIter.next().getIpAddr().stringValue());
+    assertEquals(1, result.getIpAddressLeafList().size());
+    assertEquals("127.0.0.1", result.getIpAddressLeafList().get(0).stringValue());
+    Map<IpAddressNamesKey, IpAddressNames> ipNamesMap = result.getIpAddressNames();
+    Iterator<IpAddressNames> ipNamesIter = ipNamesMap.values().iterator();
+    assertEquals(true, ipNamesIter.hasNext());
+    IpAddressNames ipNames = ipNamesIter.next();
+    assertEquals("127.0.0.1", ipNames.getIpAddr().stringValue());
+    assertEquals("localhost", ipNames.getFqdn());
+
+
   }
 
   public void testToLowerHyphen() throws Exception {

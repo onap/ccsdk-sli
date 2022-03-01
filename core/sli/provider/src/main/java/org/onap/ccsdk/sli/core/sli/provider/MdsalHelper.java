@@ -32,20 +32,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Dscp;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
+import java.util.*;
+
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev200120.RouteDistinguisher;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev200120.RouteDistinguisherBuilder;
 import org.opendaylight.yangtools.yang.binding.Identifier;
@@ -176,8 +165,16 @@ public class MdsalHelper {
                 toProperties(props, pfx + "[" + i + "]", fromList.get(i), fromClass, useLegacyEnumerationMapping);
             }
             setProperty(props, pfx + "_length", Integer.toString(fromList.size()));
-        } else if (fromClass.isEnum())
-        {
+        } else if (fromObj instanceof Map) {
+            Map fromMap = (Map) fromObj;
+            Iterator<Object> mapIter = fromMap.values().iterator();
+            int idx = 0;
+            while (mapIter.hasNext()) {
+                toProperties(props, pfx + "[" + idx + "]", mapIter.next(), fromClass, useLegacyEnumerationMapping);
+                idx++;
+            }
+            setProperty(props, pfx + "_length", Integer.toString(idx));
+        } else if (fromClass.isEnum()) {
             try {
                 if (useLegacyEnumerationMapping) {
                     Method m = fromClass.getMethod(getStringValueMethod(simpleTypeName), null);
@@ -581,6 +578,86 @@ public class MdsalHelper {
 
     }
 
+    public static Map toMap(Properties props, String pfx, Map toObj, Class elemType) {
+
+        int maxIdx = -1;
+        boolean foundValue = false;
+
+        if (props.containsKey(pfx + "_length")) {
+            try {
+                int listLength = Integer.parseInt(props.getProperty(pfx + "_length"));
+
+                if (listLength > 0) {
+                    maxIdx = listLength - 1;
+                }
+            } catch (NumberFormatException e) {
+                LOG.info("Invalid input for length ", e);
+            }
+        }
+
+        String arrayKey = pfx + "[";
+        int arrayKeyLength = arrayKey.length();
+        if (maxIdx == -1) {
+            // Figure out array size
+            for (Object pNameObj : props.keySet()) {
+                String key = (String) pNameObj;
+
+                if (key.startsWith(arrayKey)) {
+                    String idxStr = key.substring(arrayKeyLength);
+                    int endloc = idxStr.indexOf("]");
+                    if (endloc != -1) {
+                        idxStr = idxStr.substring(0, endloc);
+                    }
+                    try {
+                        int curIdx = Integer.parseInt(idxStr);
+                        if (curIdx > maxIdx) {
+                            maxIdx = curIdx;
+                        }
+                    } catch (Exception e) {
+                        LOG.error("Illegal subscript in property {}", key, e);
+                    }
+
+                }
+            }
+        }
+
+        for (int i = 0; i <= maxIdx; i++) {
+
+            String curBase = pfx + "[" + i + "]";
+
+            // Maps are used to represent yang lists.
+            // Each entry in the Map is an yang-generated object,
+            // to be constructed by a builder.
+            String builderName = elemType.getName() + "Builder";
+            try {
+                Class elemClass = Class.forName(elemType.getName());
+                Class builderClass = Class.forName(builderName);
+                Object builderObj = builderClass.newInstance();
+                Method buildMethod = builderClass.getMethod("build");
+                builderObj = toBuilder(props, curBase, builderObj, true);
+                if (builderObj != null) {
+                    Object builtObj = buildMethod.invoke(builderObj);
+                    Method keyMethod = builtObj.getClass().getMethod("key");
+                    keyMethod.setAccessible(true);
+                    Object builtObjKey = keyMethod.invoke(builtObj);
+                    toObj.put(builtObjKey, builtObj);
+                    foundValue = true;
+                }
+
+            } catch (ClassNotFoundException e) {
+                LOG.warn("Could not find builder class {}", builderName, e);
+            } catch (Exception e) {
+                LOG.error("Caught exception trying to populate list from {}", pfx, e);
+            }
+        }
+
+        if (foundValue) {
+            return (toObj);
+        } else {
+            return (null);
+        }
+    }
+
     public static Object toBuilder(Properties props, String pfx, Object toObj) {
         return (toBuilder(props, pfx, toObj, false));
     }
@@ -679,6 +756,7 @@ public class MdsalHelper {
 
                             String simpleName = paramClass.getSimpleName();
 
+
                             if (IPV4_ADDRESS.equals(simpleName) || IPV6_ADDRESS.equals(simpleName)
                                     || IP_ADDRESS.equals(simpleName)) {
 
@@ -762,9 +840,21 @@ public class MdsalHelper {
                                         LOG.error("Caught exception calling " + toClass.getName() + "." + m.getName()
                                                 + "(" + paramValue + ")", e);
                                     }
+
                                 }
-                            }
-                            else {
+                            } else if ("Host".equals(simpleName)) {
+                                if ((paramValue != null) && (paramValue.length() > 0)) {
+                                    try {
+                                        Host host = HostBuilder.getDefaultInstance(paramValue);
+                                        m.invoke(toObj, host);
+                                        foundValue = true;
+                                    } catch (Exception e) {
+                                        LOG.error("Caught exception calling " + toClass.getName() + "." + m.getName()
+                                                + "(" + paramValue + ")", e);
+                                    }
+
+                                }
+                            } else {
                                 // setter expects a yang-generated class. Need
                                 // to
                                 // create a builder to set it.
@@ -823,6 +913,56 @@ public class MdsalHelper {
                                                     if ((cParms != null) && (cParms.length == 1)) {
                                                         if (Long.class.isAssignableFrom(cParms[0])) {
                                                             constObj = c.newInstance(Long.parseLong(paramValue));
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+                                            if (constObj == null) {
+                                                // Is there a Uint64 constructor?
+                                                for (Constructor c : constructors) {
+                                                    Class[] cParms = c.getParameterTypes();
+                                                    if ((cParms != null) && (cParms.length == 1)) {
+                                                        if (Uint64.class.isAssignableFrom(cParms[0])) {
+                                                            constObj = c.newInstance(Uint64.valueOf(paramValue));
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+
+                                            if (constObj == null) {
+                                                // Is there a Uint32 constructor?
+                                                for (Constructor c : constructors) {
+                                                    Class[] cParms = c.getParameterTypes();
+                                                    if ((cParms != null) && (cParms.length == 1)) {
+                                                        if (Uint32.class.isAssignableFrom(cParms[0])) {
+                                                            constObj = c.newInstance(Uint32.valueOf(paramValue));
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+                                            if (constObj == null) {
+                                                // Is there a Uint16 constructor?
+                                                for (Constructor c : constructors) {
+                                                    Class[] cParms = c.getParameterTypes();
+                                                    if ((cParms != null) && (cParms.length == 1)) {
+                                                        if (Uint16.class.isAssignableFrom(cParms[0])) {
+                                                            constObj = c.newInstance(Uint16.valueOf(paramValue));
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+
+                                            if (constObj == null) {
+                                                // Is there a Uint8 constructor?
+                                                for (Constructor c : constructors) {
+                                                    Class[] cParms = c.getParameterTypes();
+                                                    if ((cParms != null) && (cParms.length == 1)) {
+                                                        if (Uint8.class.isAssignableFrom(cParms[0])) {
+                                                            constObj = c.newInstance(Uint8.valueOf(paramValue));
                                                         }
                                                     }
                                                 }
@@ -919,9 +1059,36 @@ public class MdsalHelper {
                     } else {
 
                         // Setter's argument is not a yang-generated class. See
-                        // if it is a List.
+                        // if it is a Map or a List
+                        if (Map.class.isAssignableFrom(paramClass)) {
+                            Type paramType = m.getGenericParameterTypes()[0];
+                            Type elementType = ((ParameterizedType) paramType).getActualTypeArguments()[1];
+                            Object paramObj = new LinkedHashMap();
+                            try {
+                                paramObj = toMap(props, propName, (Map) paramObj, (Class)elementType);
+                            } catch (Exception e) {
+                                LOG.error("Caught exception trying to create map expected as argument to {}.{}",
+                                        toClass.getName(), m.getName(), e);
+                            }
+                            if (paramObj != null) {
+                                try {
+                                    boolean isAccessible = m.isAccessible();
+                                    if (!isAccessible) {
+                                        m.setAccessible(true);
+                                    }
+                                    m.invoke(toObj, paramObj);
+                                    if (!isAccessible) {
+                                        m.setAccessible(isAccessible);
+                                    }
+                                    foundValue = true;
 
-                        if (List.class.isAssignableFrom(paramClass)) {
+                                } catch (Exception e) {
+                                    LOG.error("Caught exception trying to convert List returned by" + toClass.getName()
+                                            + "." + m.getName() + "() to Properties entry", e);
+                                }
+                            }
+                        }
+                        else if (List.class.isAssignableFrom(paramClass)) {
                             // Figure out what type of args are in List and pass
                             // that to toList().
 
