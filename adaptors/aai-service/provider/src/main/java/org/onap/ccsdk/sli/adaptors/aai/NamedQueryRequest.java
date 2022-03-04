@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.onap.aai.inventory.v25.InventoryResponseItems;
+import org.onap.aai.inventory.v24.InventoryResponseItems;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -46,7 +46,7 @@ public class BulkUpdateRequest extends AAIRequest {
 	public static final String FORMAT = "format";
 
 	public BulkUpdateRequest() {
-		generic_search_path = "/aai/v25/bulk/single-transaction";
+		generic_search_path = "/aai/v24/bulk/single-transaction";
 		setRequestObject(new BulkUpdateRequestData());
 	}
 
