@@ -622,6 +622,7 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
             log.info("deleteSubscriptionAndSseConnection::SubscriptionID is found {}", subscriptionId);
             log.info("deleteSubscriptionAndSseConnection::About to send unsubscribe request");
             try {
+                ctx.setAttribute("subscriptionId", subscriptionId);
                 restapiCallNode.sendRequest(paramMap, ctx);
                 if (getResponseCode(paramMap.get(RESPONSE_PREFIX), ctx).equals(RESPONSE_CODE_200)) {
                     log.info("deleteSubscriptionAndSseConnection::Successfully unsubscribed");

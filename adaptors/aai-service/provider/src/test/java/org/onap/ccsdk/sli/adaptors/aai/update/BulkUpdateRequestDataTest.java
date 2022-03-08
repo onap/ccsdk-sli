@@ -8,7 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Test;
-import org.onap.aai.inventory.v24.Subnet;
+import org.onap.aai.inventory.v25.Subnet;
 
 public class BulkUpdateRequestDataTest {
     @Test

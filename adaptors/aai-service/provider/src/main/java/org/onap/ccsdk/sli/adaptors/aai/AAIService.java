@@ -75,11 +75,11 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.onap.aai.inventory.v24.GenericVnf;
-import org.onap.aai.inventory.v24.PhysicalLink;
-import org.onap.aai.inventory.v24.ResultData;
-import org.onap.aai.inventory.v24.SearchResults;
-import org.onap.aai.inventory.v24.Vserver;
+import org.onap.aai.inventory.v25.GenericVnf;
+import org.onap.aai.inventory.v25.PhysicalLink;
+import org.onap.aai.inventory.v25.ResultData;
+import org.onap.aai.inventory.v25.SearchResults;
+import org.onap.aai.inventory.v25.Vserver;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.onap.ccsdk.sli.adaptors.aai.data.ErrorResponse;
 import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;

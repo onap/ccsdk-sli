@@ -48,7 +48,7 @@ public class DslQueryRequest extends AAIRequest {
 
 
 	public DslQueryRequest() {
-		generic_search_path = "/aai/v24/dsl";
+		generic_search_path = "/aai/v25/dsl";
 	}
 
 
