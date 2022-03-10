@@ -33,7 +33,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.onap.aai.inventory.v25.RelationshipList;
+import org.onap.aai.inventory.v24.RelationshipList;
 
 public class RelationshipListRequest extends GenericRequest {
 

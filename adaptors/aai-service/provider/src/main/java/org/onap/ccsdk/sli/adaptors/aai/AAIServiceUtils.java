@@ -45,9 +45,9 @@ import java.util.regex.Pattern;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
-import org.onap.aai.inventory.v25.Relationship;
-import org.onap.aai.inventory.v25.RelationshipData;
-import org.onap.aai.inventory.v25.RelationshipList;
+import org.onap.aai.inventory.v24.Relationship;
+import org.onap.aai.inventory.v24.RelationshipData;
+import org.onap.aai.inventory.v24.RelationshipList;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.slf4j.Logger;

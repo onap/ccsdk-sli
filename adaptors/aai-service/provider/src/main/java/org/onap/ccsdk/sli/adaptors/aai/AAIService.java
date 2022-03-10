@@ -75,6 +75,11 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.onap.aai.inventory.v24.GenericVnf;
+import org.onap.aai.inventory.v24.PhysicalLink;
+import org.onap.aai.inventory.v24.ResultData;
+import org.onap.aai.inventory.v24.SearchResults;
+import org.onap.aai.inventory.v24.Vserver;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.onap.ccsdk.sli.adaptors.aai.data.ErrorResponse;
 import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;
@@ -84,11 +89,6 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
-import org.onap.aai.inventory.v25.GenericVnf;
-import org.onap.aai.inventory.v25.PhysicalLink;
-import org.onap.aai.inventory.v25.ResultData;
-import org.onap.aai.inventory.v25.SearchResults;
-import org.onap.aai.inventory.v25.Vserver;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -371,7 +371,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         } else {
             con = (HttpURLConnection) http_req_url.openConnection();
         }
-
         // Set up the connection properties
         con.setRequestProperty( "Connection", "close" );
         con.setDoInput(true);
