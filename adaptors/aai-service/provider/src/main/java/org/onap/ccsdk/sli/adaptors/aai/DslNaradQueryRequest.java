@@ -48,7 +48,7 @@ public class DslNaradQueryRequest extends AAIRequest {
 
 
 	public DslNaradQueryRequest() {
-		generic_search_path = "/narad/v24/dsl";
+		generic_search_path = "/narad/v25/dsl";
 	}
 
 

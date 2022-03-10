@@ -3,17 +3,17 @@ package org.onap.ccsdk.sli.adaptors.aai.data;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.onap.aai.inventory.v24.CloudRegion;
-import org.onap.aai.inventory.v24.Configuration;
-import org.onap.aai.inventory.v24.InstanceGroup;
-import org.onap.aai.inventory.v24.L3InterfaceIpv4AddressList;
-import org.onap.aai.inventory.v24.L3InterfaceIpv6AddressList;
-import org.onap.aai.inventory.v24.LInterface;
-import org.onap.aai.inventory.v24.LagInterface;
-import org.onap.aai.inventory.v24.LogicalLink;
-import org.onap.aai.inventory.v24.PInterface;
-import org.onap.aai.inventory.v24.Pnf;
-import org.onap.aai.inventory.v24.ServiceInstance;
+import org.onap.aai.inventory.v25.CloudRegion;
+import org.onap.aai.inventory.v25.Configuration;
+import org.onap.aai.inventory.v25.InstanceGroup;
+import org.onap.aai.inventory.v25.L3InterfaceIpv4AddressList;
+import org.onap.aai.inventory.v25.L3InterfaceIpv6AddressList;
+import org.onap.aai.inventory.v25.LInterface;
+import org.onap.aai.inventory.v25.LagInterface;
+import org.onap.aai.inventory.v25.LogicalLink;
+import org.onap.aai.inventory.v25.PInterface;
+import org.onap.aai.inventory.v25.Pnf;
+import org.onap.aai.inventory.v25.ServiceInstance;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
