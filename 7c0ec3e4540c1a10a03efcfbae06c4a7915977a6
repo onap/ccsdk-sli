@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f94b54bc_3e9f9fc9",
+        "filename": "core/sli/provider/src/main/java/org/onap/ccsdk/sli/core/sli/provider/MdsalHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 970,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2022-03-23T13:51:05Z",
+      "side": 1,
+      "message": "Better if instead iterating it multiple times, keeping a nested if-else within one iteration\nsomething like if (Uint8.class.isAssignableFrom(cParms[0])) else if (Uint16.class.isAssignableFrom(cParms[0])) else if....",
+      "revId": "7c0ec3e4540c1a10a03efcfbae06c4a7915977a6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "990bad96_8d1843d5",
+        "filename": "core/sli/provider/src/main/java/org/onap/ccsdk/sli/core/sli/provider/MdsalHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 1217,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2022-03-23T13:51:05Z",
+      "side": 1,
+      "message": "Same goes here !",
+      "revId": "7c0ec3e4540c1a10a03efcfbae06c4a7915977a6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
