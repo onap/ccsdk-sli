@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "2de04605_835a7744",
+        "filename": "core/sli/provider/src/main/java/org/onap/ccsdk/sli/core/sli/provider/MdsalHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 970,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2022-03-23T14:07:30Z",
+      "side": 1,
+      "message": "I could do that and it would improve performance, but the issue then would be that if a class supported both a Uint8 and a Uint16 constructor, we couldn\u0027t always predict which one we\u0027d use - it would depend on the order of the constructors iterator.  The current implementation uses the largest constructor first,to minimize probability of rounding errors.",
+      "parentUuid": "f94b54bc_3e9f9fc9",
+      "revId": "7c0ec3e4540c1a10a03efcfbae06c4a7915977a6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "990bad96_8d1843d5",
         "filename": "core/sli/provider/src/main/java/org/onap/ccsdk/sli/core/sli/provider/MdsalHelper.java",
         "patchSetId": 6
