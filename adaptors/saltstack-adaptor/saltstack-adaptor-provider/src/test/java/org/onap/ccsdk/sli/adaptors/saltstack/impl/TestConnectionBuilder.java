@@ -181,4 +181,17 @@ public class TestConnectionBuilder {
         int status = result.getStatusCode();
         assertEquals(613, status);
     }
+
+    @Test
+    public void reqExecCommand_exitStatusNoReadPermission() {
+
+        int exitStatus = 255;
+        String errFilePath = "src/test/resources/test.json";
+        String command = "test";
+
+        SaltstackResult result = connBuilder.sortExitStatus(exitStatus, errFilePath, command);
+        int status = result.getStatusCode();
+        assertEquals(698, status);
+    }
+
 }

@@ -307,4 +307,21 @@ public class TestSaltstackAdaptorPropertiesProviderImpl {
         adaptor = new SaltstackAdaptorImpl();
         assertNotNull(adaptor);
     }
+
+    @Test
+    public void reqExecCommand_setPropertiesTwoPortNull() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+        params.put("org.onap.appc.adaptor.saltstack.clientType", "BOTH");
+        params.put("User", "test");
+        params.put("Password", "test");
+        SaltstackAdaptorPropertiesProvider propProvider = new SaltstackAdaptorPropertiesProvider() {
+            @Override
+            public Properties getProperties() {
+                return params;
+            }
+        };
+        adaptor = new SaltstackAdaptorImpl(propProvider);
+        assertNotNull(propProvider);
+    }
+
 }
