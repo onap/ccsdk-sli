@@ -74,4 +74,23 @@ public class TestSshAdaptorMock {
         assertFalse(sshAdaptorMock.getConnectionMocks().isEmpty());
     }
 
+    @Test
+    public void testGetConnectionFailureCaseBasicAuth() {
+        sshAdaptorMock.setReturnStatus(400);
+        sshAdaptorMock.setReturnStdout("Bad Request");
+        sshAdaptorMock.setReturnStderr("error");
+        sshAdaptorMock.getConnection("localhost", 8080, "myUser", "myPassword");
+        assertFalse(sshAdaptorMock.getConnectionMocks().isEmpty());
+        assertNotNull(sshAdaptorMock.getConnectionMocks());
+    }
+
+    @Test
+    public void testGetConnectionFailureCaseKey() {
+        SshAdaptorMock sshAdaptorMock = new SshAdaptorMock();
+        sshAdaptorMock.setReturnStatus(400);
+        sshAdaptorMock.setReturnStdout("Bad Request");
+        sshAdaptorMock.setReturnStderr("error");
+        sshAdaptorMock.getConnection("localhost", 8080, "keyFile");
+        assertFalse(sshAdaptorMock.getConnectionMocks().isEmpty());
+    }
 }
