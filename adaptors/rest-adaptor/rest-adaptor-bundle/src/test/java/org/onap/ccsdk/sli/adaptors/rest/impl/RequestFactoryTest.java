@@ -47,6 +47,38 @@ import static org.junit.Assert.assertTrue;
 public class RequestFactoryTest {
 
     @Test
+    public void testGetHttpRequestGet() throws Exception {
+        RequestFactory httpRequest = new RequestFactory();
+        HttpRequestBase get = httpRequest.getHttpRequest("get", "http://test/url.com");
+        assertEquals(get.getMethod(), "GET");
+        assertEquals(get.getURI().toString(), "http://test/url.com");
+    }
+
+    @Test
+    public void testGetHttpRequestPost() throws Exception {
+        RequestFactory httpRequest = new RequestFactory();
+        HttpRequestBase get = httpRequest.getHttpRequest("post", "http://test/url.com");
+        assertEquals(get.getMethod(), "POST");
+        assertEquals(get.getURI().toString(), "http://test/url.com");
+    }
+
+    @Test
+    public void testGetHttpRequestPut() throws Exception {
+        RequestFactory httpRequest = new RequestFactory();
+        HttpRequestBase get = httpRequest.getHttpRequest("put", "http://test/url.com");
+        assertEquals(get.getMethod(), "PUT");
+        assertEquals(get.getURI().toString(), "http://test/url.com");
+    }
+
+    @Test
+    public void testGetHttpRequestDelete() throws Exception {
+        RequestFactory httpRequest = new RequestFactory();
+        HttpRequestBase get = httpRequest.getHttpRequest("delete", "http://test/url.com");
+        assertEquals(get.getMethod(), "DELETE");
+        assertEquals(get.getURI().toString(), "http://test/url.com");
+    }
+
+    @Test
     public void testConstructorNoArgument() throws Exception {
         RequestFactory httpRequest = new RequestFactory();
         HttpRequestBase get = httpRequest.getHttpRequest("get", "http://test/url.com");
