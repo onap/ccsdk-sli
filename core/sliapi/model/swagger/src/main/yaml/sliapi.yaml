@@ -18,7 +18,7 @@ info:
     Relating to IETF Documents\n(http://trustee.ietf.org/license-info).\n\nThis version\
     \ of this YANG module is part of RFC 6991; see\nthe RFC itself for full legal\
     \ notices."
-  version: "1.4.1-SNAPSHOT"
+  version: "1.4.2-SNAPSHOT"
   title: "SLI-API,ietf-yang-types,ietf-inet-types API"
 consumes:
 - "application/json"
