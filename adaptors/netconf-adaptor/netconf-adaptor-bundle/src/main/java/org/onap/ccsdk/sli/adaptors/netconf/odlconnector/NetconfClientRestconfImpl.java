@@ -204,6 +204,7 @@ public class NetconfClientRestconfImpl implements NetconfClient, NetconfClientRe
         return NetconfAdaptorConstants.DISCONNECT_PATH + deviceMountPointName;
     }
 
+    private static final String newLineConst = "            {\n";
     private String getPayload() {
         return "{\n" +
                 "    \"config:module\":\n" +
@@ -216,27 +217,27 @@ public class NetconfClientRestconfImpl implements NetconfClient, NetconfClientRe
                 "        \"odl-sal-netconf-connector-cfg:password\":"+connectionDetails.getPassword()+",\n" +
                 "        \"tcp-only\":\"false\",\n" +
                 "        \"odl-sal-netconf-connector-cfg:event-executor\":\n" +
-                "            {\n" +
+                newLineConst +
                 "            \"type\":\"netty:netty-event-executor\",\n" +
                 "            \"name\":\"global-event-executor\"\n" +
                 "            },\n" +
                 "        \"odl-sal-netconf-connector-cfg:binding-registry\":\n" +
-                "            {\n" +
+                newLineConst +
                 "            \"type\":\"opendaylight-md-sal-binding:binding-broker-osgi-registry\",\n" +
                 "            \"name\":\"binding-osgi-broker\"\n" +
                 "            },\n" +
                 "        \"odl-sal-netconf-connector-cfg:dom-registry\":\n" +
-                "            {\n" +
+                newLineConst +
                 "            \"type\":\"opendaylight-md-sal-dom:dom-broker-osgi-registry\",\n" +
                 "            \"name\":\"dom-broker\"\n" +
                 "            },\n" +
                 "        \"odl-sal-netconf-connector-cfg:client-dispatcher\":\n" +
-                "            {\n" +
+                newLineConst +
                 "            \"type\":\"odl-netconf-cfg:netconf-client-dispatcher\",\n" +
                 "            \"name\":\"global-netconf-dispatcher\"\n" +
                 "            },\n" +
                 "        \"odl-sal-netconf-connector-cfg:processing-executor\":\n" +
-                "            {\n" +
+                newLineConst+
                 "            \"type\":\"threadpool:threadpool\",\n" +
                 "            \"name\":\"global-netconf-processing-executor\"\n" +
                 "        }\n" +
