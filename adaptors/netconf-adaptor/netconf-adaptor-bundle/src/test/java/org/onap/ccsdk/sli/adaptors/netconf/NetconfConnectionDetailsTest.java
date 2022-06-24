@@ -48,7 +48,6 @@ public class NetconfConnectionDetailsTest {
     @Test
     public void testGetPort() {
         netconfConnectionDetails.setPort(123);
-        Assert.assertNotNull(netconfConnectionDetails.getPort());
         Assert.assertEquals(123, netconfConnectionDetails.getPort());
     }
 
