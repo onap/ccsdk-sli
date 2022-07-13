@@ -1,0 +1,24 @@
+{
+  "name1": "value1",
+  "name3": "",
+  "name4": {
+    "name41": "value41",
+    "name42": "",
+    "name43": "some value"
+  },
+  "name5": {
+    "name51": ""
+  },
+  "name7": "some value",
+  "name8": "some value",
+  "name10": "",
+  "list": [
+    ${repeat:tmp.list_length:
+    {
+      "test1": ${temp.list[$1]},
+      "container1": {},
+      "container2": EMPTY_CONTAINER,
+      "container3": EMPTY_CONTAINER
+    },
+  }]
+}
