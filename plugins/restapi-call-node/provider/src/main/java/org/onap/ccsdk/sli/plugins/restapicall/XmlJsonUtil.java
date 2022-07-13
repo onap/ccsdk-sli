@@ -443,7 +443,6 @@ public final class XmlJsonUtil {
                             i5 = s.length();
                         }
 
-
                         /*If template mandates empty construct to be present, those should not be removed.*/
                         if (template != null && template.contains(s.substring(i4))) {
                             k = i1 + 1;
