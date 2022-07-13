@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -213,7 +214,6 @@ public class TestRestapiCallNode {
         rcn.sendRequest(p, ctx);
     }
 
-
     @Test(expected = SvcLogicException.class)
     public void testWithInvalidURI() throws SvcLogicException {
         SvcLogicContext ctx = new SvcLogicContext();
@@ -339,7 +339,7 @@ public class TestRestapiCallNode {
         Map<String, String> p = new HashMap<>();
         //p.put("templateFileName", "src/test/resources/l3smvpntemplate.json");
         p.put("restapiUrl", "http://ipwan:18002/restconf/data/huawei-ac-net-l3vpn-svc:l3vpn-svc-cfg/vpn-services"
-            + "/vpnservice=10000000-0000-0000-0000-000000000001");
+                + "/vpnservice=10000000-0000-0000-0000-000000000001");
         p.put("restapiUser", "admin");
         p.put("restapiPassword", "admin123");
         p.put("format", "json");
@@ -425,7 +425,6 @@ public class TestRestapiCallNode {
         rcn.sendRequest(p, ctx);
     }
 
-
     @Test
     public void testDeleteNoneAsContentType() throws SvcLogicException {
         SvcLogicContext ctx = new SvcLogicContext();
@@ -461,81 +460,82 @@ public class TestRestapiCallNode {
         RestapiCallNode rcn = new RestapiCallNode();
         rcn.sendRequest(p, ctx);
     }
+
     /*
      * {
-  "partnerOne": {
-    "url": "http://localhost:7001"                                                                                                                                                             4 http://uebsb93kcdc.it.att.com:3904",
-    "test": "/metrics"
-  },
-  "partnerTwo": {
-    "url": "http://localhost:7002",
-    "user": "controller_user",
-    "password": "P@ssword",
-    "test": "/metrics"
-  },
-  "partnerThree": {
-    "url": "http://localhost:7003",
-    "user": "controller_admin"
-  }
-}
+      "partnerOne": {
+        "url": "http://localhost:7001"                                                                                                                                                             4 http://uebsb93kcdc.it.att.com:3904",
+        "test": "/metrics"
+      },
+      "partnerTwo": {
+        "url": "http://localhost:7002",
+        "user": "controller_user",
+        "password": "P@ssword",
+        "test": "/metrics"
+      },
+      "partnerThree": {
+        "url": "http://localhost:7003",
+        "user": "controller_admin"
+      }
+    }
      */
     @Test
-    public void testPartners() throws Exception{
-	String partnerTwoKey = "partnerTwo";
-	String partnerTwoUsername = "controller_user";
-	String partnerTwoPassword = "P@ssword";
+    public void testPartners() throws Exception {
+        String partnerTwoKey = "partnerTwo";
+        String partnerTwoUsername = "controller_user";
+        String partnerTwoPassword = "P@ssword";
 
-	System.setProperty("SDNC_CONFIG_DIR", "src/test/resources");
+        System.setProperty("SDNC_CONFIG_DIR", "src/test/resources");
         RestapiCallNode rcn = new RestapiCallNode();
         assertNull(rcn.partnerStore.get("partnerOne"));
         PartnerDetails details = rcn.partnerStore.get(partnerTwoKey);
-        assertEquals(partnerTwoUsername,details.username);
-        assertEquals(partnerTwoPassword,details.password);
+        assertEquals(partnerTwoUsername, details.username);
+        assertEquals(partnerTwoPassword, details.password);
         assertNull(rcn.partnerStore.get("partnerThree"));
 
         //In this scenario the caller expects username, password and url to be picked up from the partners json
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("partner", partnerTwoKey);
-	rcn.handlePartner(paramMap );
-        assertEquals(partnerTwoUsername,paramMap.get(RestapiCallNode.restapiUserKey));
-        assertEquals(partnerTwoPassword,paramMap.get(RestapiCallNode.restapiPasswordKey));
-        assertEquals("http://localhost:7002",paramMap.get(RestapiCallNode.restapiUrlString));
+        rcn.handlePartner(paramMap);
+        assertEquals(partnerTwoUsername, paramMap.get(RestapiCallNode.restapiUserKey));
+        assertEquals(partnerTwoPassword, paramMap.get(RestapiCallNode.restapiPasswordKey));
+        assertEquals("http://localhost:7002", paramMap.get(RestapiCallNode.restapiUrlString));
 
         //In this scenario the caller expects username, password and url to be picked up from the partners json
         //the provided suffix will be appended to the default url from the partners json
         paramMap = new HashMap<>();
         paramMap.put("partner", partnerTwoKey);
         paramMap.put("restapiUrlSuffix", "/networking/v1/instance/3");
-	rcn.handlePartner(paramMap);
-	Parameters p = new Parameters();
-	RestapiCallNode.getParameters(paramMap, p);
-        assertEquals(partnerTwoUsername,p.restapiUser);
-        assertEquals(partnerTwoPassword,p.restapiPassword);
-        assertEquals("http://localhost:7002/networking/v1/instance/3",p.restapiUrl);
+        rcn.handlePartner(paramMap);
+        Parameters p = new Parameters();
+        RestapiCallNode.getParameters(paramMap, p);
+        assertEquals(partnerTwoUsername, p.restapiUser);
+        assertEquals(partnerTwoPassword, p.restapiPassword);
+        assertEquals("http://localhost:7002/networking/v1/instance/3", p.restapiUrl);
     }
 
     @Test
     public void retryPolicyBean() throws Exception {
-	Integer retries = 3;
-	String first = "http://localhost:7001";
-	String second = "http://localhost:7001";
+        Integer retries = 3;
+        String first = "http://localhost:7001";
+        String second = "http://localhost:7001";
 
-	RetryPolicy p = new RetryPolicy(new String[] {first,second}, retries);
-	assertEquals(retries,p.getMaximumRetries());
-	assertNotNull(p.getRetryMessage());
-	String next = p.getNextHostName();
-	assertEquals(second,next);
-	assertEquals(1,p.getRetryCount());
-	next = p.getNextHostName();
-	assertEquals(first,next);
-	assertEquals(2,p.getRetryCount());
+        RetryPolicy p = new RetryPolicy(new String[] {first, second}, retries);
+        assertEquals(retries, p.getMaximumRetries());
+        assertNotNull(p.getRetryMessage());
+        String next = p.getNextHostName();
+        assertEquals(second, next);
+        assertEquals(1, p.getRetryCount());
+        next = p.getNextHostName();
+        assertEquals(first, next);
+        assertEquals(2, p.getRetryCount());
     }
 
     @Test
     public void testEmbeddedJsonTemplate() throws Exception {
         SvcLogicContext ctx = new SvcLogicContext();
 	String complexObj = "{\"image_name\":\"Ubuntu 14.04\",\"service-instance-id\":\"1\",\"vnf-model-customization-uuid\":\"2f\",\"vnf-id\":\"3b\"}";
-	ctx.setAttribute("reqId", "1235");
+        ctx.setAttribute("reqId", "1235");
         ctx.setAttribute("subReqId", "054243");
         ctx.setAttribute("actionName", "CREATE");
         ctx.setAttribute("myPrefix", "2016-09-09 16:30:35.0");
@@ -565,30 +565,30 @@ public class TestRestapiCallNode {
         //This will throw a JSONException and fail the test case if rest api call node doesn't form valid JSON
         assertNotNull(new JSONObject(request));
     }
-    
+
     @Test
-    public void testGetMultipleUrls() throws Exception{
+    public void testGetMultipleUrls() throws Exception {
        String[] urls =  RestapiCallNode.getMultipleUrls("http://localhost:8008/rest/restconf/data/abc:def/abc:action=Create,deviceType=Banana,https://localhost:8008/rest/restconf/data/abc:def/abc:action=Create,deviceType=Potato");
-       assertEquals("http://localhost:8008/rest/restconf/data/abc:def/abc:action=Create,deviceType=Banana",urls[0]);
-       assertEquals("https://localhost:8008/rest/restconf/data/abc:def/abc:action=Create,deviceType=Potato",urls[1]);
+        assertEquals("http://localhost:8008/rest/restconf/data/abc:def/abc:action=Create,deviceType=Banana", urls[0]);
+        assertEquals("https://localhost:8008/rest/restconf/data/abc:def/abc:action=Create,deviceType=Potato", urls[1]);
 
-       urls =  RestapiCallNode.getMultipleUrls("https://wiki.onap.org/,http://localhost:7001/,http://wiki.onap.org/");
-       assertEquals("https://wiki.onap.org/",urls[0]);
-       assertEquals("http://localhost:7001/",urls[1]);
-       assertEquals("http://wiki.onap.org/",urls[2]);
-       
+        urls = RestapiCallNode.getMultipleUrls("https://wiki.onap.org/,http://localhost:7001/,http://wiki.onap.org/");
+        assertEquals("https://wiki.onap.org/", urls[0]);
+        assertEquals("http://localhost:7001/", urls[1]);
+        assertEquals("http://wiki.onap.org/", urls[2]);
+
        urls =  RestapiCallNode.getMultipleUrls("https://wiki.onap.org/test=4,5,6,http://localhost:7001/test=1,2,3,http://wiki.onap.org/test=7,8,9,10");
-       assertEquals("https://wiki.onap.org/test=4,5,6",urls[0]);
-       assertEquals("http://localhost:7001/test=1,2,3",urls[1]);
-       assertEquals("http://wiki.onap.org/test=7,8,9,10",urls[2]);
+        assertEquals("https://wiki.onap.org/test=4,5,6", urls[0]);
+        assertEquals("http://localhost:7001/test=1,2,3", urls[1]);
+        assertEquals("http://wiki.onap.org/test=7,8,9,10", urls[2]);
 
-       urls =  RestapiCallNode.getMultipleUrls("https://wiki.onap.org/,https://readthedocs.org/projects/onap/");
-       assertEquals("https://wiki.onap.org/",urls[0]);
-       assertEquals("https://readthedocs.org/projects/onap/",urls[1]);
+        urls = RestapiCallNode.getMultipleUrls("https://wiki.onap.org/,https://readthedocs.org/projects/onap/");
+        assertEquals("https://wiki.onap.org/", urls[0]);
+        assertEquals("https://readthedocs.org/projects/onap/", urls[1]);
     }
-    
+
     @Test
-    public void testContainsMultipleUrls() throws Exception{
+    public void testContainsMultipleUrls() throws Exception {
         assertFalse(RestapiCallNode.containsMultipleUrls("https://wiki.onap.org/"));
         assertFalse(RestapiCallNode.containsMultipleUrls("http://wiki.onap.org/"));
         assertFalse(RestapiCallNode.containsMultipleUrls("http://localhost:8008/rest/restconf/data/abc:def/abc:action=Create,deviceType=Banana"));
@@ -606,54 +606,69 @@ public class TestRestapiCallNode {
         log.info("================= Testing keeping empty values =======================");
 
         String template = "{\n" +
-            "   \"name1\": \"value1\",\n" +
-            "   \"name2\": ${empty},\n" +
-            "   \"name3\": ${~empty},\n" +
-            "   \"name4\": {\n" +
-            "       \"name41\": \"value41\",\n" +
-            "       \"name42\": ${~empty},\n" +
-            "       \"name43\": ${~not_empty}\n" +
-            "   },\n" +
-            "   \"name5\": {\n"+
-            "       \"name51\": ${~empty},\n"+
-            "       \"name52\": ${empty}\n"+
-            "   },\n" +
-            "   \"name6\": {\n"+
-            "       \"name61\": ${empty},\n"+
-            "       \"name62\": ${empty}\n"+
-            "   },\n" +
-            "   \"name7\": \"${\"not_empty}\",\n" +
-            "   \"name8\": \"${~\"not_empty}\",\n" +
-            "   \"name9\": \"${\"empty}\",\n" +
-            "   \"name10\": \"${~\"empty}\"\n" +
-            "}";
+                "   \"name1\": \"value1\",\n" +
+                "   \"name2\": ${empty},\n" +
+                "   \"name3\": ${~empty},\n" +
+                "   \"name4\": {\n" +
+                "       \"name41\": \"value41\",\n" +
+                "       \"name42\": ${~empty},\n" +
+                "       \"name43\": ${~not_empty}\n" +
+                "   },\n" +
+                "   \"name5\": {\n"+
+                "       \"name51\": ${~empty},\n"+
+                "       \"name52\": ${empty}\n"+
+                "   },\n" +
+                "   \"name6\": {\n"+
+                "       \"name61\": ${empty},\n"+
+                "       \"name62\": ${empty}\n"+
+                "   },\n" +
+                "   \"name7\": \"${\"not_empty}\",\n" +
+                "   \"name8\": \"${~\"not_empty}\",\n" +
+                "   \"name9\": \"${\"empty}\",\n" +
+                "   \"name10\": \"${~\"empty}\"\n" +
+                "}";
 
         String expect = "{\n" +
-            "   \"name1\": \"value1\",\n" +
-            "   \"name3\": \"\",\n" +
-            "   \"name4\": {\n" +
-            "       \"name41\": \"value41\",\n" +
-            "       \"name42\": \"\",\n" +
-            "       \"name43\": \"some value\"\n" +
-            "   },\n" +
-            "   \"name5\": {\n" +
-            "       \"name51\": \"\"\n" +
-            "   },\n" +
-            "   \"name7\": \"some value\",\n" +
-            "   \"name8\": \"some value\",\n" +
-            "   \"name10\": \"\"\n" +
-            "}";
+                "   \"name1\": \"value1\",\n" +
+                "   \"name3\": \"\",\n" +
+                "   \"name4\": {\n" +
+                "       \"name41\": \"value41\",\n" +
+                "       \"name42\": \"\",\n" +
+                "       \"name43\": \"some value\"\n" +
+                "   },\n" +
+                "   \"name5\": {\n" +
+                "       \"name51\": \"\"\n" +
+                "   },\n" +
+                "   \"name7\": \"some value\",\n" +
+                "   \"name8\": \"some value\",\n" +
+                "   \"name10\": \"\"\n" +
+                "}";
 
         SvcLogicContext ctx = new SvcLogicContext();
         ctx.setAttribute("empty", "");
         ctx.setAttribute("not_empty", "some value");
-        
+
         RestapiCallNode rcn = new RestapiCallNode();
         String req = rcn.buildXmlJsonRequest(ctx, template, Format.JSON);
-        
+
         log.info("Result:\n" + req);
         log.info("==================================================================");
 
         assertEquals(expect, req);
     }
+
+    @Test
+    public void testKeepEmptyContainer() throws Exception {
+        log.info("================= Testing keeping empty containers =======================");
+
+        String template = "{\"container1\": {}, \"container2\": {EMPTY_CONTAINER}}";
+        String expect = "{\"container2\": {}}";
+
+        String req = new RestapiCallNode().buildXmlJsonRequest(new SvcLogicContext(), template, Format.JSON);
+        log.info("Result:\n" + req);
+        log.info("==================================================================");
+
+        assertEquals(expect, req);
+    }
+
 }
