@@ -3,6 +3,7 @@
 * ONAP : APPC
 * ================================================================================
 * Copyright 2018 TechMahindra
+* Copyright (C) 2022 Samsung Electronics
 *=================================================================================
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -36,7 +37,6 @@ public class TestProperties {
     @Test
     public void testGetSize() {
         properties.setSize(123);
-        assertNotNull(properties.getSize());
         assertEquals(properties.getSize(),123);
     }
 
