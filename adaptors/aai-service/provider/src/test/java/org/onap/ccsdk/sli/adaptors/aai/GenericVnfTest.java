@@ -2,8 +2,8 @@
  * ============LICENSE_START=======================================================
  * openECOMP : SDN-C
  * ================================================================================
- * Copyright (C) 2017 - 2018 AT&T Intellectual Property. All rights
- *                         reserved.
+ * Copyright (C) 2017 - 2018 AT&T Intellectual Property. All rights reserved.
+ *  * Copyright (C) 2022 Samsung Electronics Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ import org.onap.ccsdk.sli.adaptors.aai.AAIRequest;
 import org.onap.ccsdk.sli.adaptors.aai.AAIService;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
-import org.onap.aai.inventory.v25.GenericVnf;
+import org.onap.aai.inventory.v24.GenericVnf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,14 +105,9 @@ public class GenericVnfTest {
             data.put("encrypted-access-flag","true");
 
             QueryStatus resp = client.save("generic-vnf", false, false, "generic-vnf.vnf-id = '"+uuid+"'", data, "aaidata", ctx);
-            assertNotNull(ctx);
 
         }
-        catch (Throwable e)
-        {
-
-        }
-        ;
+        catch (Throwable ignored) { };
     }
 
     @Test
@@ -237,12 +232,6 @@ public class GenericVnfTest {
         @Override
         public Boolean patch(AAIRequest request, String resourceVersion) throws AAIServiceException {
             return Boolean.TRUE;
-        }
-
-        @Override
-        public String bulkUpdate(BulkUpdateRequest request) throws AAIServiceException {
-
-            return "success";
         }
 
     }
