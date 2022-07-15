@@ -641,6 +641,8 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
 
         if (format == Format.JSON) {
             req = XmlJsonUtil.removeLastCommaJson(req);
+            // Use 'EMPTY_CONTAINER' as keyword within template to have an empty container placeholder.
+            req = req.replaceAll("EMPTY_CONTAINER", "{}");
         }
 
         long t2 = System.currentTimeMillis();
@@ -803,7 +805,7 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
                 URL proxyUrl = new URL(p.proxyUrl);
                 HttpUrlConnectorProvider cp = new HttpUrlConnectorProvider();
                 config.connectorProvider(cp);
-                final Proxy proxy = 
+                final Proxy proxy =
                     new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyUrl.getHost(), proxyUrl.getPort()));
 
                 cp.connectionFactory(new ConnectionFactory() {
@@ -822,12 +824,12 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
             ssl = createSSLContext(p);
         }
 
-        ClientBuilder builder = 
+        ClientBuilder builder =
             ClientBuilder.newBuilder().hostnameVerifier(new AcceptIpAddressHostNameVerifier());
 
-        if (ssl != null) { 
+        if (ssl != null) {
             HttpsURLConnection.setDefaultSSLSocketFactory(ssl.getSocketFactory());
-            builder = builder.sslContext(ssl);  
+            builder = builder.sslContext(ssl);
         }
         if (config != null) {
             builder = builder.withConfig(config);
