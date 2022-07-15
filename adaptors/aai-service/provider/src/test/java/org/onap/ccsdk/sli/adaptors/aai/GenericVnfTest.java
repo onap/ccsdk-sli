@@ -2,8 +2,8 @@
  * ============LICENSE_START=======================================================
  * openECOMP : SDN-C
  * ================================================================================
- * Copyright (C) 2017 - 2018 AT&T Intellectual Property. All rights
- *                         reserved.
+ * Copyright (C) 2017 - 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2022 Samsung Electronics Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,14 +105,8 @@ public class GenericVnfTest {
             data.put("encrypted-access-flag","true");
 
             QueryStatus resp = client.save("generic-vnf", false, false, "generic-vnf.vnf-id = '"+uuid+"'", data, "aaidata", ctx);
-            assertNotNull(ctx);
-
         }
-        catch (Throwable e)
-        {
-
-        }
-        ;
+        catch (Throwable ignored) {  };
     }
 
     @Test
