@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2b49cf18_26c68f59",
+        "filename": "adaptors/aai-service/provider/src/test/java/org/onap/ccsdk/sli/adaptors/aai/GenericVnfTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 865
+      },
+      "writtenOn": "2022-07-15T13:16:12Z",
+      "side": 0,
+      "message": "at least it was asserting earlier.. but removing same is just making this junit test to cover code not really asserting anything !",
+      "revId": "7b7f1c3fde441209b6fc6f2ce76a073372e2594e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
