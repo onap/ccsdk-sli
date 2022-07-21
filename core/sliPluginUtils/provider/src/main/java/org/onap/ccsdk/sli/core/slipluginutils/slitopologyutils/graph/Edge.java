@@ -16,4 +16,10 @@ public interface Edge<V extends Vertex> {
      */
     V dst();
 
+    /**
+     * Returns true if edge is permissable
+     */
+    default boolean isPermitted(V src, V dst){
+        return true;
+    }
 }

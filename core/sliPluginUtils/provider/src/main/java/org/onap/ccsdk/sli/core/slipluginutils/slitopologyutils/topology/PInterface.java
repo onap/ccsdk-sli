@@ -16,6 +16,10 @@ public class PInterface {
         return pInterfaceName;
     }
 
+    public String pnfName() {
+        return pnfName;
+    }
+
     @Override
     public int hashCode(){
         return Objects.hash(pnfName, pInterfaceName);

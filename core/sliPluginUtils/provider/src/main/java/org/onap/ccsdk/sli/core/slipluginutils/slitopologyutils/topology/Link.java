@@ -6,4 +6,10 @@ public interface Link {
         OTN,
         ETH
     }
+
+    PInterface src();
+
+    PInterface dst();
+
+    boolean isInnerDomain();
 }
