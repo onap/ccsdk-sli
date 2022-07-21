@@ -262,7 +262,7 @@ public final class MdsalPropertiesNodeUtils {
 
         String uri1 = uri.replaceAll(UNDERSCORE, COLON);
         try {
-            InstanceIdentifierContext<?> id = toInstanceIdentifier(
+            InstanceIdentifierContext id = toInstanceIdentifier(
                     uri1, context, Optional.ofNullable(null));
             return new SchemaPathHolder(id, uri1);
         } catch (IllegalArgumentException | RestconfDocumentedException
@@ -335,7 +335,7 @@ public final class MdsalPropertiesNodeUtils {
         if (node.contains(UNDERSCORE)) {
             secondHalf = node.substring(values[0].length()+1);
         }
-        InstanceIdentifierContext<?> id;
+        InstanceIdentifierContext id;
         for (int i = 0; i< values.length-1; i++) {
             val = values[i];
             val = firstHalf + val + COLON + secondHalf;

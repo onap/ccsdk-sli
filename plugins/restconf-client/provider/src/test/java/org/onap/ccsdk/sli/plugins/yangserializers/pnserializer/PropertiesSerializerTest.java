@@ -83,7 +83,7 @@ public final class PropertiesSerializerTest {
         params.put("test-yang_cont1.cont2.ll3[1]", "abc");
         params.put("test-yang_cont1.cont2.ll4[0]", "abc");
         params.put("test-yang_cont1.cont2.ll4[1]", "abc");
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
 
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
@@ -293,7 +293,7 @@ public final class PropertiesSerializerTest {
         params.put("test-yang_cont1.cont2.ll5[0]", "abc");
         params.put("test-yang_cont1.cont2.ll5[1]", "abc");
 
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
                 iCtx.getSchemaNode(), context, uri);
@@ -401,7 +401,7 @@ public final class PropertiesSerializerTest {
         params.put("test-yang_cont8.ll7[0]", "abc");
         params.put("test-yang_cont8.ll7[1]", "abc");
 
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
                 iCtx.getSchemaNode(), context, uri);
@@ -460,7 +460,7 @@ public final class PropertiesSerializerTest {
         params.put("test-yang_cont9.ll8[0]", "abc");
         params.put("test-yang_cont9.cont11.leaf25", "abc");
 
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
                 iCtx.getSchemaNode(), context, uri);
@@ -498,7 +498,7 @@ public final class PropertiesSerializerTest {
         Map<String, String> params = new HashMap<>();
         params.put("test-yang_cont8.cont6.test-augment_leaf21", "abc");
 
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
                 iCtx.getSchemaNode(), context, uri);
@@ -540,7 +540,7 @@ public final class PropertiesSerializerTest {
         params.put("test-yang_cont13.leaf28", "abc");
         params.put("test-yang_cont13.ll9[0]", "abc");
 
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
                 iCtx.getSchemaNode(), context, uri);
@@ -589,7 +589,7 @@ public final class PropertiesSerializerTest {
         params.put("test-yang_cont9.cont11.cont13.list9[0].leaf27", "abc");
         params.put("test-yang_cont9.cont11.cont13.leaf28", "abc");
         params.put("test-yang_cont9.cont11.cont13.ll9[0]", "abc");
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
                 iCtx.getSchemaNode(), context, uri);
@@ -643,7 +643,7 @@ public final class PropertiesSerializerTest {
         params.put("test-augment_cont13.list9[0].leaf27", "abc");
         params.put("test-augment_cont13.leaf28", "abc");
         params.put("test-augment_cont13.ll9[0]", "abc");
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
                 iCtx.getSchemaNode(), context, uri);
@@ -695,7 +695,7 @@ public final class PropertiesSerializerTest {
         params.put("test-yang_cont1.cont2.cont4.test-augment_cont13.leaf28", "abc");
         params.put("test-yang_cont1.cont2.cont4.test-augment_cont13.ll9[0]", "abc");
 
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
                 iCtx.getSchemaNode(), context, uri);
@@ -763,7 +763,7 @@ public final class PropertiesSerializerTest {
         params.put("test-yang_create-sfc.input.cont13.ll9[0]", "abc");
         params.put("test-yang_create-sfc.input.test-augment_leaf36", "abc");
 
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
                 iCtx.getSchemaNode(), context, uri);
@@ -877,7 +877,7 @@ public final class PropertiesSerializerTest {
         params.put("test-yang_create-sfc.output.cont13.ll9[0]", "abc");
         params.put("test-yang_create-sfc.output.test-augment_leaf37", "abc");
 
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
                 iCtx.getSchemaNode(), context, uri);
@@ -985,7 +985,7 @@ public final class PropertiesSerializerTest {
         params.put("test-yang_cont18.cont18.list12[1].list12[0].leaf36", "xyz");
         params.put("test-yang_cont18.cont18.list12[1].list12[1].leaf36", "hey!");
 
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
                 iCtx.getSchemaNode(), context, uri);
@@ -1056,7 +1056,7 @@ public final class PropertiesSerializerTest {
         params.put("leaf41", "hi");
         params.put("test-yang_cont18.leaf41", "abc");
 
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(
                 iCtx.getSchemaNode(), context, uri);
@@ -1078,7 +1078,7 @@ public final class PropertiesSerializerTest {
         params.put("identity-test_test.con1.interfaces.int-list[0].available.ll[0]", "identity-types:Loopback");
         params.put("identity-test_test.con1.interfaces.int-list[0].available.leaf1", "identity-types-second:Ethernet");
         params.put("identity-test_test.con1.interfaces.int-list[0].available.leaf2", "identity-types-second:iden2");
-        InstanceIdentifierContext<?> iCtx = ParserIdentifier
+        InstanceIdentifierContext iCtx = ParserIdentifier
                 .toInstanceIdentifier(uri, context, null);
 
         PropertiesNodeSerializer ser = new MdsalPropertiesNodeSerializer(

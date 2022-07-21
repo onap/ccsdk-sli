@@ -87,8 +87,9 @@ import org.opendaylight.restconf.nb.rfc8040.utils.parser.ParserIdentifier;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
+
+import org.opendaylight.yangtools.yang.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -185,7 +186,7 @@ public class RestconfApiCallNode implements SvcLogicJavaPlugin {
             String pp = p.responsePrefix != null ? p.responsePrefix + '.' : "";
             Map<String, String> props = new HashMap<>((Map)ctx.toProperties());
             String uri = parseUrl(p.restapiUrl, p.httpMethod);
-            InstanceIdentifierContext<?> insIdCtx = getInsIdCtx(p, uri);
+            InstanceIdentifierContext insIdCtx = getInsIdCtx(p, uri);
 
             String req = null;
             if (p.httpMethod != GET && p.httpMethod != DELETE) {
@@ -311,7 +312,7 @@ public class RestconfApiCallNode implements SvcLogicJavaPlugin {
      * @return instance identifier context
      * @throws SvcLogicException when getting schema context fails
      */
-    private InstanceIdentifierContext<?> getInsIdCtx(YangParameters params,
+    private InstanceIdentifierContext getInsIdCtx(YangParameters params,
                                                      String uri)
             throws SvcLogicException {
         EffectiveModelContext context = getSchemaContext(params);
@@ -394,7 +395,7 @@ public class RestconfApiCallNode implements SvcLogicJavaPlugin {
      * @throws SvcLogicException when the data format type is wrong
      */
     public String updateReq(String req, YangParameters p,
-                             InstanceIdentifierContext<?> insIdCtx)
+                             InstanceIdentifierContext insIdCtx)
             throws SvcLogicException {
 
         SchemaNode schemaNode = insIdCtx.getSchemaNode();

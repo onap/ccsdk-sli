@@ -311,7 +311,7 @@ public class MdsalHelper {
                         }
                     } else if (returnType.equals(Class.class)) {
 
-                    } else if (List.class.isAssignableFrom(returnType) || Map.class.isAssignableFrom(returnType)) {
+                    } else if (List.class.isAssignableFrom(returnType) || Map.class.isAssignableFrom(returnType) || Set.class.isAssignableFrom(returnType)) {
 
                         // This getter method returns a list.
                         try {
@@ -320,8 +320,12 @@ public class MdsalHelper {
                                 m.setAccessible(true);
                             }
                             Object retList = m.invoke(fromObj);
-                            if ((retList != null) && Map.class.isAssignableFrom(returnType)) {
-                                retList = new ArrayList(((Map)retList).values());
+                            if (retList != null) {
+                                if (Map.class.isAssignableFrom(returnType)) {
+                                    retList = new ArrayList(((Map) retList).values());
+                                } else if (Set.class.isAssignableFrom(returnType)) {
+                                    retList = new ArrayList(((Set) retList));
+                                }
                             }
                             //due duplicated getters with Map and List(deprecated) stop if already mapped
                             if(!hasAlreadyKeys(props,propNamePfx + "." + fieldName)) {
@@ -648,6 +652,155 @@ public class MdsalHelper {
                 LOG.warn("Could not find builder class {}", builderName, e);
             } catch (Exception e) {
                 LOG.error("Caught exception trying to populate list from {}", pfx, e);
+            }
+        }
+
+        if (foundValue) {
+            return (toObj);
+        } else {
+            return (null);
+        }
+    }
+
+    public static Set toSet(Properties props, String pfx, Set toObj, Class elemType) {
+
+        int maxIdx = -1;
+        boolean foundValue = false;
+
+        if (props.containsKey(pfx + "_length")) {
+            try {
+                int listLength = Integer.parseInt(props.getProperty(pfx + "_length"));
+
+                if (listLength > 0) {
+                    maxIdx = listLength - 1;
+                }
+            } catch (NumberFormatException e) {
+                LOG.info("Invalid input for length ", e);
+            }
+        }
+
+        String arrayKey = pfx + "[";
+        int arrayKeyLength = arrayKey.length();
+        if (maxIdx == -1) {
+            // Figure out array size
+            for (Object pNameObj : props.keySet()) {
+                String key = (String) pNameObj;
+
+                if (key.startsWith(arrayKey)) {
+                    String idxStr = key.substring(arrayKeyLength);
+                    int endloc = idxStr.indexOf("]");
+                    if (endloc != -1) {
+                        idxStr = idxStr.substring(0, endloc);
+                    }
+                    try {
+                        int curIdx = Integer.parseInt(idxStr);
+                        if (curIdx > maxIdx) {
+                            maxIdx = curIdx;
+                        }
+                    } catch (Exception e) {
+                        LOG.error("Illegal subscript in property {}", key, e);
+                    }
+
+                }
+            }
+        }
+
+        for (int i = 0; i <= maxIdx; i++) {
+
+            String curBase = pfx + "[" + i + "]";
+
+            // Sets are used to represent yang system-ordered leaf-lists.
+            // Each entry in the Set is an yang-generated object,
+            // to be constructed by a builder.
+            if (isYangGenerated(elemType)) {
+
+                if (isIpAddress(elemType)) {
+
+                    String curValue = props.getProperty(curBase, "");
+
+                    if ((curValue != null) && (curValue.length() > 0)) {
+                        toObj.add(IpAddressBuilder.getDefaultInstance(curValue));
+                        foundValue = true;
+                    }
+                } else if (isIpv4Address(elemType)) {
+                    String curValue = props.getProperty(curBase, "");
+
+                    if ((curValue != null) && (curValue.length() > 0)) {
+                        toObj.add(new Ipv4Address(curValue));
+                        foundValue = true;
+                    }
+
+                } else if (isIpv6Address(elemType)) {
+                    String curValue = props.getProperty(curBase, "");
+
+                    if ((curValue != null) && (curValue.length() > 0)) {
+                        toObj.add(new Ipv6Address(curValue));
+                        foundValue = true;
+                    }
+                } else if (isIpPrefix(elemType)) {
+
+                    String curValue = props.getProperty(curBase, "");
+
+                    if ((curValue != null) && (curValue.length() > 0)) {
+                        toObj.add(IpPrefixBuilder.getDefaultInstance(curValue));
+                        foundValue = true;
+                    }
+                } else if (isPortNumber(elemType)) {
+
+                    String curValue = props.getProperty(curBase, "");
+
+                    if ((curValue != null) && (curValue.length() > 0)) {
+                        toObj.add(PortNumber.getDefaultInstance(curValue));
+                        foundValue = true;
+                    }
+                } else if (isDscp(elemType)) {
+
+                    String curValue = props.getProperty(curBase, "");
+
+                    if ((curValue != null) && (curValue.length() > 0)) {
+                        toObj.add(Dscp.getDefaultInstance(curValue));
+                        foundValue = true;
+                    }
+                } else if (elemType.isEnum()) {
+                    String curValue = props.getProperty(curBase, "");
+                    Object elemObj = null;
+
+                    try {
+                        elemObj = Enum.valueOf(elemType, toJavaEnum(curValue));
+                    } catch (Exception e) {
+                        LOG.error("Caught exception trying to convert field " + curBase + " to enum "
+                                + elemType.getName(), e);
+                    }
+                    toObj.add(elemObj);
+                    foundValue = true;
+                } else {
+                    String builderName = elemType.getName() + "Builder";
+                    try {
+                        Class builderClass = Class.forName(builderName);
+                        Object builderObj = builderClass.newInstance();
+                        Method buildMethod = builderClass.getMethod("build");
+                        builderObj = toBuilder(props, curBase, builderObj, true);
+                        if (builderObj != null) {
+                            Object builtObj = buildMethod.invoke(builderObj);
+                            toObj.add(builtObj);
+                            foundValue = true;
+                        }
+
+                    } catch (ClassNotFoundException e) {
+                        LOG.warn("Could not find builder class {}", builderName, e);
+                    } catch (Exception e) {
+                        LOG.error("Caught exception trying to populate list from {}", pfx, e);
+                    }
+                }
+            } else {
+                // Must be a leaf list
+                String curValue = props.getProperty(curBase, "");
+
+                toObj.add(curValue);
+
+                if ((curValue != null) && (curValue.length() > 0)) {
+                    foundValue = true;
+                }
             }
         }
 
@@ -1097,6 +1250,37 @@ public class MdsalHelper {
                             Object paramObj = new LinkedList();
                             try {
                                 paramObj = toList(props, propName, (List) paramObj, (Class) elementType);
+                            } catch (Exception e) {
+                                LOG.error("Caught exception trying to create list expected as argument to {}.{}",
+                                        toClass.getName(), m.getName(), e);
+                            }
+
+                            if (paramObj != null) {
+                                try {
+                                    boolean isAccessible = m.isAccessible();
+                                    if (!isAccessible) {
+                                        m.setAccessible(true);
+                                    }
+                                    m.invoke(toObj, paramObj);
+                                    if (!isAccessible) {
+                                        m.setAccessible(isAccessible);
+                                    }
+                                    foundValue = true;
+
+                                } catch (Exception e) {
+                                    LOG.error("Caught exception trying to convert List returned by" + toClass.getName()
+                                            + "." + m.getName() + "() to Properties entry", e);
+                                }
+                            }
+                        } else if (Set.class.isAssignableFrom(paramClass)) {
+                            // Figure out what type of args are in Set and pass
+                            // that to toList().
+
+                            Type paramType = m.getGenericParameterTypes()[0];
+                            Type elementType = ((ParameterizedType) paramType).getActualTypeArguments()[0];
+                            Object paramObj = new HashSet();
+                            try {
+                                paramObj = toSet(props, propName, (Set) paramObj, (Class) elementType);
                             } catch (Exception e) {
                                 LOG.error("Caught exception trying to create list expected as argument to {}.{}",
                                         toClass.getName(), m.getName(), e);

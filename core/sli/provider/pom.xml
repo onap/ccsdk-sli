@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>2.4.0</version>
+        <version>2.4.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
@@ -167,6 +167,26 @@
                         <MYSQL_DATABASE>dummyDatabase</MYSQL_DATABASE>
                     </environmentVariables>
                 </configuration>
+            </plugin>
+            <plugin>
+                <!-- a hint for IDE's to add the java sources to the classpath -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>add-model-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${basedir}/../model/target/generated-sources/BindingJavaFileGenerator</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

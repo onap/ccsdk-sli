@@ -401,7 +401,8 @@ public final class YangUtils {
     }
 
     public static Module findParentModule(final SchemaContext context, final SchemaNode schemaNode) {
-        final QName qname = schemaNode.getPath().getLastComponent();
+        //final QName qname = schemaNode.getPath().getLastComponent();
+        final QName qname = schemaNode.getQName();
         checkState(qname != null, "Schema Path contains invalid state of path parts. "
                 + "The Schema Path MUST contain at least ONE QName  which defines namespace and Local name of path.");
         return context.findModule(qname.getModule()).orElse(null);
