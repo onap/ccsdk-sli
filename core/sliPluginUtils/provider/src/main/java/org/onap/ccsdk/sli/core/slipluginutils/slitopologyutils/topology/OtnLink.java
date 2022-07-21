@@ -29,6 +29,7 @@ public class OtnLink implements Link{
         return linkName;
     }
 
+    @Override
     public boolean isInnerDomain(){
         if (src != null && dst != null){
             if (src.pInterfaceName() != null && dst.pInterfaceName() != null){
