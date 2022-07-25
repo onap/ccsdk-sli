@@ -6,8 +6,8 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 
 /*-
  * ============LICENSE_START=======================================================
@@ -34,7 +34,7 @@ public class TestRestconfApiUtils {
     @Test 
     public void testGetSchemaCtxFromDir() throws SvcLogicException {
 
-        YangParserFactory factory = new YangParserFactoryImpl();
+        YangParserFactory factory = new DefaultYangParserFactory();
         
 
         // Test with valid subdirectories

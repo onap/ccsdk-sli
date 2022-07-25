@@ -33,12 +33,12 @@ import org.onap.ccsdk.sli.plugins.restapicall.HttpResponse;
 import org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode;
 import org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiCallNode;
 import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
@@ -83,7 +83,7 @@ public class IdentifierValidationTest {
         p.put("responsePrefix", "response");
         p.put("skipSending", "true");
         restApi = new RestapiCallNode();
-        parserFactory = new YangParserFactoryImpl();
+        parserFactory = new DefaultYangParserFactory();
         restconf = mock(RestconfApiCallNode.class);
         dfCaptor = new DfCaptor();
         createMethodMocks();

@@ -24,10 +24,13 @@ package org.onap.ccsdk.sli.core.sli.provider;
 
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput.Mode;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
@@ -119,7 +122,7 @@ public class PrintYangToPropTest {
         // Set builder with values
         Map<TestResultKey, TestResult> resultList = new HashMap<>();
         resultBuilder.setTestIdentifier("test1");
-        List<String> results = new LinkedList<>();
+        Set<String> results = new LinkedHashSet <String>();
         results.add("pass");
         resultBuilder.setResults(results);
         resultList.put(new TestResultKey(resultBuilder.getTestIdentifier()), resultBuilder.build());

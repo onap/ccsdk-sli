@@ -477,7 +477,7 @@ public class MdsalHelperTest extends TestCase {
 
   public void testToPropertiesWithDecimal64() throws Exception {
     SampleContainerBuilder sampleBuilder = new SampleContainerBuilder();
-    BigDecimal myBigDecimal = new BigDecimal(".0000000000000000000000000000001");
+    Decimal64 myBigDecimal = Decimal64.valueOf(".000000000000000001");
     sampleBuilder.setSampleDecimal64(myBigDecimal);
     Properties props = new Properties();
     MdsalHelper.toProperties(props, sampleBuilder);
@@ -487,7 +487,7 @@ public class MdsalHelperTest extends TestCase {
 
   public void testToPropertiesWithEmpty() throws Exception {
     SampleContainerBuilder sampleBuilder = new SampleContainerBuilder();
-    Empty isEmpty = Empty.getInstance();
+    Empty isEmpty = Empty.value();
     sampleBuilder.setSampleEmpty(isEmpty);
     Properties props = new Properties();
     MdsalHelper.toProperties(props, sampleBuilder);
@@ -646,8 +646,7 @@ public class MdsalHelperTest extends TestCase {
 
   public void testToPropertiesWithLeaftList() throws Exception {
     SampleContainerBuilder sampleBuilder = new SampleContainerBuilder();
-    List<String> nickNames = new ArrayList<String>();
-    sampleBuilder.setCustomerNicknames(nickNames);
+    Set<String> nickNames = new LinkedHashSet<String>();
     String nameOne = "coffee";
     String nameTwo = "java";
     String nameThree = "mud";
@@ -655,9 +654,12 @@ public class MdsalHelperTest extends TestCase {
     nickNames.add(nameOne);
     nickNames.add(nameTwo);
     nickNames.add(nameThree);
+    sampleBuilder.setCustomerNicknames(nickNames);
 
     Properties props = new Properties();
     MdsalHelper.toProperties(props, sampleBuilder);
+
+    props.forEach((k, v) -> { LOG.info("Property {} = {}", k, v);});
 
     assertEquals(nameOne, props.get("sample-container.customer-nicknames[0]"));
     assertEquals(nameTwo, props.get("sample-container.customer-nicknames[1]"));
@@ -813,7 +815,8 @@ public class MdsalHelperTest extends TestCase {
     assertEquals(true, ipAddrIter.hasNext());
     assertEquals("10.20.0.1", ipAddrIter.next().getIpAddr().stringValue());
     assertEquals(1, result.getIpAddressLeafList().size());
-    assertEquals("127.0.0.1", result.getIpAddressLeafList().get(0).stringValue());
+    IpAddress[] ipAddressArray = result.getIpAddressLeafList().toArray(new IpAddress[0]);
+    assertEquals("127.0.0.1", ipAddressArray[0].stringValue());
     Map<IpAddressNamesKey, IpAddressNames> ipNamesMap = result.getIpAddressNames();
     Iterator<IpAddressNames> ipNamesIter = ipNamesMap.values().iterator();
     assertEquals(true, ipNamesIter.hasNext());

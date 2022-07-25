@@ -25,7 +25,6 @@ package org.onap.ccsdk.sli.plugins.restconfapicall;
 
 import static org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode.getParameters;
 import static org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode.parseParam;
-import static org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource.forFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -39,10 +38,11 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.plugins.restapicall.HttpMethod;
 import org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.YangParameters;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParser;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
+import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.parser.api.YangParser;
+import org.opendaylight.yangtools.yang.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
 
 /**
  * Utilities for restconf api call node.
@@ -193,7 +193,7 @@ public final class RestconfApiUtils {
         YangParser parser = parserFactory.createParser();
         for (File file : yangFiles) {
             try {
-                parser.addSource(forFile(file));
+                parser.addSource(YangTextSchemaSource.forPath(file.toPath()));
             } catch (IOException | YangSyntaxErrorException e) {
                 throw new SvcLogicException(YANG_FILE_ERR + e.getMessage(), e);
             }
