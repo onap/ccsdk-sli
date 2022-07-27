@@ -30,7 +30,7 @@
 
     <reference xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0"
                id="yangParserFactory"
-               interface="org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory"
+               interface="org.opendaylight.yangtools.yang.parser.api.YangParserFactory"
                ext:proxy-method="classes"/>
            
 
