@@ -52,6 +52,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.ObjectUtils;
 import org.onap.ccsdk.sli.adaptors.aai.AAIService.TransactionIdTracker;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.onap.ccsdk.sli.adaptors.aai.data.ErrorResponse;
@@ -160,8 +161,9 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
                 } catch (Exception ex) {
                     LOG.error("AAIResource", ex);
                 }
-
-                ctx.init(kmf.getKeyManagers(), null, null);
+                if (ObjectUtils.anyNotNull(kmf)) {
+                    ctx.init(kmf.getKeyManagers(), null, null);
+                }
 
                 CTX = ctx;
                 LOG.debug("SSLContext created");
