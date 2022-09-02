@@ -43,6 +43,10 @@
         <argument ref="restconfapiCallNodeProvider"/>
     </bean>
 
+    <bean id="periodicDiscoveryNodeProvider" class="org.onap.ccsdk.sli.plugins.restconfdiscovery.PeriodicDiscoveryNode" >
+        <argument ref="restconfapiCallNodeProvider"/>
+    </bean>
+
     <service ref="restconfapiCallNodeProvider">
         <interfaces>
             <value>org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiCallNode</value>
@@ -52,6 +56,12 @@
     <service ref="restconfDiscoveryNodeProvider">
         <interfaces>
             <value>org.onap.ccsdk.sli.plugins.restconfdiscovery.RestconfDiscoveryNode</value>
+        </interfaces>
+    </service>
+
+    <service ref="periodicDiscoveryNodeProvider">
+        <interfaces>
+            <value>org.onap.ccsdk.sli.plugins.restconfdiscovery.PeriodicDiscoveryNode</value>
         </interfaces>
     </service>
 

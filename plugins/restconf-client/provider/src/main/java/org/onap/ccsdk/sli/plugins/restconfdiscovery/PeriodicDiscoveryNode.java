@@ -21,8 +21,6 @@
 package org.onap.ccsdk.sli.plugins.restconfdiscovery;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.glassfish.jersey.media.sse.EventInput;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.glassfish.jersey.media.sse.InboundEvent;
@@ -34,7 +32,6 @@ import org.onap.ccsdk.sli.plugins.restapicall.Parameters;
 import org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode;
 import org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiCallNode;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -49,10 +46,8 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.concurrent.*;
 
 import static org.onap.ccsdk.sli.plugins.restapicall.JsonParser.convertToProperties;
@@ -62,9 +57,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Representation of a plugin to subscribe for notification and then
  * to handle the received notifications.
  */
-public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDiscoveryPlugin {
+public class PeriodicDiscoveryNode implements RestConfSBController, SvcLogicDiscoveryPlugin {
 
-    private static final Logger log = getLogger(RestconfDiscoveryNode.class);
+    private static final Logger log = getLogger(PeriodicDiscoveryNode.class);
 
     private static final String ROOT_RESOURCE = "/restconf";
     private static final String SUBSCRIBER_ID = "subscriberId";
@@ -75,6 +70,7 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
     private static final String OUTPUT_IDENTIFIER_NO_PREFIX = "output.identifier";
     private static final String RESPONSE_CODE_200 = "200";
     private static final String SSE_URL = "sseConnectURL";
+    private static final String PERIODIC_PUL_URL = "periodicPullURL";
     private static final String REST_API_URL = "restapiUrl";
     private static final String RESOURCE_PATH_PREFIX = "/data/";
     private static final String NOTIFICATION_PATH_PREFIX = "/streams/";
@@ -87,18 +83,15 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
     private RestapiCallNode restapiCallNode = new RestapiCallNode();
     private volatile Map<String, SubscriptionInfo> subscriptionInfoMap = new ConcurrentHashMap<>();
     private volatile LinkedBlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
-    private Map<DeviceId, Set<RestconfNotificationEventListener>>
-            restconfNotificationListenerMap = new ConcurrentHashMap<>();
-    private Map<DeviceId, GetChunksRunnable>
-            runnableTable = new ConcurrentHashMap<>();
+    private Map<DeviceId, PeriodicPullRunnable> periodicRunnableTable = new ConcurrentHashMap<>();
     private Map<DeviceId, String> subscribedDevicesTable = new ConcurrentHashMap<>();
     private Map<DeviceId, BlockingQueue<String>> eventQMap = new ConcurrentHashMap<>();
-    private Map<DeviceId, InternalRestconfEventProcessorRunnable>
+    private Map<DeviceId, InternalPeriodicPullingProcessorRunnable>
             processorRunnableTable = new ConcurrentHashMap<>();
-    private Map<String, PersistentConnection> runnableInfo = new ConcurrentHashMap<>();
     private final Map<DeviceId, RestSBDevice> deviceMap = new ConcurrentHashMap<>();
     private final Map<DeviceId, Client> clientMap = new ConcurrentHashMap<>();
     private ExecutorService executor = Executors.newCachedThreadPool();
+    private ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(2);
 
     /**
      * Creates an instance of RestconfDiscoveryNode and starts processing of
@@ -106,7 +99,7 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
      *
      * @param r restconf api call node
      */
-    public RestconfDiscoveryNode(RestconfApiCallNode r) {
+    public PeriodicDiscoveryNode(RestconfApiCallNode r) {
         log.info("inside RestconfDiscoveryNode Constructor");
         this.restconfApiCallNode = r;
         this.activate();
@@ -172,8 +165,8 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
             }
             BlockingQueue<String> newBlockingQueue = new LinkedBlockingQueue<>();
             eventQMap.put(device.deviceId(), newBlockingQueue);
-            InternalRestconfEventProcessorRunnable eventProcessorRunnable =
-                    new InternalRestconfEventProcessorRunnable(device.deviceId());
+            InternalPeriodicPullingProcessorRunnable eventProcessorRunnable =
+                    new InternalPeriodicPullingProcessorRunnable(device.deviceId());
             processorRunnableTable.put(device.deviceId(), eventProcessorRunnable);
             log.trace("addDevice::restconf event processor runnable is created and is going for execute");
             executor.execute(eventProcessorRunnable);
@@ -277,86 +270,7 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
     public void deleteSubscription(Map<String, String> paramMap, SvcLogicContext ctx) {
         String id = getSubscriptionId(paramMap.get(SUBSCRIBER_ID));
         if (id != null) {
-            PersistentConnection conn = runnableInfo.get(id);
-            conn.terminate();
-            runnableInfo.remove(id);
             subscriptionInfoMap.remove(id);
-        }
-    }
-
-    class PersistentConnection implements Runnable {
-        private String url;
-        private volatile boolean running = true;
-        private Map<String, String> paramMap;
-
-        PersistentConnection(String url, Map<String, String> paramMap) {
-            this.url = url;
-            this.paramMap = paramMap;
-        }
-
-        private void terminate() {
-            running = false;
-        }
-
-        @Override
-        public void run() {
-            Parameters p;
-            WebTarget target = null;
-            try {
-                RestapiCallNode restapi = restconfApiCallNode.getRestapiCallNode();
-                p = RestapiCallNode.getParameters(paramMap, new Parameters());
-                Client client =  ignoreSslClient(p.disableHostVerification).register(SseFeature.class);
-                target = restapi.addAuthType(client, p).target(url);
-            } catch (SvcLogicException e) {
-                log.error("Exception occured!", e);
-                Thread.currentThread().interrupt();
-            }
-
-            target = addToken(target, paramMap.get("customHttpHeaders"));
-            EventSource eventSource = EventSource.target(target).build();
-            eventSource.register(new EventHandler(RestconfDiscoveryNode.this));
-            eventSource.open();
-            log.info("Connected to SSE source");
-            while (running) {
-                try {
-                    log.info("SSE state " + eventSource.isOpen());
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    log.error("Interrupted!", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-            eventSource.close();
-            log.info("Closed connection to SSE source");
-        }
-
-        // Note: Sonar complains about host name verification being 
-        // disabled here.  This is necessary to handle devices using self-signed
-        // certificates (where CA would be unknown) - so we are leaving this code as is.
-        private Client ignoreSslClient(boolean disableHostVerification) {
-            SSLContext sslcontext = null;
-
-            try {
-                sslcontext = SSLContext.getInstance("TLS");
-                sslcontext.init(null, new TrustManager[]{new X509TrustManager() {
-                    @Override
-                    public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-                    }
-
-                    @Override
-                    public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-                    }
-
-                    @Override
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return new X509Certificate[0];
-                    }
-                } }, new java.security.SecureRandom());
-            } catch (NoSuchAlgorithmException | KeyManagementException e) {
-                throw new IllegalStateException(e);
-            }
-
-            return ClientBuilder.newBuilder().sslContext(sslcontext).hostnameVerifier(new AcceptIpAddressHostNameVerifier(disableHostVerification)).build();
         }
     }
 
@@ -386,21 +300,6 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
      */
     void establishPersistentConnection(Map<String, String> paramMap, SvcLogicContext ctx,
                                               String subscriberId) {
-        String id = getOutputIdentifier(paramMap.get(RESPONSE_PREFIX), ctx);
-        SvcLogicGraphInfo callbackDG = new SvcLogicGraphInfo(paramMap.get("module"),
-                                                             paramMap.get("rpc"),
-                                                             paramMap.get("version"),
-                                                             paramMap.get("mode"));
-        SubscriptionInfo info = new SubscriptionInfo();
-        info.callBackDG(callbackDG);
-        info.subscriptionId(id);
-        info.subscriberId(subscriberId);
-        subscriptionInfoMap.put(id, info);
-
-        String url = paramMap.get(SSE_URL);
-        PersistentConnection connection = new PersistentConnection(url, paramMap);
-        runnableInfo.put(id, connection);
-        executor.execute(connection);
     }
 
     /**
@@ -515,7 +414,10 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
     @Override
     public void establishPersistentSseConnection(Map<String, String> paramMap, SvcLogicContext ctx) throws SvcLogicException {
 
-        //TODO: FIXME: remove the instantiation of info; not useful
+    }
+
+    @Override
+    public void establishPeriodicPullConnection(Map<String, String> paramMap, SvcLogicContext ctx) throws SvcLogicException {
         String subscriberId = paramMap.get(SUBSCRIBER_ID);
         SvcLogicGraphInfo callbackDG = new SvcLogicGraphInfo(paramMap.get("module"),
                 paramMap.get("rpc"),
@@ -525,27 +427,27 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
         info.callBackDG(callbackDG);
         info.subscriberId(subscriberId);
 
-        String sseUrlString = paramMap.get(SSE_URL);
-        URL sseUrl = null;
+        String periodicPullUrlString = paramMap.get(PERIODIC_PUL_URL);
+        URL periodicPullUrl = null;
         RestSBDevice dev = null;
         try {
-            sseUrl = new URL(sseUrlString);
-            dev = getDevice(sseUrl.getHost(), sseUrl.getPort());
+            periodicPullUrl = new URL(periodicPullUrlString);
+            dev = getDevice(periodicPullUrl.getHost(), periodicPullUrl.getPort());
         } catch (MalformedURLException e) {
             log.error("establishPersistentSseConnection::MalformedURLException happened. e: {}", e);
             return;
         }
 
         if (dev == null) {
-            log.warn("establishPersistentSseConnection::device does not exist in the map. Trying to add one now.");
-            dev = new DefaultRestSBDevice(sseUrl.getHost(),
-                    sseUrl.getPort(), "onos", "rocks", "http",
-                    sseUrl.getHost() + ":" + sseUrl.getPort(), true);
+            log.warn("establishPeriodicPullConnection::device does not exist in the map. Trying to add one now.");
+            dev = new DefaultRestSBDevice(periodicPullUrl.getHost(),
+                    periodicPullUrl.getPort(), "onos", "rocks", "http",
+                    periodicPullUrl.getHost() + ":" + periodicPullUrl.getPort(), true);
             this.addDevice(dev);
         }
 
         if (isNotificationEnabled(dev.deviceId())) {
-            log.warn("establishPersistentSseConnection::notifications already enabled on device: {}",
+            log.warn("establishPeriodicPullConnection::notifications already enabled on device: {}",
                     dev.deviceId());
             return;
         }
@@ -558,12 +460,7 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
 
         RestconfNotificationEventListenerImpl myListener =
                 new RestconfNotificationEventListenerImpl(info);
-        enableNotifications(dev.deviceId(), "yang-push-json", "json", myListener);
-    }
-
-    @Override
-    public void establishPeriodicPullConnection(Map<String, String> paramMap, SvcLogicContext ctx) throws SvcLogicException {
-
+        enableNotifications(dev.deviceId(), "ietf-service-pm:performance-monitoring", "json", myListener);
     }
 
     @Override
@@ -575,28 +472,26 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
             return;
         }
 
-        request = discoverRootResource(device) + NOTIFICATION_PATH_PREFIX
+        request = discoverRootResource(device) + RESOURCE_PATH_PREFIX
                 + request;
 
         addNotificationListener(device, listener);
 
-        GetChunksRunnable runnable = new GetChunksRunnable(request, mediaType,
-                device);
-        runnableTable.put(device, runnable);
-        executor.execute(runnable);
+        PeriodicPullRunnable periodicRunnable = new PeriodicPullRunnable(request, device);
+        periodicRunnableTable.put(device, periodicRunnable);
+        scheduledExecutor.scheduleAtFixedRate(periodicRunnable, 0, 60, TimeUnit.SECONDS);
     }
 
     public void stopNotifications(DeviceId device) {
         try {
-            runnableTable.get(device).terminate();
+            periodicRunnableTable.get(device).terminate();
             processorRunnableTable.get(device).terminate();
         } catch (Exception ex) {
             log.error("stopNotifications::Exception happened when terminating, ex: {}", ex);
         }
         log.info("stopNotifications::Runnable is now terminated");
-        runnableTable.remove(device);
+        periodicRunnableTable.remove(device);
         processorRunnableTable.remove(device);
-        restconfNotificationListenerMap.remove(device);
         log.debug("stopNotifications::Stop sending notifications for device URI: " + device.uri().toString());
     }
 
@@ -650,117 +545,91 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
         }
     }
 
-    /**
-     * Notifies providers about incoming RESTCONF notification events.
-     */public class GetChunksRunnable implements Runnable {
+    public class PeriodicPullRunnable implements Runnable {
         private String request;
-        private String mediaType;
         private DeviceId deviceId;
 
         private volatile boolean running = true;
 
         public void terminate() {
-            log.info("GetChunksRunnable.terminate()::threadID: {}",
+            log.info("PeriodicPullRunnable.terminate()::threadID: {}",
                     Thread.currentThread().getId());
             running = false;
         }
 
         /**
          * @param request   request
-         * @param mediaType media type
          * @param deviceId    device identifier
          */
-        public GetChunksRunnable(String request, String mediaType,
-                                 DeviceId deviceId) {
+        public PeriodicPullRunnable(String request, DeviceId deviceId) {
             this.request = request;
-            this.mediaType = mediaType;
             this.deviceId = deviceId;
         }
 
         @Override
         public void run() {
-            log.trace("GetChunksRunnable.run()::threadID is: {} ...., running is: {}",
+            log.trace("PeriodicPullRunnable.run()::threadID is: {} ...., running is: {}",
                     Thread.currentThread().getId(), running);
             try {
-                Client client = ClientBuilder.newBuilder()
-                        .register(SseFeature.class).build();
-                WebTarget target = client.target(getUrlString(deviceId, request));
-                log.trace("GetChunksRunnable.run()::target URI is {}", target.getUri().toString());
-                Response response = target.request().get();
-                EventInput eventInput = response.readEntity(EventInput.class);
-                log.trace("GetChunksRunnable.run()::after eventInput");
-                String rcvdData = "";
-                while (!eventInput.isClosed() && running) {
-                    log.trace("GetChunksRunnable.run()::inside while ...");
-                    final InboundEvent inboundEvent = eventInput.read();
-                    log.trace("GetChunksRunnable.run()::after eventInput.read() ...");
-                    if (inboundEvent == null) {
-                        // connection has been closed
-                        log.info("GetChunksRunnable.run()::connection has been closed ...");
-                        break;
-                    }
+                    Client client = ClientBuilder.newBuilder().build();
+                    WebTarget target = client.target(getUrlString(deviceId, request));
+                    log.trace("PeriodicPullRunnable.run()::target URI is {}", target.getUri().toString());
+                    Response response = null;
                     if (running) {
-                        rcvdData = inboundEvent.readData(String.class);
+                        response = target.request().get();
+                        String rcvdData = response.readEntity(String.class);
+                        log.trace("PeriodicPullRunnable.run()::after readEntity");
                         BlockingQueue<String> eventQ = getEventQ(deviceId);
                         if (eventQ != null) {
                             eventQ.add(rcvdData);
                             eventQMap.put(deviceId, eventQ);
-                            log.trace("GetChunksRunnable.run()::eventQ got filled.");
+                            log.trace("PeriodicPullRunnable.run()::eventQ got filled.");
                         } else {
-                            log.error("GetChunksRunnable.run()::eventQ has not been initialized for this device {}",
+                            log.error("PeriodicPullRunnable.run()::eventQ has not been initialized for this device {}",
                                     deviceId);
                         }
                     } else {
-                        log.info("GetChunksRunnable.run()::running has changed to false while eventInput.read() " +
-                                "was blocked to receive new notifications");
-                        log.info("GetChunksRunnable.run()::the client is no longer interested to " +
-                                "receive notifications.");
-                        break;
+                        log.trace("PeriodicPullRunnable.run()::running is false! " +
+                                "closing the client and the response, threadID: {}", Thread.currentThread().getId());
+                        response.close();
+                        client.close();
+                        log.info("PeriodicPullRunnable.run()::eventInput is closed in run()");
                     }
-                }
-                if (!running) {
-                    log.trace("GetChunksRunnable.run()::running is false! " +
-                                    "closing eventInput, threadID: {}", Thread.currentThread().getId());
-                    eventInput.close();
-                    response.close();
-                    client.close();
-                    log.info("GetChunksRunnable.run()::eventInput is closed in run()");
-                }
             } catch (Exception ex) {
-                log.info("GetChunksRunnable.run()::We got some exception: {}, threadID: {} ", ex,
+                log.info("PeriodicPullRunnable.run()::We got some exception: {}, threadID: {} ", ex,
                         Thread.currentThread().getId());
             }
-            log.trace("GetChunksRunnable.run()::after Runnable Try Catch. threadID: {} ",
+            log.trace("PeriodicPullRunnable.run()::after Runnable Try Catch. threadID: {} ",
                     Thread.currentThread().getId());
         }
     }
 
-    public class InternalRestconfEventProcessorRunnable implements Runnable {
+    public class InternalPeriodicPullingProcessorRunnable implements Runnable {
 
         private volatile boolean running = true;
         private DeviceId deviceId;
 
-        public InternalRestconfEventProcessorRunnable(DeviceId deviceId) {
+        public InternalPeriodicPullingProcessorRunnable(DeviceId deviceId) {
             this.deviceId = deviceId;
         }
 
         public void terminate() {
-            log.info("InternalRestconfEventProcessorRunnable.terminate()::threadID: {}",
+            log.info("InternalPeriodicPullingProcessorRunnable.terminate()::threadID: {}",
                     Thread.currentThread().getId());
             running = false;
         }
 
         @Override
         public void run() {
-            log.trace("InternalRestconfEventProcessorRunnable::restconf event processor runnable inside run()");
+            log.trace("InternalPeriodicPullingProcessorRunnable::restconf event processor runnable inside run()");
             while (running) {
                 try {
                     if (eventQMap != null && !eventQMap.isEmpty() && eventQMap.get(deviceId) != null) {
-                        log.trace("InternalRestconfEventProcessorRunnable::waiting for take()");
+                        log.trace("InternalPeriodicPullingProcessorRunnable::waiting for take()");
                         if (running) {
                             String eventJsonString = eventQMap.get(deviceId).take();
-                            log.trace("InternalRestconfEventProcessorRunnable::after take()");
-                            log.info("InternalRestconfEventProcessorRunnable::eventJsonString is {}", eventJsonString);
+                            log.trace("InternalPeriodicPullingProcessorRunnable::after take()");
+                            log.info("InternalPeriodicPullingProcessorRunnable::eventJsonString is {}", eventJsonString);
                             Map<String, String> param = convertToProperties(eventJsonString);
                             String idString = param.get("push-change-update.subscription-id");
                             SubscriptionInfo info = subscriptionInfoMap().get(idString);
@@ -770,9 +639,9 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
                                 callbackDG.executeGraph(ctx);
                             }
                         } else {
-                            log.info("InternalRestconfEventProcessorRunnable.run()::running has changed to false " +
+                            log.info("InternalPeriodicPullingProcessorRunnable.run()::running has changed to false " +
                                     "while eventQ was blocked to process new notifications");
-                            log.info("InternalRestconfEventProcessorRunnable.run()::" +
+                            log.info("InternalPeriodicPullingProcessorRunnable.run()::" +
                                     "the client is no longer interested to receive notifications.");
                             break;
                         }
@@ -798,29 +667,15 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
     @Override
     public void addNotificationListener(DeviceId deviceId,
                                         RestconfNotificationEventListener listener) {
-        Set<RestconfNotificationEventListener> listeners =
-                restconfNotificationListenerMap.get(deviceId);
-        if (listeners == null) {
-            listeners = new HashSet<>();
-        }
-
-        listeners.add(listener);
-
-        this.restconfNotificationListenerMap.put(deviceId, listeners);
     }
 
     @Override
     public void removeNotificationListener(DeviceId deviceId,
                                            RestconfNotificationEventListener listener) {
-        Set<RestconfNotificationEventListener> listeners =
-                restconfNotificationListenerMap.get(deviceId);
-        if (listeners != null) {
-            listeners.remove(listener);
-        }
     }
 
     public boolean isNotificationEnabled(DeviceId deviceId) {
-        return runnableTable.containsKey(deviceId);
+        return periodicRunnableTable.containsKey(deviceId);
     }
 
 }
