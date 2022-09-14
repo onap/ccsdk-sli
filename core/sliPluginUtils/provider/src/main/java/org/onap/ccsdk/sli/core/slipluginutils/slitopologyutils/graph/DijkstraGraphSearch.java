@@ -332,6 +332,7 @@ public class DijkstraGraphSearch<V extends Vertex, E extends Edge<V>> {
 
                 // If the vertex is reachable, relax all its egress edges.
                 for (E e : graph.getEdgesFrom(nearest)) {
+                    if (!e.isPermitted(src, dst)) continue;
                     result.relaxEdge(e, cost, weigher, true);
                 }
             }

@@ -56,10 +56,10 @@ public class SliTopologyUtilsTest {
         param.put("pnfs-pfx", "ccsdkTopopnfs");
         param.put("links-pfx", "ccsdkTopologicalLinks");
         param.put("response-pfx", "prefix");
-        param.put("output-end-to-end-path", "false");
+        param.put("output-end-to-end-path", "true");
 
-        param.put("src-node","networkId-providerId-30-clientId-0-topologyId-1-nodeId-10.3.1.1" );
-        param.put("dst-node", "networkId-providerId-50-clientId-0-topologyId-1-nodeId-10.5.1.4");
+        param.put("src-node","networkId-providerId-30-clientId-0-topologyId-1-nodeId-10.3.1.3" );
+        param.put("dst-node", "networkId-providerId-50-clientId-0-topologyId-1-nodeId-10.5.1.2");
 
         SliTopologyUtils.computePath(param, ctx);
         //SliPluginUtils.logContextMemory(ctx, LOG, SliPluginUtils.LogLevel.INFO);

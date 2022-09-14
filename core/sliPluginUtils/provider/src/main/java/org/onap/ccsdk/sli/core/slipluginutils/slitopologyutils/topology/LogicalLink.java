@@ -33,6 +33,15 @@ public class LogicalLink implements Edge<Pnf> {
     }
 
     @Override
+    public boolean isPermitted(Pnf src, Pnf dst) {
+        String curSrcName = src().toString();
+        String curDstName = dst().toString();
+        return link.isInnerDomain()
+                || !curSrcName.equals(src.toString()) && !curDstName.equals(dst.toString())
+                && !curSrcName.equals(dst.toString()) && !curDstName.equals(src.toString());
+    }
+
+    @Override
     public int hashCode() {
         return link.hashCode();
     }
