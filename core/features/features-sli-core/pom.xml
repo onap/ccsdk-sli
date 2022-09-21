@@ -11,7 +11,7 @@
 
     <groupId>org.onap.ccsdk.sli.core</groupId>
     <artifactId>features-sli-core</artifactId>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.5.2-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>ccsdk-sli-core :: features :: ${project.artifactId}</name>
