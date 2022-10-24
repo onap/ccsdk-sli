@@ -1,0 +1,5 @@
+---
+distribution_type: 'maven'
+version: '1.5.2'
+project: 'ccsdk-sli'
+log_dir: 'ccsdk-sli-maven-stage-kohn/1/'
