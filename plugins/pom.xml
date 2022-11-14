@@ -10,7 +10,7 @@
 
     <groupId>org.onap.ccsdk.sli.plugins</groupId>
     <artifactId>ccsdk-sli-plugins</artifactId>
-    <version>1.5.3-SNAPSHOT</version>
+    <version>1.5.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
