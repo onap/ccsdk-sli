@@ -5,6 +5,7 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 			reserved.
  * Modifications Copyright © 2018 IBM.
+ * Modifications Copyright © 2022 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -41,7 +43,7 @@ public class SdncUebConfiguration implements IConfiguration{
 	private static final Logger LOG = LoggerFactory
 			.getLogger(SdncUebConfiguration.class);
 
-	private String asdcAddress = null;
+	private String sdcAddress = null;
 	private String consumerGroup = null;
 	private String consumerID = null;
 	private String environmentName = null;
@@ -57,9 +59,8 @@ public class SdncUebConfiguration implements IConfiguration{
 	private String asdcApiBaseUrl = null;
 	private String asdcApiNamespace = null;
 	private String asdcUseHttps = null;
-	private List<String> msgBusAddress = null;
 
-	private SdncArtifactMap artifactMap = SdncArtifactMap.getInstance();
+	private final SdncArtifactMap artifactMap = SdncArtifactMap.getInstance();
 
 	private String incomingDir = null;
 
@@ -124,14 +125,13 @@ public class SdncUebConfiguration implements IConfiguration{
 		Properties props = new EnvProperties();
 		props.load(new FileInputStream(propFile));
 
-		asdcAddress = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.asdc-address");
+		sdcAddress = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.sdc-address");
 		consumerGroup = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.consumer-group");
 		consumerID = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.consumer-id");
 		environmentName = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.environment-name");
 		password = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.password");
 		user = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.user");
 		asdcUseHttps = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.use-https", "true");
-
 
 		sdncUser = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.sdnc-user");
 		sdncPasswd = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.sdnc-passwd");
@@ -168,18 +168,12 @@ public class SdncUebConfiguration implements IConfiguration{
 				LOG.warn("Illegal value for org.onap.ccsdk.sli.northbound.uebclient.polling-timeout ({}) ", curval, e);
 			}
 		}
+
 		curval = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.relevant-artifact-types");
 		if ((curval != null) && (curval.length() > 0)) {
 			String[] artifactTypes = curval.split(",");
-
 			relevantArtifactTypes = new LinkedList<>();
-
-			for (String artifactType : artifactTypes) {
-
-				relevantArtifactTypes.add(artifactType);
-
-			}
-
+			Collections.addAll(relevantArtifactTypes, artifactTypes);
 		}
 
 		curval = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.activate-server-tls-auth", "false");
@@ -188,7 +182,6 @@ public class SdncUebConfiguration implements IConfiguration{
 		keyStorePassword = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.keystore-password");
 		xsltPathList = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.xslt-path-list");
 
-
 		String artifactMapFile = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.artifact-map");
 		if (artifactMapFile != null) {
 			LOG.info("Loading artifactMapFile {}", artifactMapFile);
@@ -196,22 +189,11 @@ public class SdncUebConfiguration implements IConfiguration{
 		} else {
 			LOG.warn("artifact-map is unset");
 		}
-
-		msgBusAddress = new LinkedList<>();
-		String msgBusAddressStr = props.getProperty("org.onap.ccsdk.sli.northbound.uebclient.msg-bus-address");
-		if (msgBusAddressStr != null) {
-		    String[] msgBusAddressArray = msgBusAddressStr.split(",");
-		    for (int i = 0 ; i < msgBusAddressArray.length ; i++) {
-		        msgBusAddress.add(msgBusAddressArray[i]);
-		    }
-		}
-
-
 	}
 
 	@Override
-	public String getAsdcAddress() {
-		return asdcAddress;
+	public String getSdcAddress() {
+		return sdcAddress;
 	}
 
 	@Override
@@ -257,7 +239,6 @@ public class SdncUebConfiguration implements IConfiguration{
 	public String getUser() {
 		return user;
 	}
-
 
 	public String getSdncUser() {
 		return sdncUser;
@@ -308,19 +289,28 @@ public class SdncUebConfiguration implements IConfiguration{
 	}
 
 	@Override
-	public Boolean isUseHttpsWithDmaap() {
-		return false;
+	public String getHttpProxyHost() {
+		return null;
+	}
+
+	@Override
+	public int getHttpProxyPort() {
+		return 0;
+	}
+
+	@Override
+	public String getHttpsProxyHost() {
+		return null;
+	}
+
+	@Override
+	public int getHttpsProxyPort() {
+		return 0;
 	}
 
 	@Override
     public Boolean isUseHttpsWithSDC() {
         return Boolean.parseBoolean(asdcUseHttps);
     }
-
-    @Override
-    public List<String> getMsgBusAddress() {
-        return msgBusAddress;
-    }
-
 
 }
