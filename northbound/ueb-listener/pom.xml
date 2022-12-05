@@ -22,7 +22,6 @@
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss'Z'</maven.build.timestamp.format>
         <build.number>${maven.build.timestamp}</build.number>
         <SWM_VERSION>${project.version}-${build.number}</SWM_VERSION>
-        <sdc.client.version>1.4.1</sdc.client.version>
         <sdc.tosca.version>1.6.5</sdc.tosca.version>
     </properties>
 
@@ -42,7 +41,6 @@
         <dependency>
             <groupId>org.onap.sdc.sdc-distribution-client</groupId>
             <artifactId>sdc-distribution-client</artifactId>
-            <version>${sdc.client.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

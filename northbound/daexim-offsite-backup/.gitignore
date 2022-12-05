@@ -16,6 +16,7 @@ workspace
 target
 target-ide
 MANIFEST.MF
+fileToZip*
 
 ## Misc Ignores (OS specific etc) ##
 bin/
