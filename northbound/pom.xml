@@ -10,7 +10,7 @@
 
     <groupId>org.onap.ccsdk.sli.northbound</groupId>
     <artifactId>ccsdk-sli-northbound</artifactId>
-    <version>1.5.5-SNAPSHOT</version>
+    <version>1.5.5</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
