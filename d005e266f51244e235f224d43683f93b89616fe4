@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Herbert Eiselt <herbert.eiselt@highstreet-technologies.com>
+Code-Review+2: Kevin Smokowski <kevin.smokowski@att.com>
+Submitted-by: Dan Timoney <dtimoney@att.com>
+Submitted-at: Mon, 12 Dec 2022 15:03:04 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/ccsdk/sli/+/132652
+Project: ccsdk/sli
+Branch: refs/heads/kohn
