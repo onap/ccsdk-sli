@@ -31,7 +31,7 @@
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>iaas-adaptor-bundle</artifactId>
-    <version>1.5.5-SNAPSHOT</version>
+    <version>1.5.6-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-adaptors :: ${project.artifactId}</name>

@@ -10,7 +10,7 @@
 
     <groupId>org.onap.ccsdk.sli.plugins</groupId>
     <artifactId>restapi-call-node-provider</artifactId>
-    <version>1.5.5-SNAPSHOT</version>
+    <version>1.5.6-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-plugins :: ${project.artifactId}</name>
