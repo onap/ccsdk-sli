@@ -223,9 +223,9 @@ public class PeriodicDiscoveryNode implements RestConfSBController, SvcLogicDisc
     @Override
     public void establishSubscriptionOnly(Map<String, String> paramMap, SvcLogicContext ctx)
             throws SvcLogicException {
-        log.info("establishSubscriptionOnly::Necessary 80 sec. delay for the hardware to finish creating the resource");
+        log.info("establishSubscriptionOnly::Necessary 300 sec. delay for the hardware to finish creating the resource");
         try {
-            Thread.sleep(80000);
+            Thread.sleep(300000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -545,7 +545,8 @@ public class PeriodicDiscoveryNode implements RestConfSBController, SvcLogicDisc
             log.info("PeriodicPulDiscoveryNode::enableNotifications - scheduledExecutor was shutdown. Restarting it.");
             scheduledExecutor = Executors.newScheduledThreadPool(2);
         }
-        scheduledExecutor.scheduleAtFixedRate(periodicRunnable, 0, 90, TimeUnit.SECONDS);
+        //10 seconds delay for each round of pull for performance-monitoring data
+        scheduledExecutor.scheduleWithFixedDelay(periodicRunnable, 0, 10, TimeUnit.SECONDS);
     }
 
     public void stopNotifications(DeviceId device) {
