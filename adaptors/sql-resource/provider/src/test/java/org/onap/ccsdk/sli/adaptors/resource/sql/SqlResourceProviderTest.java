@@ -36,16 +36,7 @@ public class SqlResourceProviderTest {
 
     @Test
     public void testSqlResourceProvider() {
-        try{
-            Map<String, String> env = System.getenv();
-            Class<?> cl = env.getClass();
-            Field field = cl.getDeclaredField("m");
-            field.setAccessible(true);
-            Map<String, String> writableEnv = (Map<String, String>) field.get(env);
-            writableEnv.put(SDNC_CONFIG_DIR, "./src/test/resources");
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to set environment variable", e);
-        }
+
 
         provider = new SqlResourcePropertiesProviderImpl();
         assertNotNull(provider);
@@ -59,16 +50,6 @@ public class SqlResourceProviderTest {
 
     @Test
     public void testReportSuccess() {
-        try{
-            Map<String, String> env = System.getenv();
-            Class<?> cl = env.getClass();
-            Field field = cl.getDeclaredField("m");
-            field.setAccessible(true);
-            Map<String, String> writableEnv = (Map<String, String>) field.get(env);
-            writableEnv.put(SDNC_CONFIG_DIR, "./src/test/resources");
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to set environment variable", e);
-        }
 
         provider = new SqlResourcePropertiesProviderImpl();
         Properties properties = provider.getProperties();

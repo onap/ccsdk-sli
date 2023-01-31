@@ -1,13 +1,8 @@
 package jtest.org.onap.ccsdk.sli.plugins.prop;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import static org.junit.Assert.assertEquals;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -18,8 +13,7 @@ import org.slf4j.LoggerFactory;
 public class TestPropertiesNode {
 
     private static final Logger log = LoggerFactory.getLogger(TestPropertiesNode.class);
-    @Rule
-    public EnvironmentVariables environmentVariables = new EnvironmentVariables();
+
 
     @Test
     public void testJSONFileParsing() throws SvcLogicException {
@@ -134,7 +128,7 @@ public class TestPropertiesNode {
     @Test
     public void testTXTFileParsing() throws SvcLogicException {
 
-        environmentVariables.set("deployer_pass", "sdncp-123");
+
         assertEquals("sdncp-123", System.getenv("deployer_pass"));
 
         SvcLogicContext ctx = new SvcLogicContext();

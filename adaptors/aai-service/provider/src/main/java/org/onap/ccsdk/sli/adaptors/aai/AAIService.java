@@ -314,6 +314,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
         LOG.info("AAIResource.ctor initialized.");
 
+        /* Not permitted in Java 17
         try {
             Field methodsField = HttpURLConnection.class.getDeclaredField("methods");
             methodsField.setAccessible(true);
@@ -325,7 +326,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             // remove the "final" modifier
             modifiersField.setInt(methodsField, methodsField.getModifiers() & ~Modifier.FINAL);
 
-            /* valid HTTP methods */
+            // valid HTTP methods 
             String[] methods = {
                        "GET", "POST", "HEAD", "OPTIONS", "PUT", "DELETE", "TRACE", "PATCH"
             };
@@ -335,6 +336,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException e) {
             LOG.error("Exception occured", e);
         }
+        */
 
     }
 

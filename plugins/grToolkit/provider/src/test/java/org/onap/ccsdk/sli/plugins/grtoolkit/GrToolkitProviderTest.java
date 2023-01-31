@@ -46,7 +46,6 @@ import java.util.stream.Stream;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.onap.ccsdk.sli.core.dblib.DBLibConnection;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterActor;
@@ -81,13 +80,10 @@ public class GrToolkitProviderTest {
     Properties properties;
 
     @Rule
-    public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
-    @Rule
     public WireMockRule wireMockRule = new WireMockRule(9999);
 
     @Before
     public void setup() {
-        environmentVariables.set("SDNC_CONFIG_DIR","src/test/resources");
         dataBroker = mock(DataBroker.class);
         notificationProviderService = mock(NotificationPublishService.class);
         rpcProviderRegistry = mock(RpcProviderService.class);
