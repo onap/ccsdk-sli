@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
+import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -173,6 +174,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             }
         }
 
+        /** This does not work in Java 17 
         try {
             Field methodsField = HttpURLConnection.class.getDeclaredField("methods");
             methodsField.setAccessible(true);
@@ -184,7 +186,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             // remove the "final" modifier
             modifiersField.setInt(methodsField, methodsField.getModifiers() & ~Modifier.FINAL);
 
-            /* valid HTTP methods */
+            // valid HTTP methods
             String[] methods = {
                        "GET", "POST", "HEAD", "OPTIONS", "PUT", "DELETE", "TRACE", "PATCH"
             };
@@ -194,6 +196,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
         } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException e) {
             LOG.warn("Adding PATCH method", e);
         }
+        **/
         LOG.info("AAIResource.ctor initialized.");
 
     }
