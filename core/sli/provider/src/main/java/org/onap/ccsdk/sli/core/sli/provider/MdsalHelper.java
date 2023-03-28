@@ -488,7 +488,7 @@ public class MdsalHelper {
                     String curValue = props.getProperty(curBase, "");
 
                     if ((curValue != null) && (curValue.length() > 0)) {
-                        toObj.add(IpAddressBuilder.getDefaultInstance(curValue));
+                        toObj.add(IetfInetUtil.ipAddressFor(curValue));
                         foundValue = true;
                     }
                 } else if (isIpv4Address(elemType)) {
@@ -511,7 +511,7 @@ public class MdsalHelper {
                     String curValue = props.getProperty(curBase, "");
 
                     if ((curValue != null) && (curValue.length() > 0)) {
-                        toObj.add(IpPrefixBuilder.getDefaultInstance(curValue));
+                        toObj.add(IetfInetUtil.ipPrefixFor(curValue));
                         foundValue = true;
                     }
                 } else if (isPortNumber(elemType)) {
@@ -719,7 +719,7 @@ public class MdsalHelper {
                     String curValue = props.getProperty(curBase, "");
 
                     if ((curValue != null) && (curValue.length() > 0)) {
-                        toObj.add(IpAddressBuilder.getDefaultInstance(curValue));
+                        toObj.add(IetfInetUtil.ipAddressFor(curValue));
                         foundValue = true;
                     }
                 } else if (isIpv4Address(elemType)) {
@@ -742,7 +742,7 @@ public class MdsalHelper {
                     String curValue = props.getProperty(curBase, "");
 
                     if ((curValue != null) && (curValue.length() > 0)) {
-                        toObj.add(IpPrefixBuilder.getDefaultInstance(curValue));
+                        toObj.add(IetfInetUtil.ipPrefixFor(curValue));
                         foundValue = true;
                     }
                 } else if (isPortNumber(elemType)) {
@@ -916,7 +916,7 @@ public class MdsalHelper {
 
                                 if ((paramValue != null) && (paramValue.length() > 0)) {
                                     try {
-                                        IpAddress ipAddr = IpAddressBuilder.getDefaultInstance(paramValue);
+                                        IpAddress ipAddr = IetfInetUtil.ipAddressFor(paramValue);
 
                                         if (IPV4_ADDRESS.equals(simpleName)) {
                                             m.invoke(toObj, ipAddr.getIpv4Address());
@@ -953,7 +953,7 @@ public class MdsalHelper {
                             } else if (IP_PREFIX.equals(simpleName)) {
                                 if ((paramValue != null) && (paramValue.length() > 0)) {
                                     try {
-                                        IpPrefix ipPrefix = IpPrefixBuilder.getDefaultInstance(paramValue);
+                                        IpPrefix ipPrefix = IetfInetUtil.ipPrefixFor(paramValue);
                                         m.invoke(toObj, ipPrefix);
                                         foundValue = true;
                                     } catch (Exception e) {
@@ -998,7 +998,7 @@ public class MdsalHelper {
                             } else if ("Host".equals(simpleName)) {
                                 if ((paramValue != null) && (paramValue.length() > 0)) {
                                     try {
-                                        Host host = HostBuilder.getDefaultInstance(paramValue);
+                                        Host host = IetfInetUtil.hostFor(paramValue);
                                         m.invoke(toObj, host);
                                         foundValue = true;
                                     } catch (Exception e) {

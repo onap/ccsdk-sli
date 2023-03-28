@@ -29,6 +29,7 @@ import java.util.*;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput.Mode;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterKey;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.testmodel.rev190723.Builtin.SampleBits;
@@ -47,12 +48,8 @@ import org.opendaylight.yang.gen.v1.test.WrapperObj;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.AsNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.DomainName;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Dscp;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.HostBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressNoZoneBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpVersion;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4AddressNoZone;
@@ -112,18 +109,18 @@ public class MdsalHelperTest extends TestCase {
 
     parmBuilder.setParameterName("ipaddress4-parm");
     parmBuilder.setStringValue(null);
-    parmBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("127.0.0.1"));
+    parmBuilder.setIpaddressValue(IetfInetUtil.ipAddressFor("127.0.0.1"));
     newParm = parmBuilder.build();
     params.put(newParm.key(), newParm);
 
     parmBuilder.setParameterName("ipaddress6-parm");
-    parmBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("ef::1"));
+    parmBuilder.setIpaddressValue(IetfInetUtil.ipAddressFor("ef::1"));
     newParm = parmBuilder.build();
     params.put(newParm.key(), newParm);
 
     parmBuilder.setParameterName("ipprefix-parm");
     parmBuilder.setIpaddressValue(null);
-    parmBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("10.0.0.0/24"));
+    parmBuilder.setIpprefixValue(IetfInetUtil.ipPrefixFor("10.0.0.0/24"));
     newParm = parmBuilder.build();
     params.put(newParm.key(), newParm);
 
@@ -217,10 +214,10 @@ public class MdsalHelperTest extends TestCase {
   public void testSingleIpAddressToProperties() throws Exception {
     Properties props = new Properties();
     String ipAddress = "11.11.11.11";
-    MdsalHelper.toProperties(props, IpAddressBuilder.getDefaultInstance(ipAddress));
+    MdsalHelper.toProperties(props, IetfInetUtil.ipAddressFor(ipAddress));
     assertEquals(ipAddress, props.getProperty(""));
     ipAddress = "cafe::8888";
-    MdsalHelper.toProperties(props, IpAddressBuilder.getDefaultInstance(ipAddress));
+    MdsalHelper.toProperties(props, IetfInetUtil.ipAddressFor(ipAddress));
     assertEquals(ipAddress, props.getProperty(""));
   }
 
@@ -245,7 +242,7 @@ public class MdsalHelperTest extends TestCase {
     String ipAddress = "11.11.11.11";
     TestObjectBuilder b = new TestObjectBuilder();
     List<IpAddress> ipAddressList = new ArrayList<IpAddress>();
-    ipAddressList.add(IpAddressBuilder.getDefaultInstance(ipAddress));
+    ipAddressList.add(IetfInetUtil.ipAddressFor(ipAddress));
     b.setFloatingIp(ipAddressList);
     MdsalHelper.toProperties(props, b.build());
     assertEquals(ipAddress, props.getProperty("test-object.floating-ip[0]"));
@@ -273,7 +270,7 @@ public class MdsalHelperTest extends TestCase {
   public void testSingleIpv4AddressToProperties() throws Exception {
     Properties props = new Properties();
     String v4address = "11.11.11.11";
-    MdsalHelper.toProperties(props, IpAddressBuilder.getDefaultInstance(v4address).getIpv4Address());
+    MdsalHelper.toProperties(props, IetfInetUtil.ipAddressFor(v4address).getIpv4Address());
     assertEquals(v4address, props.getProperty(""));
   }
 
@@ -292,7 +289,7 @@ public class MdsalHelperTest extends TestCase {
 
     TestObjectBuilder b = new TestObjectBuilder();
     List<Ipv4Address> v4list = new ArrayList<Ipv4Address>();
-    v4list.add(IpAddressBuilder.getDefaultInstance(v4address).getIpv4Address());
+    v4list.add(IetfInetUtil.ipAddressFor(v4address).getIpv4Address());
     b.setFloatingIpV4(v4list);
     MdsalHelper.toProperties(props, b.build());
     assertEquals(v4address, props.getProperty("test-object.floating-ip-v4[0]"));
@@ -312,8 +309,8 @@ public class MdsalHelperTest extends TestCase {
   public void testSingleIpv6AddressToProperties() throws Exception {
     Properties props = new Properties();
     String v6address = "cafe::8888";
-    MdsalHelper.toProperties(props, IpAddressBuilder.getDefaultInstance(v6address).getIpv6Address());
-    MdsalHelper.toBuilder(props, IpAddressBuilder.getDefaultInstance("cafe::8887"));
+    MdsalHelper.toProperties(props, IetfInetUtil.ipAddressFor(v6address).getIpv6Address());
+    MdsalHelper.toBuilder(props, IetfInetUtil.ipAddressFor("cafe::8887"));
     assertEquals(v6address, props.getProperty(""));
   }
 
@@ -332,7 +329,7 @@ public class MdsalHelperTest extends TestCase {
 
     TestObjectBuilder b = new TestObjectBuilder();
     List<Ipv6Address> v6list = new ArrayList<Ipv6Address>();
-    v6list.add(IpAddressBuilder.getDefaultInstance(v6address).getIpv6Address());
+    v6list.add(IetfInetUtil.ipAddressFor(v6address).getIpv6Address());
     b.setFloatingIpV6(v6list);
     MdsalHelper.toProperties(props, b.build());
     assertEquals(v6address, props.getProperty("test-object.floating-ip-v6[0]"));
@@ -396,7 +393,7 @@ public class MdsalHelperTest extends TestCase {
   public void testIpPrefix() throws Exception {
     String ipPrefix = "10.0.0.0/24";
     Properties props = new Properties();
-    MdsalHelper.toProperties(props, IpPrefixBuilder.getDefaultInstance(ipPrefix));
+    MdsalHelper.toProperties(props, IetfInetUtil.ipPrefixFor(ipPrefix));
     assertEquals(ipPrefix, props.getProperty(""));
   }
 
@@ -417,7 +414,7 @@ public class MdsalHelperTest extends TestCase {
   public void testIetfInet() throws Exception {
     Properties props = new Properties();
     Inet6Address address =
-        IetfInetUtil.INSTANCE.inet6AddressFor(IpAddressBuilder.getDefaultInstance("cafe::8888").getIpv6Address());
+        IetfInetUtil.INSTANCE.inet6AddressFor(IetfInetUtil.ipAddressFor("cafe::8888").getIpv6Address());
     MdsalHelper.toProperties(props, address);
     assertEquals("/cafe:0:0:0:0:0:0:8888", props.getProperty(""));
   }
@@ -711,14 +708,14 @@ public class MdsalHelperTest extends TestCase {
     sampleBuilder.setIpv6FlowLabel(Ipv6FlowLabel.getDefaultInstance("3"));
     sampleBuilder.setAsNumber(AsNumber.getDefaultInstance("4"));
     sampleBuilder.setIpv6Address(Ipv6Address.getDefaultInstance("fdda:5cc1:23:4::1f"));
-    sampleBuilder.setIpAddressNoZone(IpAddressNoZoneBuilder.getDefaultInstance("fdda:5cc1:23:4::1f"));
+    sampleBuilder.setIpAddressNoZone(IetfInetUtil.ipAddressNoZoneFor("fdda:5cc1:23:4::1f"));
     sampleBuilder.setIpv4Address(Ipv4Address.getDefaultInstance("192.168.1.2"));
     sampleBuilder.setIpv4AddressNoZone(Ipv4AddressNoZone.getDefaultInstance("192.168.1.3"));
     sampleBuilder.setIpv6AddressNoZone(Ipv6AddressNoZone.getDefaultInstance("fdda:5cc1:23:4::1f"));
     sampleBuilder.setIpv4Prefix(Ipv4Prefix.getDefaultInstance("198.51.100.0/24"));
     sampleBuilder.setIpv6Prefix(Ipv6Prefix.getDefaultInstance("2001:db8:aaaa:1111::100/64"));
     sampleBuilder.setDomainName(DomainName.getDefaultInstance("onap.org"));
-    sampleBuilder.setHost(HostBuilder.getDefaultInstance("machine.onap.org"));
+    sampleBuilder.setHost(IetfInetUtil.hostFor("machine.onap.org"));
     sampleBuilder.setUri(Uri.getDefaultInstance("http://wiki.onap.org:8080"));
 
     Properties props = new Properties();
@@ -792,7 +789,7 @@ public class MdsalHelperTest extends TestCase {
     assertEquals(AsNumber.getDefaultInstance("4"), result.getAsNumber());
     assertEquals(DomainName.getDefaultInstance("onap.org"), result.getDomainName());
     assertEquals(Dscp.getDefaultInstance("1"), result.getDscp());
-    // assertEquals(HostBuilder.getDefaultInstance("machine.onap.org").getDomainName(),
+    // assertEquals(IetfInetUtil.hostFor("machine.onap.org").getDomainName(),
     // result.getHost().getDomainName());
     assertEquals(Ipv6AddressNoZone.getDefaultInstance("fdda:5cc1:23:4::1f").getValue(),
         result.getIpv6AddressNoZone().getValue());
@@ -801,7 +798,7 @@ public class MdsalHelperTest extends TestCase {
     assertEquals(Ipv4AddressNoZone.getDefaultInstance("192.168.1.3"), result.getIpv4AddressNoZone());
     assertEquals(Ipv4Prefix.getDefaultInstance("198.51.100.0/24"), result.getIpv4Prefix());
     assertEquals(Ipv6Address.getDefaultInstance("fdda:5cc1:23:4::1f"), result.getIpv6Address());
-    assertEquals(IpAddressNoZoneBuilder.getDefaultInstance("fdda:5cc1:23:4::1f").getIpv6AddressNoZone().getValue(),
+    assertEquals(IetfInetUtil.ipAddressNoZoneFor("fdda:5cc1:23:4::1f").getIpv6AddressNoZone().getValue(),
         result.getIpv6AddressNoZone().getValue());
     assertEquals(Ipv6FlowLabel.getDefaultInstance("3"), result.getIpv6FlowLabel());
     assertEquals(Ipv6Prefix.getDefaultInstance("2001:db8:aaaa:1111::100/64"), result.getIpv6Prefix());
