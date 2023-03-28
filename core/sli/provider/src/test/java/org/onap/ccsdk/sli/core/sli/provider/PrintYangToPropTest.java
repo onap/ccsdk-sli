@@ -41,8 +41,9 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.exe
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.test.results.TestResult;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.test.results.TestResultBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.test.results.TestResultKey;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
+
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ieee754.rev130819.Ieee754Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,17 +81,17 @@ public class PrintYangToPropTest {
         pMap.put(new SliParameterKey(pBuilder.getParameterName()), pBuilder.build());
         pBuilder.setParameterName("ipaddress-value1");
         pBuilder.setBooleanValue(null);
-        pBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("127.0.0.1"));
+        pBuilder.setIpaddressValue(IetfInetUtil.ipAddressFor("127.0.0.1"));
         pMap.put(new SliParameterKey(pBuilder.getParameterName()), pBuilder.build());
         pBuilder.setParameterName("ipaddress-value2");
-        pBuilder.setIpaddressValue(IpAddressBuilder.getDefaultInstance("::1"));
+        pBuilder.setIpaddressValue(IetfInetUtil.ipAddressFor("::1"));
         pMap.put(new SliParameterKey(pBuilder.getParameterName()), pBuilder.build());
         pBuilder.setParameterName("ipprefix-value1");
         pBuilder.setIpaddressValue(null);
-        pBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("192.168.0.0/16"));
+        pBuilder.setIpprefixValue(IetfInetUtil.ipPrefixFor("192.168.0.0/16"));
         pMap.put(new SliParameterKey(pBuilder.getParameterName()), pBuilder.build());
         pBuilder.setParameterName("ipprefix-value2");
-        pBuilder.setIpprefixValue(IpPrefixBuilder.getDefaultInstance("2001:db8:3c4d::/48"));
+        pBuilder.setIpprefixValue(IetfInetUtil.ipPrefixFor("2001:db8:3c4d::/48"));
         pMap.put(new SliParameterKey(pBuilder.getParameterName()), pBuilder.build());
 
 
