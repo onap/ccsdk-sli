@@ -10,7 +10,7 @@
 
     <groupId>org.onap.ccsdk.sli.core</groupId>
     <artifactId>sliapi-model-swagger</artifactId>
-    <version>1.6.2-SNAPSHOT</version>
+    <version>1.6.2</version>
     <packaging>jar</packaging>
 
     <name>ccsdk-sli-core :: sliapi :: ${project.artifactId}</name>

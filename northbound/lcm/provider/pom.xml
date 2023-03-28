@@ -11,7 +11,7 @@
 
     <groupId>org.onap.ccsdk.sli.northbound</groupId>
     <artifactId>lcm-provider</artifactId>
-    <version>1.6.2-SNAPSHOT</version>
+    <version>1.6.2</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-northbound :: ${project.artifactId}</name>
