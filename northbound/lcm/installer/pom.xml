@@ -11,7 +11,7 @@
 
     <groupId>org.onap.ccsdk.sli.northbound</groupId>
     <artifactId>lcm-installer</artifactId>
-    <version>1.6.3-SNAPSHOT</version>
+    <version>1.6.3</version>
     <packaging>pom</packaging>
 
     <name>ccsdk-sli-northbound :: ${project.artifactId}</name>

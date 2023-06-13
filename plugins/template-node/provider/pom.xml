@@ -10,7 +10,7 @@
 
     <groupId>org.onap.ccsdk.sli.plugins</groupId>
     <artifactId>template-node-provider</artifactId>
-    <version>1.6.3-SNAPSHOT</version>
+    <version>1.6.3</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-plugins :: ${project.artifactId}</name>
