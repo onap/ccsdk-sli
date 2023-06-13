@@ -59,3 +59,4 @@ logs/
 debug-logs/
 *.log
 *.versionsBackup
+dme2-fs-registry/
