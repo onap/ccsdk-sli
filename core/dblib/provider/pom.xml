@@ -16,6 +16,21 @@
 
     <name>ccsdk-sli-core :: ${project.artifactId}</name>
 
+    <!-- Tests require MariaDB4j , which does not currently support ARM64 -->
+    <profiles>
+        <profile>
+            <id>disable-test-on-ARM64</id>
+            <activation>
+                <os>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

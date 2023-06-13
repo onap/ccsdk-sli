@@ -805,7 +805,12 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
         con.setUseCaches(false);
         con.setConnectTimeout(connection_timeout);
         con.setReadTimeout(read_timeout);
-        con.setRequestMethod(method);
+        if ("PATCH".equalsIgnoreCase(method)) {
+            con.setRequestMethod("POST");
+            con.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+        } else {
+            con.setRequestMethod(method);
+        }
         con.setRequestProperty("Accept", "application/json");
         con.setRequestProperty("Transfer-Encoding","chunked");
         con.setRequestProperty("Content-Type",
