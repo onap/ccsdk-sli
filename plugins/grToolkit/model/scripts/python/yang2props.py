@@ -39,7 +39,7 @@ val = ""
 li = []
 
 if len(sys.argv) < 3:
-     print 'yang2props.py <input yang> <output properties>'
+     print('yang2props.py <input yang> <output properties>')
      sys.exit(2)
 
 with open(sys.argv[1], "r") as ins:
