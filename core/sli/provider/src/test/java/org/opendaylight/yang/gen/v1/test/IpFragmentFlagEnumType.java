@@ -7,9 +7,9 @@ import java.lang.String;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.opendaylight.yangtools.yang.binding.Enumeration;
+// import org.opendaylight.yangtools.yang.binding.Enumeration;
 
-public enum IpFragmentFlagEnumType implements Enumeration {
+public enum IpFragmentFlagEnumType {
     DF(0, "DF"),
     
     ISF(1, "ISF"),
@@ -41,13 +41,10 @@ public enum IpFragmentFlagEnumType implements Enumeration {
         this.value = value;
         this.name = name;
     }
-
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public int getIntValue() {
         return value;
     }

@@ -353,7 +353,7 @@ public final class YangUtils {
             return child;
         }
         if (node instanceof ChoiceSchemaNode) {
-            return ((ChoiceSchemaNode) node).findCase(qname).orElse(null);
+            return ((ChoiceSchemaNode) node).findCaseNode(qname).orElse(null);
         }
         if (node instanceof OperationDefinition) {
             switch (qname.getLocalName()) {
