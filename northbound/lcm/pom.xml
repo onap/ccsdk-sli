@@ -11,7 +11,7 @@
 
     <groupId>org.onap.ccsdk.sli.northbound</groupId>
     <artifactId>lcm</artifactId>
-    <version>1.7.1-SNAPSHOT</version>
+    <version>1.7.1</version>
     <packaging>pom</packaging>
 
     <name>ccsdk-sli-northbound :: ${project.artifactId}</name>
