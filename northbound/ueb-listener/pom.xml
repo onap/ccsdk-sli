@@ -10,7 +10,7 @@
 
     <groupId>org.onap.ccsdk.sli.northbound</groupId>
     <artifactId>ueb-listener</artifactId>
-    <version>1.5.6-SNAPSHOT</version>
+    <version>1.5.6</version>
     <packaging>jar</packaging>
 
     <name>ccsdk-sli-northbound :: ${project.artifactId}</name>
