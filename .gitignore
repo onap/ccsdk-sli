@@ -54,6 +54,8 @@ derby.log
 
 # Generated file
 core/sliPluginUtils/provider/testFileName
+northbound/daexim-offsite-backup/provider/fileToZip1
+northbound/daexim-offsite-backup/provider/fileToZip2
 direct-dependencies.txt
 logs/
 debug-logs/

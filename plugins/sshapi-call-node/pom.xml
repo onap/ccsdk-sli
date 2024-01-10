@@ -10,7 +10,7 @@
 
     <groupId>org.onap.ccsdk.sli.plugins</groupId>
     <artifactId>sshapi-call-node</artifactId>
-    <version>1.5.6-SNAPSHOT</version>
+    <version>1.5.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>ccsdk-sli-plugins :: ${project.artifactId}</name>
