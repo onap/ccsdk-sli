@@ -122,8 +122,8 @@ public class RangeUtil {
             rai.resourceKey.assetId = req.assetId;
             rai.resourceKey.resourceName = req.resourceName;
             rai.applicationId = req.applicationId;
-            rai.resourceSetId = req.resourceSetId;
-            rai.resourceUnionId = req.resourceUnionId;
+            rai.resourceSetId = req.resourceSetId = replaceNumber(req.resourceSetId, requestedNumbers);
+            rai.resourceUnionId = req.resourceUnionId = replaceNumber(req.resourceUnionId, requestedNumbers);
             rai.resourceShareGroupList = req.resourceShareGroupList;
             rai.used = requestedNumbers;
 
@@ -140,6 +140,13 @@ public class RangeUtil {
         rai.allocationTime = new Date();
 
         recalculate(rr);
+    }
+
+    private static String replaceNumber(String s, SortedSet<Integer> numbers) {
+        if (s == null || numbers == null || numbers.isEmpty()) {
+            return s;
+        }
+        return s.replaceAll("\\$\\{n\\}", numbers.first().toString());
     }
 
     private static boolean eq(Object o1, Object o2) {
