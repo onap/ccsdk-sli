@@ -1,0 +1,8 @@
+Verified+1: ONAP Required GHA <releng+onap.required.gha@linuxfoundation.org>
+Code-Review+2: KAPIL SINGAL <ks220y@att.com>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Submitted-by: KAPIL SINGAL <ks220y@att.com>
+Submitted-at: Thu, 11 Jan 2024 04:11:30 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/ccsdk/sli/+/136691
+Project: ccsdk/sli
+Branch: refs/heads/montreal
