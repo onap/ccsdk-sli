@@ -11,7 +11,7 @@
 
     <groupId>org.onap.ccsdk.sli.plugins</groupId>
     <artifactId>sliplugins-features-installer</artifactId>
-    <version>1.7.3-SNAPSHOT</version>
+    <version>1.7.3</version>
     <packaging>pom</packaging>
 
     <name>ccsdk-sli-plugins :: features :: ${project.artifactId}</name>
