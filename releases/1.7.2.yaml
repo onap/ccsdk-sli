@@ -2,4 +2,4 @@
 distribution_type: 'maven'
 version: '1.7.2'
 project: 'ccsdk-sli'
-log_dir: 'ccsdk-sli-maven-stage-montreal/1/'
+log_dir: 'ccsdk-sli-maven-stage-montreal/2/'
