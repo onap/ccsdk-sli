@@ -200,7 +200,7 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
 
             Artifact artifact = aBuilder.build();
 
-            InstanceIdentifier.InstanceIdentifierBuilder<Artifact> aIdBuilder = InstanceIdentifier
+            InstanceIdentifier.Builder<Artifact> aIdBuilder = InstanceIdentifier
                     .<Artifacts> builder(Artifacts.class)
                     .child(Artifact.class, artifact.key());
 
@@ -235,7 +235,7 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
 
         VfLicenseModelVersion version = vBuilder.build();
 
-        InstanceIdentifier.InstanceIdentifierBuilder<VfLicenseModelVersion> versionIdBuilder = InstanceIdentifier
+        InstanceIdentifier.Builder<VfLicenseModelVersion> versionIdBuilder = InstanceIdentifier
                 .<VfLicenseModelVersions> builder(VfLicenseModelVersions.class)
                 .child(VfLicenseModelVersion.class, version.key());
 
@@ -261,7 +261,7 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
         vBuilder.setVfLicenseModel(vfLicenseModel);
 
         VfLicenseModelVersion version = vBuilder.build();
-        InstanceIdentifier.InstanceIdentifierBuilder<VfLicenseModelVersion> versionIdBuilder = InstanceIdentifier
+        InstanceIdentifier.Builder<VfLicenseModelVersion> versionIdBuilder = InstanceIdentifier
                 .<VfLicenseModelVersions> builder(VfLicenseModelVersions.class)
                 .child(VfLicenseModelVersion.class, version.key());
 
