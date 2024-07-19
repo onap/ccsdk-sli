@@ -46,6 +46,7 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
     private String dbUser = null;
     private String dbPasswd = null;
     private String dbDriver = null;
+    private String blobType = "LONGBLOB";
 
     private Connection dbConn;
     private PreparedStatement hasActiveGraphStmt = null;
@@ -71,6 +72,7 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
                 LOG.debug("Driver com.mysql.jdbc.Driver accepts {}", dbUrl);
             } else {
                 LOG.warn("Driver com.mysql.jdbc.Driver does not accept {}", dbUrl);
+                this.blobType = "BLOB";
             }
         } catch (SQLException e1) {
             LOG.error("Caught exception trying to load com.mysql.jdbc.Driver", e1);
@@ -105,7 +107,7 @@ public class SvcLogicJdbcStore implements SvcLogicStore {
             } else {
                 String crTableCmd = "CREATE TABLE " + dbName + ".SVC_LOGIC (" + "module varchar(80) NOT NULL,"
                         + "rpc varchar(80) NOT NULL," + "version varchar(40) NOT NULL," + "mode varchar(5) NOT NULL,"
-                        + "active varchar(1) NOT NULL,graph BLOB,"
+                        + "active varchar(1) NOT NULL,graph "+blobType + ","
                         + "modified_timestamp timestamp ,"
                         + "md5sum varchar(128) DEFAULT NULL,"
                         + "CONSTRAINT P_SVC_LOGIC PRIMARY KEY(module, rpc, version, mode))";
