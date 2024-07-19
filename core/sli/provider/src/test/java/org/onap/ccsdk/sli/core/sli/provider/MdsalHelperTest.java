@@ -414,7 +414,7 @@ public class MdsalHelperTest extends TestCase {
   public void testIetfInet() throws Exception {
     Properties props = new Properties();
     Inet6Address address =
-        IetfInetUtil.INSTANCE.inet6AddressFor(IetfInetUtil.ipAddressFor("cafe::8888").getIpv6Address());
+        IetfInetUtil.inet6AddressFor(IetfInetUtil.ipAddressFor("cafe::8888").getIpv6Address());
     MdsalHelper.toProperties(props, address);
     assertEquals("/cafe:0:0:0:0:0:0:8888", props.getProperty(""));
   }

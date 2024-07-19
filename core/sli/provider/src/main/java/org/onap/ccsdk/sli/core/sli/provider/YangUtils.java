@@ -17,7 +17,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.model.api.ActionNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationTarget;
@@ -291,19 +290,7 @@ public final class YangUtils {
         return realChildNodes;
     }
 
-    public static boolean belongsToCaseAugment(final CaseSchemaNode caseNode,
-                                               final AugmentationIdentifier childToProcess) {
-        for (final AugmentationSchemaNode augmentationSchema : caseNode.getAvailableAugmentations()) {
-            final Set<QName> currentAugmentChildNodes = new HashSet<>();
-            for (final DataSchemaNode dataSchemaNode : augmentationSchema.getChildNodes()) {
-                currentAugmentChildNodes.add(dataSchemaNode.getQName());
-            }
-            if (childToProcess.getPossibleChildNames().equals(currentAugmentChildNodes)) {
-                return true;
-            }
-        }
-        return false;
-    }
+
     /**
      * Tries to find in {@code parent} which is dealed as augmentation target node with QName as {@code child}. If such
      * node is found then it is returned, else null.
