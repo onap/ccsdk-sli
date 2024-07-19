@@ -102,7 +102,7 @@
         <dependency>
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>restconf-nb</artifactId>
-            <version>5.0.6</version>
+            <version>6.0.6</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.xml</groupId>

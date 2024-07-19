@@ -30,6 +30,16 @@
             <version>${project.version}</version>
         </dependency>
         <!-- End this is where the yang comes from -->
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc6991-ietf-inet-types</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc6991-ietf-yang-types</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <repositories>

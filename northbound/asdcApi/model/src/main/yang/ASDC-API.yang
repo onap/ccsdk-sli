@@ -13,7 +13,6 @@ module ASDC-API {
 
     import ietf-inet-types {
         prefix inet;
-        revision-date "2013-07-15";
         }
 
     organization

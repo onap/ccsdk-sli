@@ -35,9 +35,10 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev200120.RdAs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev200120.RdIpv4;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev200120.RdTwoOctetAs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev200120.RouteDistinguisher;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.types.rev200120.RouteDistinguisherBuilder;
-import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.ScalarTypeObject;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.common.Uint16;
@@ -844,9 +845,6 @@ public class MdsalHelper {
                 }
             }
 
-            if (toObj instanceof Identifier) {
-                return (toObj);
-            }
 
             // Iterate through getter methods to figure out values we need to
             // set
@@ -986,7 +984,15 @@ public class MdsalHelper {
                             } else if ("RouteDistinguisher".equals(simpleName)) {
                                 if ((paramValue != null) && (paramValue.length() > 0)) {
                                     try {
-                                        RouteDistinguisher routeDistinguisher = RouteDistinguisherBuilder.getDefaultInstance(paramValue);
+                                        RouteDistinguisher routeDistinguisher = null;
+                                        if (paramValue.startsWith("0:")) {
+                                            routeDistinguisher = new RouteDistinguisher(new RdTwoOctetAs(paramValue));
+                                        } else if (paramValue.indexOf(".") > -1) {
+                                            routeDistinguisher = new RouteDistinguisher(new RdIpv4(paramValue));
+                                        } else {
+                                            routeDistinguisher = new RouteDistinguisher(new RdAs(paramValue));
+                                        }
+
                                         m.invoke(toObj, routeDistinguisher);
                                         foundValue = true;
                                     } catch (Exception e) {
@@ -1464,7 +1470,7 @@ public class MdsalHelper {
     public static void printPropertyList(PrintStream pstr, String pfx, Class toClass) {
         boolean foundValue = false;
 
-        if (isYangGenerated(toClass) && (!Identifier.class.isAssignableFrom(toClass))) {
+        if (isYangGenerated(toClass)) {
             // Class is yang generated.
             String propNamePfx = null;
             if (pfx.endsWith("]")) {
@@ -1738,13 +1744,7 @@ public class MdsalHelper {
 
         if (Modifier.isPublic(m.getModifiers()) && (m.getParameterTypes().length == 1)) {
             if (m.getName().matches("^set[A-Z].*")) {
-                Class[] paramTypes = m.getParameterTypes();
-                if (paramTypes[0].isAssignableFrom(Identifier.class)
-                        || Identifier.class.isAssignableFrom(paramTypes[0])) {
-                    return (false);
-                } else {
-                    return (true);
-                }
+                return(true);
             }
 
         }
