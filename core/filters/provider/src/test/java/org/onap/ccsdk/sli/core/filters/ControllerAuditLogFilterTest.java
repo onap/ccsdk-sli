@@ -8,7 +8,7 @@ public class ControllerAuditLogFilterTest {
     @Test
     public void getSimpleSiid() throws Exception {
         ControllerAuditLogFilter filter = new ControllerAuditLogFilter();
-        String siid = filter.getServiceInstanceId("/restconf/config/Layer3API:services/service-list/100");
+        String siid = filter.getServiceInstanceId("/rests/data/Layer3API:services/service-list=100?content=config");
         assertEquals("100", siid);
     }
 
@@ -16,7 +16,7 @@ public class ControllerAuditLogFilterTest {
     public void getSimpleComplexSiid() throws Exception {
         ControllerAuditLogFilter filter = new ControllerAuditLogFilter();
         String siid = filter.getServiceInstanceId(
-                "/restconf/config/Layer3API:services/service-list/1337/service-data/oper-status");
+                "/rests/data/Layer3API:services/service-list=1337/service-data/oper-status?content=config");
         assertEquals("1337", siid);
     }
 

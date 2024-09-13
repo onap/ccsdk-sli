@@ -37,6 +37,7 @@ public class ConfigResource implements SvcLogicResource {
     private static final Logger LOG = LoggerFactory.getLogger(ConfigResource.class);
 
     private RestService restService;
+    private String useRfc8040 = "true"; 
 
     public ConfigResource(MdsalResourcePropertiesProvider propProvider) {
         LOG.info("Loading ConfigResource using property provider");
@@ -47,6 +48,7 @@ public class ConfigResource implements SvcLogicResource {
         String sdncHost = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-host", "localhost");
         String sdncProtocol = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-protocol", "https");
         String sdncPort = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-port", "8443");
+        useRfc8040 = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.use-rfc8040", "true");
 
         restService = new RestService(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd, "XML", "XML");
     }
@@ -77,15 +79,33 @@ public class ConfigResource implements SvcLogicResource {
                              String orderBy, SvcLogicContext ctx) throws SvcLogicException {
         String module = resource;
         StringBuffer restQuery = new StringBuffer();
+        String queryPrefix;
+        String querySuffix;
+        String keySeparator;
+
+
+        if (this.useRfc8040.equals("true")) {
+            queryPrefix = "rests/data/";
+            querySuffix = "?content=config";
+            keySeparator = "=";
+        } else {
+            queryPrefix = "restconf/config";
+            querySuffix = "";
+            keySeparator = "/";
+        }
 
         String[] keyParts = key.split("/");
         for (String keyPart : keyParts) {
-            if (restQuery.length() > 0) {
-                restQuery.append("/");
-            }
+
             if (keyPart.startsWith("$")) {
+                // This is a variable, so the previous item must have been a list.  Add an equals
+                // sign instead of a /
+                restQuery.append(keySeparator);
                 restQuery.append(ctx.resolve(keyPart.substring(1)));
             } else {
+                if (restQuery.length() > 0) {
+                    restQuery.append("/");
+                }
                 restQuery.append(keyPart);
             }
         }
@@ -96,7 +116,7 @@ public class ConfigResource implements SvcLogicResource {
             restQueryStr = restQueryStr.substring(1, restQueryStr.length()-1);
         }
 
-        String urlString = "restconf/config/" + module + ":" + restQueryStr;
+        String urlString = queryPrefix + module + ":" + restQueryStr + querySuffix;
         LOG.info("Querying resource: " + resource + ". At URL: " + urlString);
 
         Document results = restService.get(urlString);

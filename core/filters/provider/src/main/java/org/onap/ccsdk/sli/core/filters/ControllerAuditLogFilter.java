@@ -24,14 +24,21 @@ public class ControllerAuditLogFilter extends AuditLogServletFilter {
     protected String getServiceInstanceId(String path) {
         int idx = path.indexOf("service-list");
         if (idx != -1) {
-            // chomp off service-list/
+            // chomp off service-list=
             String str = path.substring(idx + 13);
+
             idx = str.indexOf("/");
             //if there is another forward slash with more information chomp it off
             if (idx != -1) {
                 return str.substring(0, idx);
             } else {
-                return str;
+                // If there is a question mark with more information chomp it off
+                idx = str.indexOf("?");
+                if (idx != -1) {
+                    return str.substring(0, idx);
+                } else {
+                    return str;
+                }
             }
         }
         return null;

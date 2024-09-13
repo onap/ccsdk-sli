@@ -75,12 +75,15 @@ public class OperationalResource implements SvcLogicResource {
 
         String[] keyParts = key.split("/");
         for (String keyPart : keyParts) {
-            if (restQuery.length() > 0) {
-                restQuery.append("/");
-            }
             if (keyPart.startsWith("$")) {
+                // This is a variable, so infer that previous part was a list name.  Insert = instead of /
+                restQuery.append("=?");
                 restQuery.append(ctx.resolve(keyPart.substring(1)));
             } else {
+
+                if (restQuery.length() > 0) {
+                    restQuery.append("/");
+                }
                 restQuery.append(keyPart);
             }
         }
@@ -91,7 +94,7 @@ public class OperationalResource implements SvcLogicResource {
             restQueryStr = restQueryStr.substring(1, restQueryStr.length() - 1);
         }
 
-        String urlString = "restconf/operational/" + module + ":" + restQueryStr;
+        String urlString = "rests/data/" + module + ":" + restQueryStr+"?content=nonconfig";
         LOG.info("Querying resource: " + resource + ". At URL: " + urlString);
 
         Document results = restService.get(urlString);
