@@ -35,7 +35,7 @@
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>ccsdk-ssh-adaptor</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.9.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>ccsdk-sli-adaptors :: features :: ${project.artifactId}</name>
