@@ -10,7 +10,7 @@
 
     <groupId>org.onap.ccsdk.sli.plugins</groupId>
     <artifactId>properties-node</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.9.0</version>
     <packaging>pom</packaging>
 
     <name>ccsdk-sli-plugins :: ${project.artifactId}</name>
