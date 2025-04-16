@@ -31,6 +31,8 @@
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
+        <!-- Commented out for now pending Scandium fix-->
+        <!--
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-restconf-client</artifactId>
@@ -38,6 +40,7 @@
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
+        -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-sshapi-call-node</artifactId>
