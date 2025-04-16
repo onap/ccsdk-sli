@@ -28,20 +28,20 @@ import static org.junit.Assert.*;
 public class AdminHealthTest {
     @Test
     public void constructorTest() {
-        AdminHealth health = new AdminHealth(Health.HEALTHY);
+        AdminHealthData health = new AdminHealthData(Health.HEALTHY);
         assertEquals(Health.HEALTHY, health.getHealth());
     }
 
     @Test
     public void constructor2Test() {
-        AdminHealth health = new AdminHealth(Health.FAULTY, 500);
+        AdminHealthData health = new AdminHealthData(Health.FAULTY, 500);
         assertEquals(Health.FAULTY, health.getHealth());
         assertEquals(500, health.getStatusCode());
     }
 
     @Test
     public void setHealth() {
-        AdminHealth health = new AdminHealth(Health.HEALTHY, 201);
+        AdminHealthData health = new AdminHealthData(Health.HEALTHY, 201);
         assertEquals(Health.HEALTHY, health.getHealth());
         assertEquals(201, health.getStatusCode());
         health.setHealth(Health.FAULTY);
@@ -50,7 +50,7 @@ public class AdminHealthTest {
 
     @Test
     public void setStatusCode() {
-        AdminHealth health = new AdminHealth(Health.HEALTHY, 200);
+        AdminHealthData health = new AdminHealthData(Health.HEALTHY, 200);
         assertEquals(Health.HEALTHY, health.getHealth());
         assertEquals(200, health.getStatusCode());
         health.setStatusCode(409);

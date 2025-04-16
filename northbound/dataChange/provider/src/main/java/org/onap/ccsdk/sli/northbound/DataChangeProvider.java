@@ -27,18 +27,31 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.onap.ccsdk.sli.core.sli.provider.MdsalHelper;
+import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.datachange.rev150519.DataChangeNotification;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.datachange.rev150519.DataChangeNotificationInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.datachange.rev150519.DataChangeNotificationInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.datachange.rev150519.DataChangeNotificationOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.datachange.rev150519.DataChangeNotificationOutputBuilder;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.datachange.rev150519.DataChangeService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,39 +61,40 @@ import org.slf4j.LoggerFactory;
  * base class provides some basic logging and initialization / clean up methods.
  *
  */
-public class DataChangeProvider implements AutoCloseable, DataChangeService {
-
+@Singleton
+@Component(service = DataChangeNotification.class, immediate = true)
+public class DataChangeProvider implements AutoCloseable, DataChangeNotification {
     private static final Logger LOG = LoggerFactory.getLogger(DataChangeProvider.class);
 
     private static final String APPLICATION_NAME = "DataChange";
 
     private final ExecutorService executor;
 
-    protected DataBroker dataBroker;
-    protected NotificationPublishService notificationService;
-    protected RpcProviderService rpcRegistry;
-    protected ObjectRegistration<DataChangeService> rpcRegistration;
+    private final DataBroker dataBroker;
+    private final EntityOwnershipService ownershipService;
+    private final Registration rpcRegistration;
     private final DataChangeClient dataChangeClient;
-
+    
+	@Inject
+	@Activate
+	public DataChangeProvider(@Reference final DataBroker dataBroker,
+							  @Reference final EntityOwnershipService ownershipService,
+							  @Reference final RpcProviderService rpcRegistry) {
+		this(dataBroker, ownershipService, rpcRegistry, new DataChangeClient(findSvcLogicService()));
+	}
+	
 
     public DataChangeProvider(final DataBroker dataBroker,
-							  final NotificationPublishService notificationPublishService,
-							  final RpcProviderService rpcProviderRegistry,
+							  final EntityOwnershipService ownershipService,
+							  final RpcProviderService rpcRegistry,
 							  final DataChangeClient dataChangeClient) {
 
-        this.LOG.info( "Creating provider for {}", APPLICATION_NAME);
+        LOG.info( "Creating provider for {}", APPLICATION_NAME);
         executor = Executors.newFixedThreadPool(1);
 		this.dataBroker = dataBroker;
-		this.notificationService = notificationPublishService;
-		this.rpcRegistry = rpcProviderRegistry;
+		this.ownershipService = ownershipService;
+		rpcRegistration = rpcRegistry.registerRpcImplementations(this);
 		this.dataChangeClient = dataChangeClient;
-		initialize();
-    }
-
-    public void initialize(){
-        LOG.info( "Initializing provider for {}", APPLICATION_NAME);
-        rpcRegistration = rpcRegistry.registerRpcImplementation(DataChangeService.class, this);
-        LOG.info( "Initialization complete for {}", APPLICATION_NAME);
     }
 
     protected void initializeChild() {
@@ -96,7 +110,7 @@ public class DataChangeProvider implements AutoCloseable, DataChangeService {
     }
 
 	@Override
-	public ListenableFuture<RpcResult<DataChangeNotificationOutput>> dataChangeNotification(
+	public ListenableFuture<RpcResult<DataChangeNotificationOutput>> invoke(
 			DataChangeNotificationInput input) {
 		final String svcOperation = "data-change-notification";
 
@@ -155,5 +169,23 @@ public class DataChangeProvider implements AutoCloseable, DataChangeService {
 				RpcResultBuilder.<DataChangeNotificationOutput> status(true).withResult(serviceDataBuilder.build()).build();
 		// return error
 		return Futures.immediateFuture(rpcResult);
+	}
+
+	private static SvcLogicService findSvcLogicService() {
+		BundleContext bctx = FrameworkUtil.getBundle(SvcLogicService.class).getBundleContext();
+
+		SvcLogicService svcLogic = null;
+
+		// Get SvcLogicService reference
+		ServiceReference sref = bctx.getServiceReference(SvcLogicService.NAME);
+		if (sref != null) {
+			svcLogic = (SvcLogicService) bctx.getService(sref);
+
+		} else {
+			LOG.warn("Cannot find service reference for " + SvcLogicService.NAME);
+
+		}
+
+		return (svcLogic);
 	}
 }

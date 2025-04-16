@@ -22,21 +22,22 @@
 package org.onap.ccsdk.sli.plugins.grtoolkit.data;
 
 /**
- * A data container for Akka Cluster health.
+ * A data container for Admin health.
  *
  * @author Anthony Haddox
  * @see org.onap.ccsdk.sli.plugins.grtoolkit.resolver.HealthResolver
  */
-public class ClusterHealth {
+public class AdminHealthData {
     private Health health;
+    private int statusCode;
 
-    public ClusterHealth() {
-        health = Health.FAULTY;
+    public AdminHealthData(Health health) {
+        this.health = health;
     }
 
-    public ClusterHealth withHealth(Health h) {
-        this.health = h;
-        return this;
+    public AdminHealthData(Health health, int statusCode) {
+        this.health = health;
+        this.statusCode = statusCode;
     }
 
     public Health getHealth() {
@@ -45,5 +46,13 @@ public class ClusterHealth {
 
     public void setHealth(Health health) {
         this.health = health;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
 }
