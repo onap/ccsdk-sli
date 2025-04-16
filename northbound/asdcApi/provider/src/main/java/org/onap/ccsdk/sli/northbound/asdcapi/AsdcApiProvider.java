@@ -29,18 +29,24 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
 import org.eclipse.jdt.annotation.NonNull;
+import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.yang.gen.v1.http.xmlns.onap.org.asdc.license.model._1._0.rev160427.vf.license.model.grouping.VfLicenseModel;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.ASDCAPIService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.Artifacts;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.ArtifactsBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.VfLicenseModelUpdate;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.VfLicenseModelUpdateInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.VfLicenseModelUpdateInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.VfLicenseModelUpdateOutput;
@@ -53,9 +59,17 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.artifacts.ArtifactK
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.vf.license.model.versions.VfLicenseModelVersion;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.rev170201.vf.license.model.versions.VfLicenseModelVersionBuilder;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +106,9 @@ import org.slf4j.LoggerFactory;
 
     </pre>
  */
-public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
+@Singleton
+@Component(service = VfLicenseModelUpdate.class, immediate = true)
+public class AsdcApiProvider implements AutoCloseable, VfLicenseModelUpdate{
 
     private static final Logger LOG = LoggerFactory.getLogger(AsdcApiProvider.class);
 
@@ -101,24 +117,30 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
     private static final String APPLICATION_NAME = "asdcApi";
 
     private final ExecutorService executor;
-    protected DataBroker dataBroker;
-    protected NotificationPublishService notificationService;
-    protected RpcProviderService rpcRegistry;
+    private final DataBroker dataBroker;
+	private final EntityOwnershipService ownershipService;
     private final AsdcApiSliClient asdcApiSliClient;
 
-    protected ObjectRegistration<ASDCAPIService> rpcRegistration;
+    private final Registration rpcRegistration;
+
+    @Inject
+    @Activate
+    public AsdcApiProvider(@Reference final DataBroker dataBroker,
+        @Reference final EntityOwnershipService ownershipService,
+        @Reference final RpcProviderService rpcProviderRegistry) {
+        this(dataBroker, ownershipService, rpcProviderRegistry, new AsdcApiSliClient(findSvcLogicService()));
+    }
 
     public AsdcApiProvider(final DataBroker dataBroker,
-                           final NotificationPublishService notificationPublishService,
-                           final RpcProviderService rpcProviderRegistry,
+                           final EntityOwnershipService ownershipService,
+                           final RpcProviderService rpcRegistry,
                            final AsdcApiSliClient asdcApiSliClient) {
-
         LOG.info("Creating provider for {}", APPLICATION_NAME);
         executor = Executors.newFixedThreadPool(1);
         this.dataBroker = dataBroker;
-        notificationService = notificationPublishService;
-        rpcRegistry = rpcProviderRegistry;
+        this.ownershipService = ownershipService;
         this.asdcApiSliClient= asdcApiSliClient;
+        rpcRegistration = rpcRegistry.registerRpcImplementations(this);
         initialize();
     }
 
@@ -126,16 +148,6 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
         LOG.info("Initializing {} for {}", this.getClass().getName(), APPLICATION_NAME);
 
         createContainers();
-
-        if (rpcRegistration == null) {
-            if (rpcRegistry != null) {
-                rpcRegistration = rpcRegistry.registerRpcImplementation(
-                        ASDCAPIService.class, this);
-                LOG.info("Initialization complete for {}", APPLICATION_NAME);
-            } else {
-                LOG.warn("Error initializing {} : rpcRegistry unset", APPLICATION_NAME);
-            }
-        }
     }
 
     private void createContainers() {
@@ -167,6 +179,8 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
     }
 
     @Override
+    @PreDestroy
+    @Deactivate
     public void close() throws Exception {
         LOG.info( "Closing provider for " + APPLICATION_NAME);
         executor.shutdown();
@@ -281,7 +295,7 @@ public class AsdcApiProvider implements AutoCloseable, ASDCAPIService {
 }
 
 @Override
-public ListenableFuture<RpcResult<VfLicenseModelUpdateOutput>> vfLicenseModelUpdate(VfLicenseModelUpdateInput input) {
+public ListenableFuture<RpcResult<VfLicenseModelUpdateOutput>> invoke(VfLicenseModelUpdateInput input) {
     final String svcOperation = "vf-license-model-update";
 
     Properties parms = new Properties();
@@ -373,6 +387,24 @@ public ListenableFuture<RpcResult<VfLicenseModelUpdateOutput>> vfLicenseModelUpd
 
     return Futures.immediateFuture(rpcResult);
 }
+
+	private static SvcLogicService findSvcLogicService() {
+		BundleContext bctx = FrameworkUtil.getBundle(SvcLogicService.class).getBundleContext();
+
+		SvcLogicService svcLogic = null;
+
+		// Get SvcLogicService reference
+		ServiceReference sref = bctx.getServiceReference(SvcLogicService.NAME);
+		if (sref != null) {
+			svcLogic = (SvcLogicService) bctx.getService(sref);
+
+		} else {
+			LOG.warn("Cannot find service reference for " + SvcLogicService.NAME);
+
+		}
+
+		return (svcLogic);
+	}
 
 
 }
