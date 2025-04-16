@@ -59,7 +59,6 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.EvacuateOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.HealthCheckInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.HealthCheckOutput;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.LCMService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.LiveUpgradeInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.LiveUpgradeOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.LockInputBuilder;
@@ -112,7 +111,8 @@ import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.ZULU;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.action.identifiers.ActionIdentifiersBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.common.header.CommonHeaderBuilder;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.binding.Rpc;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,8 +129,8 @@ public class TestLcmProvider {
         DOMDataBroker dataBroker = mock(DOMDataBroker.class);
         NotificationPublishService notifyService = mock(NotificationPublishService.class);
         RpcProviderService rpcRegistry = mock(RpcProviderService.class);
-        ObjectRegistration<LCMService> rpcRegistration = mock(ObjectRegistration.class);
-        when(rpcRegistry.registerRpcImplementation(any(Class.class), any(LCMService.class))).thenReturn(rpcRegistration);
+        Registration rpcRegistration = mock(Registration.class);
+        when(rpcRegistry.registerRpcImplementations((Rpc<?,?>)any())).thenReturn(rpcRegistration);
 
 
         // Load svclogic.properties and get a SvcLogicStore
@@ -157,7 +157,7 @@ public class TestLcmProvider {
 
         // Finally ready to create sliapiProvider
         LcmSliClient client = new LcmSliClient(svc);
-        provider = new LcmProvider(dataBroker, notifyService, rpcRegistry, client);
+        provider = new LcmProvider(dataBroker, rpcRegistry, client);
     }
 
     /**
@@ -602,7 +602,7 @@ public class TestLcmProvider {
 
 
 		try {
-			ActionStatusOutput results = provider.actionStatus(builder.build()).get().getResult();
+			ActionStatusOutput results = provider.invoke(builder.build()).get().getResult();
 			LOG.info("ActionStatus returned status {} : {}", results.getStatus().getCode(), results.getStatus().getMessage());
 			assert(results.getStatus().getCode().intValue() == 400);
 		} catch (InterruptedException | ExecutionException e) {

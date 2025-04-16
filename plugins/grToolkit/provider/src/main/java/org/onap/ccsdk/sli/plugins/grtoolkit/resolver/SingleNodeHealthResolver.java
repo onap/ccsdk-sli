@@ -22,13 +22,13 @@
 package org.onap.ccsdk.sli.plugins.grtoolkit.resolver;
 
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.AdminHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.AdminHealthData;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterActor;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterHealth;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.DatabaseHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterHealthData;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.DatabaseHealthData;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.FailoverStatus;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.Health;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.SiteHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.SiteHealthData;
 
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.FailoverInput;
 
@@ -74,14 +74,14 @@ public class SingleNodeHealthResolver extends HealthResolver {
      * @return an {@code ClusterHealth} object with health of the akka cluster
      * @see org.onap.ccsdk.sli.plugins.grtoolkit.GrToolkitProvider
      * @see HealthResolver
-     * @see ClusterHealth
+     * @see ClusterHealthData
      * @see ShardResolver
      */
     @Override
-    public ClusterHealth getClusterHealth() {
+    public ClusterHealthData getClusterHealth() {
         log.info("getClusterHealth(): Getting cluster health...");
         shardResolver.getControllerHealth(memberMap);
-        return new ClusterHealth().withHealth(Health.HEALTHY);
+        return new ClusterHealthData().withHealth(Health.HEALTHY);
     }
 
     /**
@@ -93,16 +93,16 @@ public class SingleNodeHealthResolver extends HealthResolver {
      * @return a List of {@code SiteHealth} objects with health of the site
      * @see org.onap.ccsdk.sli.plugins.grtoolkit.GrToolkitProvider
      * @see HealthResolver
-     * @see SiteHealth
+     * @see SiteHealthData
      * @see ShardResolver
      */
     @Override
-    public List<SiteHealth> getSiteHealth() {
+    public List<SiteHealthData> getSiteHealth() {
         log.info("getSiteHealth(): Getting site health...");
-        AdminHealth adminHealth = getAdminHealth();
-        DatabaseHealth databaseHealth = getDatabaseHealth();
-        ClusterHealth clusterHealth = getClusterHealth();
-        SiteHealth siteHealth = new SiteHealth()
+        AdminHealthData adminHealth = getAdminHealth();
+        DatabaseHealthData databaseHealth = getDatabaseHealth();
+        ClusterHealthData clusterHealth = getClusterHealth();
+        SiteHealthData siteHealth = new SiteHealthData()
                                         .withAdminHealth(adminHealth)
                                         .withDatabaseHealth(databaseHealth)
                                         .withClusterHealth(clusterHealth)
