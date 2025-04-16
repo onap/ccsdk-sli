@@ -59,18 +59,21 @@ import org.onap.ccsdk.sli.core.sli.provider.base.SwitchNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.UpdateNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.WhileNodeExecutor;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.HealthcheckInput;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.SLIAPIService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterKey;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterBuilder;
+import org.opendaylight.yangtools.binding.Rpc;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 
 /**
  * @author dt5972
@@ -112,12 +115,14 @@ public class TestSliapiProvider {
      */
     @Before
     public void setUp() throws Exception {
-        DOMDataBroker dataBroker = mock(DOMDataBroker.class);
-        NotificationPublishService notifyService = mock(NotificationPublishService.class);
+        DataBroker dataBroker = mock(DataBroker.class);
+        EntityOwnershipService ownershipService = mock(EntityOwnershipService.class);
+        DOMDataBroker domDataBroker = mock(DOMDataBroker.class);
+    
         RpcProviderService rpcRegistry = mock(RpcProviderService.class);
-        ObjectRegistration<SLIAPIService> rpcRegistration = mock(
+        Registration rpcRegistration = mock(
                 ObjectRegistration.class);
-        when(rpcRegistry.registerRpcImplementation(any(Class.class), any(SLIAPIService.class))).thenReturn(rpcRegistration);
+        when(rpcRegistry.registerRpcImplementations((Rpc<?,?>) any())).thenReturn(rpcRegistration);
 
         // Load svclogic.properties and get a SvcLogicStore
         InputStream propStr = TestSliapiProvider.class.getResourceAsStream("/svclogic.properties");
@@ -144,10 +149,7 @@ public class TestSliapiProvider {
         }
 
         // Finally ready to create SliapiProvider
-        provider = new SliapiProvider(dataBroker, notifyService, rpcRegistry, svc);
-        provider.setDataBroker(dataBroker);
-        provider.setNotificationService(notifyService);
-        provider.setRpcRegistry(rpcRegistry);
+        provider = new SliapiProvider(dataBroker, ownershipService, domDataBroker, rpcRegistry, svc);
     }
 
     /**
@@ -187,7 +189,7 @@ public class TestSliapiProvider {
         sliParm = pBuilder.build();
         pMap.put(sliParm.key(), sliParm);
         inputBuilder.setSliParameter(pMap);
-        provider.executeGraph(inputBuilder.build());
+        provider.invoke(inputBuilder.build());
 
 
         // Invalid test - graph does not exist
@@ -211,7 +213,7 @@ public class TestSliapiProvider {
         sliParm = pBuilder.build();
         pMap.put(sliParm.key(), sliParm);
         inputBuilder.setSliParameter(pMap);
-        provider.executeGraph(inputBuilder.build());
+        provider.invoke(inputBuilder.build());
 
         assertTrue(provider.vlbcheck(mock(VlbcheckInput.class)) instanceof Future<?>);
     }
