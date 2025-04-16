@@ -27,13 +27,13 @@ import org.json.JSONObject;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.plugins.grtoolkit.connection.ConnectionManager;
 import org.onap.ccsdk.sli.plugins.grtoolkit.connection.ConnectionResponse;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.AdminHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.AdminHealthData;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterActor;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterHealth;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.DatabaseHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterHealthData;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.DatabaseHealthData;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.FailoverStatus;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.Health;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.SiteHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.SiteHealthData;
 
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.FailoverInput;
 
@@ -84,15 +84,15 @@ public class SixNodeHealthResolver extends HealthResolver {
      * @return an {@code ClusterHealth} object with health of the akka cluster
      * @see org.onap.ccsdk.sli.plugins.grtoolkit.GrToolkitProvider
      * @see HealthResolver
-     * @see ClusterHealth
+     * @see ClusterHealthData
      * @see ShardResolver
      */
     @Override
-    public ClusterHealth getClusterHealth() {
+    public ClusterHealthData getClusterHealth() {
         log.info("getClusterHealth(): Getting cluster health...");
         shardResolver.getControllerHealth(memberMap);
         long healthyMembers = memberMap.values().stream().filter(member -> member.isUp() && ! member.isUnreachable()).count();
-        return (healthyMembers > 4) ? new ClusterHealth().withHealth(Health.HEALTHY) : new ClusterHealth().withHealth(Health.FAULTY);
+        return (healthyMembers > 4) ? new ClusterHealthData().withHealth(Health.HEALTHY) : new ClusterHealthData().withHealth(Health.FAULTY);
     }
 
     /**
@@ -104,11 +104,11 @@ public class SixNodeHealthResolver extends HealthResolver {
      * @return a List of {@code SiteHealth} objects with health of the site
      * @see org.onap.ccsdk.sli.plugins.grtoolkit.GrToolkitProvider
      * @see HealthResolver
-     * @see SiteHealth
+     * @see SiteHealthData
      * @see ShardResolver
      */
     @Override
-    public List<SiteHealth> getSiteHealth() {
+    public List<SiteHealthData> getSiteHealth() {
         log.info("getSiteHealth(): Getting site health...");
 
         // Get cluster health to populate memberMap with necessary values
@@ -116,8 +116,8 @@ public class SixNodeHealthResolver extends HealthResolver {
         List<ClusterActor> votingActors = memberMap.values().stream().filter(ClusterActor::isVoting).collect(Collectors.toList());
         List<ClusterActor> nonVotingActors = memberMap.values().stream().filter(member -> !member.isVoting()).collect(Collectors.toList());
 
-        SiteHealth votingSiteHealth = getSiteHealth(votingActors).withRole("ACTIVE");
-        SiteHealth nonVotingSiteHealth = getSiteHealth(nonVotingActors).withRole("STANDBY");
+        SiteHealthData votingSiteHealth = getSiteHealth(votingActors).withRole("ACTIVE");
+        SiteHealthData nonVotingSiteHealth = getSiteHealth(nonVotingActors).withRole("STANDBY");
         return Arrays.asList(votingSiteHealth, nonVotingSiteHealth);
     }
 
@@ -128,12 +128,12 @@ public class SixNodeHealthResolver extends HealthResolver {
      * @return a {@code SiteHealth} object with health of the site
      * @see org.onap.ccsdk.sli.plugins.grtoolkit.GrToolkitProvider
      * @see ClusterActor
-     * @see SiteHealth
+     * @see SiteHealthData
      * @see ConnectionManager
      */
-    public SiteHealth getSiteHealth(List<ClusterActor> actorList) {
-        AdminHealth adminHealth = null;
-        DatabaseHealth databaseHealth = null;
+    public SiteHealthData getSiteHealth(List<ClusterActor> actorList) {
+        AdminHealthData adminHealth = null;
+        DatabaseHealthData databaseHealth = null;
         String siteId = null;
         int healthyMembers = 0;
 
@@ -154,7 +154,7 @@ public class SixNodeHealthResolver extends HealthResolver {
                 try {
                     boolean isAdminHealthy  = isRemoteComponentHealthy(httpProtocol + actor.getNode() + ":" + controllerPort + "/restconf/operations/gr-toolkit:admin-health");
                     if(isAdminHealthy) {
-                        adminHealth = new AdminHealth(Health.HEALTHY, 200);
+                        adminHealth = new AdminHealthData(Health.HEALTHY, 200);
                     }
                 } catch(IOException e) {
                     log.error("getSiteHealth(): Error getting admin health from {}", actor.getNode());
@@ -165,7 +165,7 @@ public class SixNodeHealthResolver extends HealthResolver {
                 try {
                     boolean isDatabaseHealthy = isRemoteComponentHealthy(httpProtocol + actor.getNode() + ":" + controllerPort + "/restconf/operations/gr-toolkit:database-health");
                     if(isDatabaseHealthy) {
-                        databaseHealth = new DatabaseHealth(Health.HEALTHY);
+                        databaseHealth = new DatabaseHealthData(Health.HEALTHY);
                     }
                 } catch(IOException e) {
                     log.error("getSiteHealth(): Error getting database health from {}", actor.getNode());
@@ -178,12 +178,12 @@ public class SixNodeHealthResolver extends HealthResolver {
             siteId = "UNKNOWN SITE";
         }
         if(adminHealth == null) {
-            adminHealth = new AdminHealth(Health.FAULTY, 500);
+            adminHealth = new AdminHealthData(Health.FAULTY, 500);
         }
         if(databaseHealth == null) {
-            databaseHealth = new DatabaseHealth(Health.FAULTY);
+            databaseHealth = new DatabaseHealthData(Health.FAULTY);
         }
-        SiteHealth health = new SiteHealth()
+        SiteHealthData health = new SiteHealthData()
                                     .withAdminHealth(adminHealth)
                                     .withDatabaseHealth(databaseHealth)
                                     .withId(siteId);
