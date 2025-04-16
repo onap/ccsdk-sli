@@ -28,6 +28,16 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
+
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.onap.ccsdk.sli.northbound</groupId>
             <artifactId>asdcApi-model</artifactId>
@@ -37,6 +47,12 @@
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-eos-binding-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -63,6 +79,16 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-dom-adapter</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
+            <version>1.5.1</version>
         </dependency>
 
         <dependency>
