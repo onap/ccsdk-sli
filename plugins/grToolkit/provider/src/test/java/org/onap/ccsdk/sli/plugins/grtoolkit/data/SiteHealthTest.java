@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
 public class SiteHealthTest {
     @Test
     public void constructorTest() {
-        SiteHealth health = new SiteHealth();
+        SiteHealthData health = new SiteHealthData();
         assertNotNull(health.getAdminHealth());
         assertNotNull(health.getDatabaseHealth());
         assertNotNull(health.getClusterHealth());
@@ -36,72 +36,72 @@ public class SiteHealthTest {
     }
     @Test
     public void withAdminHealth() {
-        SiteHealth health = new SiteHealth().withAdminHealth(new AdminHealth(Health.HEALTHY));
+        SiteHealthData health = new SiteHealthData().withAdminHealth(new AdminHealthData(Health.HEALTHY));
         assertEquals(Health.HEALTHY, health.getAdminHealth().get(0).getHealth());
     }
 
     @Test
     public void withDatabaseHealth() {
-        SiteHealth health = new SiteHealth().withDatabaseHealth(new DatabaseHealth(Health.HEALTHY));
+        SiteHealthData health = new SiteHealthData().withDatabaseHealth(new DatabaseHealthData(Health.HEALTHY));
         assertEquals(Health.HEALTHY, health.getDatabaseHealth().get(0).getHealth());
     }
 
     @Test
     public void withClusterHealth() {
-        SiteHealth health = new SiteHealth().withClusterHealth(new ClusterHealth());
+        SiteHealthData health = new SiteHealthData().withClusterHealth(new ClusterHealthData());
         assertEquals(Health.FAULTY, health.getClusterHealth().get(0).getHealth());
     }
 
     @Test
     public void withId() {
-        SiteHealth health = new SiteHealth().withId("My_ID");
+        SiteHealthData health = new SiteHealthData().withId("My_ID");
         assertEquals("My_ID", health.getId());
     }
 
     @Test
     public void withRole() {
-        SiteHealth health = new SiteHealth().withRole("My_role");
+        SiteHealthData health = new SiteHealthData().withRole("My_role");
         assertEquals("My_role", health.getRole());
     }
 
     @Test
     public void setHealth() {
-        SiteHealth health = new SiteHealth();
+        SiteHealthData health = new SiteHealthData();
         health.setHealth(Health.HEALTHY);
         assertEquals(Health.HEALTHY, health.getHealth());
     }
 
     @Test
     public void setAdminHealth() {
-        SiteHealth health = new SiteHealth().withAdminHealth(new AdminHealth(Health.HEALTHY));
+        SiteHealthData health = new SiteHealthData().withAdminHealth(new AdminHealthData(Health.HEALTHY));
         health.setAdminHealth(null);
         assertNull(health.getAdminHealth());
     }
 
     @Test
     public void setDatabaseHealth() {
-        SiteHealth health = new SiteHealth().withDatabaseHealth(new DatabaseHealth(Health.HEALTHY));
+        SiteHealthData health = new SiteHealthData().withDatabaseHealth(new DatabaseHealthData(Health.HEALTHY));
         health.setDatabaseHealth(null);
         assertNull(health.getDatabaseHealth());
     }
 
     @Test
     public void setClusterHealth() {
-        SiteHealth health = new SiteHealth().withClusterHealth(new ClusterHealth());
+        SiteHealthData health = new SiteHealthData().withClusterHealth(new ClusterHealthData());
         health.setClusterHealth(null);
         assertNull(health.getClusterHealth());
     }
 
     @Test
     public void setId() {
-        SiteHealth health = new SiteHealth().withId("My_ID");
+        SiteHealthData health = new SiteHealthData().withId("My_ID");
         health.setId("My_new_ID");
         assertEquals("My_new_ID", health.getId());
     }
 
     @Test
     public void setRole() {
-        SiteHealth health = new SiteHealth().withRole("My_role");
+        SiteHealthData health = new SiteHealthData().withRole("My_role");
         health.setRole("My_new_role");
         assertEquals("My_new_role", health.getRole());
     }

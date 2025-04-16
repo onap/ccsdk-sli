@@ -22,22 +22,16 @@
 package org.onap.ccsdk.sli.plugins.grtoolkit.data;
 
 /**
- * A data container for Admin health.
+ * A data container for Database health.
  *
  * @author Anthony Haddox
  * @see org.onap.ccsdk.sli.plugins.grtoolkit.resolver.HealthResolver
  */
-public class AdminHealth {
+public class DatabaseHealthData {
     private Health health;
-    private int statusCode;
 
-    public AdminHealth(Health health) {
+    public DatabaseHealthData(Health health) {
         this.health = health;
-    }
-
-    public AdminHealth(Health health, int statusCode) {
-        this.health = health;
-        this.statusCode = statusCode;
     }
 
     public Health getHealth() {
@@ -46,13 +40,5 @@ public class AdminHealth {
 
     public void setHealth(Health health) {
         this.health = health;
-    }
-
-    public int getStatusCode() {
-        return statusCode;
-    }
-
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
     }
 }

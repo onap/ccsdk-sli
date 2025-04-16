@@ -22,16 +22,21 @@
 package org.onap.ccsdk.sli.plugins.grtoolkit.data;
 
 /**
- * A data container for Database health.
+ * A data container for Akka Cluster health.
  *
  * @author Anthony Haddox
  * @see org.onap.ccsdk.sli.plugins.grtoolkit.resolver.HealthResolver
  */
-public class DatabaseHealth {
+public class ClusterHealthData {
     private Health health;
 
-    public DatabaseHealth(Health health) {
-        this.health = health;
+    public ClusterHealthData() {
+        health = Health.FAULTY;
+    }
+
+    public ClusterHealthData withHealth(Health h) {
+        this.health = h;
+        return this;
     }
 
     public Health getHealth() {

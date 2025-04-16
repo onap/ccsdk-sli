@@ -27,14 +27,14 @@ import org.json.JSONObject;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.plugins.grtoolkit.connection.ConnectionManager;
 import org.onap.ccsdk.sli.plugins.grtoolkit.connection.ConnectionResponse;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.AdminHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.AdminHealthData;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterActor;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterHealth;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.DatabaseHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterHealthData;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.DatabaseHealthData;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.FailoverStatus;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.Health;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.PropertyKeys;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.SiteHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.SiteHealthData;
 
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.FailoverInput;
 
@@ -105,8 +105,8 @@ public abstract class HealthResolver {
         credentials = properties.getProperty(PropertyKeys.CONTROLLER_CREDENTIALS).trim();
     }
 
-    public abstract ClusterHealth getClusterHealth();
-    public abstract List<SiteHealth> getSiteHealth();
+    public abstract ClusterHealthData getClusterHealth();
+    public abstract List<SiteHealthData> getSiteHealth();
     public abstract FailoverStatus tryFailover(FailoverInput input);
     public abstract void resolveSites();
 
@@ -116,19 +116,19 @@ public abstract class HealthResolver {
      *
      * @return an {@code AdminHealth} object with health of the admin portal
      * @see org.onap.ccsdk.sli.plugins.grtoolkit.GrToolkitProvider
-     * @see AdminHealth
+     * @see AdminHealthData
      */
-    public AdminHealth getAdminHealth() {
+    public AdminHealthData getAdminHealth() {
         log.info("getAdminHealth(): Requesting health check from {}", adminPath);
         try {
             ConnectionResponse response = ConnectionManager.getConnectionResponse(adminPath, ConnectionManager.HttpMethod.GET, null, null);
             Health health = (response.statusCode == 200) ? HEALTHY : Health.FAULTY;
-            AdminHealth adminHealth = new AdminHealth(health, response.statusCode);
+            AdminHealthData adminHealth = new AdminHealthData(health, response.statusCode);
             log.info("getAdminHealth(): Response: {}", response);
             return adminHealth;
         } catch(IOException e) {
             log.error("getAdminHealth(): Problem getting ADM health.", e);
-            return new AdminHealth(Health.FAULTY, 500);
+            return new AdminHealthData(Health.FAULTY, 500);
         }
     }
 
@@ -139,9 +139,9 @@ public abstract class HealthResolver {
      *
      * @return an {@code DatabaseHealth} object with health of the database
      * @see org.onap.ccsdk.sli.plugins.grtoolkit.GrToolkitProvider
-     * @see DatabaseHealth
+     * @see DatabaseHealthData
      */
-    public DatabaseHealth getDatabaseHealth() {
+    public DatabaseHealthData getDatabaseHealth() {
         log.info("getDatabaseHealth(): Determining database health...");
         try (Connection connection = dbLib.getConnection()){
             log.debug("getDatabaseHealth(): DBLib isActive(): {}", dbLib.isActive());
@@ -149,16 +149,16 @@ public abstract class HealthResolver {
             log.debug("getDatabaseHealth(): DBLib isClosed(): {}", connection.isClosed());
             if(!dbLib.isActive() || connection.isClosed() || connection.isReadOnly()) {
                 log.warn("getDatabaseHealth(): Database is FAULTY");
-                return new DatabaseHealth(Health.FAULTY);
+                return new DatabaseHealthData(Health.FAULTY);
             }
             log.info("getDatabaseHealth(): Database is HEALTHY");
         } catch(SQLException e) {
             log.error("getDatabaseHealth(): Database is FAULTY");
             log.error("getDatabaseHealth(): Error", e);
-            return new DatabaseHealth(Health.FAULTY);
+            return new DatabaseHealthData(Health.FAULTY);
         }
 
-        return new DatabaseHealth(HEALTHY);
+        return new DatabaseHealthData(HEALTHY);
     }
 
     /**
