@@ -28,13 +28,13 @@ import static org.junit.Assert.*;
 public class DatabaseHealthTest {
     @Test
     public void constructorTest() {
-        DatabaseHealth health = new DatabaseHealth(Health.FAULTY);
+        DatabaseHealthData health = new DatabaseHealthData(Health.FAULTY);
         assertEquals(Health.FAULTY, health.getHealth());
     }
 
     @Test
     public void setHealth() {
-        DatabaseHealth health = new DatabaseHealth(Health.FAULTY);
+        DatabaseHealthData health = new DatabaseHealthData(Health.FAULTY);
         assertEquals(Health.FAULTY, health.getHealth());
         health.setHealth(Health.HEALTHY);
         assertEquals(Health.HEALTHY, health.getHealth());

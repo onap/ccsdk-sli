@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
         <relativePath/>
     </parent>
 
@@ -20,7 +20,7 @@
         <module>ccsdk-gr-toolkit</module>
         <module>ccsdk-properties-node</module>
         <module>ccsdk-restapi-call-node</module>
-        <module>ccsdk-restconf-client</module>
+        <!-- <module>ccsdk-restconf-client</module> -->
         <module>ccsdk-sshapi-call-node</module>
         <module>ccsdk-template-node</module>
         <module>ccsdk-sli-plugins-all</module>
