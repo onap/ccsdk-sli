@@ -106,7 +106,7 @@ public class GrToolkitProviderTest {
             fail();
         }
 
-        provider = new GrToolkitProvider(dataBroker, notificationProviderService,
+        provider = new GrToolkitProvider(dataBroker, 
                 rpcProviderRegistry, configDatastore, dbLibService);
         providerSpy = spy(provider);
         stubController();
@@ -121,11 +121,6 @@ public class GrToolkitProviderTest {
         }
     }
 
-    @Test
-    public void onDataTreeChangedTest() {
-        provider.onDataTreeChanged(new ArrayList());
-        // onDataTreeChanged is an empty stub
-    }
 
     private void stubController() {
         String clusterBody = null;
@@ -225,7 +220,7 @@ public class GrToolkitProviderTest {
 
     @Test
     public void adminHealthTest() {
-        ListenableFuture<RpcResult<AdminHealthOutput>> result = provider.adminHealth(null);
+        ListenableFuture<RpcResult<AdminHealthOutput>> result = provider.invoke(null);
         try {
             assertEquals("200", result.get().getResult().getStatus());
         } catch(InterruptedException | ExecutionException e) {
