@@ -194,6 +194,11 @@
             <version>2.23</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -210,6 +215,13 @@
                         <Embed-Dependency>!javax.ws.rs-api,*;scope=compile|runtime;artifactId=!org.eclipse.osgi|slf4j-api|jcl-over-slf4j|</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                     </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
                 </configuration>
             </plugin>
         </plugins>

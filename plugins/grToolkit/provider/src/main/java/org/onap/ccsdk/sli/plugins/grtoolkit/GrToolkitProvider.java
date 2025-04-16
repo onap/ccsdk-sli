@@ -41,6 +41,10 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.annotation.Nonnull;
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,14 +52,14 @@ import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.ccsdk.sli.plugins.grtoolkit.connection.ConnectionManager;
 import org.onap.ccsdk.sli.plugins.grtoolkit.connection.ConnectionResponse;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.AdminHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.AdminHealthData;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterActor;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.DatabaseHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.DatabaseHealthData;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.FailoverStatus;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.Health;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.MemberBuilder;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.PropertyKeys;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.SiteHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.SiteHealthData;
 import org.onap.ccsdk.sli.plugins.grtoolkit.resolver.HealthResolver;
 import org.onap.ccsdk.sli.plugins.grtoolkit.resolver.SingleNodeHealthResolver;
 import org.onap.ccsdk.sli.plugins.grtoolkit.resolver.SixNodeHealthResolver;
@@ -65,37 +69,49 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.AdminHealth;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.AdminHealthInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.AdminHealthOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.AdminHealthOutputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.ClusterHealth;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.ClusterHealthInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.ClusterHealthOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.ClusterHealthOutputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.DatabaseHealth;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.DatabaseHealthInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.DatabaseHealthOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.DatabaseHealthOutputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.Failover;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.FailoverInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.FailoverOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.FailoverOutputBuilder;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.GrToolkitService;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.HaltAkkaTraffic;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.HaltAkkaTrafficInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.HaltAkkaTrafficOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.HaltAkkaTrafficOutputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.Member;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.ResumeAkkaTraffic;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.ResumeAkkaTrafficInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.ResumeAkkaTrafficOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.ResumeAkkaTrafficOutputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.Site;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.SiteHealth;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.SiteHealthInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.SiteHealthOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.SiteHealthOutputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.SiteIdentifier;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.SiteIdentifierInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.SiteIdentifierOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.SiteIdentifierOutputBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.plugins.gr.toolkit.rev180926.site.health.output.SitesBuilder;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,7 +134,9 @@ import org.slf4j.LoggerFactory;
  * @see ThreeNodeHealthResolver
  * @see SixNodeHealthResolver
  */
-public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataTreeChangeListener {
+@Singleton
+@Component(service = AdminHealth.class, immediate = true)
+public class GrToolkitProvider implements AutoCloseable, AdminHealth {
     private static final String APP_NAME = "gr-toolkit";
     private static final String PROPERTIES_FILE = System.getenv("SDNC_CONFIG_DIR") + "/gr-toolkit.properties";
     private String akkaConfig;
@@ -126,11 +144,9 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
     private String siteIdentifier = System.getenv("SITE_NAME");
     private final Logger log = LoggerFactory.getLogger(GrToolkitProvider.class);
     private final ExecutorService executor;
-    protected DataBroker dataBroker;
-    protected NotificationPublishService notificationService;
-    protected RpcProviderService rpcRegistry;
-    protected ObjectRegistration<GrToolkitService> rpcRegistration;
-    protected DbLibService dbLib;
+    private final DataBroker dataBroker;
+    private final Registration rpcRegistration;
+    private final DbLibService dbLib;
     private String member;
     private ClusterActor self;
     private HashMap<String, ClusterActor> memberMap;
@@ -148,18 +164,26 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      * @param configDatastore The Configuration Data Store provided by the controller
      * @param dbLibService Reference to the controller provided DbLibService
      */
-    public GrToolkitProvider(DataBroker dataBroker,
-                             NotificationPublishService notificationProviderService,
-                             RpcProviderService rpcProviderRegistry,
-                             DistributedDataStoreInterface configDatastore,
-                             DbLibService dbLibService) {
+    @Inject
+    @Activate
+    public GrToolkitProvider(@Reference final DataBroker dataBroker,
+                             @Reference final RpcProviderService rpcProviderRegistry,
+                             @Reference final DistributedDataStoreInterface configDatastore,
+                             @Reference final DbLibService dbLibService) {
         log.info("Creating provider for {}", APP_NAME);
         this.executor = Executors.newFixedThreadPool(1);
         this.dataBroker = dataBroker;
-        this.notificationService = notificationProviderService;
-        this.rpcRegistry = rpcProviderRegistry;
         this.configDatastore = configDatastore;
         this.dbLib = dbLibService;
+        rpcRegistration = rpcProviderRegistry.registerRpcImplementations(
+            this,
+            (ClusterHealth) this::clusterHealth,
+            (DatabaseHealth) this::databaseHealth,
+            (Failover) this::failover,
+            (HaltAkkaTraffic) this::haltAkkaTraffic,
+            (ResumeAkkaTraffic) this::resumeAkkaTraffic,
+            (SiteHealth) this::siteHealth,
+            (SiteIdentifier) this::siteIdentifier);
         initialize();
     }
 
@@ -172,7 +196,6 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
         createContainers();
         setProperties();
         defineMembers();
-        rpcRegistration = rpcRegistry.registerRpcImplementation(GrToolkitService.class, this);
         log.info("Initialization complete for {}", APP_NAME);
     }
 
@@ -248,21 +271,13 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      * Shuts down the {@code ExecutorService} and closes the RPC Provider Registry.
      */
     @Override
+    @PreDestroy
+    @Deactivate
     public void close() throws Exception {
         log.info("Closing provider for {}", APP_NAME);
         executor.shutdown();
         rpcRegistration.close();
         log.info("close(): Successfully closed provider for {}", APP_NAME);
-    }
-
-    /**
-     * Listens for changes to the Data tree.
-     *
-     * @param changes Data tree changes.
-     */
-    @Override
-    public void onDataTreeChanged(@Nonnull Collection changes) {
-        log.info("onDataTreeChanged(): No changes.");
     }
 
     /**
@@ -276,7 +291,7 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      * @see ClusterHealthInput
      * @see ClusterHealthOutput
      */
-    @Override
+    
     public ListenableFuture<RpcResult<ClusterHealthOutput>> clusterHealth(ClusterHealthInput input) {
         log.info("{}:cluster-health invoked.", APP_NAME);
         resolver.getClusterHealth();
@@ -295,10 +310,10 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      * @see SiteHealthInput
      * @see SiteHealthOutput
      */
-    @Override
+    
     public ListenableFuture<RpcResult<SiteHealthOutput>> siteHealth(SiteHealthInput input) {
         log.info("{}:site-health invoked.", APP_NAME);
-        List<SiteHealth> sites = resolver.getSiteHealth();
+        List<SiteHealthData> sites = resolver.getSiteHealth();
         return buildSiteHealthOutput(sites);
     }
 
@@ -313,11 +328,11 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      * @see DatabaseHealthInput
      * @see DatabaseHealthOutput
      */
-    @Override
+    
     public ListenableFuture<RpcResult<DatabaseHealthOutput>> databaseHealth(DatabaseHealthInput input) {
         log.info("{}:database-health invoked.", APP_NAME);
         DatabaseHealthOutputBuilder outputBuilder = new DatabaseHealthOutputBuilder();
-        DatabaseHealth health = resolver.getDatabaseHealth();
+        DatabaseHealthData health = resolver.getDatabaseHealth();
         outputBuilder.setStatus(health.getHealth().equals(Health.HEALTHY) ? "200" : "500");
         outputBuilder.setHealth(health.getHealth().toString());
         outputBuilder.setServedBy(member);
@@ -337,10 +352,10 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      * @see AdminHealthOutput
      */
     @Override
-    public ListenableFuture<RpcResult<AdminHealthOutput>> adminHealth(AdminHealthInput input) {
+    public ListenableFuture<RpcResult<AdminHealthOutput>> invoke(AdminHealthInput input) {
         log.info("{}:admin-health invoked.", APP_NAME);
         AdminHealthOutputBuilder outputBuilder = new AdminHealthOutputBuilder();
-        AdminHealth adminHealth = resolver.getAdminHealth();
+        AdminHealthData adminHealth = resolver.getAdminHealth();
         outputBuilder.setStatus(Integer.toString(adminHealth.getStatusCode()));
         outputBuilder.setHealth(adminHealth.getHealth().toString());
         outputBuilder.setServedBy(member);
@@ -359,7 +374,7 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      * @see HaltAkkaTrafficInput
      * @see HaltAkkaTrafficOutput
      */
-    @Override
+    
     public ListenableFuture<RpcResult<HaltAkkaTrafficOutput>> haltAkkaTraffic(HaltAkkaTrafficInput input) {
         log.info("{}:halt-akka-traffic invoked.", APP_NAME);
         HaltAkkaTrafficOutputBuilder outputBuilder = new HaltAkkaTrafficOutputBuilder();
@@ -381,7 +396,7 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      * @see ResumeAkkaTrafficInput
      * @see ResumeAkkaTrafficOutput
      */
-    @Override
+    
     public ListenableFuture<RpcResult<ResumeAkkaTrafficOutput>> resumeAkkaTraffic(ResumeAkkaTrafficInput input) {
         log.info("{}:resume-akka-traffic invoked.", APP_NAME);
         ResumeAkkaTrafficOutputBuilder outputBuilder = new ResumeAkkaTrafficOutputBuilder();
@@ -402,7 +417,7 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      * @see SiteIdentifierInput
      * @see SiteIdentifierOutput
      */
-    @Override
+    
     public ListenableFuture<RpcResult<SiteIdentifierOutput>> siteIdentifier(SiteIdentifierInput input) {
         log.info("{}:site-identifier invoked.", APP_NAME);
         SiteIdentifierOutputBuilder outputBuilder = new SiteIdentifierOutputBuilder();
@@ -423,7 +438,7 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      * @see FailoverInput
      * @see FailoverOutput
      */
-    @Override
+    
     public ListenableFuture<RpcResult<FailoverOutput>> failover(FailoverInput input) {
         log.info("{}:failover invoked.", APP_NAME);
         FailoverOutputBuilder outputBuilder = new FailoverOutputBuilder();
@@ -587,17 +602,17 @@ public class GrToolkitProvider implements AutoCloseable, GrToolkitService, DataT
      *
      * @param sites list of sites
      * @return future containing a completed {@code SiteHealthOutput}
-     * @see SiteHealth
+     * @see SiteHealthData
      * @see HealthResolver
      */
     @SuppressWarnings("unchecked")
-    private ListenableFuture<RpcResult<SiteHealthOutput>> buildSiteHealthOutput(List<SiteHealth> sites) {
+    private ListenableFuture<RpcResult<SiteHealthOutput>> buildSiteHealthOutput(List<SiteHealthData> sites) {
         SiteHealthOutputBuilder outputBuilder = new SiteHealthOutputBuilder();
         SitesBuilder siteBuilder = new SitesBuilder();
         outputBuilder.setStatus("200");
         outputBuilder.setSites((List) new ArrayList<Site>());
 
-        for(SiteHealth site : sites) {
+        for(SiteHealthData site : sites) {
             siteBuilder.setHealth(site.getHealth().toString());
             siteBuilder.setRole(site.getRole());
             siteBuilder.setId(site.getId());
