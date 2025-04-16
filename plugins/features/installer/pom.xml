@@ -63,6 +63,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.onap.ccsdk.sli.plugins</groupId>
             <artifactId>ccsdk-restconf-client</artifactId>
@@ -76,6 +77,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        -->
         <dependency>
             <groupId>org.onap.ccsdk.sli.plugins</groupId>
             <artifactId>ccsdk-sshapi-call-node</artifactId>

@@ -32,7 +32,6 @@ public interface SvcLogicService extends SvcLogicServiceBase {
     String NAME = "org.onap.ccsdk.sli.core.sli.provider.SvcLogicService";
 
     @Override
-    @Deprecated
     Properties execute(String module, String rpc, String version, String mode, Properties parms) throws SvcLogicException;
 
     /**
@@ -47,6 +46,7 @@ public interface SvcLogicService extends SvcLogicServiceBase {
      * @return final values of attributes from SvcLogicContext, as Properties
      * @throws SvcLogicException
      */
+    @Deprecated
     Properties execute(String module, String rpc, String version, String mode, Properties parms, DOMDataBroker domDataBroker) throws SvcLogicException;
 
 

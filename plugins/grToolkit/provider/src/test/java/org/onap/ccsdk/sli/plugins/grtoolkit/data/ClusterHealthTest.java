@@ -28,19 +28,19 @@ import static org.junit.Assert.*;
 public class ClusterHealthTest {
     @Test
     public void constructorTest() {
-        ClusterHealth health = new ClusterHealth();
+        ClusterHealthData health = new ClusterHealthData();
         assertEquals(Health.FAULTY, health.getHealth());
     }
 
     @Test
     public void withHealth() {
-        ClusterHealth health = new ClusterHealth().withHealth(Health.HEALTHY);
+        ClusterHealthData health = new ClusterHealthData().withHealth(Health.HEALTHY);
         assertEquals(Health.HEALTHY, health.getHealth());
     }
 
     @Test
     public void setHealth() {
-        ClusterHealth health = new ClusterHealth();
+        ClusterHealthData health = new ClusterHealthData();
         health.setHealth(Health.HEALTHY);
         assertEquals(Health.HEALTHY, health.getHealth());
     }
