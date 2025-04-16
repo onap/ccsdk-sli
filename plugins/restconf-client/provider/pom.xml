@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.plugins</groupId>
@@ -17,6 +17,8 @@
 
     <properties>
         <jaxb-api.version>2.3.3</jaxb-api.version>
+        <odl.netconf.version>6.0.6</odl.netconf.version>
+        <odl.yangtools.version>11.0.5</odl.yangtools.version>
     </properties>
 
     <dependencyManagement>
@@ -58,22 +60,22 @@
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-common</artifactId>
-            <scope>provided</scope>
+            <version>${odl.yangtools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-data-impl</artifactId>
-            <scope>provided</scope>
+            <version>${odl.yangtools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-parser-api</artifactId>
-            <scope>provided</scope>
+            <version>${odl.yangtools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-repo-api</artifactId>
-            <scope>provided</scope>
+            <version>${odl.yangtools.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -94,8 +96,13 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>restconf-common</artifactId>
+            <version>${odl.netconf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
             <artifactId>restconf-nb</artifactId>
-            <version>6.0.6</version>
+            <version>${odl.netconf.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.xml</groupId>
@@ -106,7 +113,7 @@
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-parser-impl</artifactId>
-            <scope>provided</scope>
+            <version>${odl.yangtools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -154,6 +161,7 @@
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-test-util</artifactId>
+            <version>${odl.yangtools.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -172,4 +180,16 @@
             <artifactId>httpclient</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

@@ -47,6 +47,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.annotation.Nonnull;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -54,20 +58,28 @@ import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.BackupData;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.BackupDataInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.BackupDataOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.BackupDataOutputBuilder;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.DaeximOffsiteBackupService;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.RetrieveData;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.RetrieveDataInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.RetrieveDataOutput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.RetrieveDataOutputBuilder;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DaeximOffsiteBackupProvider implements AutoCloseable, DaeximOffsiteBackupService, DataTreeChangeListener {
+@Singleton
+@Component(service = BackupData.class, immediate = true)
+public class DaeximOffsiteBackupProvider implements AutoCloseable, BackupData {
     private static final Logger LOG = LoggerFactory.getLogger(DaeximOffsiteBackupProvider.class);
 
     private static String DAEXIM_DIR;
@@ -84,16 +96,19 @@ public class DaeximOffsiteBackupProvider implements AutoCloseable, DaeximOffsite
 
     private final ExecutorService executor;
     private Properties properties;
-    private DataBroker dataBroker;
-    private RpcProviderService rpcRegistry;
-    private ObjectRegistration<DaeximOffsiteBackupService> rpcRegistration;
+    private final DataBroker dataBroker;
+    private final Registration rpcRegistration;
 
-    public DaeximOffsiteBackupProvider(DataBroker dataBroker,
-            RpcProviderService rpcProviderRegistry) {
+    @Inject
+    @Activate
+    public DaeximOffsiteBackupProvider(@Reference final DataBroker dataBroker,
+            @Reference final RpcProviderService rpcProviderRegistry) {
         LOG.info("Creating provider for " + appName);
         this.executor = Executors.newFixedThreadPool(1);
         this.dataBroker = dataBroker;
-        this.rpcRegistry = rpcProviderRegistry;
+        this.rpcRegistration = rpcProviderRegistry.registerRpcImplementations(
+            this,
+            (RetrieveData) this::retrieveData);
         initialize();
     }
 
@@ -106,7 +121,6 @@ public class DaeximOffsiteBackupProvider implements AutoCloseable, DaeximOffsite
         } catch (Exception e) {
             LOG.error("Caught Exception while trying to load properties file", e);
         }
-        rpcRegistration = rpcRegistry.registerRpcImplementation(DaeximOffsiteBackupService.class, this);
         LOG.info("Initialization complete for " + appName);
     }
 
@@ -181,11 +195,10 @@ public class DaeximOffsiteBackupProvider implements AutoCloseable, DaeximOffsite
         }
     }
 
-    protected void initializeChild() {
-
-    }
 
     @Override
+    @PreDestroy
+    @Deactivate
     public void close() throws Exception {
         LOG.info("Closing provider for " + appName);
         executor.shutdown();
@@ -194,12 +207,7 @@ public class DaeximOffsiteBackupProvider implements AutoCloseable, DaeximOffsite
     }
 
     @Override
-    public void onDataTreeChanged(@Nonnull Collection changes) {
-
-    }
-
-    @Override
-    public ListenableFuture<RpcResult<BackupDataOutput>> backupData(BackupDataInput input) {
+    public ListenableFuture<RpcResult<BackupDataOutput>> invoke(BackupDataInput input) {
         final String SVC_OPERATION = "backup-data";
         LOG.info(appName + ":" + SVC_OPERATION + " called.");
 
@@ -245,7 +253,6 @@ public class DaeximOffsiteBackupProvider implements AutoCloseable, DaeximOffsite
         return buildBackupDataFuture(statusCode, message);
     }
 
-    @Override
     public ListenableFuture<RpcResult<RetrieveDataOutput>> retrieveData(RetrieveDataInput input) {
         final String SVC_OPERATION = "retrieve-data";
         LOG.info(appName + ":" + SVC_OPERATION + " called.");
