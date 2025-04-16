@@ -29,13 +29,13 @@ import org.junit.Test;
 
 import org.onap.ccsdk.sli.core.dblib.DBLibConnection;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.AdminHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.AdminHealthData;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterActor;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterHealth;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.DatabaseHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.ClusterHealthData;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.DatabaseHealthData;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.FailoverStatus;
 import org.onap.ccsdk.sli.plugins.grtoolkit.data.Health;
-import org.onap.ccsdk.sli.plugins.grtoolkit.data.SiteHealth;
+import org.onap.ccsdk.sli.plugins.grtoolkit.data.SiteHealthData;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -103,7 +103,7 @@ public class SixNodeHealthResolverTest {
     @Test
     public void getAdminHealthFaulty() {
         stubFor(get(urlEqualTo("/adm/healthcheck")).willReturn(aResponse().withStatus(500)));
-        AdminHealth health = resolver.getAdminHealth();
+        AdminHealthData health = resolver.getAdminHealth();
         assertNotNull(health);
         assertEquals(500, health.getStatusCode());
         assertEquals(Health.FAULTY, health.getHealth());
@@ -112,7 +112,7 @@ public class SixNodeHealthResolverTest {
     @Test
     public void getAdminHealthHealthy() {
         stubFor(get(urlEqualTo("/adm/healthcheck")).willReturn(aResponse().withStatus(200)));
-        AdminHealth health = resolver.getAdminHealth();
+        AdminHealthData health = resolver.getAdminHealth();
         assertNotNull(health);
         assertEquals(200, health.getStatusCode());
         assertEquals(Health.HEALTHY, health.getHealth());
@@ -128,7 +128,7 @@ public class SixNodeHealthResolverTest {
         } catch(SQLException e) {
             fail();
         }
-        DatabaseHealth health = resolver.getDatabaseHealth();
+        DatabaseHealthData health = resolver.getDatabaseHealth();
         assertEquals(Health.HEALTHY, health.getHealth());
     }
 
@@ -142,7 +142,7 @@ public class SixNodeHealthResolverTest {
         } catch(SQLException e) {
             fail();
         }
-        DatabaseHealth health = resolver.getDatabaseHealth();
+        DatabaseHealthData health = resolver.getDatabaseHealth();
         assertEquals(Health.FAULTY, health.getHealth());
     }
 
@@ -156,7 +156,7 @@ public class SixNodeHealthResolverTest {
         } catch(SQLException e) {
             fail();
         }
-        DatabaseHealth health = resolver.getDatabaseHealth();
+        DatabaseHealthData health = resolver.getDatabaseHealth();
         assertEquals(Health.FAULTY, health.getHealth());
     }
 
@@ -170,7 +170,7 @@ public class SixNodeHealthResolverTest {
     @Test
     public void getClusterHealth() {
         stubController();
-        ClusterHealth health = resolver.getClusterHealth();
+        ClusterHealthData health = resolver.getClusterHealth();
         assertEquals(Health.HEALTHY, health.getHealth());
     }
 
@@ -237,7 +237,7 @@ public class SixNodeHealthResolverTest {
         } catch(SQLException e) {
             fail();
         }
-        List<SiteHealth> health = resolver.getSiteHealth();
+        List<SiteHealthData> health = resolver.getSiteHealth();
         assertNotNull(health);
         assertNotEquals(0, health.size());
         assertEquals(2, health.size());
@@ -257,7 +257,7 @@ public class SixNodeHealthResolverTest {
             fail();
         }
         stubFor(get(urlEqualTo("/jolokia/read/org.opendaylight.controller:Category=ShardManager,name=shard-manager-config,type=DistributedConfigDatastore")).inScenario("testing").whenScenarioStateIs("next").willReturn(aResponse().withBodyFile("nonexistent")));
-        List<SiteHealth> health = resolver.getSiteHealth();
+        List<SiteHealthData> health = resolver.getSiteHealth();
         assertNotNull(health);
         assertNotEquals(0, health.size());
         assertEquals(2, health.size());
@@ -277,7 +277,7 @@ public class SixNodeHealthResolverTest {
             fail();
         }
         stubFor(get(urlEqualTo("/jolokia/read/org.opendaylight.controller:Category=Shards,name=member-1-shard-default-config,type=DistributedConfigDatastore")).inScenario("testing").willReturn(aResponse().withBodyFile("nonexistent")).willSetStateTo("next"));
-        List<SiteHealth> health = resolver.getSiteHealth();
+        List<SiteHealthData> health = resolver.getSiteHealth();
         assertNotNull(health);
         assertNotEquals(0, health.size());
         assertEquals(2, health.size());
@@ -297,7 +297,7 @@ public class SixNodeHealthResolverTest {
             fail();
         }
         stubFor(get(urlEqualTo("/jolokia/read/akka:type=Cluster")).willReturn(aResponse().withStatus(200).withBodyFile("nonexistent")));
-        List<SiteHealth> health = resolver.getSiteHealth();
+        List<SiteHealthData> health = resolver.getSiteHealth();
         assertNotNull(health);
         assertNotEquals(0, health.size());
         assertEquals(2, health.size());
@@ -317,7 +317,7 @@ public class SixNodeHealthResolverTest {
         } catch(SQLException e) {
             fail();
         }
-        List<SiteHealth> health = resolver.getSiteHealth();
+        List<SiteHealthData> health = resolver.getSiteHealth();
         assertNotNull(health);
         assertNotEquals(0, health.size());
         assertEquals(2, health.size());
