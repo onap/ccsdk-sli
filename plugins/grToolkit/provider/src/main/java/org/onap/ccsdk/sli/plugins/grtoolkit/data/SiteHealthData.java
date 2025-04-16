@@ -32,16 +32,16 @@ import java.util.List;
  * @author Anthony Haddox
  * @see org.onap.ccsdk.sli.plugins.grtoolkit.resolver.HealthResolver
  */
-public class SiteHealth {
-    private List<AdminHealth> adminHealth;
-    private List<DatabaseHealth> databaseHealth;
-    private List<ClusterHealth> clusterHealth;
+public class SiteHealthData {
+    private List<AdminHealthData> adminHealth;
+    private List<DatabaseHealthData> databaseHealth;
+    private List<ClusterHealthData> clusterHealth;
 
     private Health health;
     private String id;
     private String role;
 
-    public SiteHealth() {
+    public SiteHealthData() {
         adminHealth = new ArrayList<>();
         databaseHealth = new ArrayList<>();
         clusterHealth = new ArrayList<>();
@@ -50,27 +50,27 @@ public class SiteHealth {
         health = Health.FAULTY;
     }
 
-    public SiteHealth withAdminHealth(AdminHealth... health) {
+    public SiteHealthData withAdminHealth(AdminHealthData... health) {
         Collections.addAll(adminHealth, health);
         return this;
     }
 
-    public SiteHealth withDatabaseHealth(DatabaseHealth... health) {
+    public SiteHealthData withDatabaseHealth(DatabaseHealthData... health) {
         Collections.addAll(databaseHealth, health);
         return this;
     }
 
-    public SiteHealth withClusterHealth(ClusterHealth... health) {
+    public SiteHealthData withClusterHealth(ClusterHealthData... health) {
         Collections.addAll(clusterHealth, health);
         return this;
     }
 
-    public SiteHealth withId(String id) {
+    public SiteHealthData withId(String id) {
         this.id = id;
         return this;
     }
 
-    public SiteHealth withRole(String role) {
+    public SiteHealthData withRole(String role) {
         this.role = role;
         return this;
     }
@@ -83,27 +83,27 @@ public class SiteHealth {
         this.health = health;
     }
 
-    public List<AdminHealth> getAdminHealth() {
+    public List<AdminHealthData> getAdminHealth() {
         return adminHealth;
     }
 
-    public void setAdminHealth(List<AdminHealth> adminHealth) {
+    public void setAdminHealth(List<AdminHealthData> adminHealth) {
         this.adminHealth = adminHealth;
     }
 
-    public List<DatabaseHealth> getDatabaseHealth() {
+    public List<DatabaseHealthData> getDatabaseHealth() {
         return databaseHealth;
     }
 
-    public void setDatabaseHealth(List<DatabaseHealth> databaseHealth) {
+    public void setDatabaseHealth(List<DatabaseHealthData> databaseHealth) {
         this.databaseHealth = databaseHealth;
     }
 
-    public List<ClusterHealth> getClusterHealth() {
+    public List<ClusterHealthData> getClusterHealth() {
         return clusterHealth;
     }
 
-    public void setClusterHealth(List<ClusterHealth> clusterHealth) {
+    public void setClusterHealth(List<ClusterHealthData> clusterHealth) {
         this.clusterHealth = clusterHealth;
     }
 

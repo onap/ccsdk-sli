@@ -28,17 +28,31 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
 import org.onap.ccsdk.sli.core.sli.provider.MdsalHelper;
-import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.*;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.common.header.CommonHeaderBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.status.StatusBuilder;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.Uint16;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +63,9 @@ import org.slf4j.LoggerFactory;
  * initialization / clean up methods.
  *
  */
-public class LcmProvider implements AutoCloseable, LCMService {
+@Singleton
+@Component(service = ActionStatus.class, immediate = true)
+public class LcmProvider implements AutoCloseable, ActionStatus {
 
 	private class CommonLcmFields {
 		private StatusBuilder statusBuilder;
@@ -88,43 +104,77 @@ public class LcmProvider implements AutoCloseable, LCMService {
 	private static final String APPLICATION_NAME = "LCM";
 
 	private final ExecutorService executor;
-	protected DOMDataBroker domDataBroker;
-	protected NotificationPublishService notificationService;
-	protected RpcProviderService rpcRegistry;
+	private final DOMDataBroker domDataBroker;
 	private final LcmSliClient lcmSliClient;
 
-	protected ObjectRegistration<LCMService> rpcRegistration;
+	private final Registration rpcRegistration;
 
-	public LcmProvider(final DOMDataBroker dataBroker, final NotificationPublishService notificationPublishService,
+	@Inject
+	@Activate
+	public LcmProvider(@Reference final DataBroker dataProvider,
+	                   @Reference final EntityOwnershipService ownershipService,
+					   @Reference final DOMDataBroker domDataBroker,
+					   @Reference final RpcProviderService rpcProviderRegistry) {
+		this(domDataBroker, rpcProviderRegistry, new LcmSliClient(findSvcLogicService()));
+	}
+
+	public LcmProvider(final DOMDataBroker dataBroker, 
 			final RpcProviderService rpcProviderRegistry, final LcmSliClient lcmSliClient) {
 
 		LOG.info("Creating provider for {}", APPLICATION_NAME);
-		executor = Executors.newFixedThreadPool(1);
-			domDataBroker = dataBroker;
-		notificationService = notificationPublishService;
-		rpcRegistry = rpcProviderRegistry;
+		this.executor = Executors.newFixedThreadPool(1);
+		this.domDataBroker = dataBroker;
 		this.lcmSliClient = lcmSliClient;
-		initialize();
-	}
 
-	public void initialize() {
-		LOG.info("Initializing {} for {}", this.getClass().getName(), APPLICATION_NAME);
-
-		if (rpcRegistration == null) {
-			if (rpcRegistry != null) {
-				rpcRegistration = rpcRegistry.registerRpcImplementation(LCMService.class, this);
-				LOG.info("Initialization complete for {}", APPLICATION_NAME);
-			} else {
-				LOG.warn("Error initializing {} : rpcRegistry unset", APPLICATION_NAME);
-			}
-		}
-	}
-
-	protected void initializeChild() {
-		// Override if you have custom initialization intelligence
+		rpcRegistration = rpcProviderRegistry.registerRpcImplementations(
+			this,
+			(ActivateNESw) this::activateNESw,
+			(AttachVolume) this::attachVolume,
+			(Audit) this::audit,
+			(CheckLock) this::checkLock,
+			(ConfigBackup) this::configBackup,
+			(ConfigBackupDelete) this::configBackupDelete,
+			(ConfigExport) this::configExport,
+			(ConfigModify) this::configModify,
+			(ConfigRestore) this::configRestore,
+			(ConfigScaleOut) this::configScaleOut,
+			(Configure) this::configure,
+			(DetachVolume) this::detachVolume,
+			(DistributeTraffic) this::distributeTraffic,
+			(DownloadNESw) this::downloadNESw,
+			(Evacuate) this::evacuate,
+			(HealthCheck) this::healthCheck,
+			(LiveUpgrade) this::liveUpgrade,
+			(Lock) this::lock,
+			(Migrate) this::migrate,
+			(Query) this::query,
+			(QuiesceTraffic) this::quiesceTraffic,
+			(Reboot) this::reboot,
+			(Rebuild) this::rebuild,
+			(Restart) this::restart,
+			(ResumeTraffic) this::resumeTraffic,
+			(Rollback) this::rollback,
+			(Snapshot) this::snapshot,
+			(SoftwareUpload) this::softwareUpload,
+			(Start) this::start,
+			(StartApplication) this::startApplication,
+			(Stop) this::stop,
+			(StopApplication) this::stopApplication,
+			(Sync) this::sync,
+			(Terminate) this::terminate,
+			(Test) this::test,
+			(Unlock) this::unlock,
+			(UpgradeBackout) this::upgradeBackout,
+			(UpgradeBackup) this::upgradeBackup,
+			(UpgradePostCheck) this::upgradePostCheck,
+			(UpgradePreCheck) this::upgradePreCheck,
+			(UpgradeSoftware) this::upgradeSoftware
+		);
 	}
 
 	@Override
+	@PreDestroy
+	@Deactivate
 	public void close() throws Exception {
 		LOG.info("Closing provider for " + APPLICATION_NAME);
 		executor.shutdown();
@@ -132,9 +182,27 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		LOG.info("Successfully closed provider for " + APPLICATION_NAME);
 	}
 
-
-
 	@Override
+	public ListenableFuture<RpcResult<ActionStatusOutput>> invoke(ActionStatusInput input) {
+		ActionStatusInputBuilder iBuilder = new ActionStatusInputBuilder(input);
+		ActionStatusOutputBuilder oBuilder = new ActionStatusOutputBuilder();
+
+		try {
+			CommonLcmFields retval = callDG("action-status", iBuilder.build());
+			oBuilder.setStatus(retval.getStatusBuilder().build());
+			oBuilder.setCommonHeader(retval.getCommonHeaderBuilder().build());
+		} catch (LcmRpcInvocationException e) {
+			LOG.debug(exceptionMessage, e);
+			oBuilder.setCommonHeader(e.getCommonHeader());
+			oBuilder.setStatus(e.getStatus());
+		}
+
+		RpcResult<ActionStatusOutput> rpcResult =
+				RpcResultBuilder.<ActionStatusOutput> status(true).withResult(oBuilder.build()).build();
+		// return error
+		return Futures.immediateFuture(rpcResult);
+	}
+
 	public ListenableFuture<RpcResult<CheckLockOutput>> checkLock(CheckLockInput input) {
 		CheckLockInputBuilder iBuilder = new CheckLockInputBuilder(input);
 		CheckLockOutputBuilder oBuilder = new CheckLockOutputBuilder();
@@ -156,7 +224,6 @@ public class LcmProvider implements AutoCloseable, LCMService {
 
 	}
 
-	@Override
 	public ListenableFuture<RpcResult<RebootOutput>> reboot(RebootInput input) {
 		RebootInputBuilder iBuilder = new RebootInputBuilder(input);
 		RebootOutputBuilder oBuilder = new RebootOutputBuilder();
@@ -177,7 +244,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+
 	public ListenableFuture<RpcResult<UpgradeBackupOutput>> upgradeBackup(UpgradeBackupInput input) {
 		UpgradeBackupInputBuilder iBuilder = new UpgradeBackupInputBuilder(input);
 		UpgradeBackupOutputBuilder oBuilder = new UpgradeBackupOutputBuilder();
@@ -199,7 +266,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+
 	public ListenableFuture<RpcResult<RollbackOutput>> rollback(RollbackInput input) {
 		RollbackInputBuilder iBuilder = new RollbackInputBuilder(input);
 		RollbackOutputBuilder oBuilder = new RollbackOutputBuilder();
@@ -223,7 +290,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+
 	public ListenableFuture<RpcResult<SyncOutput>> sync(SyncInput input) {
 		SyncInputBuilder iBuilder = new SyncInputBuilder(input);
 		SyncOutputBuilder oBuilder = new SyncOutputBuilder();
@@ -244,7 +311,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+
 	public ListenableFuture<RpcResult<QueryOutput>> query(QueryInput input) {
 		QueryInputBuilder iBuilder = new QueryInputBuilder(input);
 		QueryOutputBuilder oBuilder = new QueryOutputBuilder();
@@ -265,7 +332,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+
 	public ListenableFuture<RpcResult<ConfigExportOutput>> configExport(ConfigExportInput input) {
 		ConfigExportInputBuilder iBuilder = new ConfigExportInputBuilder(input);
 		ConfigExportOutputBuilder oBuilder = new ConfigExportOutputBuilder();
@@ -286,7 +353,6 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
 	public ListenableFuture<RpcResult<StopApplicationOutput>> stopApplication(StopApplicationInput input) {
 		StopApplicationInputBuilder iBuilder = new StopApplicationInputBuilder(input);
 		StopApplicationOutputBuilder oBuilder = new StopApplicationOutputBuilder();
@@ -307,7 +373,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+
 	public ListenableFuture<RpcResult<SoftwareUploadOutput>> softwareUpload(SoftwareUploadInput input) {
 		SoftwareUploadInputBuilder iBuilder = new SoftwareUploadInputBuilder(input);
 		SoftwareUploadOutputBuilder oBuilder = new SoftwareUploadOutputBuilder();
@@ -328,7 +394,6 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
 	public ListenableFuture<RpcResult<ResumeTrafficOutput>> resumeTraffic(ResumeTrafficInput input) {
 		ResumeTrafficInputBuilder iBuilder = new ResumeTrafficInputBuilder(input);
 		ResumeTrafficOutputBuilder oBuilder = new ResumeTrafficOutputBuilder();
@@ -349,7 +414,6 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
 	public ListenableFuture<RpcResult<DistributeTrafficOutput>> distributeTraffic(DistributeTrafficInput input) {
 		DistributeTrafficInputBuilder iBuilder = new DistributeTrafficInputBuilder(input);
 		DistributeTrafficOutputBuilder oBuilder = new DistributeTrafficOutputBuilder();
@@ -370,7 +434,6 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
 	public ListenableFuture<RpcResult<ConfigureOutput>> configure(ConfigureInput input) {
 		ConfigureInputBuilder iBuilder = new ConfigureInputBuilder(input);
 		ConfigureOutputBuilder oBuilder = new ConfigureOutputBuilder();
@@ -391,28 +454,8 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
-	public ListenableFuture<RpcResult<ActionStatusOutput>> actionStatus(ActionStatusInput input) {
-		ActionStatusInputBuilder iBuilder = new ActionStatusInputBuilder(input);
-		ActionStatusOutputBuilder oBuilder = new ActionStatusOutputBuilder();
 
-		try {
-			CommonLcmFields retval = callDG("action-status", iBuilder.build());
-			oBuilder.setStatus(retval.getStatusBuilder().build());
-			oBuilder.setCommonHeader(retval.getCommonHeaderBuilder().build());
-		} catch (LcmRpcInvocationException e) {
-			LOG.debug(exceptionMessage, e);
-			oBuilder.setCommonHeader(e.getCommonHeader());
-			oBuilder.setStatus(e.getStatus());
-		}
 
-		RpcResult<ActionStatusOutput> rpcResult =
-				RpcResultBuilder.<ActionStatusOutput> status(true).withResult(oBuilder.build()).build();
-		// return error
-		return Futures.immediateFuture(rpcResult);
-	}
-
-	@Override
 	public ListenableFuture<RpcResult<UpgradePreCheckOutput>> upgradePreCheck(UpgradePreCheckInput input) {
 		UpgradePreCheckInputBuilder iBuilder = new UpgradePreCheckInputBuilder(input);
 		UpgradePreCheckOutputBuilder oBuilder = new UpgradePreCheckOutputBuilder();
@@ -436,7 +479,6 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
 	public ListenableFuture<RpcResult<LiveUpgradeOutput>> liveUpgrade(LiveUpgradeInput input) {
 		LiveUpgradeInputBuilder iBuilder = new LiveUpgradeInputBuilder(input);
 		LiveUpgradeOutputBuilder oBuilder = new LiveUpgradeOutputBuilder();
@@ -457,7 +499,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<ConfigModifyOutput>> configModify(ConfigModifyInput input) {
 		ConfigModifyInputBuilder iBuilder = new ConfigModifyInputBuilder(input);
 		ConfigModifyOutputBuilder oBuilder = new ConfigModifyOutputBuilder();
@@ -478,7 +520,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<RestartOutput>> restart(RestartInput input) {
 		RestartInputBuilder iBuilder = new RestartInputBuilder(input);
 		RestartOutputBuilder oBuilder = new RestartOutputBuilder();
@@ -499,7 +541,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<HealthCheckOutput>> healthCheck(HealthCheckInput input) {
 		HealthCheckInputBuilder iBuilder = new HealthCheckInputBuilder(input);
 		HealthCheckOutputBuilder oBuilder = new HealthCheckOutputBuilder();
@@ -520,7 +562,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<LockOutput>> lock(LockInput input) {
 		LockInputBuilder iBuilder = new LockInputBuilder(input);
 		LockOutputBuilder oBuilder = new LockOutputBuilder();
@@ -541,7 +583,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<TerminateOutput>> terminate(TerminateInput input) {
 		TerminateInputBuilder iBuilder = new TerminateInputBuilder(input);
 		TerminateOutputBuilder oBuilder = new TerminateOutputBuilder();
@@ -562,7 +604,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<AttachVolumeOutput>> attachVolume(AttachVolumeInput input) {
 		AttachVolumeInputBuilder iBuilder = new AttachVolumeInputBuilder(input);
 		AttachVolumeOutputBuilder oBuilder = new AttachVolumeOutputBuilder();
@@ -583,7 +625,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<MigrateOutput>> migrate(MigrateInput input) {
 		MigrateInputBuilder iBuilder = new MigrateInputBuilder(input);
 		MigrateOutputBuilder oBuilder = new MigrateOutputBuilder();
@@ -604,7 +646,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<QuiesceTrafficOutput>> quiesceTraffic(QuiesceTrafficInput input) {
 		QuiesceTrafficInputBuilder iBuilder = new QuiesceTrafficInputBuilder(input);
 		QuiesceTrafficOutputBuilder oBuilder = new QuiesceTrafficOutputBuilder();
@@ -625,7 +667,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<ConfigRestoreOutput>> configRestore(ConfigRestoreInput input) {
 		ConfigRestoreInputBuilder iBuilder = new ConfigRestoreInputBuilder(input);
 		ConfigRestoreOutputBuilder oBuilder = new ConfigRestoreOutputBuilder();
@@ -646,7 +688,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<UpgradeBackoutOutput>> upgradeBackout(UpgradeBackoutInput input) {
 		UpgradeBackoutInputBuilder iBuilder = new UpgradeBackoutInputBuilder(input);
 		UpgradeBackoutOutputBuilder oBuilder = new UpgradeBackoutOutputBuilder();
@@ -667,7 +709,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<EvacuateOutput>> evacuate(EvacuateInput input) {
 		EvacuateInputBuilder iBuilder = new EvacuateInputBuilder(input);
 		EvacuateOutputBuilder oBuilder = new EvacuateOutputBuilder();
@@ -688,7 +730,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<UnlockOutput>> unlock(UnlockInput input) {
 		UnlockInputBuilder iBuilder = new UnlockInputBuilder(input);
 		UnlockOutputBuilder oBuilder = new UnlockOutputBuilder();
@@ -709,7 +751,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<ConfigBackupDeleteOutput>> configBackupDelete(ConfigBackupDeleteInput input) {
 		ConfigBackupDeleteInputBuilder iBuilder = new ConfigBackupDeleteInputBuilder(input);
 		ConfigBackupDeleteOutputBuilder oBuilder = new ConfigBackupDeleteOutputBuilder();
@@ -730,7 +772,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<UpgradeSoftwareOutput>> upgradeSoftware(UpgradeSoftwareInput input) {
 		UpgradeSoftwareInputBuilder iBuilder = new UpgradeSoftwareInputBuilder(input);
 		UpgradeSoftwareOutputBuilder oBuilder = new UpgradeSoftwareOutputBuilder();
@@ -751,7 +793,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<DownloadNESwOutput>> downloadNESw(DownloadNESwInput input) {
 		DownloadNESwInputBuilder iBuilder = new DownloadNESwInputBuilder(input);
 		DownloadNESwOutputBuilder oBuilder = new DownloadNESwOutputBuilder();
@@ -775,7 +817,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<ActivateNESwOutput>> activateNESw(ActivateNESwInput input) {
 		ActivateNESwInputBuilder iBuilder = new ActivateNESwInputBuilder(input);
 		ActivateNESwOutputBuilder oBuilder = new ActivateNESwOutputBuilder();
@@ -799,7 +841,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<StopOutput>> stop(StopInput input) {
 		StopInputBuilder iBuilder = new StopInputBuilder(input);
 		StopOutputBuilder oBuilder = new StopOutputBuilder();
@@ -820,7 +862,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<DetachVolumeOutput>> detachVolume(DetachVolumeInput input) {
 		DetachVolumeInputBuilder iBuilder = new DetachVolumeInputBuilder(input);
 		DetachVolumeOutputBuilder oBuilder = new DetachVolumeOutputBuilder();
@@ -841,7 +883,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<ConfigScaleOutOutput>> configScaleOut(ConfigScaleOutInput input) {
 		ConfigScaleOutInputBuilder iBuilder = new ConfigScaleOutInputBuilder(input);
 		ConfigScaleOutOutputBuilder oBuilder = new ConfigScaleOutOutputBuilder();
@@ -862,7 +904,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<UpgradePostCheckOutput>> upgradePostCheck(UpgradePostCheckInput input) {
 		UpgradePostCheckInputBuilder iBuilder = new UpgradePostCheckInputBuilder(input);
 		UpgradePostCheckOutputBuilder oBuilder = new UpgradePostCheckOutputBuilder();
@@ -886,7 +928,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<TestOutput>> test(TestInput input) {
 		TestInputBuilder iBuilder = new TestInputBuilder(input);
 		TestOutputBuilder oBuilder = new TestOutputBuilder();
@@ -907,7 +949,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<StartApplicationOutput>> startApplication(StartApplicationInput input) {
 		StartApplicationInputBuilder iBuilder = new StartApplicationInputBuilder(input);
 		StartApplicationOutputBuilder oBuilder = new StartApplicationOutputBuilder();
@@ -928,7 +970,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<ConfigBackupOutput>> configBackup(ConfigBackupInput input) {
 		ConfigBackupInputBuilder iBuilder = new ConfigBackupInputBuilder(input);
 		ConfigBackupOutputBuilder oBuilder = new ConfigBackupOutputBuilder();
@@ -949,7 +991,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<RebuildOutput>> rebuild(RebuildInput input) {
 		RebuildInputBuilder iBuilder = new RebuildInputBuilder(input);
 		RebuildOutputBuilder oBuilder = new RebuildOutputBuilder();
@@ -970,7 +1012,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<AuditOutput>> audit(AuditInput input) {
 		AuditInputBuilder iBuilder = new AuditInputBuilder(input);
 		AuditOutputBuilder oBuilder = new AuditOutputBuilder();
@@ -991,7 +1033,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<StartOutput>> start(StartInput input) {
 		StartInputBuilder iBuilder = new StartInputBuilder(input);
 		StartOutputBuilder oBuilder = new StartOutputBuilder();
@@ -1012,7 +1054,7 @@ public class LcmProvider implements AutoCloseable, LCMService {
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	@Override
+	
 	public ListenableFuture<RpcResult<SnapshotOutput>> snapshot(SnapshotInput input) {
 		SnapshotInputBuilder iBuilder = new SnapshotInputBuilder(input);
 		SnapshotOutputBuilder oBuilder = new SnapshotOutputBuilder();
@@ -1113,6 +1155,24 @@ public class LcmProvider implements AutoCloseable, LCMService {
 
 		return new CommonLcmFields(sBuilder, hBuilder, payload);
 
+	}
+
+	private static SvcLogicService findSvcLogicService() {
+		BundleContext bctx = FrameworkUtil.getBundle(SvcLogicService.class).getBundleContext();
+
+		SvcLogicService svcLogic = null;
+
+		// Get SvcLogicService reference
+		ServiceReference sref = bctx.getServiceReference(SvcLogicService.NAME);
+		if (sref != null) {
+			svcLogic = (SvcLogicService) bctx.getService(sref);
+
+		} else {
+			LOG.warn("Cannot find service reference for " + SvcLogicService.NAME);
+
+		}
+
+		return (svcLogic);
 	}
 
 }

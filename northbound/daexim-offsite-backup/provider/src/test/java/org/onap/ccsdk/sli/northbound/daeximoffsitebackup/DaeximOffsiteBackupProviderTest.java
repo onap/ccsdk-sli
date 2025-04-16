@@ -43,9 +43,9 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.DaeximOffsiteBackupService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.daeximoffsitebackup.rev180926.RetrieveDataInput;
-import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.binding.Augmentation;
+import org.opendaylight.yangtools.binding.Rpc;
 
 public class DaeximOffsiteBackupProviderTest {
     public DataBroker dataBroker;
@@ -64,7 +64,7 @@ public class DaeximOffsiteBackupProviderTest {
         writeTransaction = mock(ReadWriteTransaction.class);
         checkedFuture = mock(FluentFuture.class);
         rpcRegistry = mock(RpcProviderService.class);
-        when(rpcRegistry.registerRpcImplementation(any(), any(DaeximOffsiteBackupService.class))).thenReturn(null);
+        when(rpcRegistry.registerRpcImplementations((Rpc<?,?>)any())).thenReturn(null);
         try {
             when(checkedFuture.get()).thenReturn(null);
         }
@@ -93,39 +93,33 @@ public class DaeximOffsiteBackupProviderTest {
     }
 
     @Test
-    public void onDataTreeChangedTest() {
-        provider.onDataTreeChanged(null);
-        // onDataTreeChanged is an empty stub
-    }
-
-    @Test
     public void backupDataTest() {
         try {
-            assertNotNull(provider.backupData(null));
+            assertNotNull(provider.invoke(null));
         }
         catch(Exception e) {
             fail();
         }
         try {
-            assertNotNull(provider.backupData(null));
+            assertNotNull(provider.invoke(null));
         }
         catch(Exception e) {
             fail();
         }
         try {
-            assertNotNull(provider.backupData(null));
+            assertNotNull(provider.invoke(null));
         }
         catch(Exception e) {
             fail();
         }
         try {
-            assertNotNull(provider.backupData(null));
+            assertNotNull(provider.invoke(null));
         }
         catch(Exception e) {
             fail();
         }
         try {
-            assertNotNull(provider.backupData(null));
+            assertNotNull(provider.invoke(null));
         }
         catch(Exception e) {
             fail();
@@ -135,10 +129,6 @@ public class DaeximOffsiteBackupProviderTest {
     @Test
     public void retrieveDataTest() {
         RetrieveDataInput input = new RetrieveDataInput() {
-            @Override
-            public <E extends Augmentation<RetrieveDataInput>> @Nullable E augmentation(Class<E> augmentationType) {
-                return null;
-            }
 
             @Override
             public String getPodName() {
@@ -149,6 +139,7 @@ public class DaeximOffsiteBackupProviderTest {
             public String getTimestamp() {
                 return "Some Timestamp";
             }
+
 
             @Override
             public @NonNull Map<Class<? extends Augmentation<RetrieveDataInput>>, Augmentation<RetrieveDataInput>> augmentations() {
