@@ -85,7 +85,7 @@ public class SshConnection {
 			} else if (keyFile != null) {
 				Path keyFilePath = Paths.get(keyFile);
 				KeyPairProvider keyPairProvider = new FileKeyPairProvider(keyFilePath);
-				KeyPair keyPair = keyPairProvider.loadKeys().iterator().next();
+				KeyPair keyPair = keyPairProvider.loadKeys(clientSession).iterator().next();
 				clientSession.addPublicKeyIdentity(keyPair);
 			}
             AuthFuture authFuture = clientSession.auth();
