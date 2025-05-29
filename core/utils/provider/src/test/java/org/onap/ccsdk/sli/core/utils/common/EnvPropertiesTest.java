@@ -23,7 +23,7 @@ public class EnvPropertiesTest {
         assertEquals("jdbc", props.getProperty("org.onap.ccsdk.sli.dbtype"));
         String dbUrl = "jdbc:derby:memory:"+System.getenv("MYSQL_DATABASE")+";create=true";
         assertEquals(dbUrl, props.getProperty("org.onap.ccsdk.sli.jdbc.url"));
-        assertEquals("org.apache.derby.jdbc.EmbeddedDriver", props.getProperty("org.onap.ccsdk.sli.jdbc.driver"));
+        assertEquals("org.apache.derby.iapi.jdbc.AutoloadedDriver", props.getProperty("org.onap.ccsdk.sli.jdbc.driver"));
         assertEquals(System.getenv("MYSQL_DATABASE"), props.getProperty("org.onap.ccsdk.sli.jdbc.database"));
         assertEquals(System.getenv("MYSQL_USER"), props.getProperty("org.onap.ccsdk.sli.jdbc.user") );
         assertEquals(System.getenv("MYSQL_PASSWORD"), props.getProperty("org.onap.ccsdk.sli.jdbc.password"));
@@ -40,7 +40,7 @@ public class EnvPropertiesTest {
         assertEquals("jdbc", props.getProperty("org.onap.ccsdk.sli.dbtype"));
         String dbUrl = "jdbc:derby:memory:"+System.getenv("MYSQL_DATABASE")+";create=true";
         assertEquals(dbUrl, props.getProperty("org.onap.ccsdk.sli.jdbc.url"));
-        assertEquals("org.apache.derby.jdbc.EmbeddedDriver", props.getProperty("org.onap.ccsdk.sli.jdbc.driver"));
+        assertEquals("org.apache.derby.iapi.jdbc.AutoloadedDriver", props.getProperty("org.onap.ccsdk.sli.jdbc.driver"));
         assertEquals(System.getenv("MYSQL_DATABASE"), props.getProperty("org.onap.ccsdk.sli.jdbc.database"));
         assertEquals(System.getenv("MYSQL_USER"), props.getProperty("org.onap.ccsdk.sli.jdbc.user"));
         assertEquals(System.getenv("MYSQL_PASSWORD"), props.getProperty("org.onap.ccsdk.sli.jdbc.password"));
