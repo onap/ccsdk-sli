@@ -20,13 +20,17 @@
     <properties>
         <!--  Ignore deprecated classes in coverage counts -->
         <sonar.coverage.exclusions>**/MessageWriter.java</sonar.coverage.exclusions>
-
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbytools</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
