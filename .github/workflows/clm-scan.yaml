@@ -3,6 +3,7 @@ name: Gerrit Composed CLM Scan
 
 # yamllint disable-line rule:truthy
 on:
+  workflow_dispatch:
   schedule:
     - cron: "58 6 * * 6"
 
