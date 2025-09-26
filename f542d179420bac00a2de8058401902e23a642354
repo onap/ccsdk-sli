@@ -1,0 +1,9 @@
+Verified+1: ONAP Required GHA <releng+onap.required.gha@linuxfoundation.org>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Verified+1: ONAP Bypass GHA <releng+onap.bypass.gha@linuxfoundation.org>
+Code-Review+2: Byung-Woo Jun <byung-woo.jun@est.tech>
+Submitted-by: Byung-Woo Jun <byung-woo.jun@est.tech>
+Submitted-at: Fri, 26 Sep 2025 15:00:03 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/ccsdk/sli/+/142128
+Project: ccsdk/sli
+Branch: refs/heads/master
