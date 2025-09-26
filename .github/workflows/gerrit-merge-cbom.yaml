@@ -5,30 +5,54 @@
 name: '🔑 Generate PQCA CBOM'
 
 on:
-  workflow_dispatch:
-    inputs:
-      GERRIT_CHANGE_NUMBER:
-        description: 'Gerrit change number'
-        required: false
-        type: string
-      GERRIT_PATCHSET_NUMBER:
-        description: 'Gerrit patchset number'
-        required: false
-        type: string
-      GERRIT_REFSPEC:
-        description: 'Gerrit refspec'
-        required: false
-        type: string
   push:
     branches:
       - master
+
+  workflow_dispatch:
+    inputs:
+      GERRIT_BRANCH:
+        description: "Branch that change is against"
+        required: true
+        type: string
+      GERRIT_CHANGE_ID:
+        description: "The ID for the change"
+        required: true
+        type: string
+      GERRIT_CHANGE_NUMBER:
+        description: "The Gerrit number"
+        required: true
+        type: string
+      GERRIT_CHANGE_URL:
+        description: "URL to the change"
+        required: true
+        type: string
+      GERRIT_EVENT_TYPE:
+        description: "Type of Gerrit event"
+        required: true
+        type: string
+      GERRIT_PATCHSET_NUMBER:
+        description: "The patch number for the change"
+        required: true
+        type: string
+      GERRIT_PATCHSET_REVISION:
+        description: "The revision sha"
+        required: true
+        type: string
+      GERRIT_PROJECT:
+        description: "Project in Gerrit"
+        required: true
+        type: string
+      GERRIT_REFSPEC:
+        description: "Gerrit refspec of change"
+        required: true
+        type: string
 
 permissions: {}
 
 concurrency:
   group: "gerrit-merge-cbom-${{ github.workflow }}-${{ github.event.inputs.GERRIT_CHANGE_ID || github.run_id }}"
   cancel-in-progress: true
-
 
 jobs:
   notify:
@@ -57,6 +81,7 @@ jobs:
   cbom-create:
     name: 'Generate PQCA CBOM'
     runs-on: ubuntu-latest
+    needs: [notify]
     permissions:
       contents: write
       pull-requests: write
