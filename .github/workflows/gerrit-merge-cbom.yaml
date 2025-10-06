@@ -120,15 +120,15 @@ jobs:
         # yamllint disable-line rule:line-length
         uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b # v4.6.0
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: 'Setup Maven'
         # yamllint disable-line rule:line-length
         uses: s4u/setup-maven-action@4f7fb9d9675e899ca81c6161dadbba0189a4ebb1 # v1.18.0
         with:
-          java-version: '17'
-          maven-version: '3.8.2'
+          java-version: '21'
+          maven-version: '3.9.9'
 
       - name: Create Maven global settings.xml
         env:
