@@ -143,7 +143,7 @@ jobs:
             echo "Error: .gitreview file not found"
             exit 1
           fi
-          
+
           cat > global-settings.xml << EOF
           <settings>
             <servers>
@@ -216,9 +216,11 @@ jobs:
         # yamllint disable-line rule:line-length
         uses: lfreleng-actions/maven-build-action@main
         with:
-          jdk-version: '21'
+          jdk-version: |
+            '17'
+            '21'
           distribution: 'temurin'
-          mvn-version: '3.8.2'
+          mvn-version: '3.9.5'
           mvn-phases: 'clean package'
           mvn-params: '-DskipTests -Djib.skip=true'
           # yamllint disable-line rule:line-length
