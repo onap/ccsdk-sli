@@ -217,8 +217,8 @@ jobs:
         uses: lfreleng-actions/maven-build-action@main
         with:
           jdk-version: |
-            '17'
-            '21'
+            17
+            21
           distribution: 'temurin'
           mvn-version: '3.9.5'
           mvn-phases: 'clean package'
