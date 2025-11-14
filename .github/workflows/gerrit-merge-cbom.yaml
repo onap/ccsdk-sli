@@ -56,6 +56,7 @@ concurrency:
 
 jobs:
   notify:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       # Harden the runner used by this workflow
@@ -81,6 +82,7 @@ jobs:
   cbom-create:
     name: 'Generate PQCA CBOM'
     runs-on: ubuntu-latest
+    if: always()
     needs: [notify]
     permissions:
       contents: write
@@ -214,7 +216,7 @@ jobs:
         # yamllint disable-line rule:line-length
         uses: lfreleng-actions/maven-build-action@main
         with:
-          jdk-version: '17'
+          jdk-version: '21'
           distribution: 'temurin'
           mvn-version: '3.8.2'
           mvn-phases: 'clean package'
@@ -244,7 +246,7 @@ jobs:
           if-no-files-found: warn
 
   report-status:
-    if: ${{ always() }}
+    if: ${{ always() && github.event_name == 'workflow_dispatch' }}
     needs: [notify, cbom-create]
     runs-on: ubuntu-latest
     steps:
