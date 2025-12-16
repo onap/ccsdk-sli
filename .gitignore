@@ -60,3 +60,6 @@ debug-logs/
 *.log
 *.versionsBackup
 dme2-fs-registry/
+
+#vscode
+debug.log
