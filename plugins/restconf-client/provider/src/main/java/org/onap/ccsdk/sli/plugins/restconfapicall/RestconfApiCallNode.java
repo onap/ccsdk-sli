@@ -43,6 +43,7 @@ import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.getSch
 import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.getUpdatedXmlReq;
 import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.getYangParameters;
 import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.parseUrl;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.toInstanceIdentifier;
 import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfListenerFactory.instance;
 import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializerUtil.FORMAT_ERR;
 import static org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.DfSerializerUtil.UTF_HEADER;
@@ -82,8 +83,6 @@ import org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.YangParameters;
 import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.MdsalPropertiesNodeSerializer;
 import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.Namespace;
 import org.onap.ccsdk.sli.plugins.yangserializers.pnserializer.PropertiesNodeSerializer;
-import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
-import org.opendaylight.restconf.nb.rfc8040.utils.parser.ParserIdentifier;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
@@ -316,7 +315,7 @@ public class RestconfApiCallNode implements SvcLogicJavaPlugin {
                                                      String uri)
             throws SvcLogicException {
         EffectiveModelContext context = getSchemaContext(params);
-        return ParserIdentifier.toInstanceIdentifier(uri, context, null);
+        return toInstanceIdentifier(uri, context, null);
     }
 
     /**

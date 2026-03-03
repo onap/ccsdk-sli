@@ -200,7 +200,7 @@ public final class DfSerializerUtil {
         }
         mod = it.next();
 
-        return new Namespace(mod.getName(), mod.getQNameModule().getNamespace(),
+        return new Namespace(mod.getName(), mod.getQNameModule().namespace(),
                              getRevision(mod.getRevision()));
     }
 

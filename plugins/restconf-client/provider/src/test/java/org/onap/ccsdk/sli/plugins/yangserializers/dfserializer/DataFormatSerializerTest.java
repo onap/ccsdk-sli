@@ -32,7 +32,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.plugins.restapicall.HttpResponse;
 import org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode;
 import org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiCallNode;
-import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
+import org.onap.ccsdk.sli.plugins.restconfapicall.InstanceIdentifierContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 
@@ -161,8 +161,8 @@ public class DataFormatSerializerTest {
      *
      * @throws SvcLogicException when test case fails
      */
-    /* 
-     * Fails for potassium - commenting out for now 
+    /*
+     * Fails for potassium - commenting out for now
     @Test
     public void encodeForAnyXml() throws SvcLogicException {
         String pre = "execution-service_process.";
