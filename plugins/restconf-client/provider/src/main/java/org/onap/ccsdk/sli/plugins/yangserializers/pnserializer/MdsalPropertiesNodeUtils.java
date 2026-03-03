@@ -23,17 +23,15 @@ package org.onap.ccsdk.sli.plugins.yangserializers.pnserializer;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.quote;
-import static org.opendaylight.restconf.nb.rfc8040.utils.parser.ParserIdentifier.toInstanceIdentifier;
+import static org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiUtils.toInstanceIdentifier;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.Optional;
 
-import com.sun.xml.txw2.annotation.XmlNamespace;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.provider.YangUtils;
-import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
-import org.opendaylight.restconf.common.errors.RestconfDocumentedException;
+import org.onap.ccsdk.sli.plugins.restconfapicall.InstanceIdentifierContext;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
@@ -41,7 +39,6 @@ import org.opendaylight.yangtools.yang.data.util.ParserStreamUtils;
 import org.opendaylight.yangtools.yang.data.util.codec.IdentityCodecUtil;
 import org.opendaylight.yangtools.yang.model.api.*;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,7 +262,7 @@ public final class MdsalPropertiesNodeUtils {
             InstanceIdentifierContext id = toInstanceIdentifier(
                     uri1, context, Optional.ofNullable(null));
             return new SchemaPathHolder(id, uri1);
-        } catch (IllegalArgumentException | RestconfDocumentedException
+        } catch (IllegalArgumentException
                 | NullPointerException e) {
             log.info("Exception while converting uri to instance identifier" +
                 " context. Process each node in uri to get instance identifier" +
@@ -342,7 +339,7 @@ public final class MdsalPropertiesNodeUtils {
             try {
                 id = toInstanceIdentifier(prefix + val, context, null);
                 return new SchemaPathHolder(id, val);
-            } catch (IllegalArgumentException | RestconfDocumentedException |
+            } catch (IllegalArgumentException |
                     NullPointerException e) {
                 log.info(format(INFO_MSG, val, e));
             }
@@ -354,7 +351,7 @@ public final class MdsalPropertiesNodeUtils {
         try {
             id = toInstanceIdentifier(prefix + val, context, null);
             return new SchemaPathHolder(id, val);
-        } catch (IllegalArgumentException | RestconfDocumentedException |
+        } catch (IllegalArgumentException |
                 NullPointerException e1) {
             throw new IllegalArgumentException(EXC_MSG, e1);
         }
@@ -423,7 +420,7 @@ public final class MdsalPropertiesNodeUtils {
         Iterator<? extends Module> it = ctx.findModules(modName).iterator();
         if (it.hasNext()) {
             Module m = it.next();
-            return new Namespace(modName, m.getQNameModule().getNamespace(),
+            return new Namespace(modName, m.getQNameModule().namespace(),
                                  getRevision(m.getRevision()));
         }
         return null;
@@ -559,7 +556,7 @@ public final class MdsalPropertiesNodeUtils {
             throw new SvcLogicException("Could not find module node");
         }
         Module m = module.get();
-        return new Namespace(m.getName(), m.getQNameModule().getNamespace(),
+        return new Namespace(m.getName(), m.getQNameModule().namespace(),
                              getRevision(m.getRevision()));
     }
 
