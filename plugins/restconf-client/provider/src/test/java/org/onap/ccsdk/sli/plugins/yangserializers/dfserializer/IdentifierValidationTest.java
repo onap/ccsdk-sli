@@ -32,7 +32,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.plugins.restapicall.HttpResponse;
 import org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode;
 import org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiCallNode;
-import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
+import org.onap.ccsdk.sli.plugins.restconfapicall.InstanceIdentifierContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 
