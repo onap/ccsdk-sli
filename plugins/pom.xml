@@ -24,9 +24,7 @@
         <module>properties-node</module>
         <module>restapi-call-node</module>
         <module>sshapi-call-node</module>
-        <!--
         <module>restconf-client</module>
-        -->
         <module>template-node</module>
         <module>grToolkit</module>
         <module>features</module>

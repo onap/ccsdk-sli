@@ -20,7 +20,7 @@
 
 package org.onap.ccsdk.sli.plugins.yangserializers.pnserializer;
 
-import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
+import org.onap.ccsdk.sli.plugins.restconfapicall.InstanceIdentifierContext;
 
 /**
  * Representation of a holder for a proper path and its corresponding schema.

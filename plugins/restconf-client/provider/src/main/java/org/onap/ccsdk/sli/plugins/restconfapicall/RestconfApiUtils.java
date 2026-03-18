@@ -31,14 +31,25 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.plugins.restapicall.HttpMethod;
 import org.onap.ccsdk.sli.plugins.yangserializers.dfserializer.YangParameters;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
+import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
+import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.spi.source.FileYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParser;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
@@ -193,7 +204,7 @@ public final class RestconfApiUtils {
         YangParser parser = parserFactory.createParser();
         for (File file : yangFiles) {
             try {
-                parser.addSource(YangTextSchemaSource.forPath(file.toPath()));
+                parser.addSource(new FileYangTextSource(file.toPath()));
             } catch (IOException | YangSyntaxErrorException e) {
                 throw new SvcLogicException(YANG_FILE_ERR + e.getMessage(), e);
             }
@@ -252,5 +263,161 @@ public final class RestconfApiUtils {
         req = req.replaceFirst("\n", rootNode);
         req = req + "</" + nodeName + ">";
         return req.replaceAll(">\\s+<", "><");
+    }
+
+    /**
+     * Resolves a RESTCONF URI path against the given schema context and
+     * returns an InstanceIdentifierContext wrapping the resolved SchemaNode
+     * and schema context.
+     *
+     * <p>This is a local replacement for the ODL ParserIdentifier.toInstanceIdentifier()
+     * which was removed in OpenDaylight Scandium.
+     *
+     * @param uri     RESTCONF-style URI path (e.g., "module:container/child=key")
+     * @param context the effective model context
+     * @param unused  unused parameter (kept for API compatibility)
+     * @return instance identifier context
+     * @throws IllegalArgumentException if the URI cannot be resolved
+     */
+    public static InstanceIdentifierContext toInstanceIdentifier(
+            String uri, EffectiveModelContext context, Object unused) {
+        if (uri == null || uri.isEmpty()) {
+            return new InstanceIdentifierContext(context, context);
+        }
+
+        String path = uri;
+        if (path.startsWith(SLASH)) {
+            path = path.substring(1);
+        }
+        // Remove trailing slash
+        if (path.endsWith(SLASH)) {
+            path = path.substring(0, path.length() - 1);
+        }
+
+        String[] segments = path.split(SLASH);
+        SchemaNode currentNode = context;
+
+        for (String segment : segments) {
+            // Remove list keys (everything after =)
+            String nodeName = segment;
+            if (nodeName.contains("=")) {
+                nodeName = nodeName.substring(0, nodeName.indexOf("="));
+            }
+
+            String moduleName = null;
+            String localName = nodeName;
+
+            // Split module:name
+            if (nodeName.contains(COLON)) {
+                String[] parts = nodeName.split(COLON, 2);
+                moduleName = parts[0];
+                localName = parts[1];
+            }
+
+            SchemaNode childNode = null;
+
+            if (moduleName != null) {
+                Iterator<? extends Module> modules = context.findModules(moduleName).iterator();
+                if (modules.hasNext()) {
+                    Module module = modules.next();
+                    QName qname = QName.create(module.getQNameModule(), localName);
+                    childNode = findDataChild(currentNode, qname);
+                }
+            } else {
+                // Use the namespace of the current node
+                if (currentNode != null && currentNode.getQName() != null) {
+                    QName qname = QName.create(currentNode.getQName().getModule(), localName);
+                    childNode = findDataChild(currentNode, qname);
+                }
+            }
+
+            if (childNode == null) {
+                throw new IllegalArgumentException(
+                        "Could not find schema node for: " + segment + " in URI: " + uri);
+            }
+
+            currentNode = childNode;
+        }
+
+        return new InstanceIdentifierContext(currentNode, context);
+    }
+
+    /**
+     * Finds a data child schema node by QName, traversing into choice/case
+     * nodes transparently (as RESTCONF URIs don't include choice/case names).
+     *
+     * @param parent parent schema node
+     * @param qname  QName of the target data node
+     * @return the found schema node, or null if not found
+     */
+    private static SchemaNode findDataChild(SchemaNode parent, QName qname) {
+        if (parent instanceof DataNodeContainer) {
+            DataNodeContainer container = (DataNodeContainer) parent;
+            // Try direct lookup first
+            DataSchemaNode child = container.dataChildByName(qname);
+            if (child != null) {
+                return child;
+            }
+            // Search inside choice/case nodes (transparent in data tree)
+            SchemaNode found = findInChoices(container, qname);
+            if (found != null) {
+                return found;
+            }
+        }
+        // Search RPCs/operations (for RESTCONF operations URIs)
+        if (parent instanceof SchemaContext) {
+            for (RpcDefinition rpc : ((SchemaContext) parent).getOperations()) {
+                if (qname.equals(rpc.getQName())) {
+                    return rpc;
+                }
+            }
+        }
+        if (parent instanceof OperationDefinition) {
+            switch (qname.getLocalName()) {
+                case "input":
+                    return ((OperationDefinition) parent).getInput();
+                case "output":
+                    return ((OperationDefinition) parent).getOutput();
+                default:
+                    break;
+            }
+        }
+        if (parent instanceof ChoiceSchemaNode) {
+            return findInChoice((ChoiceSchemaNode) parent, qname);
+        }
+        return null;
+    }
+
+    /**
+     * Searches for a data node inside choice/case nodes of a container.
+     */
+    private static SchemaNode findInChoices(DataNodeContainer container, QName qname) {
+        for (DataSchemaNode child : container.getChildNodes()) {
+            if (child instanceof ChoiceSchemaNode) {
+                SchemaNode found = findInChoice((ChoiceSchemaNode) child, qname);
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Searches for a data node inside a choice's cases.
+     */
+    private static SchemaNode findInChoice(ChoiceSchemaNode choice, QName qname) {
+        for (CaseSchemaNode caze : choice.getCases()) {
+            DataSchemaNode found = caze.dataChildByName(qname);
+            if (found != null) {
+                return found;
+            }
+            // Recursively check nested choices within this case
+            SchemaNode nested = findInChoices(caze, qname);
+            if (nested != null) {
+                return nested;
+            }
+        }
+        return null;
     }
 }

@@ -41,12 +41,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.provider.YangUtils;
-import org.opendaylight.restconf.common.errors.RestconfDocumentedException;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +123,7 @@ public class MdsalPropertiesNodeSerializer extends PropertiesNodeSerializer<Sche
                 String fixedUri = fixedUrl.getUri().replaceAll(
                         SLASH, DOT_REGEX);
                 fixedParams.put(fixedUri, entry.getValue());
-            } catch (IllegalArgumentException | RestconfDocumentedException
+            } catch (IllegalArgumentException
                     | NullPointerException e) {
                 log.info("Exception while processing properties by replacing " +
                     "underscore with colon. Process the properties as it is." + e);
