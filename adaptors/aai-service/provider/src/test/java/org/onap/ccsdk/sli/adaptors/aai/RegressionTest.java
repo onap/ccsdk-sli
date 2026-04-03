@@ -52,8 +52,8 @@ import org.slf4j.LoggerFactory;
 public class RegressionTest {
 
 	static {
-		System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "INFO");
-//		System.setProperty(org.slf4j.impl.SimpleLogger.LOG_FILE_KEY, String.format("RegressionTest-%d.txt", System.currentTimeMillis()));
+		System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO");
+//		System.setProperty("org.slf4j.simpleLogger.logFile", String.format("RegressionTest-%d.txt", System.currentTimeMillis()));
 	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(RegressionTest.class);

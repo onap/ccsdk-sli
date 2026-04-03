@@ -6,9 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
+
 import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -119,10 +121,15 @@ public class SdncDhcpEventConsumer extends SdncDmaapConsumerImpl {
 
 		try {
 
-			jdbcDataSource.writeData("INSERT INTO DHCP_MAP(mac_addr, ip_addr) VALUES('" + macAddr + "','" + ipAddr + "') ON DUPLICATE KEY UPDATE ip_addr = '"+ipAddr+"'", null, null);
+			jdbcDataSource.writeData("INSERT INTO DHCP_MAP(mac_addr, ip_addr) VALUES('" + macAddr + "','" + ipAddr + "')", null, null);
 
 		} catch (SQLException e) {
-			LOG.error("Could not insert DHCP event data into the database ", e);
+			// Insert failed (e.g. duplicate key) - try update instead
+			try {
+				jdbcDataSource.writeData("UPDATE DHCP_MAP SET ip_addr = '" + ipAddr + "' WHERE mac_addr = '" + macAddr + "'", null, null);
+			} catch (SQLException e2) {
+				LOG.error("Could not insert or update DHCP event data in the database ", e2);
+			}
 		}
 
 	}

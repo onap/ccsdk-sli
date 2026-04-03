@@ -3,24 +3,20 @@
  */
 package org.onap.ccsdk.sli.northbound.dmaapclient;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.io.InputStream;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.UUID;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import ch.vorburger.mariadb4j.DB;
-import ch.vorburger.mariadb4j.DBConfigurationBuilder;
 
 /**
  * @author dt5972
@@ -31,10 +27,10 @@ public class TestSdncDhcpEventConsumer {
 	private static final Logger LOG = LoggerFactory.getLogger(TestSdncDhcpEventConsumer.class);
 
 
-	private static final String DHCP_MAP_TABLE = "CREATE TABLE `DHCP_MAP` (\n" +
+	private static final String DHCP_MAP_TABLE = "CREATE TABLE DHCP_MAP (\n" +
 			" mac_addr varchar(80) NOT NULL,\n" +
 			" ip_addr varchar(80),\n" +
-			" PRIMARY KEY(`mac_addr`)\n" +
+			" PRIMARY KEY(mac_addr)\n" +
 			")";
 
 
@@ -56,7 +52,6 @@ public class TestSdncDhcpEventConsumer {
 
 
 	private static DBResourceManager dblibSvc;
-	private static DB db;
 
 	private static SdncDhcpEventConsumer consumer;
 
@@ -75,18 +70,11 @@ public class TestSdncDhcpEventConsumer {
 		props.load(propStr);
 
 
-		// Start MariaDB4j database
-
-		LOG.debug("Starting MariaDB instance");
-		DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
-		config.setPort(0); // 0 => autom. detect free port
-		db = DB.newEmbeddedDB(config.build());
-		db.start();
-
-
-		// Override jdbc URL and database name
-		props.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
-		props.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
+		// Override jdbc URL/driver and database name for embedded Derby
+		String dbName = "test_" + UUID.randomUUID().toString().replace("-", "");
+		props.setProperty("org.onap.ccsdk.sli.jdbc.database", dbName);
+		props.setProperty("org.onap.ccsdk.sli.jdbc.driver", "org.apache.derby.iapi.jdbc.AutoloadedDriver");
+		props.setProperty("org.onap.ccsdk.sli.jdbc.url", "jdbc:derby:memory:" + dbName + ";create=true");
 
 
 		// Create dblib connection

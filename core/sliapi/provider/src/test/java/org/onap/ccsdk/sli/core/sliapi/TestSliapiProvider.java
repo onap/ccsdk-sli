@@ -25,10 +25,15 @@ import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 import java.io.InputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.Future;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,18 +65,19 @@ import org.onap.ccsdk.sli.core.sli.provider.base.UpdateNodeExecutor;
 import org.onap.ccsdk.sli.core.sli.provider.base.WhileNodeExecutor;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraph;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.ExecuteGraphInputBuilder;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.Healthcheck;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.HealthcheckInput;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.Vlbcheck;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.VlbcheckInput;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameter;
-import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterKey;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterBuilder;
-import org.opendaylight.yangtools.binding.Rpc;
+import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.core.sliapi.rev161110.execute.graph.input.SliParameterKey;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 
@@ -122,7 +128,10 @@ public class TestSliapiProvider {
         RpcProviderService rpcRegistry = mock(RpcProviderService.class);
         Registration rpcRegistration = mock(
                 ObjectRegistration.class);
-        when(rpcRegistry.registerRpcImplementations((Rpc<?,?>) any())).thenReturn(rpcRegistration);
+        when(rpcRegistry.registerRpcImplementations(
+            any(ExecuteGraph.class),
+            any(Healthcheck.class),
+            any(Vlbcheck.class))).thenReturn(rpcRegistration);
 
         // Load svclogic.properties and get a SvcLogicStore
         InputStream propStr = TestSliapiProvider.class.getResourceAsStream("/svclogic.properties");

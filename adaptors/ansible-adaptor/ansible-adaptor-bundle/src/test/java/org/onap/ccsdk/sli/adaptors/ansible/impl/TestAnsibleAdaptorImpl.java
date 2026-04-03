@@ -22,9 +22,20 @@
 
 package org.onap.ccsdk.sli.adaptors.ansible.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.LOG_ATTRIBUTE_NAME;
+import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.RESULT_CODE_ATTRIBUTE_NAME;
+import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.STATUS_CODE;
+import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.STATUS_MESSAGE;
+import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.SUCCESS;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -34,20 +45,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.onap.ccsdk.sli.adaptors.ansible.impl.AnsibleAdaptorImpl;
-import org.onap.ccsdk.sli.adaptors.ansible.impl.AnsibleAdaptorPropertiesProviderImpl;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleMessageParser;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResult;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.powermock.reflect.Whitebox;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.*;
 @RunWith(MockitoJUnitRunner.class)
 public class TestAnsibleAdaptorImpl {
 

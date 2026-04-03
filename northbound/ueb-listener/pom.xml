@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>standalone-parent</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
@@ -26,21 +26,6 @@
         <sdc.tosca.version>1.6.5</sdc.tosca.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
     </properties>
-
-    <!-- Tests require MariaDB4j , which does not currently support ARM64 -->
-    <profiles>
-        <profile>
-            <id>disable-test-on-ARM64</id>
-            <activation>
-                <os>
-                    <arch>aarch64</arch>
-                </os>
-            </activation>
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-    </profiles>
 
     <dependencyManagement>
         <dependencies>
@@ -98,8 +83,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>ch.vorburger.mariaDB4j</groupId>
-            <artifactId>mariaDB4j</artifactId>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
