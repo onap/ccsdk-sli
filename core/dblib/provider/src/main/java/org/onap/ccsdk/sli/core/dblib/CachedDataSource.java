@@ -36,9 +36,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Observer;
+
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
+
 import org.apache.tomcat.jdbc.pool.PoolExhaustedException;
 import org.onap.ccsdk.sli.core.dblib.config.BaseDBConfiguration;
 import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitor;
@@ -90,7 +92,9 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
     public CachedDataSource(BaseDBConfiguration jdbcElem) throws DBConfigException {
         ds = configure(jdbcElem);
         index = initializeIndex(jdbcElem);
-        if ("org.apache.derby.jdbc.EmbeddedDriver".equals(jdbcElem.getDriverName())) {
+        String driverName = jdbcElem.getDriverName();
+        if ("org.apache.derby.jdbc.EmbeddedDriver".equals(driverName)
+            || "org.apache.derby.iapi.jdbc.AutoloadedDriver".equals(driverName)) {
             isDerby = true;
         }
         monitor = new SQLExecutionMonitor(this);

@@ -1,28 +1,9 @@
 package org.onap.ccsdk.sli.northbound.uebclient;
 
-import ch.vorburger.mariadb4j.DB;
-import ch.vorburger.mariadb4j.DBConfigurationBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
-import org.onap.sdc.api.IDistributionClient;
-import org.onap.sdc.api.notification.INotificationData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.ConnectException;
-import java.net.URL;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.Properties;
 
-import static org.mockito.Mockito.mock;
+import org.junit.Test;
 
 public class TestSdncOdlConnection {
 

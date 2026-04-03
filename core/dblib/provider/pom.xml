@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1</version>
         <relativePath/>
     </parent>
 
@@ -16,21 +16,6 @@
 
     <name>ccsdk-sli-core :: ${project.artifactId}</name>
 
-    <!-- Tests require MariaDB4j , which does not currently support ARM64 -->
-    <profiles>
-        <profile>
-            <id>disable-test-on-ARM64</id>
-            <activation>
-                <os>
-                    <arch>aarch64</arch>
-                </os>
-            </activation>
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-    </profiles>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -38,8 +23,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>ch.vorburger.mariaDB4j</groupId>
-            <artifactId>mariaDB4j</artifactId>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -19,8 +19,10 @@
 -- ============LICENSE_END=========================================================
 ---
 
+DROP ALL OBJECTS;
+
 CREATE TABLE RESOURCE_LOCK (
-  resource_lock_id SERIAL PRIMARY KEY,
+  resource_lock_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   resource_name VARCHAR(50) NOT NULL UNIQUE,
   lock_holder VARCHAR(100) NOT NULL,
   lock_count SMALLINT NOT NULL,
@@ -29,7 +31,7 @@ CREATE TABLE RESOURCE_LOCK (
 );
 
 CREATE TABLE RESOURCE (
-    resource_id SERIAL PRIMARY KEY,
+  resource_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     asset_id VARCHAR(50) NOT NULL,
     resource_name VARCHAR(50) NOT NULL,
     resource_type VARCHAR(10) NOT NULL,
@@ -43,7 +45,7 @@ ALTER TABLE RESOURCE ADD CONSTRAINT c1_resource CHECK (resource_type IN ('Limit'
 CREATE UNIQUE INDEX ak1_resource ON RESOURCE (asset_id, resource_name);
 
 CREATE TABLE RESOURCE_LOAD (
-    resource_load_id SERIAL PRIMARY KEY,
+  resource_load_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     resource_id BIGINT NOT NULL REFERENCES resource (resource_id),
     application_id VARCHAR(20) NOT NULL,
     resource_load_time DATETIME NOT NULL,
@@ -54,7 +56,7 @@ CREATE INDEX i1_resource_load ON RESOURCE_LOAD (resource_id);
 CREATE UNIQUE INDEX ak1_resource_load ON RESOURCE_LOAD (resource_id, application_id);
 
 CREATE TABLE ALLOCATION_ITEM (
-    allocation_item_id SERIAL PRIMARY KEY,
+  allocation_item_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     resource_id BIGINT NOT NULL REFERENCES resource (resource_id),
     application_id VARCHAR(50) NOT NULL,
     resource_set_id VARCHAR(50) NOT NULL,
@@ -70,7 +72,7 @@ CREATE INDEX i1_allocation_item ON allocation_item (resource_id);
 CREATE UNIQUE INDEX ak1_allocation_item ON allocation_item (resource_id, resource_set_id);
 
 CREATE TABLE RESOURCE_RULE (
-  resource_rule_id SERIAL PRIMARY KEY,
+  resource_rule_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   resource_name VARCHAR(50) NOT NULL,
   service_model VARCHAR(50) NOT NULL,
   end_point_position VARCHAR(50) NOT NULL,
@@ -91,7 +93,7 @@ CREATE TABLE RESOURCE_THRESHOLD (
 );
 
 CREATE TABLE RANGE_RULE (
-  range_rule_id SERIAL PRIMARY KEY,
+  range_rule_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   range_name VARCHAR(50) NOT NULL,
   service_model VARCHAR(50) NOT NULL,
   end_point_position VARCHAR(50) NOT NULL,
@@ -101,7 +103,7 @@ CREATE TABLE RANGE_RULE (
 );
 
 CREATE TABLE MAX_PORT_SPEED (
-  max_port_speed_id SERIAL PRIMARY KEY,
+  max_port_speed_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   image_file_name VARCHAR(50) NOT NULL,
   end_point_position VARCHAR(50) NOT NULL,
   interface_name VARCHAR(100) NOT NULL,
@@ -110,7 +112,7 @@ CREATE TABLE MAX_PORT_SPEED (
 );
 
 CREATE TABLE MAX_SERVER_SPEED (
-  max_server_speed_id SERIAL PRIMARY KEY,
+  max_server_speed_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   server_model VARCHAR(50) NOT NULL,
   evc_count SMALLINT NOT NULL,
   max_speed BIGINT NOT NULL,
@@ -119,7 +121,7 @@ CREATE TABLE MAX_SERVER_SPEED (
 );
 
 CREATE TABLE SERVICE_RESOURCE (
-  service_resource_id SERIAL PRIMARY KEY,
+  service_resource_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   service_instance_id VARCHAR(80) NOT NULL,
   service_status VARCHAR(10) NOT NULL,
   service_change_number SMALLINT NOT NULL,

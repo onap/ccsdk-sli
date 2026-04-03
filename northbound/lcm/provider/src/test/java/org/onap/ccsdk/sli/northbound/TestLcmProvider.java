@@ -5,12 +5,14 @@ import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -165,7 +167,13 @@ public class TestLcmProvider {
      */
     @After
     public void tearDown() throws Exception {
-        provider.close();
+		if (provider != null) {
+			try {
+				provider.close();
+			} catch (NullPointerException e) {
+				LOG.debug("Skipping provider.close() in test teardown due null rpcRegistration", e);
+			}
+		}
     }
 
 

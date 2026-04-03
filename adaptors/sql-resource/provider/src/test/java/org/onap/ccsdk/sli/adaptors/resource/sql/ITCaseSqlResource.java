@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
@@ -33,8 +34,6 @@ import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.vorburger.mariadb4j.DB;
-import ch.vorburger.mariadb4j.DBConfigurationBuilder;
 import junit.framework.TestCase;
 
 public class ITCaseSqlResource extends TestCase {
@@ -61,15 +60,11 @@ public class ITCaseSqlResource extends TestCase {
 		}
 
 
-		// Start MariaDB4j database
-        DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
-        config.setPort(0); // 0 => autom. detect free port
-        DB db = DB.newEmbeddedDB(config.build());
-        db.start();
-
-		// Override jdbc URL and database name
-        props.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
-		props.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
+		// Override jdbc URL/driver and database name for embedded Derby
+		String dbName = "test_" + UUID.randomUUID().toString().replace("-", "");
+		props.setProperty("org.onap.ccsdk.sli.jdbc.database", dbName);
+		props.setProperty("org.onap.ccsdk.sli.jdbc.driver", "org.apache.derby.iapi.jdbc.AutoloadedDriver");
+		props.setProperty("org.onap.ccsdk.sli.jdbc.url", "jdbc:derby:memory:" + dbName + ";create=true");
 
 		// Add properties to global properties
 
