@@ -22,6 +22,17 @@
 
 package org.onap.ccsdk.sli.adaptors.ansible.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.TRUSTSTORE_PASS_PROPERTY_NAME;
+import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.TRUSTSTORE_PROPERTY_NAME;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,6 +41,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Properties;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -44,22 +56,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.onap.ccsdk.sli.adaptors.ansible.impl.AnsibleAdaptorPropertiesProviderImpl;
-import org.onap.ccsdk.sli.adaptors.ansible.impl.ConnectionBuilder;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResult;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResultCodes;
 import org.powermock.reflect.Whitebox;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestConnectionBuilder {
@@ -144,7 +144,7 @@ public class TestConnectionBuilder {
 
     @Test
     public void testPost() throws IOException {
-        when(httpClient.execute(anyObject(), eq(httpClientContext))).thenReturn(response);
+        when(httpClient.execute(any(), eq(httpClientContext))).thenReturn(response);
         AnsibleResult result = connectionBuilder.post(URL, "appc");
         assertNull(result.getStatusMessage());
         assertEquals(SUCCESS_STATUS, result.getStatusCode());
@@ -153,7 +153,7 @@ public class TestConnectionBuilder {
 
     @Test
     public void testPostWithException() throws IOException {
-        when(httpClient.execute(anyObject(), eq(httpClientContext))).thenThrow(new IOException());
+        when(httpClient.execute(any(), eq(httpClientContext))).thenThrow(new IOException());
         AnsibleResult result = connectionBuilder.post(URL, "appc");
         assertEquals(AnsibleResultCodes.IO_EXCEPTION.getValue(), result.getStatusCode());
     }
@@ -161,7 +161,7 @@ public class TestConnectionBuilder {
     @Ignore
     @Test
     public void testGet() throws IOException {
-        when(httpClient.execute(anyObject(), eq(httpClientContext))).thenReturn(response);
+        when(httpClient.execute(any(), eq(httpClientContext))).thenReturn(response);
         AnsibleResult result = connectionBuilder.get(URL);
         assertNull(result.getStatusMessage());
         assertEquals(SUCCESS_STATUS, result.getStatusCode());
@@ -170,7 +170,7 @@ public class TestConnectionBuilder {
 
     @Test
     public void testGetWithException() throws IOException {
-        when(httpClient.execute(anyObject(), eq(httpClientContext))).thenThrow(new IOException());
+        when(httpClient.execute(any(), eq(httpClientContext))).thenThrow(new IOException());
         AnsibleResult result = connectionBuilder.get(URL);
         assertEquals(AnsibleResultCodes.IO_EXCEPTION.getValue(), result.getStatusCode());
     }

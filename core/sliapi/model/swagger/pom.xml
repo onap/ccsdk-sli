@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1-SNAPSHOT</version>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.core</groupId>
@@ -70,7 +70,7 @@
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
-                        <phase>initialize</phase>
+                        <phase>prepare-package</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -79,7 +79,7 @@
                 <version>1.8</version>
                 <executions>
                     <execution>
-                        <phase>initialize</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
@@ -149,6 +149,7 @@
                 <executions>
                     <execution>
                         <id>yang2swagger-json</id>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>generate-sources</goal>
                         </goals>
@@ -173,6 +174,7 @@
                     </execution>
                     <execution>
                         <id>yang2swagger-yaml</id>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>generate-sources</goal>
                         </goals>
