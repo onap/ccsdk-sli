@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Singleton
-@Component(service = ActionStatus.class, immediate = true)
+@Component(service = {LcmProvider.class, ActionStatus.class}, immediate = true)
 public class LcmProvider implements AutoCloseable, ActionStatus {
 
 	private class CommonLcmFields {
@@ -109,17 +109,18 @@ public class LcmProvider implements AutoCloseable, ActionStatus {
 
 	private final Registration rpcRegistration;
 
-	@Inject
-	@Activate
-	public LcmProvider(@Reference final DataBroker dataProvider,
-	                   @Reference final EntityOwnershipService ownershipService,
-					   @Reference final DOMDataBroker domDataBroker,
-					   @Reference final RpcProviderService rpcProviderRegistry) {
+
+	public LcmProvider(final DataBroker dataProvider,
+	                  final EntityOwnershipService ownershipService,
+					   final DOMDataBroker domDataBroker,
+					   final RpcProviderService rpcProviderRegistry) {
 		this(domDataBroker, rpcProviderRegistry, new LcmSliClient(findSvcLogicService()));
 	}
 
-	public LcmProvider(final DOMDataBroker dataBroker, 
-			final RpcProviderService rpcProviderRegistry, final LcmSliClient lcmSliClient) {
+	@Activate
+	public LcmProvider(@Reference final DOMDataBroker dataBroker, 
+			           @Reference final RpcProviderService rpcProviderRegistry,
+					   @Reference final LcmSliClient lcmSliClient) {
 
 		LOG.info("Creating provider for {}", APPLICATION_NAME);
 		this.executor = Executors.newFixedThreadPool(1);

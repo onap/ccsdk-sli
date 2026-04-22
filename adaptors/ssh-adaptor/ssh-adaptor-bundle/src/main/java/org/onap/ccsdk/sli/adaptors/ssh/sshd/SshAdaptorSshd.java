@@ -26,7 +26,9 @@ package org.onap.ccsdk.sli.adaptors.ssh.sshd;
 
 import org.onap.ccsdk.sli.adaptors.ssh.SshAdaptor;
 import org.onap.ccsdk.sli.adaptors.ssh.SshConnection;
+import org.osgi.service.component.annotations.Component;
 
+@Component(service = SshAdaptor.class, immediate = true)
 public class SshAdaptorSshd implements SshAdaptor {
 
     //@Override

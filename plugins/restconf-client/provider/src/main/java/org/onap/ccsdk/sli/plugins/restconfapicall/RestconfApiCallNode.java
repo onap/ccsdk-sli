@@ -89,12 +89,16 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Representation of a plugin to enable RESTCONF based CRUD operations from DG.
  */
+@Component(service = RestconfApiCallNode.class, immediate = true)
 public class RestconfApiCallNode implements SvcLogicJavaPlugin {
 
     /**
@@ -120,7 +124,9 @@ public class RestconfApiCallNode implements SvcLogicJavaPlugin {
      * @param r restapi call node
      * @param parserFactory Yang parser factory
      */
-    public RestconfApiCallNode(RestapiCallNode r, YangParserFactory parserFactory) {
+    @Activate
+    public RestconfApiCallNode(@Reference final RestapiCallNode r,
+                               @Reference final YangParserFactory parserFactory) {
         this.restapiCallNode = r;
         this.parserFactory = parserFactory;
     }
