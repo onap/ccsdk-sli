@@ -29,6 +29,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.utils.JREFileResolver;
 import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
@@ -54,6 +57,7 @@ import org.slf4j.LoggerFactory;
  * directory</li>
  * </ol>
  */
+@Component(service = MdsalResourcePropertiesProvider.class, immediate = true)
 public class MdsalResourcePropertiesProviderImpl implements MdsalResourcePropertiesProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(MdsalResourcePropertiesProviderImpl.class);
@@ -77,6 +81,7 @@ public class MdsalResourcePropertiesProviderImpl implements MdsalResourcePropert
      * Set up the prioritized list of strategies for resolving dblib properties
      * files.
      */
+    @Activate
     public MdsalResourcePropertiesProviderImpl() {
         mdsalResourcePropertiesFileResolvers
                 .add(new SdncConfigEnvVarFileResolver("Using property file (1) from environment variable"));

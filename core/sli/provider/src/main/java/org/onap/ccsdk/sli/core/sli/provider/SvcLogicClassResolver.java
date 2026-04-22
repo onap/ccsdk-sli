@@ -37,9 +37,12 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(service = {SvcLogicClassResolver.class, SvcLogicResolver.class}, immediate = true)
 public class SvcLogicClassResolver implements SvcLogicResolver {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SvcLogicClassResolver.class);
@@ -48,6 +51,7 @@ public class SvcLogicClassResolver implements SvcLogicResolver {
 	private static HashMap<String, SvcLogicAdaptor> adaptorMap = new HashMap<>();
 	List<String> allowedPackages = new ArrayList<String>();
 
+	@Activate
 	public SvcLogicClassResolver() {
 		// Initialize list of allowed package names
 		Properties props = new Properties();

@@ -36,6 +36,10 @@ import org.onap.ccsdk.sli.plugins.restconfapicall.RestconfApiCallNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -62,6 +66,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Representation of a plugin to subscribe for notification and then
  * to handle the received notifications.
  */
+@Component(service = RestconfDiscoveryNode.class, immediate = true)
 public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDiscoveryPlugin {
 
     private static final Logger log = getLogger(RestconfDiscoveryNode.class);
@@ -106,7 +111,8 @@ public class RestconfDiscoveryNode implements RestConfSBController, SvcLogicDisc
      *
      * @param r restconf api call node
      */
-    public RestconfDiscoveryNode(RestconfApiCallNode r) {
+    @Activate
+    public RestconfDiscoveryNode(@Reference final RestconfApiCallNode r) {
         log.info("inside RestconfDiscoveryNode Constructor");
         this.restconfApiCallNode = r;
         this.activate();

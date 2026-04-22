@@ -27,16 +27,21 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.provider.MdsalHelper;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.datachange.rev150519.DataChangeNotificationOutputBuilder;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(service = DataChangeClient.class, immediate = true)
 public class DataChangeClient {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DataChangeClient.class);
 
 	private SvcLogicService svcLogicService = null;
 
-	public DataChangeClient(final SvcLogicService svcLogicService) {
+	@Activate
+	public DataChangeClient(@Reference final SvcLogicService svcLogicService) {
 		this.svcLogicService = svcLogicService;
 	}
 

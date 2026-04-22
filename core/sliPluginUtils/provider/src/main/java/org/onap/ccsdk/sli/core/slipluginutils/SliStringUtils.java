@@ -33,12 +33,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * A SvcLogicJavaPlugin that exposes java.lang.String functions to DirectedGraph
  */
+@Component(service = SliStringUtils.class, immediate = true)
 public class SliStringUtils implements SvcLogicJavaPlugin {
 	private static final Logger LOG = LoggerFactory.getLogger(SliStringUtils.class);
 	public static final String INPUT_PARAM_KEY = "key";
@@ -47,6 +50,7 @@ public class SliStringUtils implements SvcLogicJavaPlugin {
     public static final String TRUE_CONSTANT = "true";
     public static final String FALSE_CONSTANT = "false";
 
+    @Activate
 	public SliStringUtils() {}
 
 	/**

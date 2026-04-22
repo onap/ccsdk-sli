@@ -31,9 +31,12 @@ import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.sli.ErrorLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicRecorder;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(service = Slf4jRecorder.class, immediate = true)
 public class Slf4jRecorder implements SvcLogicRecorder {
 	protected DateFormat dateFmt;
 	protected static final String messageLogName = "message-log";
@@ -49,6 +52,7 @@ public class Slf4jRecorder implements SvcLogicRecorder {
 	protected Logger defaultLogger = LoggerFactory.getLogger(Slf4jRecorder.class);
 	protected Logger messageLogger = LoggerFactory.getLogger(messageLogName);
 
+	@Activate
 	public Slf4jRecorder() {
 		TimeZone tz = TimeZone.getTimeZone("UTC");
 		dateFmt = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss:SS'+00:00'");

@@ -35,7 +35,7 @@
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>ssh-adaptor-bundle</artifactId>
-    <version>2.2.2-SNAPSHOT</version>
+    <version>2.3.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-adaptors :: ${project.artifactId}</name>
@@ -80,6 +80,10 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

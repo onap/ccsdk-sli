@@ -26,9 +26,13 @@ import java.util.Properties;
 
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(service = AsdcApiSliClient.class, immediate = true)
 public class AsdcApiSliClient {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AsdcApiSliClient.class);
@@ -37,7 +41,8 @@ public class AsdcApiSliClient {
 
 	private  String ErrorCode = "error-code";
 
-	public AsdcApiSliClient(final SvcLogicService svcLogicService) {
+	@Activate
+	public AsdcApiSliClient(@Reference final SvcLogicService svcLogicService) {
 		this.svcLogicService = svcLogicService;
 	}
 

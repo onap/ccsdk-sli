@@ -75,19 +75,17 @@ public class DataChangeProvider implements AutoCloseable, DataChangeNotification
     private final Registration rpcRegistration;
     private final DataChangeClient dataChangeClient;
     
-	@Inject
-	@Activate
-	public DataChangeProvider(@Reference final DataBroker dataBroker,
-							  @Reference final EntityOwnershipService ownershipService,
-							  @Reference final RpcProviderService rpcRegistry) {
+	public DataChangeProvider(final DataBroker dataBroker,
+							  final EntityOwnershipService ownershipService,
+							  final RpcProviderService rpcRegistry) {
 		this(dataBroker, ownershipService, rpcRegistry, new DataChangeClient(findSvcLogicService()));
 	}
 	
-
-    public DataChangeProvider(final DataBroker dataBroker,
-							  final EntityOwnershipService ownershipService,
-							  final RpcProviderService rpcRegistry,
-							  final DataChangeClient dataChangeClient) {
+	@Activate
+    public DataChangeProvider(@Reference final DataBroker dataBroker,
+							  @Reference final EntityOwnershipService ownershipService,
+							  @Reference final RpcProviderService rpcRegistry,
+							  @Reference final DataChangeClient dataChangeClient) {
 
         LOG.info( "Creating provider for {}", APPLICATION_NAME);
         executor = Executors.newFixedThreadPool(1);

@@ -43,6 +43,8 @@ import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +66,7 @@ import org.slf4j.LoggerFactory;
  * </ol>
  *
  */
+@Component(service = UtilsProvider.class, immediate = true)
 public class AAIServiceProvider implements UtilsProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(AAIServiceProvider.class);
@@ -91,6 +94,7 @@ public class AAIServiceProvider implements UtilsProvider {
     /**
      * Set up the prioritized list of strategies for resolving dblib properties files.
      */
+    @Activate
     public AAIServiceProvider() {
         dblibPropertiesFileResolvers.add(new SdncConfigEnvVarFileResolver(
                 "Using property file (1) from environment variable"

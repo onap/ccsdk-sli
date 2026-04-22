@@ -73,41 +73,9 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Defines a base implementation for your provider. This class extends from a helper class
- * which provides storage for the most commonly used components of the MD-SAL. Additionally the
- * base class provides some basic logging and initialization / clean up methods.
- *
- * To use this, copy and paste (overwrite) the following method into the TestApplicationProviderModule
- * class which is auto generated under src/main/java in this project
- * (created only once during first compilation):
- *
- * <pre>
 
-    @Override
-    public java.lang.AutoCloseable createInstance() {
-
-         final asdcApiProvider provider = new asdcApiProvider();
-         provider.setDataBroker( getDataBrokerDependency() );
-         provider.setNotificationService( getNotificationServiceDependency() );
-         provider.setRpcRegistry( getRpcRegistryDependency() );
-         provider.initialize();
-         return new AutoCloseable() {
-
-            @Override
-            public void close() throws Exception {
-                //TODO: CLOSE ANY REGISTRATION OBJECTS CREATED USING ABOVE BROKER/NOTIFICATION
-                //SERVIE/RPC REGISTRY
-                provider.close();
-            }
-        };
-    }
-
-
-    </pre>
- */
 @Singleton
-@Component(service = VfLicenseModelUpdate.class, immediate = true)
+@Component(service = {AsdcApiProvider.class, VfLicenseModelUpdate.class}, immediate = true)
 public class AsdcApiProvider implements AutoCloseable, VfLicenseModelUpdate{
 
     private static final Logger LOG = LoggerFactory.getLogger(AsdcApiProvider.class);

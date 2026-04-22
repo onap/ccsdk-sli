@@ -57,6 +57,10 @@ import org.onap.ccsdk.sli.core.dblib.config.TerminatingConfiguration;
 import org.onap.ccsdk.sli.core.dblib.factory.DBConfigFactory;
 import org.onap.ccsdk.sli.core.dblib.pm.PollingWorker;
 import org.onap.ccsdk.sli.core.dblib.pm.SQLExecutionMonitor;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +71,7 @@ import org.slf4j.LoggerFactory;
  * ============== ======== ====================================================
  * Rich Tabedzki
  */
+@Component(service = {DataSource.class, DbLibService.class}, immediate = true)
 public class DBResourceManager implements DataSource, DataAccessor, DBResourceObserver, DbLibService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DBResourceManager.class);
     private static final String DATABASE_URL = "org.onap.ccsdk.sli.jdbc.url";
@@ -90,7 +95,8 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
     private static final String LOGGER_ALARM_MSG="Generated alarm: DBResourceManager.getData - No active DB connection pools are available.";
     private static final String EXCEPTION_MSG= "No active DB connection pools are available in RequestDataNoRecovery call.";
 
-    public DBResourceManager(final DBLIBResourceProvider configuration) {
+    @Activate
+    public DBResourceManager(@Reference final DBLIBResourceProvider configuration) {
         this(configuration.getProperties());
     }
 
@@ -814,6 +820,7 @@ public class DBResourceManager implements DataSource, DataAccessor, DBResourceOb
         }
     }
 
+    @Deactivate
     public void cleanUp() {
         for(Iterator<CachedDataSource> it=dsQueue.iterator();it.hasNext();){
             CachedDataSource cds = it.next();

@@ -24,6 +24,9 @@ package org.onap.ccsdk.sli.adaptors.resource.mdsal;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -31,13 +34,15 @@ import org.w3c.dom.Document;
 import java.util.Map;
 import java.util.Properties;
 
+@Component(service = OperationalResource.class, immediate = true)
 public class OperationalResource implements SvcLogicResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(OperationalResource.class);
 
     private RestService restService;
 
-    public OperationalResource(MdsalResourcePropertiesProvider propProvider) {
+    @Activate
+    public OperationalResource(@Reference final MdsalResourcePropertiesProvider propProvider) {
         Properties props = propProvider.getProperties();
 
         String sdncUser = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-user", "admin");
