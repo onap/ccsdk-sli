@@ -46,9 +46,13 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(service = SqlResource.class, immediate = true)
 public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
 
     private static final Logger LOG = LoggerFactory.getLogger(SqlResource.class);
@@ -72,6 +76,27 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
         this.dblibSvc = dblibSvc;
 
         Properties properties = propProvider.getProperties();
+
+        String cryptKey = properties.getProperty("org.onap.sdnc.resource.sql.cryptkey");
+
+        if ((cryptKey == null) || (cryptKey.length() == 0)) {
+            cryptKey = properties.getProperty("org.openecomp.sdnc.resource.sql.cryptkey");
+        }
+
+        SqlResource.setCryptKey(cryptKey);
+    }
+
+    @Reference
+    private SqlResourcePropertiesProvider propProviderRef;
+
+    @Reference
+    private DbLibService dbLibServiceRef;
+
+    @Activate
+    public void activate() {
+        this.dblibSvc = dbLibServiceRef;
+
+        Properties properties = propProviderRef.getProperties();
 
         String cryptKey = properties.getProperty("org.onap.sdnc.resource.sql.cryptkey");
 

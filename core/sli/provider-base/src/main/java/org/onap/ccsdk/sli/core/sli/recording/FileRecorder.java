@@ -32,12 +32,14 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.osgi.service.component.annotations.Component;
+
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.utils.PathValidator;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicRecorder;
 
-
+@Component(service = FileRecorder.class, immediate = true)
 public class FileRecorder implements SvcLogicRecorder {
 
 	@Override

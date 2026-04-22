@@ -38,6 +38,8 @@ import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.CoreDefaultFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +58,7 @@ import org.slf4j.LoggerFactory;
  * directory</li>
  * </ol>
  */
+@Component(service = SvcLogicPropertiesProvider.class, immediate = true)
 public class SvcLogicPropertiesProviderImpl implements SvcLogicPropertiesProvider {
 
 	private static final Logger log = LoggerFactory.getLogger(SvcLogicPropertiesProviderImpl.class);
@@ -80,6 +83,7 @@ public class SvcLogicPropertiesProviderImpl implements SvcLogicPropertiesProvide
 	 * Set up the prioritized list of strategies for resolving dblib properties
 	 * files.
 	 */
+	@Activate
 	public SvcLogicPropertiesProviderImpl() {
 		sliPropertiesFileResolvers
 				.add(new SdncConfigEnvVarFileResolver("Using property file (1) from environment variable"));

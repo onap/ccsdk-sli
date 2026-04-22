@@ -24,17 +24,52 @@ package org.onap.ccsdk.sli.adaptors.ra;
 import java.security.SecureRandom;
 import java.util.Map;
 import org.onap.ccsdk.sli.adaptors.lock.comp.LockHelper;
+import org.onap.ccsdk.sli.adaptors.lock.comp.LockHelperImpl;
+import org.onap.ccsdk.sli.adaptors.lock.dao.ResourceLockDaoImpl;
+import org.onap.ccsdk.sli.adaptors.util.db.CachedDataSourceWrap;
+import org.onap.ccsdk.sli.adaptors.util.db.DataSourceWrap;
+import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+@Component(service = ResourceLockNode.class, immediate = true)
 public class ResourceLockNode implements SvcLogicJavaPlugin {
 
     private static final Logger log = LoggerFactory.getLogger(ResourceLockNode.class);
 
     private LockHelper lockHelper;
+
+    @Reference
+    private DbLibService dbLibService;
+
+    @Activate
+    public void activate() {
+        DataSourceWrap rmDataSource = new DataSourceWrap();
+        rmDataSource.setDataSource(dbLibService);
+
+        CachedDataSourceWrap lockDataSource = new CachedDataSourceWrap();
+        lockDataSource.setDataSource(rmDataSource);
+
+        JdbcTemplate lockJdbcTemplate = new JdbcTemplate(lockDataSource);
+
+        ResourceLockDaoImpl resourceLockDao = new ResourceLockDaoImpl();
+        resourceLockDao.setJdbcTemplate(lockJdbcTemplate);
+
+        LockHelperImpl lh = new LockHelperImpl();
+        lh.setResourceLockDao(resourceLockDao);
+        lh.setRetryCount(10);
+        lh.setLockWait(5);
+        this.lockHelper = lh;
+
+        log.info("ResourceLockNode activated.");
+    }
 
     public void setLockHelper(LockHelper lockHelper) {
         this.lockHelper = lockHelper;
