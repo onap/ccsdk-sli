@@ -1,5 +1,5 @@
 # max-price = 100
-SELECT * FROM SQLRESOURCE_ORDER where placed_on < now();
-SELECT SQLRESOURCE_ORDER.order_number, clli, service, price FROM SQLRESOURCE_ORDER, SQLRESOURCE_ORDER_ITEM where SQLRESOURCE_ORDER.order_number = SQLRESOURCE_ORDER_ITEM.order_number and price > $max-price ;
-SELECT SQLRESOURCE_ORDER.order_number, clli, service, price FROM SQLRESOURCE_ORDER, SQLRESOURCE_ORDER_ITEM where SQLRESOURCE_ORDER.order_number = SQLRESOURCE_ORDER_ITEM.order_number and price < $max-price ;
-SELECT SQLRESOURCE_ORDER.order_number AS ordernum, clli, service, price FROM SQLRESOURCE_ORDER, SQLRESOURCE_ORDER_ITEM where SQLRESOURCE_ORDER.order_number = SQLRESOURCE_ORDER_ITEM.order_number and price < $max-price ;
+SELECT * FROM SQLRESOURCE_ORDER where placed_on < CURRENT_TIMESTAMP
+SELECT SQLRESOURCE_ORDER.order_number, clli, service, price FROM SQLRESOURCE_ORDER, SQLRESOURCE_ORDER_ITEM where SQLRESOURCE_ORDER.order_number = SQLRESOURCE_ORDER_ITEM.order_number and price > $max-price
+SELECT SQLRESOURCE_ORDER.order_number, clli, service, price FROM SQLRESOURCE_ORDER, SQLRESOURCE_ORDER_ITEM where SQLRESOURCE_ORDER.order_number = SQLRESOURCE_ORDER_ITEM.order_number and price < $max-price
+SELECT SQLRESOURCE_ORDER.order_number AS ordernum, clli, service, price FROM SQLRESOURCE_ORDER, SQLRESOURCE_ORDER_ITEM where SQLRESOURCE_ORDER.order_number = SQLRESOURCE_ORDER_ITEM.order_number and price < $max-price

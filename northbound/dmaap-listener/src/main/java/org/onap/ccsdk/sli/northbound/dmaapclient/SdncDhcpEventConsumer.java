@@ -118,11 +118,18 @@ public class SdncDhcpEventConsumer extends SdncDmaapConsumerImpl {
 		}
 
 		try {
-
-			jdbcDataSource.writeData("INSERT INTO DHCP_MAP(mac_addr, ip_addr) VALUES('" + macAddr + "','" + ipAddr + "') ON DUPLICATE KEY UPDATE ip_addr = '"+ipAddr+"'", null, null);
-
+			jdbcDataSource.writeData(
+				"INSERT INTO DHCP_MAP (mac_addr, ip_addr) VALUES ('" + macAddr + "', '" + ipAddr + "')",
+				null, null);
 		} catch (SQLException e) {
-			LOG.error("Could not insert DHCP event data into the database ", e);
+			// Row likely already exists; update instead
+			try {
+				jdbcDataSource.writeData(
+					"UPDATE DHCP_MAP SET ip_addr = '" + ipAddr + "' WHERE mac_addr = '" + macAddr + "'",
+					null, null);
+			} catch (SQLException e2) {
+				LOG.error("Could not insert DHCP event data into the database ", e2);
+			}
 		}
 
 	}

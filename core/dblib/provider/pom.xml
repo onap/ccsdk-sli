@@ -16,21 +16,6 @@
 
     <name>ccsdk-sli-core :: ${project.artifactId}</name>
 
-    <!-- Tests require MariaDB4j , which does not currently support ARM64 -->
-    <profiles>
-        <profile>
-            <id>disable-test-on-ARM64</id>
-            <activation>
-                <os>
-                    <arch>aarch64</arch>
-                </os>
-            </activation>
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-    </profiles>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -38,8 +23,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>ch.vorburger.mariaDB4j</groupId>
-            <artifactId>mariaDB4j</artifactId>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbytools</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -68,6 +58,17 @@
             <artifactId>utils-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
+        </dependency>
+
+
 
         <!-- Testing related dependencies -->
         <dependency>

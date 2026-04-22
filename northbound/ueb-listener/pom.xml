@@ -27,21 +27,6 @@
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
     </properties>
 
-    <!-- Tests require MariaDB4j , which does not currently support ARM64 -->
-    <profiles>
-        <profile>
-            <id>disable-test-on-ARM64</id>
-            <activation>
-                <os>
-                    <arch>aarch64</arch>
-                </os>
-            </activation>
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-    </profiles>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -98,8 +83,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>ch.vorburger.mariaDB4j</groupId>
-            <artifactId>mariaDB4j</artifactId>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

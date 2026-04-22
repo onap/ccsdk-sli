@@ -72,6 +72,14 @@
             <groupId>org.onap.logging-analytics</groupId>
             <artifactId>logging-filter-base</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
+        </dependency>
         <!-- For test -->
         <dependency>
             <groupId>junit</groupId>

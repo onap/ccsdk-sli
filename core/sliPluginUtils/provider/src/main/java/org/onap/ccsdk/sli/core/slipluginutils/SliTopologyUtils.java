@@ -32,11 +32,14 @@ import org.onap.ccsdk.sli.core.slipluginutils.slitopologyutils.graph.Graph;
 import org.onap.ccsdk.sli.core.slipluginutils.slitopologyutils.graph.Path;
 import org.onap.ccsdk.sli.core.slipluginutils.slitopologyutils.topology.*;
 import org.onap.ccsdk.sli.core.slipluginutils.slitopologyutils.topology.LogicalLink;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+@Component(service = SliTopologyUtils.class, immediate = true)
 public class SliTopologyUtils implements SvcLogicJavaPlugin {
     private static final Logger LOG = LoggerFactory.getLogger(SliTopologyUtils.class);
     public static final String SUCCESS_CONSTANT = "success";
@@ -44,6 +47,7 @@ public class SliTopologyUtils implements SvcLogicJavaPlugin {
     public static final String NOT_FOUND_CONSTANT = "not-found";
 
 
+    @Activate
     public SliTopologyUtils(){};
     /**
      * Provides simple path computation functionality to Directed Graphs.

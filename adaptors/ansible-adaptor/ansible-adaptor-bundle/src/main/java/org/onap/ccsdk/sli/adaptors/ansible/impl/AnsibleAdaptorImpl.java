@@ -43,6 +43,9 @@ import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleServerEmulator;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.utils.encryption.EncryptionTool;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.*;
 
@@ -50,6 +53,7 @@ import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.*;
  * This class implements the {@link AnsibleAdaptor} interface. This interface defines the behaviors
  * that our service provides.
  */
+@Component(service = AnsibleAdaptor.class, immediate = true)
 public class AnsibleAdaptorImpl implements AnsibleAdaptor {
 
     /**
@@ -92,7 +96,8 @@ public class AnsibleAdaptorImpl implements AnsibleAdaptor {
      *
      * @param propProvider the prop provider
      */
-    public AnsibleAdaptorImpl(AnsibleAdaptorPropertiesProvider propProvider) {
+    @Activate
+    public AnsibleAdaptorImpl(@Reference final AnsibleAdaptorPropertiesProvider propProvider) {
         initialize(propProvider);
     }
 

@@ -32,7 +32,10 @@ import org.onap.ccsdk.sli.adaptors.ssh.SshConnectionDetails;
 import org.onap.ccsdk.sli.adaptors.ssh.SshDataAccessException;
 import org.onap.ccsdk.sli.adaptors.ssh.SshDataAccessService;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
+@Component(service = SshDataAccessService.class, immediate = true)
 public class SshdDataAccessService implements SshDataAccessService {
 
     private String schema = Constants.NETCONF_SCHEMA;
@@ -48,6 +51,7 @@ public class SshdDataAccessService implements SshDataAccessService {
     }
 
     @Override
+    @Reference
     public void setDbLibService(DbLibService dbLibService) {
         this.dbLibService = dbLibService;
     }

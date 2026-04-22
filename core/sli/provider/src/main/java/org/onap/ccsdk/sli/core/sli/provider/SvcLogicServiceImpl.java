@@ -34,9 +34,13 @@ import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicPropertiesProvider;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicResolver;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceImplBase;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(service = SvcLogicService.class, immediate = true)
 public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcLogicService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SvcLogicServiceImpl.class);
@@ -48,8 +52,10 @@ public class SvcLogicServiceImpl extends SvcLogicServiceImplBase implements SvcL
         this.store = getStore();
     }
 
-    public SvcLogicServiceImpl(SvcLogicPropertiesProvider resourceProvider, DbLibService dbSvc,
-            SvcLogicResolver resolver) throws SvcLogicException {
+    @Activate
+    public SvcLogicServiceImpl(@Reference final SvcLogicPropertiesProvider resourceProvider, 
+                               @Reference final DbLibService dbSvc,
+                               @Reference final SvcLogicResolver resolver) throws SvcLogicException {
         super(null, resolver);
         properties = resourceProvider.getProperties();
         this.store = new SvcLogicDblibStore(dbSvc);

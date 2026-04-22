@@ -23,10 +23,18 @@
 
 package org.onap.ccsdk.sli.adaptors.messagerouter.publisher.client.impl;
 
+import java.util.Map;
+
 import org.onap.ccsdk.sli.adaptors.messagerouter.publisher.api.PublisherApi;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true,
+	configurationPid = "org.onap.ccsdk.sli.adaptors.messagerouter.publisher.client")
 public class ClientImpl {
 	private static final Logger logger = LoggerFactory.getLogger(ClientImpl.class);
 	private String topic;
@@ -36,6 +44,7 @@ public class ClientImpl {
 
 	}
 
+	@Reference
 	public void setPublisher(PublisherApi publisherApi) {
 		this.publisher = publisherApi;
 	}
@@ -44,7 +53,20 @@ public class ClientImpl {
 		this.topic = topic;
 	}
 
-	
+	@Activate
+	public void activate(Map<String, Object> properties) {
+		if (properties != null && properties.containsKey("topic")) {
+			setTopic((String) properties.get("topic"));
+		}
+		init();
+	}
+
+	@Modified
+	public void modified(Map<String, Object> properties) {
+		if (properties != null && properties.containsKey("topic")) {
+			setTopic((String) properties.get("topic"));
+		}
+	}
 
 	public void init() {
 		for (int i = 0; i < 5; i++) {

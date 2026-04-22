@@ -36,6 +36,9 @@ import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResultCodes;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,6 +52,7 @@ import java.util.Properties;
  * This class implements the {@link SaltstackAdaptor} interface. This interface defines the behaviors
  * that our service provides.
  */
+@Component(service = SaltstackAdaptor.class, immediate = true)
 public class SaltstackAdaptorImpl implements SaltstackAdaptor {
 
     /**
@@ -107,12 +111,19 @@ public class SaltstackAdaptorImpl implements SaltstackAdaptor {
     /**
      * This default constructor is used as a work around because the activator wasn't getting called
      */
-    public SaltstackAdaptorImpl() throws SvcLogicException {
-        initialize(new SaltstackAdaptorPropertiesProviderImpl());
+    public SaltstackAdaptorImpl() {
     }
 
     public SaltstackAdaptorImpl(SaltstackAdaptorPropertiesProvider propProvider) throws SvcLogicException {
         initialize(propProvider);
+    }
+
+    @Reference
+    private SaltstackAdaptorPropertiesProvider propProviderRef;
+
+    @Activate
+    public void activate() throws SvcLogicException {
+        initialize(propProviderRef);
     }
 
     /**

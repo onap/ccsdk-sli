@@ -41,6 +41,9 @@ import org.onap.ccsdk.sli.plugins.sshapicall.model.Parameters;
 import org.onap.ccsdk.sli.plugins.sshapicall.model.ParseParam;
 
 
+import org.osgi.service.component.annotations.Component;
+
+@Component(service = SshApiCallNode.class, immediate = true)
 public class SshApiCallNode implements SvcLogicJavaPlugin {
 
     private static final EELFLogger logger = EELFManager.getInstance().getApplicationLogger();

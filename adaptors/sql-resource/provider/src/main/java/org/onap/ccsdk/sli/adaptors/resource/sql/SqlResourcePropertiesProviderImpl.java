@@ -36,6 +36,7 @@ import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.CoreDefaultFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,7 @@ import org.slf4j.LoggerFactory;
  * directory</li>
  * </ol>
  */
+@Component(service = SqlResourcePropertiesProvider.class, immediate = true)
 public class SqlResourcePropertiesProviderImpl implements SqlResourcePropertiesProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(SqlResourcePropertiesProviderImpl.class);

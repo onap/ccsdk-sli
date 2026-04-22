@@ -28,10 +28,14 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+@Component(service = ConfigResource.class, immediate = true)
 public class ConfigResource implements SvcLogicResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigResource.class);
@@ -39,7 +43,8 @@ public class ConfigResource implements SvcLogicResource {
     private RestService restService;
     private String useRfc8040 = "true"; 
 
-    public ConfigResource(MdsalResourcePropertiesProvider propProvider) {
+    @Activate
+    public ConfigResource(@Reference final MdsalResourcePropertiesProvider propProvider) {
         LOG.info("Loading ConfigResource using property provider");
         Properties props = propProvider.getProperties();
 
