@@ -25,274 +25,270 @@ import org.onap.sdc.api.notification.IResourceInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.vorburger.mariadb4j.DB;
-import ch.vorburger.mariadb4j.DBConfigurationBuilder;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class TestSdncUebCallback {
 
 
-	private static final String CRTBL_SERVICE_MODEL = "CREATE TABLE `SERVICE_MODEL` (\n" +
-			"  `service_uuid` varchar(255) NOT NULL,\n" +
-			"  `model_yaml` longblob,\n" +
-			"  `invariant_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `version` varchar(255) DEFAULT NULL,\n" +
-			"  `name` varchar(255) DEFAULT NULL,\n" +
-			"  `description` varchar(1024) DEFAULT NULL,\n" +
-			"  `type` varchar(255) DEFAULT NULL,\n" +
-			"  `category` varchar(255) DEFAULT NULL,\n" +
-			"  `ecomp_naming` char(1) DEFAULT NULL,\n" +
-			"  `service_instance_name_prefix` varchar(255) DEFAULT NULL,\n" +
-			"  `filename` varchar(100) DEFAULT NULL,\n" +
-			"  `naming_policy` varchar(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`service_uuid`)\n" +
-			") ";
+	private static final String CRTBL_SERVICE_MODEL = "CREATE TABLE SERVICE_MODEL (" +
+			"  service_uuid varchar(255) NOT NULL," +
+			"  model_yaml BLOB," +
+			"  invariant_uuid varchar(255) DEFAULT NULL," +
+			"  version varchar(255) DEFAULT NULL," +
+			"  name varchar(255) DEFAULT NULL," +
+			"  description varchar(1024) DEFAULT NULL," +
+			"  type varchar(255) DEFAULT NULL," +
+			"  category varchar(255) DEFAULT NULL," +
+			"  ecomp_naming CHAR(1) DEFAULT NULL," +
+			"  service_instance_name_prefix varchar(255) DEFAULT NULL," +
+			"  filename varchar(100) DEFAULT NULL," +
+			"  naming_policy varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (service_uuid)" +
+			")";
 			
-	private static final String CRTBL_SERVICE_MODEL_TO_VF_MODEL_MAPPING = "CREATE TABLE `SERVICE_MODEL_TO_VF_MODEL_MAPPING` (\n" +
-			"  `service_uuid` varchar(255) NOT NULL,\n" +
-			"  `vf_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `vf_customization_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `service_invariant_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`service_uuid`)\n" +
-			") ";
-
-	private static final String CRTBL_ATTRIBUTE_VALUE_PAIR = "CREATE TABLE `ATTRIBUTE_VALUE_PAIR` (\n" +
-			"  `resource_uuid` varchar(255) NOT NULL,\n" +
-			"  `attribute_name` varchar(255) NOT NULL,\n" +
-			"  `resource_type` varchar(255) NOT NULL,\n" +
-			"  `attribute_value` varchar(255) DEFAULT NULL,\n" +
-			"  `resource_customization_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`resource_uuid`,`attribute_name`,`resource_type`)\n" +
-			") ";
-
-	private static final String CRTBL_NETWORK_MODEL = "CREATE TABLE `NETWORK_MODEL` (\n" +
-			"  `customization_uuid` varchar(255) NOT NULL,\n" +
-			"  `service_uuid` varchar(255) NOT NULL,\n" +
-			"  `model_yaml` longblob,\n" +
-			"  `invariant_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `network_type` varchar(255) DEFAULT NULL,\n" +
-			"  `network_role` varchar(255) DEFAULT NULL,\n" +
-			"  `network_technology` varchar(255) DEFAULT NULL,\n" +
-			"  `network_scope` varchar(255) DEFAULT NULL,\n" +
-			"  `naming_policy` varchar(255) DEFAULT NULL,\n" +
-			"  `ecomp_generated_naming` char(1) DEFAULT NULL,\n" +
-			"  `is_shared_network` char(1) DEFAULT NULL,\n" +
-			"  `is_external_network` char(1) DEFAULT NULL,\n" +
-			"  `is_provider_network` char(1) DEFAULT NULL,\n" +
-			"  `physical_network_name` varchar(255) DEFAULT NULL,\n" +
-			"  `is_bound_to_vpn` char(1) DEFAULT NULL,\n" +
-			"  `vpn_binding` varchar(255) DEFAULT NULL,\n" +
-			"  `use_ipv4` char(1) DEFAULT NULL,\n" +
-			"  `ipv4_dhcp_enabled` char(1) DEFAULT NULL,\n" +
-			"  `ipv4_ip_version` char(1) DEFAULT NULL,\n" +
-			"  `ipv4_cidr_mask` varchar(255) DEFAULT NULL,\n" +
-			"  `eipam_v4_address_plan` varchar(255) DEFAULT NULL,\n" +
-			"  `use_ipv6` char(1) DEFAULT NULL,\n" +
-			"  `ipv6_dhcp_enabled` char(1) DEFAULT NULL,\n" +
-			"  `ipv6_ip_version` char(1) DEFAULT NULL,\n" +
-			"  `ipv6_cidr_mask` varchar(255) DEFAULT NULL,\n" +
-			"  `eipam_v6_address_plan` varchar(255) DEFAULT NULL,\n" +
-			"  `version` varchar(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`customization_uuid`),\n" +
-			"  KEY `FK_NETWORK_MODEL` (`service_uuid`),\n" +
-			"  CONSTRAINT `FK_NETWORK_MODEL` FOREIGN KEY (`service_uuid`) REFERENCES `SERVICE_MODEL` (`service_uuid`) ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
+	private static final String CRTBL_SERVICE_MODEL_TO_VF_MODEL_MAPPING = "CREATE TABLE SERVICE_MODEL_TO_VF_MODEL_MAPPING (" +
+			"  service_uuid varchar(255) NOT NULL," +
+			"  vf_uuid varchar(255) DEFAULT NULL," +
+			"  vf_customization_uuid varchar(255) DEFAULT NULL," +
+			"  service_invariant_uuid varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (service_uuid)" +
 			")";
 
-	private static final String CRTBL_ALLOTTED_RESOURCE_MODEL = "CREATE TABLE `ALLOTTED_RESOURCE_MODEL` (\n" +
-			"  `customization_uuid` varchar(255) NOT NULL,\n" +
-			"  `model_yaml` longblob,\n" +
-			"  `invariant_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `version` varchar(255) DEFAULT NULL,\n" +
-			"  `naming_policy` varchar(255) DEFAULT NULL,\n" +
-			"  `ecomp_generated_naming` char(1) DEFAULT NULL,\n" +
-			"  `depending_service` varchar(255) DEFAULT NULL,\n" +
-			"  `role` varchar(255) DEFAULT NULL,\n" +
-			"  `type` varchar(255) DEFAULT NULL,\n" +
-			"  `service_dependency` varchar(255) DEFAULT NULL,\n" +
-			"  `allotted_resource_type` varchar(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`customization_uuid`)\n" +
-			") ";
-
-	private static final String CRTBL_VFC_MODEL = "CREATE TABLE `VFC_MODEL` (\n" +
-			"  `customization_uuid` varchar(255) NOT NULL,\n" +
-			"  `model_yaml` longblob,\n" +
-			"  `invariant_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `version` varchar(255) DEFAULT NULL,\n" +
-			"  `naming_policy` varchar(255) DEFAULT NULL,\n" +
-			"  `ecomp_generated_naming` char(1) DEFAULT NULL,\n" +
-			"  `nfc_function` varchar(255) DEFAULT NULL,\n" +
-			"  `nfc_naming_code` varchar(255) DEFAULT NULL,\n" +
-			"  `vm_type` varchar(255) DEFAULT NULL,\n" +
-			"  `vm_type_tag` varchar(255) DEFAULT NULL,\n" +
-			"  `vm_image_name` varchar(255) DEFAULT NULL,\n" +
-			"  `vm_flavor_name` varchar(255) DEFAULT NULL,\n" +
-			"  `high_availability` varchar(255) DEFAULT NULL,\n" +
-			"  `nfc_naming` varchar(255) DEFAULT NULL,\n" +
-			"  `min_instances` int(11) DEFAULT NULL,\n" +
-			"  `max_instances` int(11) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`customization_uuid`)\n" +
-			") ";
-
-	private static final String CRTBL_VFC_RELATED_NETWORK_ROLE = "CREATE TABLE `VFC_RELATED_NETWORK_ROLE` (\n" +
-			"  `vfc_customization_uuid` varchar(255) NOT NULL,\n" +
-			"  `vm_type` varchar(255) NOT NULL,\n" +
-			"  `network_role` varchar(255) NOT NULL,\n" +
-			"  `related_network_role` varchar(255) NOT NULL,\n" +
-			"  PRIMARY KEY (`vfc_customization_uuid`,`vm_type`,`network_role`,`related_network_role`)\n" +
-			") ";
-
-	private static final String CRTBL_VFC_TO_NETWORK_ROLE_MAPPING = "CREATE TABLE `VFC_TO_NETWORK_ROLE_MAPPING` (\n" +
-			"  `seq` int(11) NOT NULL AUTO_INCREMENT,\n" +
-			"  `vfc_customization_uuid` varchar(255) NOT NULL,\n" +
-			"  `network_role` varchar(255) NOT NULL,\n" +
-			"  `vm_type` varchar(255) DEFAULT NULL,\n" +
-			"  `network_role_tag` varchar(255) DEFAULT NULL,\n" +
-			"  `ipv4_count` int(11) NOT NULL,\n" +
-			"  `ipv6_count` int(11) NOT NULL,\n" +
-			"  `ipv4_use_dhcp` char(1) DEFAULT NULL,\n" +
-			"  `ipv6_use_dhcp` char(1) DEFAULT NULL,\n" +
-			"  `ipv4_ip_version` char(1) DEFAULT NULL,\n" +
-			"  `ipv6_ip_version` char(1) DEFAULT NULL,\n" +
-			"  `extcp_subnetpool_id` varchar(512) DEFAULT NULL,\n" +
-			"  `ipv4_floating_count` int(11) DEFAULT NULL,\n" +
-			"  `ipv6_floating_count` int(11) DEFAULT NULL,\n" +
-			"  `ipv4_address_plan_name` varchar(512) DEFAULT NULL,\n" +
-			"  `ipv6_address_plan_name` varchar(512) DEFAULT NULL,\n" +
-			"  `ipv4_vrf_name` varchar(512) DEFAULT NULL,\n" +
-			"  `ipv6_vrf_name` varchar(512) DEFAULT NULL,\n" +
-			"  `subnet_role` varchar(255) DEFAULT NULL,\n" +
-			"  `subinterface_indicator` char(1) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`seq`),\n" +
-			"  KEY `IX1_VFC_TO_NETWORK_ROLE_MAPPING` (`vfc_customization_uuid`)\n" +
-			") ";
-
-	private static final String CRTBL_VF_MODEL = "CREATE TABLE `VF_MODEL` (\n" +
-			"  `customization_uuid` varchar(255) NOT NULL,\n" +
-			"  `model_yaml` longblob,\n" +
-			"  `invariant_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `version` varchar(255) DEFAULT NULL,\n" +
-			"  `name` varchar(255) DEFAULT NULL,\n" +
-			"  `naming_policy` varchar(255) DEFAULT NULL,\n" +
-			"  `ecomp_generated_naming` char(1) DEFAULT NULL,\n" +
-			"  `avail_zone_max_count` int(11) DEFAULT NULL,\n" +
-			"  `nf_function` varchar(255) DEFAULT NULL,\n" +
-			"  `nf_code` varchar(255) DEFAULT NULL,\n" +
-			"  `nf_type` varchar(255) DEFAULT NULL,\n" +
-			"  `nf_role` varchar(255) DEFAULT NULL,\n" +
-			"  `vendor` varchar(255) DEFAULT NULL,\n" +
-			"  `vendor_version` varchar(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`customization_uuid`)\n" +
+	private static final String CRTBL_ATTRIBUTE_VALUE_PAIR = "CREATE TABLE ATTRIBUTE_VALUE_PAIR (" +
+			"  resource_uuid varchar(255) NOT NULL," +
+			"  attribute_name varchar(255) NOT NULL," +
+			"  resource_type varchar(255) NOT NULL," +
+			"  attribute_value varchar(255) DEFAULT NULL," +
+			"  resource_customization_uuid varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (resource_uuid,attribute_name,resource_type)" +
 			")";
 
-	private static final String CRTBL_VNF_RELATED_NETWORK_ROLE = "CREATE TABLE `VNF_RELATED_NETWORK_ROLE` (\n" +
-			"  `vnf_customization_uuid` varchar(255) NOT NULL,\n" +
-			"  `network_role` varchar(255) NOT NULL,\n" +
-			"  `related_network_role` varchar(255) NOT NULL,\n" +
-			"  PRIMARY KEY (`vnf_customization_uuid`,`network_role`,`related_network_role`)\n" +
+	private static final String CRTBL_NETWORK_MODEL = "CREATE TABLE NETWORK_MODEL (" +
+			"  customization_uuid varchar(255) NOT NULL," +
+			"  service_uuid varchar(255) NOT NULL," +
+			"  model_yaml BLOB," +
+			"  invariant_uuid varchar(255) DEFAULT NULL," +
+			"  uuid varchar(255) DEFAULT NULL," +
+			"  network_type varchar(255) DEFAULT NULL," +
+			"  network_role varchar(255) DEFAULT NULL," +
+			"  network_technology varchar(255) DEFAULT NULL," +
+			"  network_scope varchar(255) DEFAULT NULL," +
+			"  naming_policy varchar(255) DEFAULT NULL," +
+			"  ecomp_generated_naming CHAR(1) DEFAULT NULL," +
+			"  is_shared_network CHAR(1) DEFAULT NULL," +
+			"  is_external_network CHAR(1) DEFAULT NULL," +
+			"  is_provider_network CHAR(1) DEFAULT NULL," +
+			"  physical_network_name varchar(255) DEFAULT NULL," +
+			"  is_bound_to_vpn CHAR(1) DEFAULT NULL," +
+			"  vpn_binding varchar(255) DEFAULT NULL," +
+			"  use_ipv4 CHAR(1) DEFAULT NULL," +
+			"  ipv4_dhcp_enabled CHAR(1) DEFAULT NULL," +
+			"  ipv4_ip_version CHAR(1) DEFAULT NULL," +
+			"  ipv4_cidr_mask varchar(255) DEFAULT NULL," +
+			"  eipam_v4_address_plan varchar(255) DEFAULT NULL," +
+			"  use_ipv6 CHAR(1) DEFAULT NULL," +
+			"  ipv6_dhcp_enabled CHAR(1) DEFAULT NULL," +
+			"  ipv6_ip_version CHAR(1) DEFAULT NULL," +
+			"  ipv6_cidr_mask varchar(255) DEFAULT NULL," +
+			"  eipam_v6_address_plan varchar(255) DEFAULT NULL," +
+			"  version varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (customization_uuid)" +
 			")";
 
-	private static final String CRTBL_VF_TO_NETWORK_ROLE_MAPPING = "CREATE TABLE `VF_TO_NETWORK_ROLE_MAPPING` (\n" +
-			"  `seq` int(11) NOT NULL AUTO_INCREMENT,\n" +
-			"  `vf_customization_uuid` varchar(255) NOT NULL,\n" +
-			"  `network_role` varchar(255) NOT NULL,\n" +
-			"  PRIMARY KEY (`seq`),\n" +
-			"  KEY `IX1_VF_TO_NETWORK_ROLE_MAPPING` (`vf_customization_uuid`)\n" +
+	private static final String CRTBL_ALLOTTED_RESOURCE_MODEL = "CREATE TABLE ALLOTTED_RESOURCE_MODEL (" +
+			"  customization_uuid varchar(255) NOT NULL," +
+			"  model_yaml BLOB," +
+			"  invariant_uuid varchar(255) DEFAULT NULL," +
+			"  uuid varchar(255) DEFAULT NULL," +
+			"  version varchar(255) DEFAULT NULL," +
+			"  naming_policy varchar(255) DEFAULT NULL," +
+			"  ecomp_generated_naming CHAR(1) DEFAULT NULL," +
+			"  depending_service varchar(255) DEFAULT NULL," +
+			"  role varchar(255) DEFAULT NULL," +
+			"  type varchar(255) DEFAULT NULL," +
+			"  service_dependency varchar(255) DEFAULT NULL," +
+			"  allotted_resource_type varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (customization_uuid)" +
 			")";
 
-	private static final String CRTBL_VF_MODULE_MODEL = "CREATE TABLE `VF_MODULE_MODEL` (\n" +
-			"  `customization_uuid` varchar(255) NOT NULL,\n" +
-			"  `model_yaml` longblob,\n" +
-			"  `invariant_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `version` varchar(255) DEFAULT NULL,\n" +
-			"  `vf_module_type` varchar(255) DEFAULT NULL,\n" +
-			"  `availability_zone_count` int(11) DEFAULT NULL,\n" +
-			"  `ecomp_generated_vm_assignments` char(1) DEFAULT NULL,\n" +
-			"  `vf_customization_uuid` char(255) DEFAULT NULL,\n" +
-			"  `vf_module_label` char(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`customization_uuid`)\n" +
+	private static final String CRTBL_VFC_MODEL = "CREATE TABLE VFC_MODEL (" +
+			"  customization_uuid varchar(255) NOT NULL," +
+			"  model_yaml BLOB," +
+			"  invariant_uuid varchar(255) DEFAULT NULL," +
+			"  uuid varchar(255) DEFAULT NULL," +
+			"  version varchar(255) DEFAULT NULL," +
+			"  naming_policy varchar(255) DEFAULT NULL," +
+			"  ecomp_generated_naming CHAR(1) DEFAULT NULL," +
+			"  nfc_function varchar(255) DEFAULT NULL," +
+			"  nfc_naming_code varchar(255) DEFAULT NULL," +
+			"  vm_type varchar(255) DEFAULT NULL," +
+			"  vm_type_tag varchar(255) DEFAULT NULL," +
+			"  vm_image_name varchar(255) DEFAULT NULL," +
+			"  vm_flavor_name varchar(255) DEFAULT NULL," +
+			"  high_availability varchar(255) DEFAULT NULL," +
+			"  nfc_naming varchar(255) DEFAULT NULL," +
+			"  min_instances INTEGER DEFAULT NULL," +
+			"  max_instances INTEGER DEFAULT NULL," +
+			"  PRIMARY KEY (customization_uuid)" +
+			")";
+
+	private static final String CRTBL_VFC_RELATED_NETWORK_ROLE = "CREATE TABLE VFC_RELATED_NETWORK_ROLE (" +
+			"  vfc_customization_uuid varchar(255) NOT NULL," +
+			"  vm_type varchar(255) NOT NULL," +
+			"  network_role varchar(255) NOT NULL," +
+			"  related_network_role varchar(255) NOT NULL," +
+			"  PRIMARY KEY (vfc_customization_uuid,vm_type,network_role,related_network_role)" +
+			")";
+
+	private static final String CRTBL_VFC_TO_NETWORK_ROLE_MAPPING = "CREATE TABLE VFC_TO_NETWORK_ROLE_MAPPING (" +
+			"  seq INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY," +
+			"  vfc_customization_uuid varchar(255) NOT NULL," +
+			"  network_role varchar(255) NOT NULL," +
+			"  vm_type varchar(255) DEFAULT NULL," +
+			"  network_role_tag varchar(255) DEFAULT NULL," +
+			"  ipv4_count INTEGER NOT NULL," +
+			"  ipv6_count INTEGER NOT NULL," +
+			"  ipv4_use_dhcp CHAR(1) DEFAULT NULL," +
+			"  ipv6_use_dhcp CHAR(1) DEFAULT NULL," +
+			"  ipv4_ip_version CHAR(1) DEFAULT NULL," +
+			"  ipv6_ip_version CHAR(1) DEFAULT NULL," +
+			"  extcp_subnetpool_id varchar(512) DEFAULT NULL," +
+			"  ipv4_floating_count INTEGER DEFAULT NULL," +
+			"  ipv6_floating_count INTEGER DEFAULT NULL," +
+			"  ipv4_address_plan_name varchar(512) DEFAULT NULL," +
+			"  ipv6_address_plan_name varchar(512) DEFAULT NULL," +
+			"  ipv4_vrf_name varchar(512) DEFAULT NULL," +
+			"  ipv6_vrf_name varchar(512) DEFAULT NULL," +
+			"  subnet_role varchar(255) DEFAULT NULL," +
+			"  subinterface_indicator CHAR(1) DEFAULT NULL," +
+			"  PRIMARY KEY (seq)" +
+			")";
+
+	private static final String CRTBL_VF_MODEL = "CREATE TABLE VF_MODEL (" +
+			"  customization_uuid varchar(255) NOT NULL," +
+			"  model_yaml BLOB," +
+			"  invariant_uuid varchar(255) DEFAULT NULL," +
+			"  uuid varchar(255) DEFAULT NULL," +
+			"  version varchar(255) DEFAULT NULL," +
+			"  name varchar(255) DEFAULT NULL," +
+			"  naming_policy varchar(255) DEFAULT NULL," +
+			"  ecomp_generated_naming CHAR(1) DEFAULT NULL," +
+			"  avail_zone_max_count INTEGER DEFAULT NULL," +
+			"  nf_function varchar(255) DEFAULT NULL," +
+			"  nf_code varchar(255) DEFAULT NULL," +
+			"  nf_type varchar(255) DEFAULT NULL," +
+			"  nf_role varchar(255) DEFAULT NULL," +
+			"  vendor varchar(255) DEFAULT NULL," +
+			"  vendor_version varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (customization_uuid)" +
+			")";
+
+	private static final String CRTBL_VNF_RELATED_NETWORK_ROLE = "CREATE TABLE VNF_RELATED_NETWORK_ROLE (" +
+			"  vnf_customization_uuid varchar(255) NOT NULL," +
+			"  network_role varchar(255) NOT NULL," +
+			"  related_network_role varchar(255) NOT NULL," +
+			"  PRIMARY KEY (vnf_customization_uuid,network_role,related_network_role)" +
+			")";
+
+	private static final String CRTBL_VF_TO_NETWORK_ROLE_MAPPING = "CREATE TABLE VF_TO_NETWORK_ROLE_MAPPING (" +
+			"  seq INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY," +
+			"  vf_customization_uuid varchar(255) NOT NULL," +
+			"  network_role varchar(255) NOT NULL," +
+			"  PRIMARY KEY (seq)" +
+			")";
+
+	private static final String CRTBL_VF_MODULE_MODEL = "CREATE TABLE VF_MODULE_MODEL (" +
+			"  customization_uuid varchar(255) NOT NULL," +
+			"  model_yaml BLOB," +
+			"  invariant_uuid varchar(255) DEFAULT NULL," +
+			"  uuid varchar(255) DEFAULT NULL," +
+			"  version varchar(255) DEFAULT NULL," +
+			"  vf_module_type varchar(255) DEFAULT NULL," +
+			"  availability_zone_count INTEGER DEFAULT NULL," +
+			"  ecomp_generated_vm_assignments CHAR(1) DEFAULT NULL," +
+			"  vf_customization_uuid varchar(255) DEFAULT NULL," +
+			"  vf_module_label varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (customization_uuid)" +
 			")";
 	
-	private static final String CRTBL_VF_MODULE_TO_VFC_MAPPING = "CREATE TABLE `VF_MODULE_TO_VFC_MAPPING` (\n" +
-			"  `seq` int(11) NOT NULL AUTO_INCREMENT,\n" +
-			"  `vf_module_customization_uuid` varchar(255) NOT NULL,\n" +
-			"  `vfc_customization_uuid` varchar(255) NOT NULL,\n" +
-			"  `vm_type` varchar(255) NOT NULL,\n" +
-			"  `vm_count` int(11) NOT NULL,\n" +
-			"  PRIMARY KEY (`seq`),\n" +
-			"  KEY `IX1_VF_MODULE_TO_VFC_MAPPING` (`vf_module_customization_uuid`)\n" +
+	private static final String CRTBL_VF_MODULE_TO_VFC_MAPPING = "CREATE TABLE VF_MODULE_TO_VFC_MAPPING (" +
+			"  seq INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY," +
+			"  vf_module_customization_uuid varchar(255) NOT NULL," +
+			"  vfc_customization_uuid varchar(255) NOT NULL," +
+			"  vm_type varchar(255) NOT NULL," +
+			"  vm_count INTEGER NOT NULL," +
+			"  PRIMARY KEY (seq)" +
 			")";
 		
-	private static final String CRTBL_RESOURCE_GROUP = "CREATE TABLE `RESOURCE_GROUP` (\n" +
-			"  `resource_uuid` varchar(255) NOT NULL,\n" +
-			"  `group_uuid` varchar(255) NOT NULL,\n" +
-			"  `group_customization_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `group_invariant_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `group_name` varchar(255) DEFAULT NULL,\n" +
-			"  `version` varchar(255) DEFAULT NULL,\n" +
-			"  `group_type` varchar(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`resource_uuid`,`group_uuid`)\n" +
+	private static final String CRTBL_RESOURCE_GROUP = "CREATE TABLE RESOURCE_GROUP (" +
+			"  resource_uuid varchar(255) NOT NULL," +
+			"  group_uuid varchar(255) NOT NULL," +
+			"  group_customization_uuid varchar(255) DEFAULT NULL," +
+			"  group_invariant_uuid varchar(255) DEFAULT NULL," +
+			"  group_name varchar(255) DEFAULT NULL," +
+			"  version varchar(255) DEFAULT NULL," +
+			"  group_type varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (resource_uuid,group_uuid)" +
 			")";
 		
-	private static final String CRTBL_RESOURCE_GROUP_TO_TARGET_NODE_MAPPING = "CREATE TABLE `RESOURCE_GROUP_TO_TARGET_NODE_MAPPING` (\n" +
-			"  `group_uuid` varchar(255) NOT NULL,\n" +
-			"  `parent_uuid` varchar(255) NOT NULL,\n" +
-			"  `target_node_uuid` varchar(255) NOT NULL,\n" +
-			"  `target_type` varchar(255) DEFAULT NULL,\n" +
-			"  `table_name` varchar(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`group_uuid`,`parent_uuid`,`target_node_uuid`)\n" +
+	private static final String CRTBL_RESOURCE_GROUP_TO_TARGET_NODE_MAPPING = "CREATE TABLE RESOURCE_GROUP_TO_TARGET_NODE_MAPPING (" +
+			"  group_uuid varchar(255) NOT NULL," +
+			"  parent_uuid varchar(255) NOT NULL," +
+			"  target_node_uuid varchar(255) NOT NULL," +
+			"  target_type varchar(255) DEFAULT NULL," +
+			"  table_name varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (group_uuid,parent_uuid,target_node_uuid)" +
 			")";
 
-	private static final String CRTBL_RESOURCE_POLICY = "CREATE TABLE `RESOURCE_POLICY` (\n" +
-			"  `resource_uuid` varchar(255) NOT NULL,\n" +
-			"  `policy_uuid` varchar(255) NOT NULL,\n" +
-			"  `policy_invariant_uuid` varchar(255) NOT NULL,\n" +
-			"  `policy_name` varchar(255) DEFAULT NULL,\n" +
-			"  `version` varchar(255) DEFAULT NULL,\n" +
-			"  `policy_type` varchar(255) DEFAULT NULL,\n" +
-			"  `property_type` varchar(255) DEFAULT NULL,\n" +
-			"  `property_source` varchar(255) DEFAULT NULL,\n" +
-			"  `property_name` varchar(255) DEFAULT NULL,\n" +
-			"  `policy_customization_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`resource_uuid`,`policy_uuid`)\n" +
+	private static final String CRTBL_RESOURCE_POLICY = "CREATE TABLE RESOURCE_POLICY (" +
+			"  resource_uuid varchar(255) NOT NULL," +
+			"  policy_uuid varchar(255) NOT NULL," +
+			"  policy_invariant_uuid varchar(255) NOT NULL," +
+			"  policy_name varchar(255) DEFAULT NULL," +
+			"  version varchar(255) DEFAULT NULL," +
+			"  policy_type varchar(255) DEFAULT NULL," +
+			"  property_type varchar(255) DEFAULT NULL," +
+			"  property_source varchar(255) DEFAULT NULL," +
+			"  property_name varchar(255) DEFAULT NULL," +
+			"  policy_customization_uuid varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (resource_uuid,policy_uuid)" +
 			")";
 
-	private static final String CRTBL_RESOURCE_POLICY_TO_TARGET_NODE_MAPPING = "CREATE TABLE `RESOURCE_POLICY_TO_TARGET_NODE_MAPPING` (\n" +
-			"  `policy_uuid` varchar(255) NOT NULL,\n" +
-			"  `parent_uuid` varchar(255) NOT NULL,\n" +
-			"  `target_node_uuid` varchar(255) NOT NULL,\n" +
-			"  `target_type` varchar(255) DEFAULT NULL,\n" +
-			"  `target_node_customization_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  `policy_customization_uuid` varchar(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`policy_uuid`,`parent_uuid`,`target_node_uuid`)\n" +
+	private static final String CRTBL_RESOURCE_POLICY_TO_TARGET_NODE_MAPPING = "CREATE TABLE RESOURCE_POLICY_TO_TARGET_NODE_MAPPING (" +
+			"  policy_uuid varchar(255) NOT NULL," +
+			"  parent_uuid varchar(255) NOT NULL," +
+			"  target_node_uuid varchar(255) NOT NULL," +
+			"  target_type varchar(255) DEFAULT NULL," +
+			"  target_node_customization_uuid varchar(255) DEFAULT NULL," +
+			"  policy_customization_uuid varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (policy_uuid,parent_uuid,target_node_uuid)" +
 			")";
 		
-	private static final String CRTBL_NODE_CAPABILITY = "CREATE TABLE `NODE_CAPABILITY` (\n" +
-			"  `capability_id` int(11) NOT NULL AUTO_INCREMENT,\n" +
-			"  `capability_provider_uuid` varchar(255) NOT NULL,\n" +
-			"  `capability_provider_customization_uuid` varchar(255) NOT NULL,\n" +
-			"  `capability_name` varchar(255) DEFAULT NULL,\n" +
-			"  `capability_type` varchar(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`capability_id`)\n" +
+	private static final String CRTBL_NODE_CAPABILITY = "CREATE TABLE NODE_CAPABILITY (" +
+			"  capability_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY," +
+			"  capability_provider_uuid varchar(255) NOT NULL," +
+			"  capability_provider_customization_uuid varchar(255) NOT NULL," +
+			"  capability_name varchar(255) DEFAULT NULL," +
+			"  capability_type varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (capability_id)" +
 			")";
 		
-	private static final String CRTBL_NODE_CAPABILITY_PROPERTY = "CREATE TABLE `NODE_CAPABILITY_PROPERTY` (\n" +
-			"  `capability_id` int(11) NOT NULL AUTO_INCREMENT,\n" +
-			"  `capability_property_name` varchar(255) NOT NULL,\n" +
-			"  `capability_property_type` varchar(255) DEFAULT NULL,\n" +
-			"  PRIMARY KEY (`capability_id`,`capability_property_name`),\n" +
-			"  CONSTRAINT `NODE_CAPABILITY_PROPERTY_TO_NODE_CAPABILITY` FOREIGN KEY (`capability_id`) REFERENCES `NODE_CAPABILITY` (`capability_id`) ON DELETE CASCADE\n" +
+	private static final String CRTBL_NODE_CAPABILITY_PROPERTY = "CREATE TABLE NODE_CAPABILITY_PROPERTY (" +
+			"  capability_id INTEGER NOT NULL," +
+			"  capability_property_name varchar(255) NOT NULL," +
+			"  capability_property_type varchar(255) DEFAULT NULL," +
+			"  PRIMARY KEY (capability_id,capability_property_name)," +
+			"  CONSTRAINT NODE_CAPABILITY_PROPERTY_TO_NODE_CAPABILITY FOREIGN KEY (capability_id) REFERENCES NODE_CAPABILITY (capability_id) ON DELETE CASCADE" +
 			")";
 					
 
 	 private static final Logger LOG = LoggerFactory
 	            .getLogger(TestSdncUebCallback.class);
+	private static int dbCounter = 0;
+	private String testDbName;
 	SdncUebConfiguration config;
 	DBResourceManager dblibSvc;
-	DB db;
 	List<IArtifactInfo > processLevelArtifactList;
 	List<IArtifactInfo > serviceLevelArtifactList;
 	ArrayList<IResourceInstance> resourceList;
@@ -317,16 +313,14 @@ public class TestSdncUebCallback {
 		props.load(propStr);
 
 
-		// Start MariaDB4j database
-		DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
-		config.setPort(0); // 0 => autom. detect free port
-		db = DB.newEmbeddedDB(config.build());
-		db.start();
+		// Use Derby embedded database
+		testDbName = "uebtest" + (++dbCounter);
+		props.setProperty("org.onap.ccsdk.sli.jdbc.database", testDbName);
+		props.setProperty("org.onap.ccsdk.sli.jdbc.url", "jdbc:derby:memory:" + testDbName + ";create=true");
+		props.setProperty("org.onap.ccsdk.sli.jdbc.driver", "org.apache.derby.iapi.jdbc.AutoloadedDriver");
+		props.setProperty("org.onap.ccsdk.sli.jdbc.user", "sa");
+		props.setProperty("org.onap.ccsdk.sli.jdbc.password", "");
 
-
-		// Override jdbc URL and database name
-		props.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
-		props.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
 
 
 		// Create dblib connection
@@ -407,7 +401,10 @@ public class TestSdncUebCallback {
             LOG.warn("Cannot replace spool file {}", curFileName, x);
         }
 
-        db.stop();
+        try (java.sql.Connection c = DriverManager.getConnection("jdbc:derby:memory:" + testDbName + ";drop=true")) {
+        } catch (SQLException e) {
+            // Derby throws SQLState 08006 on successful drop, XJ004 if DB not found - both acceptable in teardown
+        }
 
 	}
 

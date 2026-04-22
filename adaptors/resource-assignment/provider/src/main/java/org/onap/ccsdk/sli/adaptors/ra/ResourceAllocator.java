@@ -29,24 +29,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.onap.ccsdk.sli.adaptors.lock.comp.LockHelperImpl;
+import org.onap.ccsdk.sli.adaptors.lock.dao.ResourceLockDaoImpl;
+import org.onap.ccsdk.sli.adaptors.ra.alloc.DbAllocationRule;
 import org.onap.ccsdk.sli.adaptors.ra.comp.AllocationData;
+import org.onap.ccsdk.sli.adaptors.ra.comp.AllocationRule;
 import org.onap.ccsdk.sli.adaptors.ra.comp.EndPointAllocator;
+import org.onap.ccsdk.sli.adaptors.ra.comp.EndPointAllocatorImpl;
 import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceData;
 import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceEntity;
 import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceRequest;
 import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceResponse;
 import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceTarget;
+import org.onap.ccsdk.sli.adaptors.ra.rule.dao.RangeRuleDaoImpl;
+import org.onap.ccsdk.sli.adaptors.ra.rule.dao.ResourceRuleDaoImpl;
 import org.onap.ccsdk.sli.adaptors.rm.comp.ResourceManager;
+import org.onap.ccsdk.sli.adaptors.rm.comp.ResourceManagerImpl;
+import org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.AllocationItemJdbcDaoImpl;
+import org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.ResourceDaoImpl;
+import org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.ResourceJdbcDaoImpl;
+import org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.ResourceLoadJdbcDaoImpl;
 import org.onap.ccsdk.sli.adaptors.rm.data.AllocationStatus;
 import org.onap.ccsdk.sli.adaptors.rm.data.ReleaseRequest;
+import org.onap.ccsdk.sli.adaptors.util.db.CachedDataSourceWrap;
+import org.onap.ccsdk.sli.adaptors.util.db.DataSourceWrap;
 import org.onap.ccsdk.sli.adaptors.util.speed.SpeedUtil;
 import org.onap.ccsdk.sli.adaptors.util.str.StrUtil;
+import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+@Component(service = ResourceAllocator.class, immediate = true)
 public class ResourceAllocator implements SvcLogicResource {
 
     private static final Logger log = LoggerFactory.getLogger(ResourceAllocator.class);
@@ -57,8 +77,72 @@ public class ResourceAllocator implements SvcLogicResource {
     private EndPointAllocator endPointAllocator;
     private SpeedUtil speedUtil;
 
+    @Reference
+    private DbLibService dbLibService;
+
     public ResourceAllocator() {
         log.info("ResourceAllocator created.");
+    }
+
+    @Activate
+    public void activate() {
+        DataSourceWrap rmDataSource = new DataSourceWrap();
+        rmDataSource.setDataSource(dbLibService);
+
+        CachedDataSourceWrap lockDataSource = new CachedDataSourceWrap();
+        lockDataSource.setDataSource(rmDataSource);
+
+        JdbcTemplate rmJdbcTemplate = new JdbcTemplate(rmDataSource);
+        JdbcTemplate lockJdbcTemplate = new JdbcTemplate(lockDataSource);
+
+        ResourceLockDaoImpl resourceLockDao = new ResourceLockDaoImpl();
+        resourceLockDao.setJdbcTemplate(lockJdbcTemplate);
+
+        LockHelperImpl lockHelper = new LockHelperImpl();
+        lockHelper.setResourceLockDao(resourceLockDao);
+        lockHelper.setRetryCount(10);
+        lockHelper.setLockWait(5);
+
+        ResourceJdbcDaoImpl resourceJdbcDao = new ResourceJdbcDaoImpl();
+        resourceJdbcDao.setJdbcTemplate(rmJdbcTemplate);
+
+        AllocationItemJdbcDaoImpl allocationItemJdbcDao = new AllocationItemJdbcDaoImpl();
+        allocationItemJdbcDao.setJdbcTemplate(rmJdbcTemplate);
+
+        ResourceLoadJdbcDaoImpl resourceLoadJdbcDao = new ResourceLoadJdbcDaoImpl();
+        resourceLoadJdbcDao.setJdbcTemplate(rmJdbcTemplate);
+
+        ResourceDaoImpl resourceDao = new ResourceDaoImpl();
+        resourceDao.setResourceJdbcDao(resourceJdbcDao);
+        resourceDao.setAllocationItemJdbcDao(allocationItemJdbcDao);
+        resourceDao.setResourceLoadJdbcDao(resourceLoadJdbcDao);
+
+        ResourceManagerImpl rm = new ResourceManagerImpl();
+        rm.setLockHelper(lockHelper);
+        rm.setResourceDao(resourceDao);
+        rm.setLockTimeout(600);
+        this.resourceManager = rm;
+
+        ResourceRuleDaoImpl resourceRuleDao = new ResourceRuleDaoImpl();
+        resourceRuleDao.setJdbcTemplate(rmJdbcTemplate);
+
+        RangeRuleDaoImpl rangeRuleDao = new RangeRuleDaoImpl();
+        rangeRuleDao.setJdbcTemplate(rmJdbcTemplate);
+
+        DbAllocationRule dbAllocationRule = new DbAllocationRule();
+        dbAllocationRule.setResourceRuleDao(resourceRuleDao);
+        dbAllocationRule.setRangeRuleDao(rangeRuleDao);
+
+        EndPointAllocatorImpl epa = new EndPointAllocatorImpl();
+        epa.setResourceManager(rm);
+        Map<String, List<AllocationRule>> allocationRuleMap = new HashMap<>();
+        allocationRuleMap.put("DEFAULT", Collections.singletonList(dbAllocationRule));
+        epa.setAllocationRuleMap(allocationRuleMap);
+        this.endPointAllocator = epa;
+
+        this.speedUtil = new SpeedUtil();
+
+        log.info("ResourceAllocator activated.");
     }
 
     @Override

@@ -24,17 +24,15 @@ package org.onap.ccsdk.sli.adaptors.resource.sql;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Enumeration;
 import java.util.Properties;
 
+import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.vorburger.mariadb4j.DB;
-import ch.vorburger.mariadb4j.DBConfigurationBuilder;
 import junit.framework.TestCase;
 
 public class ITCaseSqlResource extends TestCase {
@@ -61,27 +59,17 @@ public class ITCaseSqlResource extends TestCase {
 		}
 
 
-		// Start MariaDB4j database
-        DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
-        config.setPort(0); // 0 => autom. detect free port
-        DB db = DB.newEmbeddedDB(config.build());
-        db.start();
+		// Override jdbc URL, driver, and database name for Derby embedded
+		String dbName = "sqlresourcetest";
+		props.setProperty("org.onap.ccsdk.sli.jdbc.driver", "org.apache.derby.jdbc.EmbeddedDriver");
+		props.setProperty("org.onap.ccsdk.sli.jdbc.database", dbName);
+		props.setProperty("org.onap.ccsdk.sli.jdbc.url", "jdbc:derby:memory:" + dbName + ";create=true");
+		props.setProperty("org.onap.ccsdk.sli.jdbc.user", "sa");
+		props.setProperty("org.onap.ccsdk.sli.jdbc.password", "");
 
-		// Override jdbc URL and database name
-        props.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
-		props.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
-
-		// Add properties to global properties
-
-		Enumeration propNames = props.keys();
-
-		while (propNames.hasMoreElements()) {
-			String propName = (String) propNames.nextElement();
-
-			System.setProperty(propName, props.getProperty(propName));
-		}
-
-		SqlResource sqlResource = new SqlResource(new SqlResourcePropertiesProviderImpl());
+		// Create DBResourceManager directly from Derby properties and inject into SqlResource
+		DBResourceManager dbResourceManager = new DBResourceManager(props);
+		SqlResource sqlResource = new SqlResource(new SqlResourcePropertiesProviderImpl(), dbResourceManager);
 
 
 

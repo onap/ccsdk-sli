@@ -71,6 +71,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.fenum.qual.AwtColorSpace;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.client.ClientProperties;
@@ -92,10 +93,13 @@ import org.onap.logging.filter.base.HttpURLConnectionMetricUtil;
 import org.onap.logging.filter.base.MetricLogClientFilter;
 import org.onap.logging.filter.base.ONAPComponents;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+@Component(service = RestapiCallNode.class, immediate = true)
 public class RestapiCallNode implements SvcLogicJavaPlugin {
 
     protected static final String PARTNERS_FILE_NAME = "partners.json";
@@ -123,6 +127,7 @@ public class RestapiCallNode implements SvcLogicJavaPlugin {
     protected HashMap<String, PartnerDetails> partnerStore;
     private static final Pattern retryPattern = Pattern.compile(".*,(http|https):.*");
 
+    @Activate
     public RestapiCallNode() {
         String configDir = System.getProperty(PROPERTIES_DIR_KEY, DEFAULT_PROPERTIES_DIR);
         try {

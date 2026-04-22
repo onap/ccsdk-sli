@@ -90,7 +90,8 @@ public abstract class CachedDataSource implements DataSource, SQLExecutionMonito
     public CachedDataSource(BaseDBConfiguration jdbcElem) throws DBConfigException {
         ds = configure(jdbcElem);
         index = initializeIndex(jdbcElem);
-        if ("org.apache.derby.jdbc.EmbeddedDriver".equals(jdbcElem.getDriverName())) {
+        if ("org.apache.derby.jdbc.EmbeddedDriver".equals(jdbcElem.getDriverName())
+                || "org.apache.derby.iapi.jdbc.AutoloadedDriver".equals(jdbcElem.getDriverName())) {
             isDerby = true;
         }
         monitor = new SQLExecutionMonitor(this);

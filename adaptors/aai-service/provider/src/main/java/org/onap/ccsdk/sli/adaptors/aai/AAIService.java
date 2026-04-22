@@ -90,6 +90,9 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
 import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -102,7 +105,7 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
-
+@Component(service = {AAIService.class, AAIClient.class}, immediate = true)
 public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicResource {
 
     public static final String AAICLIENT_PROPERTIES = "/aaiclient.properties";
@@ -149,10 +152,11 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
     private AAIExecutorInterface executor;
 
-    public AAIService(final UtilsProvider configuration) {
+    @Activate
+    public AAIService(@Reference final UtilsProvider configuration) {
         this(configuration.getProperties());
     }
-
+ 
     public AAIService(final URL url) {
         this(getProperties(url));
     }

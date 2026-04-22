@@ -1,7 +1,5 @@
 package org.onap.ccsdk.sli.northbound.uebclient;
 
-import ch.vorburger.mariadb4j.DB;
-import ch.vorburger.mariadb4j.DBConfigurationBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

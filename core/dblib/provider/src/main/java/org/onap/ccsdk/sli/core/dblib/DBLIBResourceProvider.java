@@ -35,6 +35,9 @@ import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+
 /**
  * Responsible for determining the properties file to use and instantiating the <code>DBResourceManager</code>
  * Service.  The priority for properties file resolution is as follows:
@@ -52,6 +55,7 @@ import org.slf4j.LoggerFactory;
  *    <li>AAA Configuration file is <code>aaa-cert-config.xml</code></li>
  * </ol>
  */
+@Component(service = DBLIBResourceProvider.class, immediate = true)
 public class DBLIBResourceProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(DBLIBResourceProvider.class);
@@ -76,6 +80,7 @@ public class DBLIBResourceProvider {
     /**
      * Set up the prioritized list of strategies for resolving dblib properties files.
      */
+    @Activate
     public DBLIBResourceProvider() {
         dblibPropertiesFileResolvers.add(new SdncConfigEnvVarFileResolver(
                 "Using property file (1) from environment variable"

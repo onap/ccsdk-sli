@@ -33,6 +33,7 @@ import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
 import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.CoreDefaultFileResolver;
 import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +59,7 @@ import java.util.Properties;
  * directory</li>
  * </ol>
  */
+@Component(service = SaltstackAdaptorPropertiesProvider.class, immediate = true)
 public class SaltstackAdaptorPropertiesProviderImpl implements SaltstackAdaptorPropertiesProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(SaltstackAdaptorPropertiesProviderImpl.class);

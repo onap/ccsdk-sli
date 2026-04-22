@@ -127,5 +127,10 @@
             <artifactId>json</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

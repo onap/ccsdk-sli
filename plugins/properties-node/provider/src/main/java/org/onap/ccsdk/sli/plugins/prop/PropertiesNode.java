@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import org.osgi.service.component.annotations.Component;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
@@ -36,6 +37,7 @@ import org.onap.ccsdk.sli.core.utils.common.EnvProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(service = PropertiesNode.class, immediate = true)
 public class PropertiesNode implements SvcLogicJavaPlugin {
 
     private static final Logger log = LoggerFactory.getLogger(PropertiesNode.class);

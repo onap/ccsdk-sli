@@ -36,7 +36,10 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 
+@Component(service = TemplateNode.class, immediate = true)
 public class TemplateNode implements SvcLogicJavaPlugin {
     private static final Logger logger = LoggerFactory.getLogger(TemplateNode.class);
     public static final String TEMPLATE_PATH = "templatePath";
@@ -49,6 +52,7 @@ public class TemplateNode implements SvcLogicJavaPlugin {
 
     protected VelocityEngine ve;
 
+    @Activate
     public TemplateNode() {
         ve = new VelocityEngine();
         setProperties();
