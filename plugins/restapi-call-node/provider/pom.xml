@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>3.3.1</version>
+        <version>3.3.2-SNAPSHOT</version>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.plugins</groupId>
@@ -71,6 +71,14 @@
         <dependency>
             <groupId>org.onap.logging-analytics</groupId>
             <artifactId>logging-filter-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
         </dependency>
         <!-- For test -->
         <dependency>

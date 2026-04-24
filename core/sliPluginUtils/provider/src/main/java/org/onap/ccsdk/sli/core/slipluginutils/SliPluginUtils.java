@@ -44,6 +44,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.onap.ccsdk.sli.core.sli.SvcLogicConstants;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -61,6 +63,7 @@ import com.google.gson.JsonParser;
  * @version 7.0.1
  * @see org.onap.ccsdk.sli.core.sli.SvcLogicContext
  */
+@Component(service = SliPluginUtils.class, immediate = true)
 public class SliPluginUtils implements SvcLogicJavaPlugin {
 	public enum LogLevel {
 		TRACE, DEBUG, INFO, WARN, ERROR;
@@ -75,6 +78,7 @@ public class SliPluginUtils implements SvcLogicJavaPlugin {
 
 	// ========== CONSTRUCTORS ==========
 
+	@Activate
 	public SliPluginUtils() {}
 
 	public SliPluginUtils( Properties props ) {}

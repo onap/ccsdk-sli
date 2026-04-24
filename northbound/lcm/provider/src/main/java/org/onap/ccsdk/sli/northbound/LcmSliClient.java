@@ -27,9 +27,13 @@ import java.util.Properties;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(service = LcmSliClient.class, immediate = true)
 public class LcmSliClient {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LcmSliClient.class);
@@ -38,7 +42,8 @@ public class LcmSliClient {
 
 	private String ErrorCode = "error-code";
 
-	public LcmSliClient(final SvcLogicService svcLogicService) {
+	@Activate
+	public LcmSliClient(@Reference final SvcLogicService svcLogicService) {
 		this.svcLogicService = svcLogicService;
 	}
 

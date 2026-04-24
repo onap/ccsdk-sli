@@ -31,11 +31,17 @@ import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.URL;
 import java.util.Base64;
+import java.util.Map;
 
 import org.onap.ccsdk.sli.adaptors.messagerouter.publisher.api.PublisherApi;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(service = PublisherApi.class, immediate = true,
+	configurationPid = "org.onap.ccsdk.sli.adaptors.messagerouter.publisher.provider")
 public class PublisherApiImpl implements PublisherApi {
 	private static final Logger logger = LoggerFactory.getLogger(PublisherApiImpl.class);
 	protected static final Integer DEFAULT_CONNECT_TIMEOUT = 30000; // will be treated as 30 seconds
@@ -51,6 +57,30 @@ public class PublisherApiImpl implements PublisherApi {
 	public PublisherApiImpl() {
 		connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 		readTimeout = DEFAULT_READ_TIMEOUT;
+	}
+
+	@Activate
+	@Modified
+	public void update(Map<String, Object> properties) {
+		if (properties == null) {
+			return;
+		}
+		if (properties.containsKey("username")) {
+			setUsername((String) properties.get("username"));
+		}
+		if (properties.containsKey("password")) {
+			setPassword((String) properties.get("password"));
+		}
+		if (properties.containsKey("host")) {
+			setHost((String) properties.get("host"));
+		}
+		if (properties.containsKey("connectTimeout")) {
+			this.connectTimeout = (Integer) properties.get("connectTimeout");
+		}
+		if (properties.containsKey("readTimeout")) {
+			this.readTimeout = (Integer) properties.get("readTimeout");
+		}
+		setAuthorizationString();
 	}
 
 	public void setUsername(String username) {
