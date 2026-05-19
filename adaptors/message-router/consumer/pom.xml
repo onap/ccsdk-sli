@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>consumer.aggregate</artifactId>
+    <version>2.3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>ccsdk-sli-adaptors :: message-router :: ${project.artifactId}</name>
