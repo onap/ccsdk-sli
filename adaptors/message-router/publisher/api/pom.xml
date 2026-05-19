@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>publisher.api</artifactId>
+    <version>2.2.2-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-adaptors :: message-router :: ${project.artifactId}</name>
