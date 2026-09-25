@@ -24,6 +24,7 @@
         <build.number>${maven.build.timestamp}</build.number>
         <SWM_VERSION>${project.version}-${build.number}</SWM_VERSION>
         <sdc.tosca.version>1.6.5</sdc.tosca.version>
+        <sdc.client.version>2.3.0</sdc.client.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
     </properties>
 

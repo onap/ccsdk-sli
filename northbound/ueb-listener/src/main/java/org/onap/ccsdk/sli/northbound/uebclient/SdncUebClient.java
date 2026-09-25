@@ -23,11 +23,10 @@ package org.onap.ccsdk.sli.northbound.uebclient;
 
 import org.onap.sdc.api.IDistributionClient;
 import org.onap.sdc.api.results.IDistributionClientResult;
+import org.onap.sdc.api.results.DistributionActionResultEnum;
 import org.onap.sdc.impl.DistributionClientFactory;
-import org.onap.sdc.utils.DistributionActionResultEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.onap.sdc.utils.DistributionActionResultEnum;
 
 public class SdncUebClient {
 

@@ -22,7 +22,7 @@ package org.onap.ccsdk.sli.northbound.uebclient;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.onap.sdc.utils.DistributionActionResultEnum.SUCCESS;
+import static org.onap.sdc.api.results.DistributionActionResultEnum.SUCCESS;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,6 +46,7 @@ import java.util.Properties;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.kafka.clients.admin.Admin;
+import org.apache.kafka.clients.admin.ConsumerGroupDescription;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -127,6 +128,7 @@ public class SdncUebDistributionTest {
         assertEquals(1, deployRequests.size());
         assertTrue(deployRequests.peek().contains("<vf-id>test-vf</vf-id>"));
         assertEquals(SUCCESS, client.stop().getDistributionActionResult());
+        assertTrue(awaitConsumerGroupEmpty());
     }
 
     // IConfiguration defaults to SASL_PLAINTEXT and otherwise reads SASL_JAAS_CONFIG from the environment.
@@ -215,6 +217,22 @@ public class SdncUebDistributionTest {
             }
         }
         return statuses;
+    }
+
+    // Shorter than the consumer session timeout, so only a consumer that leaves the group on stop() passes.
+    private static boolean awaitConsumerGroupEmpty() throws Exception {
+        long deadline = System.nanoTime() + Duration.ofSeconds(10).toNanos();
+        try (Admin admin = Admin.create(kafkaClientProperties())) {
+            while (System.nanoTime() < deadline) {
+                ConsumerGroupDescription group = admin.describeConsumerGroups(Collections.singletonList(CONSUMER_GROUP))
+                        .describedGroups().get(CONSUMER_GROUP).get();
+                if (group.members().isEmpty()) {
+                    return true;
+                }
+                Thread.sleep(100);
+            }
+        }
+        return false;
     }
 
     private static boolean isComponentDone(List<String> statuses) {
