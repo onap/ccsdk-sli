@@ -259,7 +259,19 @@ public class SdncUebCallback implements INotificationCallback {
         COMPONENT_DOWNLOAD_ERROR = false;
         COMPONENT_DEPLOY_ERROR = false;
         CSAR_ARTIFACT_DEPLOY_ERROR = false;
-        
+
+        String unexpectedErrorReason = null;
+        try {
+            processNotification(data);
+        } catch (RuntimeException e) {
+            LOG.error("Unexpected error processing distribution " + data.getDistributionID(), e);
+            unexpectedErrorReason = "SDN-C encountered an unexpected error processing this distribution: " + e;
+        } finally {
+            sendComponentDoneStatus(data, unexpectedErrorReason);
+        }
+    }
+
+    private void processNotification(INotificationData data) {
     	// TOSCA_TEMPLATE artifact should only be downloaded if TOSCA_CSAR artifact fails due to version non-compliance
     	IArtifactInfo toscaTemplateArtifact = null;
 
@@ -310,8 +322,12 @@ public class SdncUebCallback implements INotificationCallback {
             
             // After all artifacts have been processed if CSAR_ARTIFACT_DEPLOY_ERROR is true, download and deploy the TOSCA_TEMPLATE artifact
             if (CSAR_ARTIFACT_DEPLOY_ERROR == true) {
-            	LOG.info("TOSCA_CSAR artifact deploy error encountered, downloading TOSCA_TEMPLATE artifact: " + toscaTemplateArtifact.getArtifactName());
-            	handleArtifact(data, data.getServiceName(), null, null, toscaTemplateArtifact, incomingDir, archiveDir);
+            	if (toscaTemplateArtifact != null) {
+            		LOG.info("TOSCA_CSAR artifact deploy error encountered, downloading TOSCA_TEMPLATE artifact: " + toscaTemplateArtifact.getArtifactName());
+            		handleArtifact(data, data.getServiceName(), null, null, toscaTemplateArtifact, incomingDir, archiveDir);
+            	} else {
+            		LOG.warn("TOSCA_CSAR artifact deploy error encountered and the distribution has no TOSCA_TEMPLATE artifact to fall back to");
+            	}
             }
         }
 
@@ -344,15 +360,18 @@ public class SdncUebCallback implements INotificationCallback {
         }
 
         deployDownloadedFiles(incomingDir, archiveDir, data);
+    }
 
+    private void sendComponentDoneStatus(INotificationData data, String unexpectedErrorReason) {
         // Send Component Status: COMPONENT_DONE_ERROR or COMPONENT_DONE_OK
 		LOG.info("Sending Component Status for Distribution: ("+data.getDistributionID()+","+data.getServiceName()+","+data.getServiceVersion()+
 			","+data.getServiceDescription() +  ")");
 		IDistributionClientResult result = null;
-		 if (COMPONENT_DOWNLOAD_ERROR == true || COMPONENT_DEPLOY_ERROR == true) {
+		 if (unexpectedErrorReason != null || COMPONENT_DOWNLOAD_ERROR == true || COMPONENT_DEPLOY_ERROR == true) {
 
 			 String errorReason = (COMPONENT_DEPLOY_ERROR == true ? "SDN-C encountered an error deploying an artifact in this distribution" : "");
 			 errorReason = (COMPONENT_DOWNLOAD_ERROR == true ? "SDN-C encountered an error downloading an artifact in this distribution" : errorReason);
+			 errorReason = (unexpectedErrorReason != null ? unexpectedErrorReason : errorReason);
 			 result = client.sendComponentDoneStatus(buildComponentStatusMessage(
 						client, data, DistributionStatusEnum.COMPONENT_DONE_ERROR), errorReason);
 			 if (result != null) {
@@ -446,11 +465,15 @@ public class SdncUebCallback implements INotificationCallback {
 
 					if ((artifactInfo != null) && (data != null)) {
                         IDistributionClientResult deploymentStatus;
-                            deploymentStatus = client.sendDeploymentStatus(buildStatusMessage(
-                                    client, data, artifactInfo,
-                                    deployResult));
                             if (deployResult == DistributionStatusEnum.DEPLOY_ERROR) {
                             	COMPONENT_DEPLOY_ERROR = true;
+                            	deploymentStatus = client.sendDeploymentStatus(buildStatusMessage(
+                                    client, data, artifactInfo,
+                                    deployResult), "SDN-C failed to deploy artifact " + artifactInfo.getArtifactName());
+                            } else {
+                            	deploymentStatus = client.sendDeploymentStatus(buildStatusMessage(
+                                    client, data, artifactInfo,
+                                    deployResult));
                             }
                     }
 
@@ -466,14 +489,14 @@ public class SdncUebCallback implements INotificationCallback {
 
 		if (downloadResult == null) {
 
-			handleFailedDownload(data, artifact);
+			handleFailedDownload(data, artifact, "SDN-C received no download result for artifact " + artifact.getArtifactName());
 			return;
 		}
 
 		byte[] payloadBytes = downloadResult.getArtifactPayload();
 
 		if (payloadBytes == null) {
-			handleFailedDownload(data, artifact);
+			handleFailedDownload(data, artifact, "SDN-C received an empty payload for artifact " + artifact.getArtifactName());
 			return;
 		}
 
@@ -507,16 +530,20 @@ public class SdncUebCallback implements INotificationCallback {
             handleSuccessfulDownload(data, svcName, resourceName, artifact, spoolFile, archiveDir);
 
 
+        } else if (!writeSucceeded) {
+            handleFailedDownload(data, artifact, "SDN-C could not save artifact " + artifact.getArtifactName() + " to its spool directory");
         } else {
-            handleFailedDownload(data, artifact);
+            handleFailedDownload(data, artifact, "SDN-C failed to download artifact " + artifact.getArtifactName() + ": "
+                    + downloadResult.getDistributionActionResult() + " " + downloadResult.getDistributionMessageResult());
         }
 
     }
 
     private void handleFailedDownload(INotificationData data,
-            IArtifactInfo relevantArtifact) {
+            IArtifactInfo relevantArtifact, String errorReason) {
+        LOG.error(errorReason);
         // Send Download Status
-        client.sendDownloadStatus(buildStatusMessage(client, data, relevantArtifact, DistributionStatusEnum.DOWNLOAD_ERROR));
+        client.sendDownloadStatus(buildStatusMessage(client, data, relevantArtifact, DistributionStatusEnum.DOWNLOAD_ERROR), errorReason);
         COMPONENT_DOWNLOAD_ERROR = true;
     }
 
@@ -656,7 +683,12 @@ public class SdncUebCallback implements INotificationCallback {
 		
 		// Send deployment status for ingestion 
 		if ((artifact != null) && (data != null)) {
-			client.sendDeploymentStatus(buildStatusMessage(client, data, artifact,deployStatus));
+			if (deployStatus.equals(DistributionStatusEnum.DEPLOY_OK)) {
+				client.sendDeploymentStatus(buildStatusMessage(client, data, artifact, deployStatus));
+			} else {
+				client.sendDeploymentStatus(buildStatusMessage(client, data, artifact, deployStatus),
+						"SDN-C failed to ingest TOSCA artifact " + artifact.getArtifactName());
+			}
 		}
     }
     
