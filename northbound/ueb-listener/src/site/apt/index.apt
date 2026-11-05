@@ -44,3 +44,13 @@ File Locations
 
 
 
+Tracing
+
+    Each SDC notification creates a CONSUMER span using the Kafka traceparent and tracestate headers
+    preserved by distribution client 2.4.0. Notifications without a valid parent start independent traces.
+    The active context is propagated to SDN-C RESTCONF requests. HTTP client spans can be supplied
+    by a Java agent; the listener itself injects context without creating duplicate HTTP spans.
+
+    The listener only uses the OpenTelemetry API. Spans are recorded and exported when the
+    OpenTelemetry Java agent is attached, which the sdnc-ueb-listener image does; without it the API
+    is a no-op.

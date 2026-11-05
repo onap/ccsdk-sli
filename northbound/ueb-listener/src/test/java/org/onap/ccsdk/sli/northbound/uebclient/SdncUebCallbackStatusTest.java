@@ -30,7 +30,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.sdk.OpenTelemetrySdk;
+import io.opentelemetry.sdk.trace.SdkTracerProvider;
+import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
+import io.opentelemetry.sdk.testing.exporter.InMemorySpanExporter;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -41,14 +48,16 @@ import org.onap.sdc.api.consumer.IDistributionStatusMessage;
 import org.onap.sdc.api.notification.IArtifactInfo;
 import org.onap.sdc.api.notification.INotificationData;
 import org.onap.sdc.api.results.IDistributionClientDownloadResult;
-import org.onap.sdc.utils.DistributionActionResultEnum;
-import org.onap.sdc.utils.DistributionStatusEnum;
+import org.onap.sdc.api.results.DistributionActionResultEnum;
+import org.onap.sdc.api.notification.DistributionStatusEnum;
 
 public class SdncUebCallbackStatusTest {
 
     @Rule
     public TemporaryFolder tmp = new TemporaryFolder();
 
+    private final InMemorySpanExporter exporter = InMemorySpanExporter.create();
+    private SdkTracerProvider provider;
     private IDistributionClient client;
     private INotificationData data;
     private IArtifactInfo csar;
@@ -56,6 +65,9 @@ public class SdncUebCallbackStatusTest {
 
     @Before
     public void setUp() throws Exception {
+        GlobalOpenTelemetry.resetForTest();
+        provider = SdkTracerProvider.builder().addSpanProcessor(SimpleSpanProcessor.create(exporter)).build();
+        GlobalOpenTelemetry.set(OpenTelemetrySdk.builder().setTracerProvider(provider).build());
         SdncUebConfiguration config = mock(SdncUebConfiguration.class);
         when(config.getIncomingDir()).thenReturn(tmp.newFolder("incoming").getAbsolutePath());
         when(config.getArchiveDir()).thenReturn(tmp.newFolder("archive").getAbsolutePath());
@@ -73,6 +85,17 @@ public class SdncUebCallbackStatusTest {
         when(data.getServiceArtifacts()).thenReturn(Collections.singletonList(csar));
 
         callback = new SdncUebCallback(client, config);
+    }
+
+    @After
+    public void tearDown() {
+        provider.close();
+        GlobalOpenTelemetry.resetForTest();
+    }
+
+    private void assertErrorSpan() {
+        assertEquals(1, exporter.getFinishedSpanItems().size());
+        assertEquals(StatusCode.ERROR, exporter.getFinishedSpanItems().get(0).getStatus().getStatusCode());
     }
 
     private IDistributionClientDownloadResult downloadResult(DistributionActionResultEnum result, byte[] payload) {
@@ -106,6 +129,7 @@ public class SdncUebCallbackStatusTest {
         assertEquals(DistributionStatusEnum.DEPLOY_ERROR, deploy.getValue().getStatus());
         assertFalse(reason.getValue().isEmpty());
         verifyComponentDoneError();
+        assertErrorSpan();
     }
 
     @Test
@@ -124,6 +148,7 @@ public class SdncUebCallbackStatusTest {
         assertEquals("SDN-C failed to download artifact service-Svc-csar.csar: FAIL connection refused",
                 reason.getValue());
         verifyComponentDoneError();
+        assertErrorSpan();
     }
 
     @Test
@@ -135,5 +160,6 @@ public class SdncUebCallbackStatusTest {
         String reason = verifyComponentDoneError();
         assertEquals(true, reason.contains("boom"));
         verify(client, never()).sendDownloadStatus(any(), anyString());
+        assertErrorSpan();
     }
 }

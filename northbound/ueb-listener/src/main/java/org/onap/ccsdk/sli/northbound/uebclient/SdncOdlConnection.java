@@ -115,6 +115,8 @@ public class SdncOdlConnection {
 			((HttpsURLConnection) httpConn).setHostnameVerifier(hostnameVerifier);
 		}
 
+		DistributionTracing.inject(httpConn);
+
 		// Write message
 		httpConn.setRequestProperty("Content-Length", "" + msg.length());
 		DataOutputStream outStr = new DataOutputStream(httpConn.getOutputStream());
