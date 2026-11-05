@@ -44,3 +44,18 @@ File Locations
 
 
 
+Tracing
+
+    Each SDC notification creates a CONSUMER span using the Kafka traceparent and tracestate headers
+    preserved by distribution client 2.4.0. Notifications without a valid parent start independent traces.
+    The active context is propagated to SDN-C RESTCONF requests. HTTP client spans can be supplied
+    by a Java agent; the listener itself injects context without creating duplicate HTTP spans.
+
+    The standalone listener initializes OpenTelemetry and exports traces over OTLP HTTP/protobuf using
+    the JDK HTTP transport. Configure the collector with OTEL_EXPORTER_OTLP_ENDPOINT (or
+    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT). Use its HTTP/protobuf port (normally 4318); gRPC export
+    requires a different sender. The default service name is sdnc-ueb-listener; override it with
+    OTEL_SERVICE_NAME. Standard OpenTelemetry environment variables and Java system properties apply,
+    including OTEL_TRACES_SAMPLER and OTEL_SDK_DISABLED. Metrics and log export are disabled by default.
+    The SDK flushes and shuts down when the JVM exits. If an OpenTelemetry Java agent has already
+    registered a global provider, the listener reuses it instead of initializing another SDK.

@@ -21,6 +21,9 @@
 
 package org.onap.ccsdk.sli.northbound.uebclient;
 
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.context.Scope;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -79,8 +82,8 @@ import org.onap.sdc.tosca.parser.exceptions.SdcToscaParserException;
 import org.onap.sdc.tosca.parser.impl.SdcToscaParserFactory;
 import org.onap.sdc.toscaparser.api.elements.Metadata;
 import org.onap.sdc.utils.ArtifactTypeEnum;
-import org.onap.sdc.utils.DistributionActionResultEnum;
-import org.onap.sdc.utils.DistributionStatusEnum;
+import org.onap.sdc.api.results.DistributionActionResultEnum;
+import org.onap.sdc.api.notification.DistributionStatusEnum;
 import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.onap.ccsdk.sli.northbound.uebclient.SdncArtifactMap.SdncArtifactType;
 import org.slf4j.Logger;
@@ -260,14 +263,28 @@ public class SdncUebCallback implements INotificationCallback {
         COMPONENT_DEPLOY_ERROR = false;
         CSAR_ARTIFACT_DEPLOY_ERROR = false;
 
-        String unexpectedErrorReason = null;
-        try {
-            processNotification(data);
-        } catch (RuntimeException e) {
-            LOG.error("Unexpected error processing distribution " + data.getDistributionID(), e);
-            unexpectedErrorReason = "SDN-C encountered an unexpected error processing this distribution: " + e;
+        Span span = DistributionTracing.startNotification(data);
+        try (Scope scope = span.makeCurrent()) {
+            String unexpectedErrorReason = null;
+            try {
+                processNotification(data);
+            } catch (RuntimeException e) {
+                span.recordException(e);
+                span.setStatus(StatusCode.ERROR);
+                LOG.error("Unexpected error processing distribution " + data.getDistributionID(), e);
+                unexpectedErrorReason = "SDN-C encountered an unexpected error processing this distribution: " + e;
+            } finally {
+                if (COMPONENT_DOWNLOAD_ERROR || COMPONENT_DEPLOY_ERROR) {
+                    span.setStatus(StatusCode.ERROR, "Distribution artifact processing failed");
+                }
+                sendComponentDoneStatus(data, unexpectedErrorReason);
+            }
+        } catch (RuntimeException | Error e) {
+            span.recordException(e);
+            span.setStatus(StatusCode.ERROR);
+            throw e;
         } finally {
-            sendComponentDoneStatus(data, unexpectedErrorReason);
+            span.end();
         }
     }
 

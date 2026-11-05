@@ -23,12 +23,21 @@
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss'Z'</maven.build.timestamp.format>
         <build.number>${maven.build.timestamp}</build.number>
         <SWM_VERSION>${project.version}-${build.number}</SWM_VERSION>
+        <sdc.client.version>2.4.0</sdc.client.version>
+        <opentelemetry.version>1.60.1</opentelemetry.version>
         <sdc.tosca.version>1.6.5</sdc.tosca.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-bom</artifactId>
+                <version>${opentelemetry.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.onap.ccsdk.sli.core</groupId>
                 <artifactId>sli-core-artifacts</artifactId>
@@ -39,7 +48,41 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-sdk-extension-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-exporter-otlp</artifactId>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.opentelemetry</groupId>
+                    <artifactId>opentelemetry-exporter-sender-okhttp</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-exporter-sender-jdk</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-sdk-testing</artifactId>
+            <scope>test</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.onap.sdc.sdc-distribution-client</groupId>
+            <artifactId>sdc-distribution-client-api</artifactId>
+            <version>${sdc.client.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.onap.sdc.sdc-distribution-client</groupId>
             <artifactId>sdc-distribution-client</artifactId>
