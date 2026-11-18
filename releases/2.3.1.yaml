@@ -1,0 +1,6 @@
+---
+distribution_type: 'maven'
+version: '2.3.1'
+project: 'ccsdk-sli'
+log_dir: 'ccsdk-sli-current-maven-stage-master/15/'
+ref: 'd86b569820658e6feac7324d84a43ddd74970aa8'
