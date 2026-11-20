@@ -22,8 +22,6 @@
 
 package org.onap.ccsdk.sli.adaptors.ansible.impl;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -46,6 +44,8 @@ import org.onap.ccsdk.sli.core.utils.encryption.EncryptionTool;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.*;
 
@@ -65,7 +65,7 @@ public class AnsibleAdaptorImpl implements AnsibleAdaptor {
     /**
      * The logger to be used
      */
-    private static final EELFLogger logger = EELFManager.getInstance().getLogger(AnsibleAdaptorImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnsibleAdaptorImpl.class);
     private int defaultTimeout = 600 * 1000;
     private int defaultSocketTimeout = 60 * 1000;
     private int defaultPollInterval = 60 * 1000;

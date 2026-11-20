@@ -22,8 +22,6 @@
 
 package org.onap.ccsdk.sli.adaptors.ansible.impl;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
 import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -57,6 +55,8 @@ import org.json.JSONObject;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResult;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResultCodes;
 import org.onap.ccsdk.sli.core.utils.PathValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Returns a custom http client
@@ -69,7 +69,7 @@ import org.onap.ccsdk.sli.core.utils.PathValidator;
 
 public class ConnectionBuilder implements Closeable {
     private static final String STATUS_CODE_KEY = "StatusCode";
-    private static final EELFLogger logger = EELFManager.getInstance().getLogger(ConnectionBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionBuilder.class);
 
     private final CloseableHttpClient httpClient;
     private final HttpClientContext httpContext = new HttpClientContext();

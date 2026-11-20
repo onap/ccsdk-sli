@@ -22,13 +22,13 @@
 
 package org.onap.ccsdk.sli.adaptors.ansible.model;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.PLAYBOOK_NAME;
 import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.STATUS_CODE;
@@ -36,7 +36,7 @@ import static org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdaptorConstants.STATUS
 
 public class AnsibleServerEmulator {
 
-    private final EELFLogger logger = EELFManager.getInstance().getLogger(AnsibleServerEmulator.class);
+    private final Logger logger = LoggerFactory.getLogger(AnsibleServerEmulator.class);
 
     /**
      * Method that emulates the response from an Ansible Server
