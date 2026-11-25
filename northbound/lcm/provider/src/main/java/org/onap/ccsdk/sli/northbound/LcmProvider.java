@@ -34,11 +34,8 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import org.onap.ccsdk.sli.core.sli.provider.MdsalHelper;
-import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
-import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.*;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.common.header.CommonHeaderBuilder;
 import org.opendaylight.yang.gen.v1.org.onap.ccsdk.sli.northbound.lcm.rev180329.status.StatusBuilder;
@@ -46,9 +43,6 @@ import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.Uint16;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -109,13 +103,6 @@ public class LcmProvider implements AutoCloseable, ActionStatus {
 
 	private final Registration rpcRegistration;
 
-
-	public LcmProvider(final DataBroker dataProvider,
-	                  final EntityOwnershipService ownershipService,
-					   final DOMDataBroker domDataBroker,
-					   final RpcProviderService rpcProviderRegistry) {
-		this(domDataBroker, rpcProviderRegistry, new LcmSliClient(findSvcLogicService()));
-	}
 
 	@Activate
 	public LcmProvider(@Reference final DOMDataBroker dataBroker, 
@@ -1158,22 +1145,5 @@ public class LcmProvider implements AutoCloseable, ActionStatus {
 
 	}
 
-	private static SvcLogicService findSvcLogicService() {
-		BundleContext bctx = FrameworkUtil.getBundle(SvcLogicService.class).getBundleContext();
-
-		SvcLogicService svcLogic = null;
-
-		// Get SvcLogicService reference
-		ServiceReference sref = bctx.getServiceReference(SvcLogicService.NAME);
-		if (sref != null) {
-			svcLogic = (SvcLogicService) bctx.getService(sref);
-
-		} else {
-			LOG.warn("Cannot find service reference for " + SvcLogicService.NAME);
-
-		}
-
-		return (svcLogic);
-	}
 
 }

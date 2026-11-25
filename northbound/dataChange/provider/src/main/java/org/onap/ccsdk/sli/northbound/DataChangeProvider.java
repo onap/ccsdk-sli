@@ -32,7 +32,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import org.onap.ccsdk.sli.core.sli.provider.MdsalHelper;
-import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
@@ -46,9 +45,6 @@ import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -75,12 +71,6 @@ public class DataChangeProvider implements AutoCloseable, DataChangeNotification
     private final Registration rpcRegistration;
     private final DataChangeClient dataChangeClient;
     
-	public DataChangeProvider(final DataBroker dataBroker,
-							  final EntityOwnershipService ownershipService,
-							  final RpcProviderService rpcRegistry) {
-		this(dataBroker, ownershipService, rpcRegistry, new DataChangeClient(findSvcLogicService()));
-	}
-	
 	@Activate
     public DataChangeProvider(@Reference final DataBroker dataBroker,
 							  @Reference final EntityOwnershipService ownershipService,
@@ -169,21 +159,4 @@ public class DataChangeProvider implements AutoCloseable, DataChangeNotification
 		return Futures.immediateFuture(rpcResult);
 	}
 
-	private static SvcLogicService findSvcLogicService() {
-		BundleContext bctx = FrameworkUtil.getBundle(SvcLogicService.class).getBundleContext();
-
-		SvcLogicService svcLogic = null;
-
-		// Get SvcLogicService reference
-		ServiceReference sref = bctx.getServiceReference(SvcLogicService.NAME);
-		if (sref != null) {
-			svcLogic = (SvcLogicService) bctx.getService(sref);
-
-		} else {
-			LOG.warn("Cannot find service reference for " + SvcLogicService.NAME);
-
-		}
-
-		return (svcLogic);
-	}
 }

@@ -75,9 +75,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafSetEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -129,7 +126,7 @@ public class SliapiProvider implements AutoCloseable, ExecuteGraph {
 	private final DOMDataBroker dataBroker;
 	private final EntityOwnershipService ownershipService;
 
-	private SvcLogicService svcLogic;
+	private final SvcLogicService svcLogic;
 
 	private final Registration rpcRegistration;
 
@@ -157,18 +154,11 @@ public class SliapiProvider implements AutoCloseable, ExecuteGraph {
 
 	@Inject
 	@Activate
-	public SliapiProvider(@Reference final DataBroker dataProvider, 
+	public SliapiProvider(@Reference final DataBroker dataProvider,
 	                      @Reference final EntityOwnershipService ownershipService,
 	                      @Reference final DOMDataBroker domDataBroker,
-	                      @Reference final RpcProviderService rpcProviderRegistry) {
-		this(dataProvider, ownershipService, domDataBroker, rpcProviderRegistry, findSvcLogicService());
-	}
-
-	public SliapiProvider(final DataBroker dataProvider, 
-	                      final EntityOwnershipService ownershipService,
-	                      final DOMDataBroker domDataBroker,
-						  final RpcProviderService rpcProviderRegistry,
-						  SvcLogicService svcLogic) {
+	                      @Reference final RpcProviderService rpcProviderRegistry,
+	                      @Reference final SvcLogicService svcLogic) {
 		LOG.info("Creating provider for " + appName);
 		this.dataProvider = dataProvider;
 		this.ownershipService = ownershipService;
@@ -202,7 +192,6 @@ public class SliapiProvider implements AutoCloseable, ExecuteGraph {
 	public ListenableFuture<RpcResult<ExecuteGraphOutput>> invoke(ExecuteGraphInput input) {
 		RpcResult<ExecuteGraphOutput> rpcResult = null;
 
-		SvcLogicService svcLogic = getSvcLogicService();
 		ExecuteGraphOutputBuilder respBuilder = new ExecuteGraphOutputBuilder();
 
 		String calledModule = input.getModuleName();
@@ -345,36 +334,9 @@ public class SliapiProvider implements AutoCloseable, ExecuteGraph {
 		return (Futures.immediateFuture(rpcResult));
 	}
 
-	private SvcLogicService getSvcLogicService() {
-		if (svcLogic == null) {
-			svcLogic = findSvcLogicService();
-		}
-
-		return (svcLogic);
-	}
-
-	private static SvcLogicService findSvcLogicService() {
-		BundleContext bctx = FrameworkUtil.getBundle(SvcLogicService.class).getBundleContext();
-
-		SvcLogicService svcLogic = null;
-
-		// Get SvcLogicService reference
-		ServiceReference sref = bctx.getServiceReference(SvcLogicService.NAME);
-		if (sref != null) {
-			svcLogic = (SvcLogicService) bctx.getService(sref);
-
-		} else {
-			LOG.warn("Cannot find service reference for " + SvcLogicService.NAME);
-
-		}
-
-		return (svcLogic);
-	}
-
 	public ListenableFuture<RpcResult<HealthcheckOutput>> healthcheck(HealthcheckInput healthcheckInput) {
 
 		RpcResult<HealthcheckOutput> rpcResult = null;
-		SvcLogicService svcLogic = getSvcLogicService();
 
 		HealthcheckOutputBuilder respBuilder = new HealthcheckOutputBuilder();
 
@@ -444,7 +406,6 @@ public class SliapiProvider implements AutoCloseable, ExecuteGraph {
     public ListenableFuture<RpcResult<VlbcheckOutput>> vlbcheck(VlbcheckInput vlbInput) {
 
 		RpcResult<VlbcheckOutput> rpcResult = null;
-		SvcLogicService svcLogic = getSvcLogicService();
 
 		VlbcheckOutputBuilder respBuilder = new VlbcheckOutputBuilder();
 

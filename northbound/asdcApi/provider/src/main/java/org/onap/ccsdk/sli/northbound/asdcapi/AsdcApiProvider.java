@@ -35,7 +35,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.onap.ccsdk.sli.core.sli.provider.SvcLogicService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
@@ -63,9 +62,6 @@ import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -94,15 +90,9 @@ public class AsdcApiProvider implements AutoCloseable, VfLicenseModelUpdate{
     @Inject
     @Activate
     public AsdcApiProvider(@Reference final DataBroker dataBroker,
-        @Reference final EntityOwnershipService ownershipService,
-        @Reference final RpcProviderService rpcProviderRegistry) {
-        this(dataBroker, ownershipService, rpcProviderRegistry, new AsdcApiSliClient(findSvcLogicService()));
-    }
-
-    public AsdcApiProvider(final DataBroker dataBroker,
-                           final EntityOwnershipService ownershipService,
-                           final RpcProviderService rpcRegistry,
-                           final AsdcApiSliClient asdcApiSliClient) {
+                           @Reference final EntityOwnershipService ownershipService,
+                           @Reference final RpcProviderService rpcRegistry,
+                           @Reference final AsdcApiSliClient asdcApiSliClient) {
         LOG.info("Creating provider for {}", APPLICATION_NAME);
         executor = Executors.newFixedThreadPool(1);
         this.dataBroker = dataBroker;
@@ -356,23 +346,6 @@ public ListenableFuture<RpcResult<VfLicenseModelUpdateOutput>> invoke(VfLicenseM
     return Futures.immediateFuture(rpcResult);
 }
 
-	private static SvcLogicService findSvcLogicService() {
-		BundleContext bctx = FrameworkUtil.getBundle(SvcLogicService.class).getBundleContext();
-
-		SvcLogicService svcLogic = null;
-
-		// Get SvcLogicService reference
-		ServiceReference sref = bctx.getServiceReference(SvcLogicService.NAME);
-		if (sref != null) {
-			svcLogic = (SvcLogicService) bctx.getService(sref);
-
-		} else {
-			LOG.warn("Cannot find service reference for " + SvcLogicService.NAME);
-
-		}
-
-		return (svcLogic);
-	}
 
 
 }
