@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.onap.ccsdk.sli.adaptors.messagerouter</groupId>
         <artifactId>publisher.aggregate</artifactId>
-        <version>2.3.2-SNAPSHOT</version>
+        <version>2.3.2</version>
     </parent>
 
     <artifactId>publisher.api</artifactId>
-    <version>2.3.2-SNAPSHOT</version>
+    <version>2.3.2</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-adaptors :: message-router :: ${project.artifactId}</name>
